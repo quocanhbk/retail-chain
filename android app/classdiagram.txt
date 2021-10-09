@@ -1,0 +1,3438 @@
+@startuml
+set namespaceSeparator ::
+
+class "bkrm::pages::humanResourceModule::employee::addNewEmployeeUser.dart::AddNewEmployeeUserPage" {
+  +_AddNewEmployeeUserPageState createState()
+}
+
+class "bkrm::pages::humanResourceModule::employee::addNewEmployeeUser.dart::_AddNewEmployeeUserPageState" {
+  -GlobalKey<FormState> _formKey
+  +String? genderValue
+  +DateTime? dateOfBirth
+  +bool needRefresh
+  +TextEditingController fullNameController
+  +TextEditingController userNameController
+  +TextEditingController passwordController
+  +TextEditingController confirmPasswordController
+  +TextEditingController dateOfBirthController
+  +TextEditingController phoneController
+  +TextEditingController emailController
+  +bool fullNameValid
+  +bool userNameValid
+  +bool passwordValid
+  +bool confirmPasswordValid
+  +bool permissionValid
+  +bool emailValid
+  +bool? selling
+  +bool? managing
+  +bool? purchasing
+  +bool? reporting
+  +Widget build()
+}
+
+"bkrm::pages::humanResourceModule::employee::addNewEmployeeUser.dart::_AddNewEmployeeUserPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"bkrm::pages::humanResourceModule::employee::addNewEmployeeUser.dart::_AddNewEmployeeUserPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::humanResourceModule::employee::changePasswordPage.dart::ChangePasswordPage" {
+  +EmployeeInfo employee
+  +_ChangePasswordPageState createState()
+}
+
+"bkrm::pages::humanResourceModule::employee::changePasswordPage.dart::ChangePasswordPage" o-- "bkrm::services::info::hrInfo::employeeInfo.dart::EmployeeInfo"
+
+class "bkrm::pages::humanResourceModule::employee::changePasswordPage.dart::_ChangePasswordPageState" {
+  -GlobalKey<FormState> _formKey
+  +TextEditingController newPasswordController
+  +TextEditingController confirmNewPasswordController
+  +bool newPasswordValid
+  +bool confirmNewPasswordValid
+  +Widget build()
+}
+
+"bkrm::pages::humanResourceModule::employee::changePasswordPage.dart::_ChangePasswordPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"bkrm::pages::humanResourceModule::employee::changePasswordPage.dart::_ChangePasswordPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::humanResourceModule::employee::employeeDetailPage.dart::EmployeeDetailPage" {
+  +EmployeeInfo employee
+  +_EmployeeDetailPageState createState()
+}
+
+"bkrm::pages::humanResourceModule::employee::employeeDetailPage.dart::EmployeeDetailPage" o-- "bkrm::services::info::hrInfo::employeeInfo.dart::EmployeeInfo"
+
+class "bkrm::pages::humanResourceModule::employee::employeeDetailPage.dart::_EmployeeDetailPageState" {
+  -GlobalKey<FormState> _formKey
+  +String? genderValue
+  +DateTime? dateOfBirth
+  +bool enableEdit
+  +bool needRefresh
+  +TextEditingController fullNameController
+  +TextEditingController dateOfBirthController
+  +TextEditingController phoneController
+  +TextEditingController emailController
+  +TextEditingController usernameController
+  +bool fullNameValid
+  +bool permissionValid
+  +bool emailValid
+  +bool selling
+  +bool managing
+  +bool purchasing
+  +bool reporting
+  +void initState()
+  +dynamic setInfoFromEmployee()
+  +dynamic clearPage()
+  +dynamic remoteSetState()
+  +Widget build()
+}
+
+"bkrm::pages::humanResourceModule::employee::employeeDetailPage.dart::_EmployeeDetailPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"bkrm::pages::humanResourceModule::employee::employeeDetailPage.dart::_EmployeeDetailPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::humanResourceModule::employee::listEmployeePage.dart::ListEmployeePage" {
+  +dynamic Function(EmployeeInfo)? onTapCustomer
+  +_ListEmployeePageState createState()
+}
+
+"bkrm::pages::humanResourceModule::employee::listEmployeePage.dart::ListEmployeePage" o-- "null::dynamic Function(EmployeeInfo)"
+
+class "bkrm::pages::humanResourceModule::employee::listEmployeePage.dart::_ListEmployeePageState" {
+  -GlobalKey<RefreshIndicatorState> _refreshKey
+  -GlobalKey<ScaffoldState> _scaffoldKey
+  +TextEditingController searchController
+  +String searchQuery
+  +List<EmployeeInfo>? employeesData
+  +Function refreshFunction
+  +void initState()
+  +Future<void> getSupplierData()
+  +Widget build()
+}
+
+"bkrm::pages::humanResourceModule::employee::listEmployeePage.dart::_ListEmployeePageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<RefreshIndicatorState>"
+"bkrm::pages::humanResourceModule::employee::listEmployeePage.dart::_ListEmployeePageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<ScaffoldState>"
+"bkrm::pages::humanResourceModule::employee::listEmployeePage.dart::_ListEmployeePageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::humanResourceModule::schedule::addNewSchedulePage.dart::AddNewSchedulePage" {
+  +ShiftInfo shift
+  +_AddNewSchedulePageState createState()
+}
+
+"bkrm::pages::humanResourceModule::schedule::addNewSchedulePage.dart::AddNewSchedulePage" o-- "bkrm::services::info::hrInfo::shiftInfo.dart::ShiftInfo"
+
+class "bkrm::pages::humanResourceModule::schedule::addNewSchedulePage.dart::_AddNewSchedulePageState" {
+  +bool needRefresh
+  +TextEditingController employeeController
+  +TextEditingController startDateController
+  +TextEditingController endDateController
+  +DateTime? startDate
+  +DateTime? endDate
+  +bool employeeValid
+  +bool startDateValid
+  +EmployeeInfo employee
+  +TextStyle titleStyle
+  +Widget build()
+}
+
+"bkrm::pages::humanResourceModule::schedule::addNewSchedulePage.dart::_AddNewSchedulePageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"bkrm::pages::humanResourceModule::schedule::addNewSchedulePage.dart::_AddNewSchedulePageState" o-- "bkrm::services::info::hrInfo::employeeInfo.dart::EmployeeInfo"
+"bkrm::pages::humanResourceModule::schedule::addNewSchedulePage.dart::_AddNewSchedulePageState" o-- "flutter::src::painting::text_style.dart::TextStyle"
+
+class "bkrm::pages::humanResourceModule::schedule::addNewSchedulePage.dart::EmployeeDialog" {
+  +dynamic Function(EmployeeInfo)? onTapEmployee
+  +_EmployeeDialogState createState()
+}
+
+"bkrm::pages::humanResourceModule::schedule::addNewSchedulePage.dart::EmployeeDialog" o-- "null::dynamic Function(EmployeeInfo)"
+
+class "bkrm::pages::humanResourceModule::schedule::addNewSchedulePage.dart::_EmployeeDialogState" {
+  +Future<List<EmployeeInfo>?> getEmployees()
+  +Widget build()
+}
+
+class "bkrm::pages::humanResourceModule::schedule::detailSchedulePage.dart::DetailSchedulePage" {
+  +ShiftInfo shift
+  +ScheduleInfo schedule
+  +AttendanceInfo? todayAttendance
+  +_DetailSchedulePageState createState()
+}
+
+"bkrm::pages::humanResourceModule::schedule::detailSchedulePage.dart::DetailSchedulePage" o-- "bkrm::services::info::hrInfo::shiftInfo.dart::ShiftInfo"
+"bkrm::pages::humanResourceModule::schedule::detailSchedulePage.dart::DetailSchedulePage" o-- "bkrm::services::info::hrInfo::scheduleInfo.dart::ScheduleInfo"
+"bkrm::pages::humanResourceModule::schedule::detailSchedulePage.dart::DetailSchedulePage" o-- "bkrm::services::info::hrInfo::attendanceInfo.dart::AttendanceInfo"
+
+class "bkrm::pages::humanResourceModule::schedule::detailSchedulePage.dart::_DetailSchedulePageState" {
+  +bool needRefresh
+  +TextEditingController employeeController
+  +TextEditingController startDateController
+  +TextEditingController endDateController
+  +DateTime? startDate
+  +DateTime? endDate
+  +bool enableEdit
+  +bool employeeValid
+  +bool startDateValid
+  +bool alreadyCreateAttendance
+  +bool inSchedule
+  +EmployeeInfo? employee
+  +TextStyle titleStyle
+  +void initState()
+  +dynamic setUpScheduleInfo()
+  +Widget build()
+}
+
+"bkrm::pages::humanResourceModule::schedule::detailSchedulePage.dart::_DetailSchedulePageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"bkrm::pages::humanResourceModule::schedule::detailSchedulePage.dart::_DetailSchedulePageState" o-- "bkrm::services::info::hrInfo::employeeInfo.dart::EmployeeInfo"
+"bkrm::pages::humanResourceModule::schedule::detailSchedulePage.dart::_DetailSchedulePageState" o-- "flutter::src::painting::text_style.dart::TextStyle"
+
+class "bkrm::pages::humanResourceModule::schedule::detailSchedulePage.dart::EmployeeDialog" {
+  +dynamic Function(EmployeeInfo)? onTapEmployee
+  +_EmployeeDialogState createState()
+}
+
+"bkrm::pages::humanResourceModule::schedule::detailSchedulePage.dart::EmployeeDialog" o-- "null::dynamic Function(EmployeeInfo)"
+
+class "bkrm::pages::humanResourceModule::schedule::detailSchedulePage.dart::_EmployeeDialogState" {
+  +Future<List<EmployeeInfo>?> getEmployees()
+  +Widget build()
+}
+
+class "bkrm::pages::humanResourceModule::schedule::viewAttendance.dart::ViewAttendancePage" {
+  +ScheduleInfo schedule
+  +_ViewAttendancePageState createState()
+}
+
+"bkrm::pages::humanResourceModule::schedule::viewAttendance.dart::ViewAttendancePage" o-- "bkrm::services::info::hrInfo::scheduleInfo.dart::ScheduleInfo"
+
+class "bkrm::pages::humanResourceModule::schedule::viewAttendance.dart::_ViewAttendancePageState" {
+  -PagingController<int, Map<String, dynamic>> _pagingController
+  +DateTime fromDate
+  +DateTime toDate
+  +void initState()
+  -Future<void> _fetchPage()
+  +String getNameOfWeekDay()
+  +Widget build()
+  +void dispose()
+}
+
+"bkrm::pages::humanResourceModule::schedule::viewAttendance.dart::_ViewAttendancePageState" o-- "infinite_scroll_pagination::src::core::paging_controller.dart::PagingController<int, Map<String, dynamic>>"
+
+class "bkrm::pages::humanResourceModule::shift::addNewShiftPage.dart::AddNewShiftPage" {
+  +_AddNewShiftPageState createState()
+}
+
+class "bkrm::pages::humanResourceModule::shift::addNewShiftPage.dart::_AddNewShiftPageState" {
+  -GlobalKey<FormState> _formKey
+  +bool needRefresh
+  +List<bool> weekdays
+  +DateTime? startTime
+  +DateTime? endTime
+  +DateTime? startDate
+  +DateTime? endDate
+  +bool nameValid
+  +bool startTimeValid
+  +bool endTimeValid
+  +bool startDateValid
+  +TextEditingController nameController
+  +TextEditingController startTimeController
+  +TextEditingController endTimeController
+  +TextEditingController startDateController
+  +TextEditingController endDateController
+  +TextStyle titleStyle
+  +dynamic clearPage()
+  +bool checkValidBeforeSubmit()
+  +Widget build()
+}
+
+"bkrm::pages::humanResourceModule::shift::addNewShiftPage.dart::_AddNewShiftPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"bkrm::pages::humanResourceModule::shift::addNewShiftPage.dart::_AddNewShiftPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"bkrm::pages::humanResourceModule::shift::addNewShiftPage.dart::_AddNewShiftPageState" o-- "flutter::src::painting::text_style.dart::TextStyle"
+
+class "bkrm::pages::humanResourceModule::shift::detailShiftPage.dart::DetailShiftPage" {
+  +ShiftInfo shift
+  +List<ScheduleInfo>? schedules
+  +_DetailShiftPageState createState()
+}
+
+"bkrm::pages::humanResourceModule::shift::detailShiftPage.dart::DetailShiftPage" o-- "bkrm::services::info::hrInfo::shiftInfo.dart::ShiftInfo"
+
+class "bkrm::pages::humanResourceModule::shift::detailShiftPage.dart::_DetailShiftPageState" {
+  -GlobalKey<FormState> _formKey
+  +bool isEdit
+  +bool needRefresh
+  +List<bool?> weekdays
+  +DateTime? startTime
+  +DateTime? endTime
+  +DateTime? startDate
+  +DateTime? endDate
+  +bool nameValid
+  +bool startTimeValid
+  +bool endTimeValid
+  +bool startDateValid
+  +TextEditingController nameController
+  +TextEditingController startTimeController
+  +TextEditingController endTimeController
+  +TextEditingController startDateController
+  +TextEditingController endDateController
+  +TextStyle titleStyle
+  +void initState()
+  +dynamic setUpShiftInfo()
+  +dynamic clearPage()
+  +bool checkValidBeforeSubmit()
+  +Future<void> getSchedules()
+  +List<Widget> buildColumn()
+  +Widget build()
+}
+
+"bkrm::pages::humanResourceModule::shift::detailShiftPage.dart::_DetailShiftPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"bkrm::pages::humanResourceModule::shift::detailShiftPage.dart::_DetailShiftPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"bkrm::pages::humanResourceModule::shift::detailShiftPage.dart::_DetailShiftPageState" o-- "flutter::src::painting::text_style.dart::TextStyle"
+
+class "bkrm::pages::humanResourceModule::shift::listShiftPage.dart::ListShiftPage" {
+  +_ListShiftPageState createState()
+}
+
+class "bkrm::pages::humanResourceModule::shift::listShiftPage.dart::_ListShiftPageState" {
+  -GlobalKey<RefreshIndicatorState> _refreshKey
+  +List<ShiftInfo>? listShifts
+  +void initState()
+  +Future<bool> getAllShift()
+  +List<Widget> buildListShift()
+  +Widget build()
+}
+
+"bkrm::pages::humanResourceModule::shift::listShiftPage.dart::_ListShiftPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<RefreshIndicatorState>"
+
+class "bkrm::pages::inventoryModule::category::addNewCategory.dart::AddNewCategoryPage" {
+  +_AddNewCategoryPageState createState()
+}
+
+class "bkrm::pages::inventoryModule::category::addNewCategory.dart::_AddNewCategoryPageState" {
+  +TextEditingController categoryController
+  +bool categoryValid
+  +bool needRefresh
+  -GlobalKey<State<StatefulWidget>>? _formKey
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::category::addNewCategory.dart::_AddNewCategoryPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"bkrm::pages::inventoryModule::category::addNewCategory.dart::_AddNewCategoryPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<State<StatefulWidget>>"
+
+class "bkrm::pages::inventoryModule::category::categoryDetailPage.dart::CategoryDetailPage" {
+  +CategoryInfo categoryData
+  +_CategoryDetailPageState createState()
+}
+
+"bkrm::pages::inventoryModule::category::categoryDetailPage.dart::CategoryDetailPage" o-- "bkrm::services::info::inventoryInfo::categoryInfo.dart::CategoryInfo"
+
+class "bkrm::pages::inventoryModule::category::categoryDetailPage.dart::_CategoryDetailPageState" {
+  -GlobalKey<FormState> _formKey
+  +bool editEnable
+  +bool needRefresh
+  +TextEditingController categoryController
+  +TextEditingController pointRatioController
+  +bool categoryNameValid
+  +bool pointRatioValid
+  +bool deleted
+  +void initState()
+  +dynamic setUpCategoryInfo()
+  +dynamic clearPage()
+  +void remoteSetState()
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::category::categoryDetailPage.dart::_CategoryDetailPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"bkrm::pages::inventoryModule::category::categoryDetailPage.dart::_CategoryDetailPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::inventoryModule::category::listCategoryPage.dart::ListCategoryPage" {
+  +dynamic Function(CategoryInfo)? onTapCustomer
+  +_ListCategoryPageState createState()
+}
+
+"bkrm::pages::inventoryModule::category::listCategoryPage.dart::ListCategoryPage" o-- "null::dynamic Function(CategoryInfo)"
+
+class "bkrm::pages::inventoryModule::category::listCategoryPage.dart::_ListCategoryPageState" {
+  -GlobalKey<RefreshIndicatorState> _refreshKey
+  +TextEditingController searchController
+  +List<CategoryInfo>? categoriesData
+  +Function refreshFunction
+  +void initState()
+  +Future<void> getCategoryData()
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::category::listCategoryPage.dart::_ListCategoryPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<RefreshIndicatorState>"
+"bkrm::pages::inventoryModule::category::listCategoryPage.dart::_ListCategoryPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::inventoryModule::import::importGoodPage.dart::CustomDialog" {
+  +dynamic Function(int) onFinishedGetValue
+  +_CustomDialogState createState()
+}
+
+"bkrm::pages::inventoryModule::import::importGoodPage.dart::CustomDialog" o-- "null::dynamic Function(int)"
+
+class "bkrm::pages::inventoryModule::import::importGoodPage.dart::_CustomDialogState" {
+  +TextEditingController quantityController
+  -bool _validate
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::import::importGoodPage.dart::_CustomDialogState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::inventoryModule::import::importGoodPage.dart::ImportInfoBottomSheet" {
+  +TextEditingController discountController
+  +TextEditingController deliverNameControler
+  +_ImportInfoBottomSheetState createState()
+}
+
+"bkrm::pages::inventoryModule::import::importGoodPage.dart::ImportInfoBottomSheet" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::inventoryModule::import::importGoodPage.dart::_ImportInfoBottomSheetState" {
+  +String? supplierName
+  +BkrmService bkrmService
+  +NumberFormat formatter
+  +List<String> listDeliverName
+  +void initState()
+  +Future<List<String>> searchSuggestDeliverName()
+  +dynamic updateSupplier()
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::import::importGoodPage.dart::_ImportInfoBottomSheetState" o-- "bkrm::services::services.dart::BkrmService"
+"bkrm::pages::inventoryModule::import::importGoodPage.dart::_ImportInfoBottomSheetState" o-- "intl::src::intl::number_format.dart::NumberFormat"
+
+class "bkrm::pages::inventoryModule::import::importGoodPage.dart::ImportGoodPage" {
+  +List<ImportItemCard> listGoodCard
+  +_ImportGoodPageState createState()
+}
+
+class "bkrm::pages::inventoryModule::import::importGoodPage.dart::_ImportGoodPageState" {
+  +Stream<dynamic> importServiceStream
+  +BkrmService bkrmService
+  +bool firstTimeCall
+  +NumberFormat formatter
+  +TextEditingController discountController
+  +TextEditingController deliverNameController
+  +String? supplierName
+  +void initState()
+  +dynamic updateSupplier()
+  -void _onItemTapped()
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::import::importGoodPage.dart::_ImportGoodPageState" o-- "dart::async::Stream<dynamic>"
+"bkrm::pages::inventoryModule::import::importGoodPage.dart::_ImportGoodPageState" o-- "bkrm::services::services.dart::BkrmService"
+"bkrm::pages::inventoryModule::import::importGoodPage.dart::_ImportGoodPageState" o-- "intl::src::intl::number_format.dart::NumberFormat"
+"bkrm::pages::inventoryModule::import::importGoodPage.dart::_ImportGoodPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::inventoryModule::import::importItemCard.dart::ImportItemCard" {
+  +ImportGoodItem? importItem
+  +ApiService api
+  +BkrmService bkrmService
+  +NumberFormat formatter
+  +TextEditingController capitalController
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::import::importItemCard.dart::ImportItemCard" o-- "bkrm::services::importGoodService.dart::ImportGoodItem"
+"bkrm::pages::inventoryModule::import::importItemCard.dart::ImportItemCard" o-- "bkrm::services::api.dart::ApiService"
+"bkrm::pages::inventoryModule::import::importItemCard.dart::ImportItemCard" o-- "bkrm::services::services.dart::BkrmService"
+"bkrm::pages::inventoryModule::import::importItemCard.dart::ImportItemCard" o-- "intl::src::intl::number_format.dart::NumberFormat"
+"bkrm::pages::inventoryModule::import::importItemCard.dart::ImportItemCard" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::inventoryModule::import::importItemCard.dart::CustomDialog" {
+  +CartItem? cartItem
+  +ImportGoodItem? importItem
+  +_CustomDialogState createState()
+}
+
+"bkrm::pages::inventoryModule::import::importItemCard.dart::CustomDialog" o-- "bkrm::services::cartService.dart::CartItem"
+"bkrm::pages::inventoryModule::import::importItemCard.dart::CustomDialog" o-- "bkrm::services::importGoodService.dart::ImportGoodItem"
+
+class "bkrm::pages::inventoryModule::import::importItemCard.dart::_CustomDialogState" {
+  +BkrmService bkrmService
+  +TextEditingController controller
+  -bool _validate
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::import::importItemCard.dart::_CustomDialogState" o-- "bkrm::services::services.dart::BkrmService"
+"bkrm::pages::inventoryModule::import::importItemCard.dart::_CustomDialogState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::inventoryModule::import::listImportPage.dart::ListImportPage" {
+  +String? title
+  -_ListImportPageState? _state
+  +_ListImportPageState createState()
+}
+
+"bkrm::pages::inventoryModule::import::listImportPage.dart::ListImportPage" o-- "bkrm::pages::inventoryModule::import::listImportPage.dart::_ListImportPageState"
+
+class "bkrm::pages::inventoryModule::import::listImportPage.dart::_ListImportPageState" {
+  +SortListCriteriaProduct sortListCriteria
+  +ListProduct listProduct
+  +ListCategory listCategory
+  +dynamic refresh()
+  +void initState()
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::import::listImportPage.dart::_ListImportPageState" o-- "bkrm::widget::sortListCriteria.dart::SortListCriteriaProduct"
+"bkrm::pages::inventoryModule::import::listImportPage.dart::_ListImportPageState" o-- "bkrm::widget::listProducts.dart::ListProduct"
+"bkrm::pages::inventoryModule::import::listImportPage.dart::_ListImportPageState" o-- "bkrm::widget::listCategory.dart::ListCategory"
+
+class "bkrm::pages::inventoryModule::InventoryPage.dart::InventoryPage" {
+  +String? title
+  -_InventoryPageState? _state
+  +_InventoryPageState createState()
+}
+
+"bkrm::pages::inventoryModule::InventoryPage.dart::InventoryPage" o-- "bkrm::pages::inventoryModule::InventoryPage.dart::_InventoryPageState"
+
+class "bkrm::pages::inventoryModule::InventoryPage.dart::_InventoryPageState" {
+  +SortListCriteriaProduct sortListCriteria
+  +ListProduct listProduct
+  +ListCategory listCategory
+  +dynamic refresh()
+  +void initState()
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::InventoryPage.dart::_InventoryPageState" o-- "bkrm::widget::sortListCriteria.dart::SortListCriteriaProduct"
+"bkrm::pages::inventoryModule::InventoryPage.dart::_InventoryPageState" o-- "bkrm::widget::listProducts.dart::ListProduct"
+"bkrm::pages::inventoryModule::InventoryPage.dart::_InventoryPageState" o-- "bkrm::widget::listCategory.dart::ListCategory"
+
+class "bkrm::pages::inventoryModule::item::addNewProductPage.dart::AddNewItemPage" {
+  +DefaultItemInfo? defaultItem
+  +String? barcode
+  +dynamic Function(ItemInfo?)? afterCreated
+  +bool? hideAmountField
+  +bool? hidePurchasePriceField
+  +_AddNewItemPageState createState()
+}
+
+"bkrm::pages::inventoryModule::item::addNewProductPage.dart::AddNewItemPage" o-- "bkrm::services::info::inventoryInfo::defaultItemInfo.dart::DefaultItemInfo"
+"bkrm::pages::inventoryModule::item::addNewProductPage.dart::AddNewItemPage" o-- "null::dynamic Function(ItemInfo)"
+
+class "bkrm::pages::inventoryModule::item::addNewProductPage.dart::_AddNewItemPageState" {
+  -GlobalKey<FormState> _formKey
+  +TextEditingController nameController
+  +TextEditingController sellPriceController
+  +TextEditingController purchasePriceController
+  +TextEditingController amountController
+  +TextEditingController barCodeController
+  +bool nameValid
+  +bool sellPriceValid
+  +bool purchasePriceValid
+  +bool amountValid
+  +bool needRefesh
+  +bool storable
+  +ImagePicker picker
+  +File? imageFile
+  +List<CategoryInfo>? categories
+  +BkrmService bkrmService
+  +String? chosenCategory
+  +void initState()
+  +void getCategory()
+  +Future<void> initDefaultItem()
+  -Future<File> _fileFromImageUrl()
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::item::addNewProductPage.dart::_AddNewItemPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"bkrm::pages::inventoryModule::item::addNewProductPage.dart::_AddNewItemPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"bkrm::pages::inventoryModule::item::addNewProductPage.dart::_AddNewItemPageState" o-- "image_picker::image_picker.dart::ImagePicker"
+"bkrm::pages::inventoryModule::item::addNewProductPage.dart::_AddNewItemPageState" o-- "dart::io::File"
+"bkrm::pages::inventoryModule::item::addNewProductPage.dart::_AddNewItemPageState" o-- "bkrm::services::services.dart::BkrmService"
+
+class "bkrm::pages::inventoryModule::item::detailQuantityCheckingPage.dart::QuantityCheckingDetailPage" {
+  +ItemQuantityChange quantityHistory
+  +ItemInfo item
+  +_QuantityCheckingDetailPageState createState()
+}
+
+"bkrm::pages::inventoryModule::item::detailQuantityCheckingPage.dart::QuantityCheckingDetailPage" o-- "bkrm::services::info::inventoryInfo::quantityHistory.dart::ItemQuantityChange"
+"bkrm::pages::inventoryModule::item::detailQuantityCheckingPage.dart::QuantityCheckingDetailPage" o-- "bkrm::services::info::inventoryInfo::itemInfo.dart::ItemInfo"
+
+class "bkrm::pages::inventoryModule::item::detailQuantityCheckingPage.dart::_QuantityCheckingDetailPageState" {
+  +Widget build()
+}
+
+class "bkrm::pages::inventoryModule::item::itemDetailPage.dart::ItemDetailPage" {
+  +ItemInfo dataItem
+  +_ItemDetailPageState createState()
+}
+
+"bkrm::pages::inventoryModule::item::itemDetailPage.dart::ItemDetailPage" o-- "bkrm::services::info::inventoryInfo::itemInfo.dart::ItemInfo"
+
+class "bkrm::pages::inventoryModule::item::itemDetailPage.dart::_ItemDetailPageState" {
+  -GlobalKey<FormState> _formKey
+  +TextEditingController nameController
+  +TextEditingController sellPriceController
+  +TextEditingController purchasepriceController
+  +TextEditingController amountController
+  +TextEditingController barCodeController
+  +TextEditingController pointRatioController
+  +bool nameValid
+  +bool sellPriceValid
+  +bool purchasePriceValid
+  +bool amountValid
+  +bool editing
+  +bool edited
+  +bool storable
+  +ImagePicker picker
+  +File? imageFile
+  +List<CategoryInfo>? categories
+  +BkrmService bkrmService
+  +String? chosenCategory
+  +void initState()
+  +dynamic setUpItemInfo()
+  +dynamic clearPage()
+  +void getCategory()
+  +void remoteSetState()
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::item::itemDetailPage.dart::_ItemDetailPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"bkrm::pages::inventoryModule::item::itemDetailPage.dart::_ItemDetailPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"bkrm::pages::inventoryModule::item::itemDetailPage.dart::_ItemDetailPageState" o-- "image_picker::image_picker.dart::ImagePicker"
+"bkrm::pages::inventoryModule::item::itemDetailPage.dart::_ItemDetailPageState" o-- "dart::io::File"
+"bkrm::pages::inventoryModule::item::itemDetailPage.dart::_ItemDetailPageState" o-- "bkrm::services::services.dart::BkrmService"
+
+class "bkrm::pages::inventoryModule::item::priceHistoryPage.dart::PriceHistoryPage" {
+  +PriceHistory priceHistory
+  +_PriceHistoryPageState createState()
+}
+
+"bkrm::pages::inventoryModule::item::priceHistoryPage.dart::PriceHistoryPage" o-- "bkrm::services::info::inventoryInfo::priceHistory.dart::PriceHistory"
+
+class "bkrm::pages::inventoryModule::item::priceHistoryPage.dart::_PriceHistoryPageState" {
+  +Widget build()
+}
+
+class "bkrm::pages::inventoryModule::item::quantityChangeHistoryPage.dart::QuantityChangeHistoryPage" {
+  +QuantityHistory quantityHistory
+  +_QuantityChangeHistoryPageState createState()
+}
+
+"bkrm::pages::inventoryModule::item::quantityChangeHistoryPage.dart::QuantityChangeHistoryPage" o-- "bkrm::services::info::inventoryInfo::quantityHistory.dart::QuantityHistory"
+
+class "bkrm::pages::inventoryModule::item::quantityChangeHistoryPage.dart::_QuantityChangeHistoryPageState" {
+  +Widget build()
+}
+
+class "bkrm::pages::inventoryModule::purchasedSheet::detailSearchPurchasedSheetPage.dart::DetailSearchPurchasedSheetPage" {
+  +_DetailSearchPurchasedSheetPageState createState()
+}
+
+class "bkrm::pages::inventoryModule::purchasedSheet::detailSearchPurchasedSheetPage.dart::_DetailSearchPurchasedSheetPageState" {
+  +TextEditingController idController
+  +TextEditingController supplierNameController
+  +TextEditingController totalMoneyFrom
+  +TextEditingController totalMoneyTo
+  +DateTime? dateFrom
+  +DateTime? dateTo
+  +bool totalMoneyValid
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::purchasedSheet::detailSearchPurchasedSheetPage.dart::_DetailSearchPurchasedSheetPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::inventoryModule::purchasedSheet::listDetailSearch.dart::ListDetailSearch" {
+  +int? searchId
+  +String searchNameSupplier
+  +int? totalMoneyFrom
+  +int? totalMoneyTo
+  +DateTime? dateTimeFrom
+  +DateTime? dateTimeTo
+  +_ListDetailSearchState createState()
+}
+
+class "bkrm::pages::inventoryModule::purchasedSheet::listDetailSearch.dart::_ListDetailSearchState" {
+  +SortListCriteria sortListCriteria
+  +ListPurchasedSheet listPurchasedSheets
+  +BkrmService bkrmService
+  +void initState()
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::purchasedSheet::listDetailSearch.dart::_ListDetailSearchState" o-- "bkrm::pages::inventoryModule::purchasedSheet::::purchasedSheetPage.dart::SortListCriteria"
+"bkrm::pages::inventoryModule::purchasedSheet::listDetailSearch.dart::_ListDetailSearchState" o-- "bkrm::pages::inventoryModule::purchasedSheet::::purchasedSheetPage.dart::ListPurchasedSheet"
+"bkrm::pages::inventoryModule::purchasedSheet::listDetailSearch.dart::_ListDetailSearchState" o-- "bkrm::services::services.dart::BkrmService"
+
+class "bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetDetailPage.dart::DialogReturnPurchasedSheet" {
+  +List<ReturnPurchasedSheetInfo>? refundSheets
+  +_DialogReturnPurchasedSheetState createState()
+}
+
+class "bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetDetailPage.dart::_DialogReturnPurchasedSheetState" {
+  +Widget build()
+}
+
+class "bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetDetailPage.dart::ListPurchasedItem" {
+  +List<PurchasedItem> purchasedItems
+  +List<Widget> buildColumn()
+  +Widget build()
+}
+
+class "bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetDetailPage.dart::PurchasedSheetDetailPage" {
+  +DetailPurchasedSheetInfo? purchasedSheetDetail
+  +List<ReturnPurchasedSheetInfo>? returnPurchasedSheets
+  +_PurchasedSheetDetailPageState createState()
+}
+
+"bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetDetailPage.dart::PurchasedSheetDetailPage" o-- "bkrm::services::info::inventoryInfo::purchasedSheetInfo.dart::DetailPurchasedSheetInfo"
+
+class "bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetDetailPage.dart::_PurchasedSheetDetailPageState" {
+  -GlobalKey<FormState> _formKey
+  +TextEditingController deliveryNameController
+  +TextEditingController totalPurchasePriceController
+  +TextEditingController discountController
+  +TextEditingController deliveryDatetimeController
+  +TextEditingController supplierNameController
+  +TextEditingController purchaserNameController
+  +bool isEdited
+  +bool needRefresh
+  +bool storable
+  +ImagePicker picker
+  +File? imageFile
+  +List<CategoryInfo>? categories
+  +BkrmService bkrmService
+  +String chosenCategory
+  +void initState()
+  +dynamic setPurchasedSheetInfo()
+  +void remoteSetState()
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetDetailPage.dart::_PurchasedSheetDetailPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetDetailPage.dart::_PurchasedSheetDetailPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetDetailPage.dart::_PurchasedSheetDetailPageState" o-- "image_picker::image_picker.dart::ImagePicker"
+"bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetDetailPage.dart::_PurchasedSheetDetailPageState" o-- "dart::io::File"
+"bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetDetailPage.dart::_PurchasedSheetDetailPageState" o-- "bkrm::services::services.dart::BkrmService"
+
+class "bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::DatePickerDialog" {
+  +dynamic Function(DateTime?, DateTime?)? onDonePick
+  +DateTime? from
+  +DateTime? to
+  +_DatePickerDialogState createState()
+}
+
+"bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::DatePickerDialog" o-- "null::dynamic Function(DateTime, DateTime)"
+
+class "bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::_DatePickerDialogState" {
+  +Widget build()
+}
+
+class "bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::SortListCriteria" {
+  +ListPurchasedSheet? listPurchasedSheet
+  +SortCriteria? sortCriteria
+  +Criteria? selectedCriteria
+  +_SortListCriteriaState createState()
+}
+
+"bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::SortListCriteria" o-- "bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::ListPurchasedSheet"
+"bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::SortListCriteria" o-- "bkrm::widget::enumDefine.dart::SortCriteria"
+"bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::SortListCriteria" o-- "bkrm::widget::enumDefine.dart::Criteria"
+
+class "bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::_SortListCriteriaState" {
+  +Widget radioButtonGroup
+  +void initState()
+  +void buildRadioButton()
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::_SortListCriteriaState" o-- "flutter::src::widgets::framework.dart::Widget"
+
+class "bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::ListPurchasedSheet" {
+  +String orderBy
+  +String order
+  +String searchQuery
+  -_ListPurchasedSheetState _state
+  +DateTime? filterFrom
+  +DateTime? filterTo
+  +int? searchId
+  +int? totalMoneyFrom
+  +int? totalMoneyTo
+  +void searchList()
+  +void setDateFilter()
+  +void sortImportInvoice()
+  +void refeesh()
+  +_ListPurchasedSheetState createState()
+}
+
+"bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::ListPurchasedSheet" o-- "bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::_ListPurchasedSheetState"
+
+class "bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::_ListPurchasedSheetState" {
+  +NumberFormat formatter
+  -PagingController<int, PurchasedSheetInfo> _pagingController
+  +void initState()
+  -Future<void> _fetchPage()
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::_ListPurchasedSheetState" o-- "intl::src::intl::number_format.dart::NumberFormat"
+"bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::_ListPurchasedSheetState" o-- "infinite_scroll_pagination::src::core::paging_controller.dart::PagingController<int, PurchasedSheetInfo>"
+
+class "bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::ImportInvoicePage" {
+  +_ImportInvoicePageState createState()
+}
+
+class "bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::_ImportInvoicePageState" {
+  +SortListCriteria sortListCriteria
+  +List<PurchasedSheetInfo>? importInvoices
+  +ListPurchasedSheet listImportInvoice
+  +BkrmService bkrmService
+  +void initState()
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::_ImportInvoicePageState" o-- "bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::SortListCriteria"
+"bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::_ImportInvoicePageState" o-- "bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::ListPurchasedSheet"
+"bkrm::pages::inventoryModule::purchasedSheet::purchasedSheetPage.dart::_ImportInvoicePageState" o-- "bkrm::services::services.dart::BkrmService"
+
+class "bkrm::pages::inventoryModule::purchasedSheet::returnPurchasedPage.dart::ReturnPurchasedItem" {
+  +PurchasedItem item
+  +int quantity
+}
+
+"bkrm::pages::inventoryModule::purchasedSheet::returnPurchasedPage.dart::ReturnPurchasedItem" o-- "bkrm::services::info::inventoryInfo::purchasedSheetInfo.dart::PurchasedItem"
+
+class "bkrm::pages::inventoryModule::purchasedSheet::returnPurchasedPage.dart::ReturnPurchasedPage" {
+  +DetailPurchasedSheetInfo? purchasedSheet
+  +List<ReturnPurchasedItem> returnItems
+  +_ReturnPurchasedPageState createState()
+}
+
+"bkrm::pages::inventoryModule::purchasedSheet::returnPurchasedPage.dart::ReturnPurchasedPage" o-- "bkrm::services::info::inventoryInfo::purchasedSheetInfo.dart::DetailPurchasedSheetInfo"
+
+class "bkrm::pages::inventoryModule::purchasedSheet::returnPurchasedPage.dart::_ReturnPurchasedPageState" {
+  +TextEditingController reasonController
+  -GlobalKey<ScaffoldState> _scaffoldKey
+  +bool needRefresh
+  +void initState()
+  +dynamic processReturnPurchasedSheet()
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::purchasedSheet::returnPurchasedPage.dart::_ReturnPurchasedPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"bkrm::pages::inventoryModule::purchasedSheet::returnPurchasedPage.dart::_ReturnPurchasedPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<ScaffoldState>"
+
+class "bkrm::pages::inventoryModule::purchasedSheet::returnPurchasedPage.dart::ReturnItemCard" {
+  +ReturnPurchasedItem item
+  +dynamic Function(ReturnPurchasedItem)? onRemove
+  +_ReturnItemCardState createState()
+}
+
+"bkrm::pages::inventoryModule::purchasedSheet::returnPurchasedPage.dart::ReturnItemCard" o-- "bkrm::pages::inventoryModule::purchasedSheet::returnPurchasedPage.dart::ReturnPurchasedItem"
+"bkrm::pages::inventoryModule::purchasedSheet::returnPurchasedPage.dart::ReturnItemCard" o-- "null::dynamic Function(ReturnPurchasedItem)"
+
+class "bkrm::pages::inventoryModule::purchasedSheet::returnPurchasedPage.dart::_ReturnItemCardState" {
+  +NumberFormat formatter
+  +dynamic remoteSetState()
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::purchasedSheet::returnPurchasedPage.dart::_ReturnItemCardState" o-- "intl::src::intl::number_format.dart::NumberFormat"
+
+class "bkrm::pages::inventoryModule::purchasedSheet::returnPurchasedPage.dart::CustomDialog" {
+  +ReturnPurchasedItem item
+  +dynamic Function(int)? onClose
+  +_CustomDialogState createState()
+}
+
+"bkrm::pages::inventoryModule::purchasedSheet::returnPurchasedPage.dart::CustomDialog" o-- "bkrm::pages::inventoryModule::purchasedSheet::returnPurchasedPage.dart::ReturnPurchasedItem"
+"bkrm::pages::inventoryModule::purchasedSheet::returnPurchasedPage.dart::CustomDialog" o-- "null::dynamic Function(int)"
+
+class "bkrm::pages::inventoryModule::purchasedSheet::returnPurchasedPage.dart::_CustomDialogState" {
+  +TextEditingController controller
+  -bool _validate
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::purchasedSheet::returnPurchasedPage.dart::_CustomDialogState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::inventoryModule::returnPurchasedSheet::detailSearchReturnPurchasedPage.dart::DetailSearchReturnPurchasedSheetPage" {
+  +_DetailSearchReturnPurchasedSheetPageState createState()
+}
+
+class "bkrm::pages::inventoryModule::returnPurchasedSheet::detailSearchReturnPurchasedPage.dart::_DetailSearchReturnPurchasedSheetPageState" {
+  +TextEditingController idController
+  +TextEditingController searchQueryController
+  +TextEditingController totalMoneyFrom
+  +TextEditingController totalMoneyTo
+  +DateTime? dateFrom
+  +DateTime? dateTo
+  +bool totalMoneyValid
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::returnPurchasedSheet::detailSearchReturnPurchasedPage.dart::_DetailSearchReturnPurchasedSheetPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::inventoryModule::returnPurchasedSheet::listDetailSearch.dart::ListDetailSearch" {
+  +int? searchId
+  +String searchQuery
+  +int? totalMoneyFrom
+  +int? totalMoneyTo
+  +DateTime? dateTimeFrom
+  +DateTime? dateTimeTo
+  +_ListDetailSearchState createState()
+}
+
+class "bkrm::pages::inventoryModule::returnPurchasedSheet::listDetailSearch.dart::_ListDetailSearchState" {
+  +SortListCriteria? sortListCriteria
+  +List<RefundSheet> refundSheets
+  +ListReturnPurchasedSheet listReturnPurchasedSheet
+  +BkrmService bkrmService
+  +void initState()
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::returnPurchasedSheet::listDetailSearch.dart::_ListDetailSearchState" o-- "bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::SortListCriteria"
+"bkrm::pages::inventoryModule::returnPurchasedSheet::listDetailSearch.dart::_ListDetailSearchState" o-- "bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::ListReturnPurchasedSheet"
+"bkrm::pages::inventoryModule::returnPurchasedSheet::listDetailSearch.dart::_ListDetailSearchState" o-- "bkrm::services::services.dart::BkrmService"
+
+class "bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::SortCriteria" {
+  +int index
+  {static} +List<SortCriteria> values
+  {static} +SortCriteria refunderNameAscending
+  {static} +SortCriteria refunderNameDescending
+  {static} +SortCriteria totalRefundPriceAscending
+  {static} +SortCriteria totalRefundPriceDescending
+  {static} +SortCriteria customerNameAscending
+  {static} +SortCriteria customerNameDescending
+  {static} +SortCriteria dateCreatedAscending
+  {static} +SortCriteria dateCreatedDescending
+}
+
+"bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::SortCriteria" o-- "bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::SortCriteria"
+
+class "bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::DatePickerDialog" {
+  +dynamic Function(DateTime?, DateTime?)? onDonePick
+  +DateTime? from
+  +DateTime? to
+  +_DatePickerDialogState createState()
+}
+
+"bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::DatePickerDialog" o-- "null::dynamic Function(DateTime, DateTime)"
+
+class "bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::_DatePickerDialogState" {
+  +Widget build()
+}
+
+class "bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::SortListCriteria" {
+  +ListReturnPurchasedSheet listRefunds
+  +SortCriteria? sortCriteria
+  +Criteria? selectedCriteria
+  +_SortListCriteriaState createState()
+}
+
+"bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::SortListCriteria" o-- "bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::ListReturnPurchasedSheet"
+"bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::SortListCriteria" o-- "bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::SortCriteria"
+"bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::SortListCriteria" o-- "bkrm::widget::enumDefine.dart::Criteria"
+
+class "bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::_SortListCriteriaState" {
+  +Widget radioButtonGroup
+  +void initState()
+  +void buildRadioButton()
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::_SortListCriteriaState" o-- "flutter::src::widgets::framework.dart::Widget"
+
+class "bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::ListReturnPurchasedSheet" {
+  +List<ReturnPurchasedSheetInfo> displayListRefundSheets
+  +String orderBy
+  +String order
+  +String searchQuery
+  -_ListReturnPurchasedSheetState _state
+  +DateTime? filterFrom
+  +DateTime? filterTo
+  +int? searchId
+  +int? totalMoneyFrom
+  +int? totalMoneyTo
+  +void searchList()
+  +void setDateFilter()
+  +void sortReturnPurchasedSheets()
+  +_ListReturnPurchasedSheetState createState()
+}
+
+"bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::ListReturnPurchasedSheet" o-- "bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::_ListReturnPurchasedSheetState"
+
+class "bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::_ListReturnPurchasedSheetState" {
+  -PagingController<int, ReturnPurchasedSheetInfo> _pagingController
+  +NumberFormat formatter
+  +void initState()
+  -Future<void> _fetchPage()
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::_ListReturnPurchasedSheetState" o-- "infinite_scroll_pagination::src::core::paging_controller.dart::PagingController<int, ReturnPurchasedSheetInfo>"
+"bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::_ListReturnPurchasedSheetState" o-- "intl::src::intl::number_format.dart::NumberFormat"
+
+class "bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::ListReturnPurchasedPage" {
+  +_ListReturnPurchasedPageState createState()
+}
+
+class "bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::_ListReturnPurchasedPageState" {
+  +SortListCriteria sortListCriteria
+  +List<ReturnPurchasedSheetInfo>? refundSheets
+  +ListReturnPurchasedSheet listReturnPurchasedSheets
+  +BkrmService bkrmService
+  +void initState()
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::_ListReturnPurchasedPageState" o-- "bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::SortListCriteria"
+"bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::_ListReturnPurchasedPageState" o-- "bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::ListReturnPurchasedSheet"
+"bkrm::pages::inventoryModule::returnPurchasedSheet::listReturnPurchasedPage.dart::_ListReturnPurchasedPageState" o-- "bkrm::services::services.dart::BkrmService"
+
+class "bkrm::pages::inventoryModule::returnPurchasedSheet::returnPurchasedDetailPage.dart::ListReturnPurchasedItems" {
+  +List<ReturnItemInfo> refundItems
+  +NumberFormat formatter
+  +List<Widget> buildColumn()
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::returnPurchasedSheet::returnPurchasedDetailPage.dart::ListReturnPurchasedItems" o-- "intl::src::intl::number_format.dart::NumberFormat"
+
+class "bkrm::pages::inventoryModule::returnPurchasedSheet::returnPurchasedDetailPage.dart::ReturnPurchasedSheetDetail" {
+  +DetailReturnPurchasedSheetInfo? returnPurchasedSheet
+  +_ReturnPurchasedSheetDetailState createState()
+}
+
+"bkrm::pages::inventoryModule::returnPurchasedSheet::returnPurchasedDetailPage.dart::ReturnPurchasedSheetDetail" o-- "bkrm::services::info::inventoryInfo::returnPurchasedSheetInfo.dart::DetailReturnPurchasedSheetInfo"
+
+class "bkrm::pages::inventoryModule::returnPurchasedSheet::returnPurchasedDetailPage.dart::_ReturnPurchasedSheetDetailState" {
+  -GlobalKey<FormState> _formKey
+  +TextEditingController customerPhoneNumberController
+  +TextEditingController totalPurchasePriceController
+  +TextEditingController createdDateTimeController
+  +TextEditingController customerNameController
+  +TextEditingController sellerNameController
+  +bool nameValid
+  +bool sellPriceValid
+  +bool amountValid
+  +bool isEdited
+  +bool storable
+  +ImagePicker picker
+  +File? imageFile
+  +List<CategoryInfo>? categories
+  +BkrmService bkrmService
+  +String chosenCategory
+  +NumberFormat formatter
+  +void initState()
+  +dynamic setUpCustomerInfo()
+  +void remoteSetState()
+  +Widget build()
+}
+
+"bkrm::pages::inventoryModule::returnPurchasedSheet::returnPurchasedDetailPage.dart::_ReturnPurchasedSheetDetailState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"bkrm::pages::inventoryModule::returnPurchasedSheet::returnPurchasedDetailPage.dart::_ReturnPurchasedSheetDetailState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"bkrm::pages::inventoryModule::returnPurchasedSheet::returnPurchasedDetailPage.dart::_ReturnPurchasedSheetDetailState" o-- "image_picker::image_picker.dart::ImagePicker"
+"bkrm::pages::inventoryModule::returnPurchasedSheet::returnPurchasedDetailPage.dart::_ReturnPurchasedSheetDetailState" o-- "dart::io::File"
+"bkrm::pages::inventoryModule::returnPurchasedSheet::returnPurchasedDetailPage.dart::_ReturnPurchasedSheetDetailState" o-- "bkrm::services::services.dart::BkrmService"
+"bkrm::pages::inventoryModule::returnPurchasedSheet::returnPurchasedDetailPage.dart::_ReturnPurchasedSheetDetailState" o-- "intl::src::intl::number_format.dart::NumberFormat"
+
+class "bkrm::pages::loginPage::loginPage.dart::LoginPage" {
+  +String? userName
+  +String? password
+  +String? title
+  +UserInfo? lastLoggedIn
+  +_LoginPageState createState()
+}
+
+"bkrm::pages::loginPage::loginPage.dart::LoginPage" o-- "bkrm::services::info::managementInfo::userInfo.dart::UserInfo"
+
+class "bkrm::pages::loginPage::loginPage.dart::_LoginPageState" {
+  +TextEditingController usernameController
+  +TextEditingController passwordController
+  +MsgInfoCode? msgReturn
+  +List<Widget> listTextField
+  +List<Widget> originalListTextField
+  +bool connIssue
+  +bool usernameValid
+  +bool passwordValid
+  -GlobalKey<FormState> _formKey
+  +FocusNode? node
+  +UserInfo? lastLogedInUser
+  +void initState()
+  -Widget _backButton()
+  -Widget _entryField()
+  -Widget _submitButton()
+  -Widget _divider()
+  -Widget _facebookButton()
+  -Widget _createAccountLabel()
+  -Widget _title()
+  -Widget _usernamePasswordWidget()
+  -Widget _notice()
+  +Widget build()
+}
+
+"bkrm::pages::loginPage::loginPage.dart::_LoginPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"bkrm::pages::loginPage::loginPage.dart::_LoginPageState" o-- "bkrm::services::services.dart::MsgInfoCode"
+"bkrm::pages::loginPage::loginPage.dart::_LoginPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"bkrm::pages::loginPage::loginPage.dart::_LoginPageState" o-- "flutter::src::widgets::focus_manager.dart::FocusNode"
+"bkrm::pages::loginPage::loginPage.dart::_LoginPageState" o-- "bkrm::services::info::managementInfo::userInfo.dart::UserInfo"
+
+class "bkrm::pages::loginPage::secondarySplashScreen.dart::SecondarySplashScreen" {
+  +_SecondarySplashScreenState createState()
+}
+
+class "bkrm::pages::loginPage::secondarySplashScreen.dart::_SecondarySplashScreenState" {
+  +AssetImage bachgroundImage
+  +void initState()
+  +Future<UserInfo?> prepare()
+  +Widget build()
+}
+
+"bkrm::pages::loginPage::secondarySplashScreen.dart::_SecondarySplashScreenState" o-- "flutter::src::painting::image_resolution.dart::AssetImage"
+
+class "bkrm::pages::loginPage::selectModulePage.dart::SelectModulePage" {
+  +_SelectModulePageState createState()
+}
+
+class "bkrm::pages::loginPage::selectModulePage.dart::_SelectModulePageState" {
+  +List<Widget> listModuleAccessible
+  +void initState()
+  +Widget build()
+}
+
+class "bkrm::pages::loginPage::signup.dart::SignUpPage" {
+  +String? title
+  +_SignUpPageState createState()
+}
+
+class "bkrm::pages::loginPage::signup.dart::_SignUpPageState" {
+  +BkrmService bkrmService
+  -GlobalKey<FormState> _formKey
+  +TextEditingController userNameController
+  +TextEditingController emailController
+  +TextEditingController phoneController
+  +TextEditingController passwordController
+  +TextEditingController confirmPasswordController
+  +TextEditingController fullNameController
+  +TextEditingController dateOfBirthController
+  +TextEditingController storeNameController
+  +TextEditingController storeAddressController
+  +DateTime? dateOfBirth
+  +bool emailValid
+  +bool usernameValid
+  +bool passwordValid
+  +bool confirmPasswordValid
+  +bool fullNameValid
+  +bool dateOfBirthValid
+  +bool phoneValid
+  +bool genderValid
+  +bool storeNameValid
+  +bool storeAddressValid
+  +String? genderValue
+  -Widget _backButton()
+  -Widget _entryField()
+  -Widget _phoneNumber()
+  -Widget _dateOfBirth()
+  +Widget genderCheckbox()
+  -Widget _submitButton()
+  -Widget _loginAccountLabel()
+  -Widget _title()
+  -Widget _emailPasswordWidget()
+  +Widget build()
+}
+
+"bkrm::pages::loginPage::signup.dart::_SignUpPageState" o-- "bkrm::services::services.dart::BkrmService"
+"bkrm::pages::loginPage::signup.dart::_SignUpPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"bkrm::pages::loginPage::signup.dart::_SignUpPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::loginPage::welcomePage.dart::WelcomePage" {
+  +String? title
+  +_WelcomePageState createState()
+}
+
+class "bkrm::pages::loginPage::welcomePage.dart::_WelcomePageState" {
+  -Widget _submitButton()
+  -Widget _signUpButton()
+  -Widget _label()
+  -Widget _title()
+  +Widget build()
+}
+
+class "bkrm::pages::loginPage::Widget::bezierContainer.dart::BezierContainer" {
+  +Widget build()
+}
+
+class "bkrm::pages::loginPage::Widget::customClipper.dart::ClipPainter" {
+  +Path getClip()
+  +bool shouldReclip()
+}
+
+class "bkrm::pages::managementModule::currentUserManagement::changePasswordPage.dart::ChangePasswordPage" {
+  +_ChangePasswordPageState createState()
+}
+
+class "bkrm::pages::managementModule::currentUserManagement::changePasswordPage.dart::_ChangePasswordPageState" {
+  -GlobalKey<FormState> _formKey
+  +TextEditingController oldPasswordController
+  +TextEditingController newPasswordController
+  +TextEditingController confirmNewPasswordController
+  +bool oldPasswordValid
+  +bool newPasswordValid
+  +bool confirmNewPasswordValid
+  +Widget build()
+}
+
+"bkrm::pages::managementModule::currentUserManagement::changePasswordPage.dart::_ChangePasswordPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"bkrm::pages::managementModule::currentUserManagement::changePasswordPage.dart::_ChangePasswordPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::managementModule::currentUserManagement::detailCurrentUserPage.dart::CurrentUserDetailPage" {
+  +_CurrentUserDetailPageState createState()
+}
+
+class "bkrm::pages::managementModule::currentUserManagement::detailCurrentUserPage.dart::_CurrentUserDetailPageState" {
+  -GlobalKey<FormState> _formKey
+  +ImagePicker picker
+  +String? genderValue
+  +DateTime? dateOfBirth
+  +bool enableEdit
+  +bool needRefresh
+  +TextEditingController userNameController
+  +TextEditingController fullNameController
+  +TextEditingController dateOfBirthController
+  +TextEditingController phoneController
+  +TextEditingController emailController
+  +TextEditingController branchNameController
+  +TextEditingController branchAddressController
+  +File imageFile
+  +bool fullNameValid
+  +bool emailValid
+  +bool phoneValid
+  +bool? selling
+  +bool? managing
+  +bool? purchasing
+  +bool? reporting
+  +void initState()
+  +dynamic setInfoFromEmployee()
+  +dynamic clearInfo()
+  +Widget build()
+}
+
+"bkrm::pages::managementModule::currentUserManagement::detailCurrentUserPage.dart::_CurrentUserDetailPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"bkrm::pages::managementModule::currentUserManagement::detailCurrentUserPage.dart::_CurrentUserDetailPageState" o-- "image_picker::image_picker.dart::ImagePicker"
+"bkrm::pages::managementModule::currentUserManagement::detailCurrentUserPage.dart::_CurrentUserDetailPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"bkrm::pages::managementModule::currentUserManagement::detailCurrentUserPage.dart::_CurrentUserDetailPageState" o-- "dart::io::File"
+
+class "bkrm::pages::managementModule::customerManagement::addNewCustomer.dart::AddNewCustomerPage" {
+  +String? referName
+  +String? referPhoneNumber
+  +_AddNewCustomerPageState createState()
+}
+
+class "bkrm::pages::managementModule::customerManagement::addNewCustomer.dart::_AddNewCustomerPageState" {
+  -GlobalKey<FormState> _formKey
+  +bool needRefresh
+  +TextEditingController phoneNumberController
+  +TextEditingController nameController
+  +TextEditingController addressController
+  +TextEditingController emailController
+  +TextEditingController dateOfBirthController
+  +String? genderValue
+  +DateTime? dateOfBirth
+  +bool phoneNumberValid
+  +bool emailValid
+  +void initState()
+  +dynamic setUpReferInfo()
+  +Widget build()
+}
+
+"bkrm::pages::managementModule::customerManagement::addNewCustomer.dart::_AddNewCustomerPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"bkrm::pages::managementModule::customerManagement::addNewCustomer.dart::_AddNewCustomerPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::managementModule::customerManagement::customerDetailPage.dart::CustomerDetailPage" {
+  +CustomerInfo customerData
+  +_CustomerDetailPageState createState()
+}
+
+"bkrm::pages::managementModule::customerManagement::customerDetailPage.dart::CustomerDetailPage" o-- "bkrm::services::info::sellingInfo::customerInfo.dart::CustomerInfo"
+
+class "bkrm::pages::managementModule::customerManagement::customerDetailPage.dart::_CustomerDetailPageState" {
+  -GlobalKey<FormState> _formKey
+  -GlobalKey<ScaffoldState> _scaffoldKey
+  +bool editEnable
+  +TextEditingController phoneNumberController
+  +TextEditingController nameController
+  +TextEditingController addressController
+  +TextEditingController emailController
+  +TextEditingController dateOfBirthController
+  +String? genderValue
+  +DateTime? dateOfBirth
+  +bool phoneNumberValid
+  +bool nameValid
+  +bool addressValid
+  +bool emailValid
+  +bool genderValid
+  +bool needRefresh
+  +void initState()
+  +void setUpCustomerInfo()
+  +dynamic clearPage()
+  +void remoteSetState()
+  +Widget build()
+}
+
+"bkrm::pages::managementModule::customerManagement::customerDetailPage.dart::_CustomerDetailPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"bkrm::pages::managementModule::customerManagement::customerDetailPage.dart::_CustomerDetailPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<ScaffoldState>"
+"bkrm::pages::managementModule::customerManagement::customerDetailPage.dart::_CustomerDetailPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::managementModule::customerManagement::listCustomerPage.dart::ListCustomerPage" {
+  +dynamic Function(CustomerInfo)? onTapCustomer
+  +_ListCustomerPageState createState()
+}
+
+"bkrm::pages::managementModule::customerManagement::listCustomerPage.dart::ListCustomerPage" o-- "null::dynamic Function(CustomerInfo)"
+
+class "bkrm::pages::managementModule::customerManagement::listCustomerPage.dart::_ListCustomerPageState" {
+  -GlobalKey<RefreshIndicatorState> _refreshKey
+  +TextEditingController searchController
+  +String searchQuery
+  +List<CustomerInfo>? customersData
+  +Function refreshFunction
+  +void initState()
+  +Future<void> getCustomerData()
+  +Widget build()
+}
+
+"bkrm::pages::managementModule::customerManagement::listCustomerPage.dart::_ListCustomerPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<RefreshIndicatorState>"
+"bkrm::pages::managementModule::customerManagement::listCustomerPage.dart::_ListCustomerPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::managementModule::dashboardPage.dart::ItemDisplayStore" {
+  +String name
+}
+
+class "bkrm::pages::managementModule::dashboardPage.dart::DashboardPage" {
+  +_DashboardPageState createState()
+}
+
+class "bkrm::pages::managementModule::dashboardPage.dart::_DashboardPageState" {
+  +BkrmService bkrmService
+  +List<DashboardInfo> dashboardInfos
+  +DashboardInfo? currentDashboardInfo
+  +int revenueLastWeek
+  +int? numberEmployee
+  +int? numberGood
+  +int? costOfImportedGoods
+  +String totalRevenueChart
+  +List<int?> maxHeightChart
+  +Future<bool>? getData
+  +NumberFormat formatter
+  +List<List<FlSpot>> charts
+  {static} +List<String?> chartDropdownItems
+  +String? actualDropdown
+  +int actualChart
+  +void initState()
+  +Future<bool> getDashboardInfo()
+  +Widget build()
+  -Widget _buildTile()
+}
+
+"bkrm::pages::managementModule::dashboardPage.dart::_DashboardPageState" o-- "bkrm::services::services.dart::BkrmService"
+"bkrm::pages::managementModule::dashboardPage.dart::_DashboardPageState" o-- "bkrm::services::info::managementInfo::dashboardInfo.dart::DashboardInfo"
+"bkrm::pages::managementModule::dashboardPage.dart::_DashboardPageState" o-- "intl::src::intl::number_format.dart::NumberFormat"
+
+class "bkrm::pages::managementModule::detailReport::categoryReportPage.dart::ColorNameCategory" {
+  +Color color
+  +int id
+  +String toString()
+}
+
+"bkrm::pages::managementModule::detailReport::categoryReportPage.dart::ColorNameCategory" o-- "dart::ui::Color"
+
+class "bkrm::pages::managementModule::detailReport::categoryReportPage.dart::ColorCategoryPresent" {
+  +int index
+  +Color color
+  +String value
+  +dynamic Function(int) callBackWhenTapDown
+  +dynamic Function(int) callbackWhenTapUp
+  +_ColorCategoryPresentState createState()
+}
+
+"bkrm::pages::managementModule::detailReport::categoryReportPage.dart::ColorCategoryPresent" o-- "dart::ui::Color"
+"bkrm::pages::managementModule::detailReport::categoryReportPage.dart::ColorCategoryPresent" o-- "null::dynamic Function(int)"
+
+class "bkrm::pages::managementModule::detailReport::categoryReportPage.dart::_ColorCategoryPresentState" {
+  +Widget build()
+}
+
+class "bkrm::pages::managementModule::detailReport::categoryReportPage.dart::CategoryReportPage" {
+  +_CategoryReportPageState createState()
+}
+
+class "bkrm::pages::managementModule::detailReport::categoryReportPage.dart::_CategoryReportPageState" {
+  +String displayChartAs
+  +DateTime startDate
+  +DateTime endDate
+  +CategoryReportInfo? categoryReportInfo
+  +int touchedIndex
+  +List<ColorNameCategory>? categoryColorsName
+  +List<Widget>? categoryColorWidget
+  +List<PieChartSectionData> showingSectionsTotalPrice()
+  +Widget build()
+}
+
+"bkrm::pages::managementModule::detailReport::categoryReportPage.dart::_CategoryReportPageState" o-- "bkrm::services::info::report::categoryReportInfo.dart::CategoryReportInfo"
+
+class "bkrm::pages::managementModule::detailReport::chartPage.dart::ChartPage" {
+  +_ChartPageState createState()
+}
+
+class "bkrm::pages::managementModule::detailReport::chartPage.dart::YearModel" {
+  +List<int> layoutProportions()
+}
+
+class "bkrm::pages::managementModule::detailReport::chartPage.dart::YearMonthModel" {
+  +List<int> layoutProportions()
+}
+
+class "bkrm::pages::managementModule::detailReport::chartPage.dart::_ChartPageState" {
+  -GlobalKey<ScaffoldState> _scaffoldKey
+  +String displayChartAs
+  +TextEditingController startDateController
+  +TextEditingController endDateController
+  +DateTime startDate
+  +DateTime endDate
+  +ChartInfo? chartInfo
+  +List<BarChartGroupData> listBarData
+  +Color leftBarColor
+  +Color middleBarColor
+  +Color rightBarColor
+  +double width
+  +void initState()
+  +dynamic buildBarChartGroup()
+  +BarChartGroupData makeGroupData()
+  +double findInterval()
+  +Widget build()
+}
+
+"bkrm::pages::managementModule::detailReport::chartPage.dart::_ChartPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<ScaffoldState>"
+"bkrm::pages::managementModule::detailReport::chartPage.dart::_ChartPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"bkrm::pages::managementModule::detailReport::chartPage.dart::_ChartPageState" o-- "bkrm::services::info::report::chartInfo.dart::ChartInfo"
+"bkrm::pages::managementModule::detailReport::chartPage.dart::_ChartPageState" o-- "dart::ui::Color"
+
+class "bkrm::pages::managementModule::detailReport::customerReportPage.dart::CustomerReportPage" {
+  +_CustomerReportPageState createState()
+}
+
+class "bkrm::pages::managementModule::detailReport::customerReportPage.dart::_CustomerReportPageState" {
+  +String displayChartAs
+  +DateTime startDate
+  +DateTime endDate
+  +CustomerReportInfo? customerReportInfo
+  +Widget build()
+}
+
+"bkrm::pages::managementModule::detailReport::customerReportPage.dart::_CustomerReportPageState" o-- "bkrm::services::info::report::customerReportInfo.dart::CustomerReportInfo"
+
+class "bkrm::pages::managementModule::detailReport::itemReportPage.dart::ItemReportPage" {
+  +_ItemReportPAgeState createState()
+}
+
+class "bkrm::pages::managementModule::detailReport::itemReportPage.dart::_ItemReportPAgeState" {
+  +String displayChartAs
+  +int maxLimitItems
+  +int categoryId
+  +DateTime startDate
+  +DateTime endDate
+  +ItemReportInfo? itemReportInfo
+  +List<CategoryInfo>? listCategory
+  +Future<List<CategoryInfo>> getCategoryInfo()
+  +void initState()
+  +Widget build()
+}
+
+"bkrm::pages::managementModule::detailReport::itemReportPage.dart::_ItemReportPAgeState" o-- "bkrm::services::info::report::itemReportInfo.dart::ItemReportInfo"
+
+class "bkrm::pages::managementModule::detailReport::listDetailReport.dart::ListDetailReport" {
+  +_ListDetailReportState createState()
+}
+
+class "bkrm::pages::managementModule::detailReport::listDetailReport.dart::_ListDetailReportState" {
+  +List<String> reportList
+  +List<Widget> reportListWidget
+  +Widget build()
+}
+
+class "bkrm::pages::managementModule::detailReport::listItemNoPurchasePrice.dart::ListItemNoPurchasePrice" {
+  +List<ItemInfo> listItems
+  +_ListItemNoPurchasePriceState createState()
+}
+
+class "bkrm::pages::managementModule::detailReport::listItemNoPurchasePrice.dart::_ListItemNoPurchasePriceState" {
+  -GlobalKey<RefreshIndicatorState> _refreshKey
+  +Widget build()
+}
+
+"bkrm::pages::managementModule::detailReport::listItemNoPurchasePrice.dart::_ListItemNoPurchasePriceState" o-- "flutter::src::widgets::framework.dart::GlobalKey<RefreshIndicatorState>"
+
+class "bkrm::pages::managementModule::detailReport::supplierReportPage.dart::SupplierReportPage" {
+  +_SupplierReportPageState createState()
+}
+
+class "bkrm::pages::managementModule::detailReport::supplierReportPage.dart::_SupplierReportPageState" {
+  +String displayChartAs
+  +DateTime startDate
+  +DateTime endDate
+  +SupplierReportInfo? supplierReportInfo
+  +Widget build()
+}
+
+"bkrm::pages::managementModule::detailReport::supplierReportPage.dart::_SupplierReportPageState" o-- "bkrm::services::info::report::supplierReportInfo.dart::SupplierReportInfo"
+
+class "bkrm::pages::managementModule::historyPage.dart::HistoryPage" {
+  +_HistoryPageState createState()
+}
+
+class "bkrm::pages::managementModule::historyPage.dart::_HistoryPageState" {
+  -GlobalKey<ScaffoldState> _scaffoldKey
+  -GlobalKey<RefreshIndicatorState> _refreshKey
+  +List<HistoryInfo>? listHistory
+  +DateTime? curDate
+  +EmployeeInfo? employee
+  +DateTime? fromDate
+  +DateTime? toDate
+  +String? type
+  +void initState()
+  +Future<List<HistoryInfo>?> getHistory()
+  +Widget build()
+}
+
+"bkrm::pages::managementModule::historyPage.dart::_HistoryPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<ScaffoldState>"
+"bkrm::pages::managementModule::historyPage.dart::_HistoryPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<RefreshIndicatorState>"
+"bkrm::pages::managementModule::historyPage.dart::_HistoryPageState" o-- "bkrm::services::info::hrInfo::employeeInfo.dart::EmployeeInfo"
+
+class "bkrm::pages::managementModule::historyPage.dart::FilterDrawer" {
+  +EmployeeInfo? employee
+  +DateTime? fromDate
+  +DateTime? toDate
+  +String type
+  +dynamic Function(EmployeeInfo?, DateTime?, DateTime?, String) onConfirmFilter
+  +_FilterDrawerState createState()
+}
+
+"bkrm::pages::managementModule::historyPage.dart::FilterDrawer" o-- "bkrm::services::info::hrInfo::employeeInfo.dart::EmployeeInfo"
+"bkrm::pages::managementModule::historyPage.dart::FilterDrawer" o-- "null::dynamic Function(EmployeeInfo, DateTime, DateTime, String)"
+
+class "bkrm::pages::managementModule::historyPage.dart::_FilterDrawerState" {
+  +Widget build()
+}
+
+class "bkrm::pages::managementModule::storeManage::detailbranchPage.dart::DetailBranch" {
+  +_DetailBranchState createState()
+}
+
+class "bkrm::pages::managementModule::storeManage::detailbranchPage.dart::_DetailBranchState" {
+  +TextEditingController nameController
+  +TextEditingController addressController
+  +bool nameValid
+  +bool addressValid
+  +bool isEditting
+  +void initState()
+  +dynamic setUpBranchInfo()
+  +dynamic clearPage()
+  +Widget build()
+}
+
+"bkrm::pages::managementModule::storeManage::detailbranchPage.dart::_DetailBranchState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::managementModule::supplierManagement::addNewSupplier.dart::AddNewSupplierPage" {
+  +_AddNewSupplierPageState createState()
+}
+
+class "bkrm::pages::managementModule::supplierManagement::addNewSupplier.dart::_AddNewSupplierPageState" {
+  -GlobalKey<FormState> _formKey
+  +bool phoneNumberValid
+  +bool emailValid
+  +bool nameValid
+  +TextEditingController phoneNumberController
+  +TextEditingController nameController
+  +TextEditingController addressController
+  +TextEditingController emailController
+  +Widget build()
+}
+
+"bkrm::pages::managementModule::supplierManagement::addNewSupplier.dart::_AddNewSupplierPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"bkrm::pages::managementModule::supplierManagement::addNewSupplier.dart::_AddNewSupplierPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::managementModule::supplierManagement::listSupplierPage.dart::ListSupplierPage" {
+  +dynamic Function(SupplierInfo)? onTapCustomer
+  +_ListSupplierPageState createState()
+}
+
+"bkrm::pages::managementModule::supplierManagement::listSupplierPage.dart::ListSupplierPage" o-- "null::dynamic Function(SupplierInfo)"
+
+class "bkrm::pages::managementModule::supplierManagement::listSupplierPage.dart::_ListSupplierPageState" {
+  -GlobalKey<RefreshIndicatorState> _refreshKey
+  +TextEditingController searchController
+  +String searchQuery
+  +List<SupplierInfo>? suppliersData
+  +Function refreshFunction
+  +void initState()
+  +Future<void> getSupplierData()
+  +Widget build()
+}
+
+"bkrm::pages::managementModule::supplierManagement::listSupplierPage.dart::_ListSupplierPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<RefreshIndicatorState>"
+"bkrm::pages::managementModule::supplierManagement::listSupplierPage.dart::_ListSupplierPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::managementModule::supplierManagement::supplierDetailPage.dart::SupplierDetailPage" {
+  +SupplierInfo supplierData
+  +_SupplierDetailPageState createState()
+}
+
+"bkrm::pages::managementModule::supplierManagement::supplierDetailPage.dart::SupplierDetailPage" o-- "bkrm::services::info::inventoryInfo::supplierInfo.dart::SupplierInfo"
+
+class "bkrm::pages::managementModule::supplierManagement::supplierDetailPage.dart::_SupplierDetailPageState" {
+  -GlobalKey<FormState> _formKey
+  +bool editEnable
+  +bool edited
+  +TextEditingController phoneNumberController
+  +TextEditingController nameController
+  +TextEditingController addressController
+  +TextEditingController emailController
+  +bool phoneNumberValid
+  +bool nameValid
+  +bool addressValid
+  +bool emailValid
+  +bool deleted
+  +void initState()
+  +dynamic setUpSupplierInfo()
+  +dynamic clearPage()
+  +void remoteSetState()
+  +Widget build()
+}
+
+"bkrm::pages::managementModule::supplierManagement::supplierDetailPage.dart::_SupplierDetailPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"bkrm::pages::managementModule::supplierManagement::supplierDetailPage.dart::_SupplierDetailPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::Nav2App.dart::Nav2App" {
+  {static} +String welcomePage
+  {static} +String loginRoute
+  {static} +String signUpRoute
+  {static} +String selectModuleroute
+  {static} +String dashboardRoute
+  {static} +String inventoryRoute
+  {static} +String importGoodRoute
+  {static} +String importInvoice
+  {static} +String listImportInvoice
+  {static} +String listReturnPurchaseSheet
+  {static} +String posRoute
+  {static} +String invoiceListRoute
+  {static} +String refundListRoute
+  {static} +String shoppingCartRoute
+  {static} +String addNewEmployeeRoute
+  {static} +String viewAllEmployeeRoute
+  {static} +String addNewShiftRoute
+  {static} +String listShiftRoute
+  {static} +String detailBranchRoute
+  {static} +String viewAllCustomerRoute
+  {static} +String viewAllSupplierRoute
+  {static} +String historyRoute
+  {static} +String viewAllCategoryRoute
+  +Widget build()
+}
+
+class "bkrm::pages::sellerModule::invoice::detailSearchInvoicePage.dart::DetailSearchInvoicePage" {
+  +_DetailSearchInvoicePageState createState()
+}
+
+class "bkrm::pages::sellerModule::invoice::detailSearchInvoicePage.dart::_DetailSearchInvoicePageState" {
+  +bool needRefresh
+  +TextEditingController idController
+  +TextEditingController searchQueryController
+  +TextEditingController totalMoneyFrom
+  +TextEditingController totalMoneyTo
+  +DateTime? dateFrom
+  +DateTime? dateTo
+  +bool totalMoneyValid
+  +Widget build()
+}
+
+"bkrm::pages::sellerModule::invoice::detailSearchInvoicePage.dart::_DetailSearchInvoicePageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::sellerModule::invoice::invoiceDetailPage.dart::DialogRefundSheets" {
+  +List<RefundSheet>? refundSheets
+  +_DialogRefundSheetsState createState()
+}
+
+class "bkrm::pages::sellerModule::invoice::invoiceDetailPage.dart::_DialogRefundSheetsState" {
+  +Widget build()
+}
+
+class "bkrm::pages::sellerModule::invoice::invoiceDetailPage.dart::ListSoldItem" {
+  +List<Item> purchasedItems
+  +NumberFormat formatter
+  +List<Widget> buildColumn()
+  +Widget build()
+}
+
+"bkrm::pages::sellerModule::invoice::invoiceDetailPage.dart::ListSoldItem" o-- "intl::src::intl::number_format.dart::NumberFormat"
+
+class "bkrm::pages::sellerModule::invoice::invoiceDetailPage.dart::InvoiceDetailPage" {
+  +DetailInvoiceInfo? invoice
+  +List<RefundSheet>? refundSheets
+  +_InvoiceDetailPageState createState()
+}
+
+"bkrm::pages::sellerModule::invoice::invoiceDetailPage.dart::InvoiceDetailPage" o-- "bkrm::services::info::invoice::invoiceReceivedWhenGet.dart::DetailInvoiceInfo"
+
+class "bkrm::pages::sellerModule::invoice::invoiceDetailPage.dart::_InvoiceDetailPageState" {
+  -GlobalKey<FormState> _formKey
+  +bool needRefresh
+  +TextEditingController customerPhoneNumberController
+  +TextEditingController totalPurchasePriceController
+  +TextEditingController discountController
+  +TextEditingController createdDateTimeController
+  +TextEditingController customerNameController
+  +TextEditingController sellerNameController
+  +bool nameValid
+  +bool sellPriceValid
+  +bool amountValid
+  +bool isEdited
+  +bool storable
+  +ImagePicker picker
+  +File? imageFile
+  +List<CategoryInfo>? categories
+  +BkrmService bkrmService
+  +String chosenCategory
+  +NumberFormat formatter
+  +void initState()
+  +dynamic setTextField()
+  +void remoteSetState()
+  +Widget build()
+}
+
+"bkrm::pages::sellerModule::invoice::invoiceDetailPage.dart::_InvoiceDetailPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"bkrm::pages::sellerModule::invoice::invoiceDetailPage.dart::_InvoiceDetailPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"bkrm::pages::sellerModule::invoice::invoiceDetailPage.dart::_InvoiceDetailPageState" o-- "image_picker::image_picker.dart::ImagePicker"
+"bkrm::pages::sellerModule::invoice::invoiceDetailPage.dart::_InvoiceDetailPageState" o-- "dart::io::File"
+"bkrm::pages::sellerModule::invoice::invoiceDetailPage.dart::_InvoiceDetailPageState" o-- "bkrm::services::services.dart::BkrmService"
+"bkrm::pages::sellerModule::invoice::invoiceDetailPage.dart::_InvoiceDetailPageState" o-- "intl::src::intl::number_format.dart::NumberFormat"
+
+class "bkrm::pages::sellerModule::invoice::listDetailSearch.dart::ListDetailSearch" {
+  +int? searchId
+  +String searchQuery
+  +int? totalMoneyFrom
+  +int? totalMoneyTo
+  +DateTime? dateTimeFrom
+  +DateTime? dateTimeTo
+  +_ListDetailSearchState createState()
+}
+
+class "bkrm::pages::sellerModule::invoice::listDetailSearch.dart::_ListDetailSearchState" {
+  +SortListCriteria? sortListCriteria
+  +List<InvoiceReceivedWhenGet> invoices
+  +ListInvoices listInvoice
+  +BkrmService bkrmService
+  +void initState()
+  +Widget build()
+}
+
+"bkrm::pages::sellerModule::invoice::listDetailSearch.dart::_ListDetailSearchState" o-- "bkrm::pages::sellerModule::invoice::listInvoicePage.dart::SortListCriteria"
+"bkrm::pages::sellerModule::invoice::listDetailSearch.dart::_ListDetailSearchState" o-- "bkrm::pages::sellerModule::invoice::listInvoicePage.dart::ListInvoices"
+"bkrm::pages::sellerModule::invoice::listDetailSearch.dart::_ListDetailSearchState" o-- "bkrm::services::services.dart::BkrmService"
+
+class "bkrm::pages::sellerModule::invoice::listInvoicePage.dart::SortCriteria" {
+  +int index
+  {static} +List<SortCriteria> values
+  {static} +SortCriteria customerNameAscending
+  {static} +SortCriteria customerNameDescending
+  {static} +SortCriteria sellerNameAscending
+  {static} +SortCriteria sellerNameDescending
+  {static} +SortCriteria totalPriceAscending
+  {static} +SortCriteria totalPriceDescending
+  {static} +SortCriteria discountAscending
+  {static} +SortCriteria discountDescending
+  {static} +SortCriteria dateSellAscending
+  {static} +SortCriteria dateSellDescending
+}
+
+"bkrm::pages::sellerModule::invoice::listInvoicePage.dart::SortCriteria" o-- "bkrm::pages::sellerModule::invoice::listInvoicePage.dart::SortCriteria"
+
+class "bkrm::pages::sellerModule::invoice::listInvoicePage.dart::SortFunction" {
+  {static} +Function customerAscendingInvoice
+  {static} +Function customerDescendingInvoice
+  {static} +Function totalPriceAscendingInvoice
+  {static} +Function totalPriceDescendingInvoice
+  {static} +Function dateSellAscendingInvoice
+  {static} +Function dateSellDescendingInvoice
+  {static} +Function sellerNameAscendingInvoice
+  {static} +Function sellerNameDescendingInvoice
+}
+
+class "bkrm::pages::sellerModule::invoice::listInvoicePage.dart::DatePickerDialog" {
+  +dynamic Function(DateTime?, DateTime?)? onDonePick
+  +DateTime? from
+  +DateTime? to
+  +_DatePickerDialogState createState()
+}
+
+"bkrm::pages::sellerModule::invoice::listInvoicePage.dart::DatePickerDialog" o-- "null::dynamic Function(DateTime, DateTime)"
+
+class "bkrm::pages::sellerModule::invoice::listInvoicePage.dart::_DatePickerDialogState" {
+  +Widget build()
+}
+
+class "bkrm::pages::sellerModule::invoice::listInvoicePage.dart::SortListCriteria" {
+  +ListInvoices? listInvoice
+  +SortCriteria? sortCriteria
+  +Criteria? selectedCriteria
+  +_SortListCriteriaState createState()
+}
+
+"bkrm::pages::sellerModule::invoice::listInvoicePage.dart::SortListCriteria" o-- "bkrm::pages::sellerModule::invoice::listInvoicePage.dart::ListInvoices"
+"bkrm::pages::sellerModule::invoice::listInvoicePage.dart::SortListCriteria" o-- "bkrm::pages::sellerModule::invoice::listInvoicePage.dart::SortCriteria"
+"bkrm::pages::sellerModule::invoice::listInvoicePage.dart::SortListCriteria" o-- "bkrm::widget::enumDefine.dart::Criteria"
+
+class "bkrm::pages::sellerModule::invoice::listInvoicePage.dart::_SortListCriteriaState" {
+  +Widget radioButtonGroup
+  +void initState()
+  +void buildRadioButton()
+  +Widget build()
+}
+
+"bkrm::pages::sellerModule::invoice::listInvoicePage.dart::_SortListCriteriaState" o-- "flutter::src::widgets::framework.dart::Widget"
+
+class "bkrm::pages::sellerModule::invoice::listInvoicePage.dart::ListInvoices" {
+  +String? searchQuery
+  -_ListInvoicesState _state
+  +DateTime? filterFrom
+  +DateTime? filterTo
+  +int? searchId
+  +int? totalMoneyFrom
+  +int? totalMoneyTo
+  +bool needRefresh
+  +GlobalKey<RefreshIndicatorState>? refreshKey
+  +void searchList()
+  +void setDateFilter()
+  +void sortInvoice()
+  +void refresh()
+  +_ListInvoicesState createState()
+}
+
+"bkrm::pages::sellerModule::invoice::listInvoicePage.dart::ListInvoices" o-- "bkrm::pages::sellerModule::invoice::listInvoicePage.dart::_ListInvoicesState"
+"bkrm::pages::sellerModule::invoice::listInvoicePage.dart::ListInvoices" o-- "flutter::src::widgets::framework.dart::GlobalKey<RefreshIndicatorState>"
+
+class "bkrm::pages::sellerModule::invoice::listInvoicePage.dart::_ListInvoicesState" {
+  +String orderBy
+  +String order
+  -PagingController<int, InvoiceReceivedWhenGet> _pagingController
+  +NumberFormat formatter
+  +dynamic sort()
+  +void initState()
+  -Future<void> _fetchPage()
+  +void filterList()
+  +Widget build()
+}
+
+"bkrm::pages::sellerModule::invoice::listInvoicePage.dart::_ListInvoicesState" o-- "infinite_scroll_pagination::src::core::paging_controller.dart::PagingController<int, InvoiceReceivedWhenGet>"
+"bkrm::pages::sellerModule::invoice::listInvoicePage.dart::_ListInvoicesState" o-- "intl::src::intl::number_format.dart::NumberFormat"
+
+class "bkrm::pages::sellerModule::invoice::listInvoicePage.dart::InvoicePage" {
+  +_InvoicePageState createState()
+}
+
+class "bkrm::pages::sellerModule::invoice::listInvoicePage.dart::_InvoicePageState" {
+  -GlobalKey<RefreshIndicatorState> _refreshKey
+  +SortListCriteria sortListCriteria
+  +List<InvoiceReceivedWhenGet>? invoices
+  +ListInvoices listInvoices
+  +BkrmService bkrmService
+  +TextEditingController controller
+  +void initState()
+  +Widget build()
+}
+
+"bkrm::pages::sellerModule::invoice::listInvoicePage.dart::_InvoicePageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<RefreshIndicatorState>"
+"bkrm::pages::sellerModule::invoice::listInvoicePage.dart::_InvoicePageState" o-- "bkrm::pages::sellerModule::invoice::listInvoicePage.dart::SortListCriteria"
+"bkrm::pages::sellerModule::invoice::listInvoicePage.dart::_InvoicePageState" o-- "bkrm::pages::sellerModule::invoice::listInvoicePage.dart::ListInvoices"
+"bkrm::pages::sellerModule::invoice::listInvoicePage.dart::_InvoicePageState" o-- "bkrm::services::services.dart::BkrmService"
+"bkrm::pages::sellerModule::invoice::listInvoicePage.dart::_InvoicePageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::sellerModule::invoice::refundPage.dart::RefundItem" {
+  +Item item
+  +int quantity
+}
+
+"bkrm::pages::sellerModule::invoice::refundPage.dart::RefundItem" o-- "bkrm::services::info::invoice::invoiceReceivedWhenGet.dart::Item"
+
+class "bkrm::pages::sellerModule::invoice::refundPage.dart::RefundPage" {
+  +DetailInvoiceInfo? invoice
+  +List<RefundItem> refundItems
+  +_RefundPageState createState()
+}
+
+"bkrm::pages::sellerModule::invoice::refundPage.dart::RefundPage" o-- "bkrm::services::info::invoice::invoiceReceivedWhenGet.dart::DetailInvoiceInfo"
+
+class "bkrm::pages::sellerModule::invoice::refundPage.dart::_RefundPageState" {
+  +TextEditingController reasonController
+  +bool needRefresh
+  +void initState()
+  +dynamic processRefundSheet()
+  +Widget build()
+}
+
+"bkrm::pages::sellerModule::invoice::refundPage.dart::_RefundPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::sellerModule::invoice::refundPage.dart::RefundItemCard" {
+  +RefundItem item
+  +dynamic Function(RefundItem)? onRemove
+  +_RefundItemCardState createState()
+}
+
+"bkrm::pages::sellerModule::invoice::refundPage.dart::RefundItemCard" o-- "bkrm::pages::sellerModule::invoice::refundPage.dart::RefundItem"
+"bkrm::pages::sellerModule::invoice::refundPage.dart::RefundItemCard" o-- "null::dynamic Function(RefundItem)"
+
+class "bkrm::pages::sellerModule::invoice::refundPage.dart::_RefundItemCardState" {
+  +NumberFormat formatter
+  +dynamic remoteSetState()
+  +Widget build()
+}
+
+"bkrm::pages::sellerModule::invoice::refundPage.dart::_RefundItemCardState" o-- "intl::src::intl::number_format.dart::NumberFormat"
+
+class "bkrm::pages::sellerModule::invoice::refundPage.dart::CustomDialog" {
+  +RefundItem item
+  +dynamic Function(int)? onClose
+  +_CustomDialogState createState()
+}
+
+"bkrm::pages::sellerModule::invoice::refundPage.dart::CustomDialog" o-- "bkrm::pages::sellerModule::invoice::refundPage.dart::RefundItem"
+"bkrm::pages::sellerModule::invoice::refundPage.dart::CustomDialog" o-- "null::dynamic Function(int)"
+
+class "bkrm::pages::sellerModule::invoice::refundPage.dart::_CustomDialogState" {
+  +TextEditingController controller
+  -bool _validate
+  +Widget build()
+}
+
+"bkrm::pages::sellerModule::invoice::refundPage.dart::_CustomDialogState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::sellerModule::pos::posPage.dart::PosPage" {
+  +String? title
+  +_PosPageState createState()
+}
+
+class "bkrm::pages::sellerModule::pos::posPage.dart::_PosPageState" {
+  +SnackBar? currentSnackBar
+  -GlobalKey<ScaffoldState> _scaffoldKey
+  +ListProduct listProduct
+  +SortListCriteriaProduct sortListCriteria
+  +ListCategory listCategory
+  +void initState()
+  +Widget build()
+}
+
+"bkrm::pages::sellerModule::pos::posPage.dart::_PosPageState" o-- "flutter::src::material::snack_bar.dart::SnackBar"
+"bkrm::pages::sellerModule::pos::posPage.dart::_PosPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<ScaffoldState>"
+"bkrm::pages::sellerModule::pos::posPage.dart::_PosPageState" o-- "bkrm::widget::listProducts.dart::ListProduct"
+"bkrm::pages::sellerModule::pos::posPage.dart::_PosPageState" o-- "bkrm::widget::sortListCriteria.dart::SortListCriteriaProduct"
+"bkrm::pages::sellerModule::pos::posPage.dart::_PosPageState" o-- "bkrm::widget::listCategory.dart::ListCategory"
+
+class "bkrm::pages::sellerModule::refund::detailSearchRefundPage.dart::DetailSearchRefundPage" {
+  +_DetailSearchRefundPageState createState()
+}
+
+class "bkrm::pages::sellerModule::refund::detailSearchRefundPage.dart::_DetailSearchRefundPageState" {
+  +TextEditingController idController
+  +TextEditingController searchQueryController
+  +TextEditingController totalMoneyFrom
+  +TextEditingController totalMoneyTo
+  +DateTime? dateFrom
+  +DateTime? dateTo
+  +bool totalMoneyValid
+  +Widget build()
+}
+
+"bkrm::pages::sellerModule::refund::detailSearchRefundPage.dart::_DetailSearchRefundPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::sellerModule::refund::listDetailSearch.dart::ListDetailSearch" {
+  +int? searchId
+  +String searchQuery
+  +int? totalMoneyFrom
+  +int? totalMoneyTo
+  +DateTime? dateTimeFrom
+  +DateTime? dateTimeTo
+  +_ListDetailSearchState createState()
+}
+
+class "bkrm::pages::sellerModule::refund::listDetailSearch.dart::_ListDetailSearchState" {
+  +SortListCriteria? sortListCriteria
+  +List<RefundSheet> refundSheets
+  +ListRefundSheet listReturnPurchasedSheet
+  +BkrmService bkrmService
+  +void initState()
+  +Widget build()
+}
+
+"bkrm::pages::sellerModule::refund::listDetailSearch.dart::_ListDetailSearchState" o-- "bkrm::pages::sellerModule::refund::listRefundPage.dart::SortListCriteria"
+"bkrm::pages::sellerModule::refund::listDetailSearch.dart::_ListDetailSearchState" o-- "bkrm::pages::sellerModule::refund::listRefundPage.dart::ListRefundSheet"
+"bkrm::pages::sellerModule::refund::listDetailSearch.dart::_ListDetailSearchState" o-- "bkrm::services::services.dart::BkrmService"
+
+class "bkrm::pages::sellerModule::refund::listRefundPage.dart::SortCriteria" {
+  +int index
+  {static} +List<SortCriteria> values
+  {static} +SortCriteria refunderNameAscending
+  {static} +SortCriteria refunderNameDescending
+  {static} +SortCriteria totalRefundPriceAscending
+  {static} +SortCriteria totalRefundPriceDescending
+  {static} +SortCriteria customerNameAscending
+  {static} +SortCriteria customerNameDescending
+  {static} +SortCriteria dateCreatedAscending
+  {static} +SortCriteria dateCreatedDescending
+}
+
+"bkrm::pages::sellerModule::refund::listRefundPage.dart::SortCriteria" o-- "bkrm::pages::sellerModule::refund::listRefundPage.dart::SortCriteria"
+
+class "bkrm::pages::sellerModule::refund::listRefundPage.dart::SortFunction" {
+  {static} +Function customerNameAscending
+  {static} +Function customerNameDescending
+  {static} +Function totalRefundPriceAscending
+  {static} +Function totalRefundPriceDescending
+  {static} +Function dateRefundAscending
+  {static} +Function dateRefundDescending
+  {static} +Function refunderNameAscending
+  {static} +Function refunderNameDescending
+}
+
+class "bkrm::pages::sellerModule::refund::listRefundPage.dart::DatePickerDialog" {
+  +dynamic Function(DateTime?, DateTime?)? onDonePick
+  +DateTime? from
+  +DateTime? to
+  +_DatePickerDialogState createState()
+}
+
+"bkrm::pages::sellerModule::refund::listRefundPage.dart::DatePickerDialog" o-- "null::dynamic Function(DateTime, DateTime)"
+
+class "bkrm::pages::sellerModule::refund::listRefundPage.dart::_DatePickerDialogState" {
+  +Widget build()
+}
+
+class "bkrm::pages::sellerModule::refund::listRefundPage.dart::SortListCriteria" {
+  +ListRefundSheet listRefunds
+  +SortCriteria? sortCriteria
+  +Criteria? selectedCriteria
+  +_SortListCriteriaState createState()
+}
+
+"bkrm::pages::sellerModule::refund::listRefundPage.dart::SortListCriteria" o-- "bkrm::pages::sellerModule::refund::listRefundPage.dart::ListRefundSheet"
+"bkrm::pages::sellerModule::refund::listRefundPage.dart::SortListCriteria" o-- "bkrm::pages::sellerModule::refund::listRefundPage.dart::SortCriteria"
+"bkrm::pages::sellerModule::refund::listRefundPage.dart::SortListCriteria" o-- "bkrm::widget::enumDefine.dart::Criteria"
+
+class "bkrm::pages::sellerModule::refund::listRefundPage.dart::_SortListCriteriaState" {
+  +Widget radioButtonGroup
+  +void initState()
+  +void buildRadioButton()
+  +Widget build()
+}
+
+"bkrm::pages::sellerModule::refund::listRefundPage.dart::_SortListCriteriaState" o-- "flutter::src::widgets::framework.dart::Widget"
+
+class "bkrm::pages::sellerModule::refund::listRefundPage.dart::ListRefundSheet" {
+  +List<RefundSheet> displayListRefundSheets
+  +String orderBy
+  +String order
+  +String searchQuery
+  -_ListRefundSheetState _state
+  +Function sortFunction
+  +DateTime? filterFrom
+  +DateTime? filterTo
+  +int? searchId
+  +int? totalMoneyFrom
+  +int? totalMoneyTo
+  +void searchList()
+  +void setDateFilter()
+  +void sortRefundSheets()
+  +_ListRefundSheetState createState()
+}
+
+"bkrm::pages::sellerModule::refund::listRefundPage.dart::ListRefundSheet" o-- "bkrm::pages::sellerModule::refund::listRefundPage.dart::_ListRefundSheetState"
+
+class "bkrm::pages::sellerModule::refund::listRefundPage.dart::_ListRefundSheetState" {
+  -PagingController<int, RefundSheet> _pagingController
+  +NumberFormat formatter
+  +void initState()
+  -Future<void> _fetchPage()
+  +Widget build()
+}
+
+"bkrm::pages::sellerModule::refund::listRefundPage.dart::_ListRefundSheetState" o-- "infinite_scroll_pagination::src::core::paging_controller.dart::PagingController<int, RefundSheet>"
+"bkrm::pages::sellerModule::refund::listRefundPage.dart::_ListRefundSheetState" o-- "intl::src::intl::number_format.dart::NumberFormat"
+
+class "bkrm::pages::sellerModule::refund::listRefundPage.dart::ListRefundPage" {
+  +_ListRefundPageState createState()
+}
+
+class "bkrm::pages::sellerModule::refund::listRefundPage.dart::_ListRefundPageState" {
+  +SortListCriteria sortListCriteria
+  +List<RefundSheet>? refundSheets
+  +ListRefundSheet listRefundSheets
+  +BkrmService bkrmService
+  +void initState()
+  +Widget build()
+}
+
+"bkrm::pages::sellerModule::refund::listRefundPage.dart::_ListRefundPageState" o-- "bkrm::pages::sellerModule::refund::listRefundPage.dart::SortListCriteria"
+"bkrm::pages::sellerModule::refund::listRefundPage.dart::_ListRefundPageState" o-- "bkrm::pages::sellerModule::refund::listRefundPage.dart::ListRefundSheet"
+"bkrm::pages::sellerModule::refund::listRefundPage.dart::_ListRefundPageState" o-- "bkrm::services::services.dart::BkrmService"
+
+class "bkrm::pages::sellerModule::refund::refundDetailPage.dart::ListRefundItems" {
+  +List<RefundItem> returnItems
+  +NumberFormat formatter
+  +List<Widget> buildColumn()
+  +Widget build()
+}
+
+"bkrm::pages::sellerModule::refund::refundDetailPage.dart::ListRefundItems" o-- "intl::src::intl::number_format.dart::NumberFormat"
+
+class "bkrm::pages::sellerModule::refund::refundDetailPage.dart::RefundDetailPage" {
+  +DetailRefundSheet? refundSheet
+  +_RefundDetailPageState createState()
+}
+
+"bkrm::pages::sellerModule::refund::refundDetailPage.dart::RefundDetailPage" o-- "bkrm::services::info::sellingInfo::refundInfo.dart::DetailRefundSheet"
+
+class "bkrm::pages::sellerModule::refund::refundDetailPage.dart::_RefundDetailPageState" {
+  -GlobalKey<FormState> _formKey
+  +TextEditingController customerPhoneNumberController
+  +TextEditingController totalPurchasePriceController
+  +TextEditingController createdDateTimeController
+  +TextEditingController customerNameController
+  +TextEditingController sellerNameController
+  +bool nameValid
+  +bool sellPriceValid
+  +bool amountValid
+  +bool isEdited
+  +bool storable
+  +ImagePicker picker
+  +File? imageFile
+  +List<CategoryInfo>? categories
+  +BkrmService bkrmService
+  +String chosenCategory
+  +NumberFormat formatter
+  +void initState()
+  +dynamic setUpCustomerInfo()
+  +void remoteSetState()
+  +Widget build()
+}
+
+"bkrm::pages::sellerModule::refund::refundDetailPage.dart::_RefundDetailPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"bkrm::pages::sellerModule::refund::refundDetailPage.dart::_RefundDetailPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"bkrm::pages::sellerModule::refund::refundDetailPage.dart::_RefundDetailPageState" o-- "image_picker::image_picker.dart::ImagePicker"
+"bkrm::pages::sellerModule::refund::refundDetailPage.dart::_RefundDetailPageState" o-- "dart::io::File"
+"bkrm::pages::sellerModule::refund::refundDetailPage.dart::_RefundDetailPageState" o-- "bkrm::services::services.dart::BkrmService"
+"bkrm::pages::sellerModule::refund::refundDetailPage.dart::_RefundDetailPageState" o-- "intl::src::intl::number_format.dart::NumberFormat"
+
+class "bkrm::pages::sellerModule::shoppingCart::cartItemCard.dart::CartItemCard" {
+  +CartItem? cartItem
+  +ApiService api
+  +BkrmService bkrmService
+  +NumberFormat formatter
+  +Widget build()
+}
+
+"bkrm::pages::sellerModule::shoppingCart::cartItemCard.dart::CartItemCard" o-- "bkrm::services::cartService.dart::CartItem"
+"bkrm::pages::sellerModule::shoppingCart::cartItemCard.dart::CartItemCard" o-- "bkrm::services::api.dart::ApiService"
+"bkrm::pages::sellerModule::shoppingCart::cartItemCard.dart::CartItemCard" o-- "bkrm::services::services.dart::BkrmService"
+"bkrm::pages::sellerModule::shoppingCart::cartItemCard.dart::CartItemCard" o-- "intl::src::intl::number_format.dart::NumberFormat"
+
+class "bkrm::pages::sellerModule::shoppingCart::cartItemCard.dart::CustomDialog" {
+  +CartItem? cartItem
+  +_CustomDialogState createState()
+}
+
+"bkrm::pages::sellerModule::shoppingCart::cartItemCard.dart::CustomDialog" o-- "bkrm::services::cartService.dart::CartItem"
+
+class "bkrm::pages::sellerModule::shoppingCart::cartItemCard.dart::_CustomDialogState" {
+  +BkrmService bkrmService
+  +TextEditingController controller
+  -bool _validate
+  +Widget build()
+}
+
+"bkrm::pages::sellerModule::shoppingCart::cartItemCard.dart::_CustomDialogState" o-- "bkrm::services::services.dart::BkrmService"
+"bkrm::pages::sellerModule::shoppingCart::cartItemCard.dart::_CustomDialogState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::sellerModule::shoppingCart::cashout.dart::CashoutPage" {
+  +_CashoutPageState createState()
+}
+
+class "bkrm::pages::sellerModule::shoppingCart::cashout.dart::_CashoutPageState" {
+  -GlobalKey<ScaffoldState> _scaffoldKey
+  +BkrmService bkrmService
+  +NumberFormat formatter
+  +TextEditingController controller
+  +double moneyReceive
+  +bool? useCustomerPoint
+  +Widget build()
+}
+
+"bkrm::pages::sellerModule::shoppingCart::cashout.dart::_CashoutPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<ScaffoldState>"
+"bkrm::pages::sellerModule::shoppingCart::cashout.dart::_CashoutPageState" o-- "bkrm::services::services.dart::BkrmService"
+"bkrm::pages::sellerModule::shoppingCart::cashout.dart::_CashoutPageState" o-- "intl::src::intl::number_format.dart::NumberFormat"
+"bkrm::pages::sellerModule::shoppingCart::cashout.dart::_CashoutPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::pages::sellerModule::shoppingCart::scanBarcode.dart::ScanBarcode" {
+  +_ScanBarcodeState createState()
+}
+
+class "bkrm::pages::sellerModule::shoppingCart::scanBarcode.dart::_ScanBarcodeState" {
+  +QRViewController controller
+  +GlobalKey<State<StatefulWidget>> qrKey
+  +bool firstTimeCall
+  +bool enableScan
+  +bool flashToggle
+  +void reassemble()
+  +Widget build()
+  -void _onQRViewCreated()
+  +void dispose()
+}
+
+"bkrm::pages::sellerModule::shoppingCart::scanBarcode.dart::_ScanBarcodeState" o-- "qr_code_scanner::src::qr_code_scanner.dart::QRViewController"
+"bkrm::pages::sellerModule::shoppingCart::scanBarcode.dart::_ScanBarcodeState" o-- "flutter::src::widgets::framework.dart::GlobalKey<State<StatefulWidget>>"
+
+class "bkrm::pages::sellerModule::shoppingCart::scanBarcode.dart::RectangularScannerOverlayShape" {
+  +void paint()
+}
+
+class "bkrm::pages::sellerModule::shoppingCart::shoppingCart.dart::CartsDropdown" {
+  +Function callbackToSetState
+  +_CartsDropdownState createState()
+}
+
+class "bkrm::pages::sellerModule::shoppingCart::shoppingCart.dart::_CartsDropdownState" {
+  +Widget build()
+}
+
+class "bkrm::pages::sellerModule::shoppingCart::shoppingCart.dart::CashOutBottomSheet" {
+  +GlobalKey<ScaffoldState> scaffolKey
+  +_CashOutBottomSheetState createState()
+}
+
+"bkrm::pages::sellerModule::shoppingCart::shoppingCart.dart::CashOutBottomSheet" o-- "flutter::src::widgets::framework.dart::GlobalKey<ScaffoldState>"
+
+class "bkrm::pages::sellerModule::shoppingCart::shoppingCart.dart::_CashOutBottomSheetState" {
+  +double moneyReceive
+  +Widget build()
+}
+
+class "bkrm::pages::sellerModule::shoppingCart::shoppingCart.dart::ShoppingCart" {
+  +_ShoppingCartState createState()
+}
+
+class "bkrm::pages::sellerModule::shoppingCart::shoppingCart.dart::_ShoppingCartState" {
+  +BkrmService bkrmService
+  +bool firstTimeCall
+  +bool firstTimeCallPrice
+  +NumberFormat formatter
+  +GlobalKey<ScaffoldState> scaffoldKey
+  +dynamic remoteSetState()
+  -void _onItemTapped()
+  +Widget build()
+}
+
+"bkrm::pages::sellerModule::shoppingCart::shoppingCart.dart::_ShoppingCartState" o-- "bkrm::services::services.dart::BkrmService"
+"bkrm::pages::sellerModule::shoppingCart::shoppingCart.dart::_ShoppingCartState" o-- "intl::src::intl::number_format.dart::NumberFormat"
+"bkrm::pages::sellerModule::shoppingCart::shoppingCart.dart::_ShoppingCartState" o-- "flutter::src::widgets::framework.dart::GlobalKey<ScaffoldState>"
+
+class "bkrm::services::api.dart::ApiType" {
+  +int index
+  {static} +List<ApiType> values
+  {static} +ApiType login
+  {static} +ApiType getData
+  {static} +ApiType sendData
+}
+
+"bkrm::services::api.dart::ApiType" o-- "bkrm::services::api.dart::ApiType"
+
+class "bkrm::services::api.dart::ServerConfig" {
+  {static} +String ipMergedDb
+  {static} +String ipLocal
+  {static} +String projectUrl
+  {static} +String apiUrl
+}
+
+class "bkrm::services::api.dart::MyHttpOverrides" {
+  +HttpClient createHttpClient()
+}
+
+class "bkrm::services::api.dart::ApiService" {
+  {static} -ApiService _instance
+  +bool isRefresh
+  +Dio dio
+  +Future<Map<String, dynamic>> refreshToken()
+  +Future<Map<String, dynamic>> pushQueuedRequest()
+  +Future<Map<String, dynamic>> login()
+  +Future<Map<String, dynamic>> signUp()
+  +Future<Map<String, dynamic>?> logOut()
+  +Future<Map<String, dynamic>?> changePassword()
+  +Future<Map<String, dynamic>> createEmployeeUser()
+  +Future<Map<String, dynamic>> createCustomer()
+  +Future<Map<String, dynamic>> createSupplier()
+  +Future<Map<String, dynamic>> createInvoice()
+  +Future<Map<String, dynamic>> createNewProduct()
+  +Future<Map<String, dynamic>> createCategory()
+  +Future<Map<String, dynamic>> createImportInvoice()
+  +Future<Map<String, dynamic>> createRefundSheet()
+  +Future<Map<String, dynamic>> createRefundPurchaseSheet()
+  +Future<Map<String, dynamic>> createShift()
+  +Future<Map<String, dynamic>> createSchedule()
+  +Future<Map<String, dynamic>> createAttendance()
+  +Future<Map<String, dynamic>> createQuantityCheckingSheet()
+  +Future<Map<String, dynamic>> getCurrentUserInfo()
+  +Future<Map<String, dynamic>> getItemInfoNoPagination()
+  +Future<Map<String, dynamic>> getItemInfoPagination()
+  +Future<Map<String, dynamic>> searchItem()
+  +Future<Map<String, dynamic>> searchDefaultItem()
+  +Future<Map<String, dynamic>> getDashboardInfo()
+  +Future<Map<String, dynamic>> getCategory()
+  +Future<Map<String, dynamic>?> getAllEmployees()
+  +Future<Map<String, dynamic>?> getAllCustomers()
+  +Future<Map<String, dynamic>?> getSuppliers()
+  +Future<Map<String, dynamic>?> getPurchasedSheet()
+  +Future<Map<String, dynamic>?> getOnePurchasedSheet()
+  +Future<Map<String, dynamic>?> getInvoice()
+  +Future<Map<String, dynamic>?> getOneInvoice()
+  +Future<Map<String, dynamic>?> getRefundSheet()
+  +Future<Map<String, dynamic>?> getOneRefundSheet()
+  +Future<Map<String, dynamic>?> getReturnPurchasedSheet()
+  +Future<Map<String, dynamic>?> getOneReturnPurchasedSheet()
+  +Future<Map<String, dynamic>?> getShifts()
+  +Future<Map<String, dynamic>?> getSchedules()
+  +Future<Map<String, dynamic>?> getAttendances()
+  +Future<Map<String, dynamic>?> getAttendancesFromDateToDate()
+  +Future<Map<String, dynamic>> getReportRevenue()
+  +Future<Map<String, dynamic>> getReportItems()
+  +Future<Map<String, dynamic>> getReportCategories()
+  +Future<Map<String, dynamic>> getReportCustomers()
+  +Future<Map<String, dynamic>> getReportSupplier()
+  +Future<Map<String, dynamic>> getPriceHistory()
+  +Future<Map<String, dynamic>> getQuantityHistory()
+  +Future<Map<String, dynamic>> getItemsWithNoPurchasePrice()
+  +Future<Map<String, dynamic>> getHistory()
+  +Future<Map<String, dynamic>> editItems()
+  +Future<Map<String, dynamic>> editCurrentUser()
+  +Future<Map<String, dynamic>> editCustomer()
+  +Future<Map<String, dynamic>> editSupplier()
+  +Future<Map<String, dynamic>> editCategory()
+  +Future<Map<String, dynamic>> editShift()
+  +Future<Map<String, dynamic>> editBranch()
+  +Future<Map<String, dynamic>> resetPasswordForOwner()
+  +Future<Map<String, dynamic>> editEmployeeForOwner()
+  +Future<Map<String, dynamic>> deleteItem()
+  +Future<Map<String, dynamic>> deleteSchedule()
+  +Future<Map<String, dynamic>> changeStatusAccount()
+}
+
+"bkrm::services::api.dart::ApiService" o-- "bkrm::services::api.dart::ApiService"
+"bkrm::services::api.dart::ApiService" o-- "dio::src::dio.dart::Dio"
+
+class "bkrm::services::cartService.dart::CartItem" {
+  +ItemInfo item
+  -int _amount
+  +double discountPercent
+  +bool valid
+  -StreamController<dynamic> _cartItemController
+  +int discountPrice
+  +Stream<dynamic> cartItemStream
+  +int priceId
+  +int amount
+  +int hashCode
+  +bool ==()
+  +void dispose()
+  +String toString()
+}
+
+"bkrm::services::cartService.dart::CartItem" o-- "bkrm::services::info::inventoryInfo::itemInfo.dart::ItemInfo"
+"bkrm::services::cartService.dart::CartItem" o-- "dart::async::StreamController<dynamic>"
+"bkrm::services::cartService.dart::CartItem" o-- "dart::async::Stream<dynamic>"
+
+class "bkrm::services::cartService.dart::CartService" {
+  +List<CartItem> cartItems
+  +bool valid
+  -StreamController<dynamic> _cartServiceController
+  -StreamController<dynamic> _cartServicePriceController
+  +double totalPrice
+  +double totalDiscountPrice
+  +double totalDiscount
+  +int? customerPoint
+  +String status
+  -CustomerInfo? _customer
+  +bool usedCustomerPoint
+  +bool empty
+  +Stream<dynamic> cartServiceStream
+  +CustomerInfo? customer
+  +dynamic checkCartValid()
+  +bool calculateAllValueInCart()
+  +bool useCustomerPoint()
+  +dynamic addCartItem()
+  +dynamic getCartItem()
+  +dynamic clearCart()
+  +dynamic removeCartItem()
+  +dynamic modifyCartItem()
+  +Future<Map<String, dynamic>> sendInvoice()
+  +void dispose()
+}
+
+"bkrm::services::cartService.dart::CartService" o-- "dart::async::StreamController<dynamic>"
+"bkrm::services::cartService.dart::CartService" o-- "bkrm::services::info::sellingInfo::customerInfo.dart::CustomerInfo"
+"bkrm::services::cartService.dart::CartService" o-- "dart::async::Stream<dynamic>"
+
+class "bkrm::services::importGoodService.dart::ImportGoodItem" {
+  +ItemInfo item
+  -int _amount
+  -int? _importedPrice
+  +int amount
+  +int importedPrice
+  +dynamic updateItem()
+  +bool ==()
+  +Map<String, dynamic> exportMap()
+}
+
+"bkrm::services::importGoodService.dart::ImportGoodItem" o-- "bkrm::services::info::inventoryInfo::itemInfo.dart::ItemInfo"
+
+class "bkrm::services::importGoodService.dart::ImportGoodService" {
+  -List<ImportGoodItem?> _importItems
+  -SupplierInfo? _supplier
+  +Store? store
+  -int? _discount
+  -String? _deliverName
+  -StreamController<dynamic> _importGoodServiceStreamController
+  +bool empty
+  +Stream<dynamic> importGoodServiceStream
+  +String? deliverName
+  +int totalPrice
+  +SupplierInfo? supplier
+  +int? discount
+  +void updateInfo()
+  +Future<bool> addToImport()
+  +bool replaceItem()
+  +bool deleteItem()
+  +void dispose()
+  +Map<String, dynamic> exportInvoice()
+  +Future<Map<String, dynamic>> sendInvoice()
+  +dynamic clearImportService()
+}
+
+"bkrm::services::importGoodService.dart::ImportGoodService" o-- "bkrm::services::info::inventoryInfo::supplierInfo.dart::SupplierInfo"
+"bkrm::services::importGoodService.dart::ImportGoodService" o-- "bkrm::services::info::managementInfo::storeInfo.dart::Store"
+"bkrm::services::importGoodService.dart::ImportGoodService" o-- "dart::async::StreamController<dynamic>"
+"bkrm::services::importGoodService.dart::ImportGoodService" o-- "dart::async::Stream<dynamic>"
+
+class "bkrm::services::info::hrInfo::attendanceInfo.dart::AttendanceInfo" {
+  +int? shiftId
+  +int? scheduleId
+  +int? userId
+  +String? name
+  +DateTime? date
+}
+
+class "bkrm::services::info::hrInfo::employeeInfo.dart::EmployeeInfo" {
+  +int branchId
+  +int userId
+  +String userName
+  +String name
+  +String? email
+  +String? phone
+  +DateTime? dateOfBirth
+  +String? gender
+  +String? status
+  +List<String>? roles
+}
+
+class "bkrm::services::info::hrInfo::scheduleInfo.dart::ScheduleInfo" {
+  +int? shiftId
+  +int? scheduleId
+  +DateTime? scheduleStartDate
+  +DateTime? scheduleEndDate
+  +int? userId
+  +String? name
+  +String? status
+}
+
+class "bkrm::services::info::hrInfo::shiftInfo.dart::ShiftInfo" {
+  +int? shiftId
+  +String? name
+  +DateTime? startTime
+  +DateTime? endTime
+  +bool? monday
+  +bool? tuesday
+  +bool? wednesday
+  +bool? thursday
+  +bool? friday
+  +bool? saturday
+  +bool? sunday
+  +DateTime? startDate
+  +DateTime? endDate
+}
+
+class "bkrm::services::info::inventoryInfo::categoryInfo.dart::CategoryInfo" {
+  -int? _id
+  +String name
+  -int? _storeId
+  -bool? _deleted
+  -DateTime? _createdAt
+  -DateTime? _updatedAt
+  +double pointRatio
+  +DateTime? updatedAt
+  +DateTime? createdAt
+  +bool? deleted
+  +int? storeId
+  +int? id
+  +Map<String, dynamic> toJson()
+}
+
+class "bkrm::services::info::inventoryInfo::defaultItemInfo.dart::DefaultItemInfo" {
+  -int? _itemId
+  -int? _categoryId
+  -String? _categoryName
+  -String? _itemName
+  -String? _barCode
+  -String? _imageUrl
+  -DateTime? _createdDate
+  -bool? _deleted
+  +int? categoryId
+  +int? itemId
+  +String? imageUrl
+  +String? barCode
+  +String? itemName
+  +DateTime? createdDate
+  +String? categoryName
+  +String toString()
+}
+
+class "bkrm::services::info::inventoryInfo::itemInfo.dart::ItemInfo" {
+  +int itemId
+  +int categoryId
+  +String categoryName
+  +String? itemName
+  +String? barCode
+  +String? imageUrl
+  +int sellPrice
+  +int priceId
+  +int quantity
+  +int purchasePrice
+  +DateTime createdDate
+  +double pointRatio
+  +String toString()
+  +Map<String, dynamic> toJson()
+}
+
+class "bkrm::services::info::inventoryInfo::itemPagination.dart::ItemPage" {
+  +int currentPage
+  +int lastPage
+  +int itemPerPage
+  +List<ItemInfo> items
+}
+
+class "bkrm::services::info::inventoryInfo::priceHistory.dart::PriceHistory" {
+  +ItemInfo item
+  +List<ItemPrice> prices
+}
+
+"bkrm::services::info::inventoryInfo::priceHistory.dart::PriceHistory" o-- "bkrm::services::info::inventoryInfo::itemInfo.dart::ItemInfo"
+
+class "bkrm::services::info::inventoryInfo::priceHistory.dart::ItemPrice" {
+  +int itemId
+  +String name
+  +int sellPrice
+  +String changedBy
+  +DateTime fromDate
+  +DateTime toDate
+}
+
+class "bkrm::services::info::inventoryInfo::purchasedSheetInfo.dart::PurchasedSheetInfo" {
+  +int? purchasedSheetId
+  +int? branchId
+  +int? purchaserId
+  +String? purchaserName
+  +int? supplierId
+  +String? supplierName
+  +String? supplierPhone
+  +int? totalPurchasePrice
+  +int? discount
+  +String? deliverName
+  +DateTime? deliveryDate
+}
+
+class "bkrm::services::info::inventoryInfo::purchasedSheetInfo.dart::DetailPurchasedSheetInfo" {
+  +PurchasedSheetInfo importInvoiceInfo
+  +List<PurchasedItem> purchasedItems
+}
+
+"bkrm::services::info::inventoryInfo::purchasedSheetInfo.dart::DetailPurchasedSheetInfo" o-- "bkrm::services::info::inventoryInfo::purchasedSheetInfo.dart::PurchasedSheetInfo"
+
+class "bkrm::services::info::inventoryInfo::purchasedSheetInfo.dart::PurchasedItem" {
+  +int? purchasedSheetId
+  +int? purchasedItemId
+  +int? purchasePrice
+  +int? quantity
+  +int? itemId
+  +String name
+  +String? imageUrl
+}
+
+class "bkrm::services::info::inventoryInfo::purchasedSheetPagination.dart::PurchasedSheetPagination" {
+  +int currentPage
+  +int lastPage
+  +int purchasedSheetsPerPage
+  +List<PurchasedSheetInfo> purchasedSheets
+}
+
+class "bkrm::services::info::inventoryInfo::quantityHistory.dart::QuantityHistory" {
+  +ItemInfo? item
+  +List<ItemQuantityChange> quantityHistory
+}
+
+"bkrm::services::info::inventoryInfo::quantityHistory.dart::QuantityHistory" o-- "bkrm::services::info::inventoryInfo::itemInfo.dart::ItemInfo"
+
+class "bkrm::services::info::inventoryInfo::quantityHistory.dart::ItemQuantityChange" {
+  +String quantityChange
+  +int itemId
+  +int oldQuantity
+  +int newQuantity
+  +int checkerId
+  +String checkerName
+  +String reason
+  +DateTime createdDatetime
+}
+
+class "bkrm::services::info::inventoryInfo::returnPurchasedSheetInfo.dart::ReturnPurchasedSheetInfo" {
+  +int returnPurchasedSheetId
+  +int purchasedSheetId
+  +int returnerId
+  +String returnerName
+  +int? supplierId
+  +String? supplierName
+  +int totalReturnMoney
+  +DateTime createdDateTime
+}
+
+class "bkrm::services::info::inventoryInfo::returnPurchasedSheetInfo.dart::DetailReturnPurchasedSheetInfo" {
+  +ReturnPurchasedSheetInfo returnPurchasedSheet
+  +List<ReturnItemInfo> returnItems
+}
+
+"bkrm::services::info::inventoryInfo::returnPurchasedSheetInfo.dart::DetailReturnPurchasedSheetInfo" o-- "bkrm::services::info::inventoryInfo::returnPurchasedSheetInfo.dart::ReturnPurchasedSheetInfo"
+
+class "bkrm::services::info::inventoryInfo::returnPurchasedSheetInfo.dart::ReturnItemInfo" {
+  +int returnPurchasedSheetId
+  +int returnPurchasedItemID
+  +int itemId
+  +String name
+  +String? imageUrl
+  +int oldPurchasedPrice
+  +int oldQuantity
+}
+
+class "bkrm::services::info::inventoryInfo::returnPurchasedSheetPagination.dart::ReturnPurchasedSheetPagination" {
+  +int currentPage
+  +int lastPage
+  +int returnPurchasedSheetsPerPage
+  +List<ReturnPurchasedSheetInfo> returnPurchasedSheets
+}
+
+class "bkrm::services::info::inventoryInfo::supplierInfo.dart::SupplierInfo" {
+  -int? _id
+  -int? _branchId
+  -String? _name
+  -String? _phoneNumber
+  -String? _email
+  -String? _address
+  +bool? deleted
+  +String? address
+  +String? email
+  +String? phoneNumber
+  +String? name
+  +int? id
+  +int? storeId
+}
+
+class "bkrm::services::info::invoice::invoiceReceivedWhenCreated.dart::InvoiceReceivedWhenCreated" {
+  +int? invoiceId
+  +int? totalSellPrice
+  +int? discount
+  +DateTime? createdDatetime
+  +String? status
+  +int? customerId
+  +String? customerName
+  +int? sellerId
+  +String? sellerName
+}
+
+class "bkrm::services::info::invoice::invoiceReceivedWhenCreated.dart::DetailInvoiceInfo" {
+  +InvoiceReceivedWhenCreated? invoiceInfo
+  +List<Item> items
+}
+
+"bkrm::services::info::invoice::invoiceReceivedWhenCreated.dart::DetailInvoiceInfo" o-- "bkrm::services::info::invoice::invoiceReceivedWhenCreated.dart::InvoiceReceivedWhenCreated"
+
+class "bkrm::services::info::invoice::invoiceReceivedWhenCreated.dart::Item" {
+  +String name
+  +int? sellPrice
+  +int? quantity
+}
+
+class "bkrm::services::info::invoice::invoiceReceivedWhenGet.dart::InvoiceReceivedWhenGet" {
+  +int? invoiceId
+  +int? branchId
+  +int? sellerId
+  +String? sellerName
+  +int? customerId
+  +String? customerName
+  +String? customerPhone
+  +int? totalSellPrice
+  +int? discount
+  +DateTime? createdDatetime
+  +String? status
+}
+
+class "bkrm::services::info::invoice::invoiceReceivedWhenGet.dart::DetailInvoiceInfo" {
+  +InvoiceReceivedWhenGet invoiceInfo
+  +List<Item> items
+  +DetailInvoiceInfo toInvoiceWhenCreated()
+}
+
+"bkrm::services::info::invoice::invoiceReceivedWhenGet.dart::DetailInvoiceInfo" o-- "bkrm::services::info::invoice::invoiceReceivedWhenGet.dart::InvoiceReceivedWhenGet"
+
+class "bkrm::services::info::invoice::invoiceReceivedWhenGet.dart::Item" {
+  +int? invoiceId
+  +int? invoiceItemId
+  +int? sellPrice
+  +int? quantity
+  +int? itemId
+  +double pointRatio
+  +String name
+  +String? imageUrl
+}
+
+class "bkrm::services::info::invoice::sendInvoiceInfo.dart::SendInvoiceItem" {
+  +int? priceId
+  +int? discount
+  +int quantity
+  +double pointRatio
+  +Map<String, dynamic> export()
+}
+
+class "bkrm::services::info::invoice::sendInvoiceInfo.dart::SendInvoiceInfo" {
+  +int? customerId
+  +String? customerPhone
+  +String status
+  +int totalSellValue
+  +int? customerPoint
+  +int discount
+  +int id
+  +List<SendInvoiceItem> invoiceItems
+  +Map<String, dynamic> exportInvoice()
+  +List<Map<String, dynamic>> exportInvoiceItems()
+}
+
+class "bkrm::services::info::managementInfo::dashboardInfo.dart::DayRevenue" {
+  -DateTime? _datetime
+  -int? _revenue
+  +int? revenue
+  +DateTime? datetime
+}
+
+class "bkrm::services::info::managementInfo::dashboardInfo.dart::MonthRevenue" {
+  -DateTime? _dateTime
+  -int? _revenue
+  +int? revenue
+  +DateTime? dateTime
+}
+
+class "bkrm::services::info::managementInfo::dashboardInfo.dart::DashboardInfo" {
+  -int? _numberEmployee
+  -int? _itemQuantities
+  -int? _importFee
+  -List<DayRevenue>? _sevenDaysRevenue
+  -List<DayRevenue>? _monthRevenue
+  -List<MonthRevenue>? _yearRevenue
+  -int _revenueLastWeek
+  -int _revenueLastMonth
+  -int _revenueLastYear
+  +int? numberEmployee
+  +int? itemQuantities
+  +int? importFee
+  +int revenueLastWeek
+  +List<MonthRevenue>? yearRevenue
+  +List<DayRevenue>? monthRevenue
+  +List<DayRevenue>? sevenDaysRevenue
+  +int revenueLastMonth
+  +int revenueLastYear
+  +List<int?> getRevenueWeekDayChart()
+  +List<int?> getRevenueMonthDayChart()
+  +List<int?> getRevenueYearDayChart()
+}
+
+class "bkrm::services::info::managementInfo::historyInfo.dart::HistoryInfo" {
+  +int id
+  +String userName
+  +DateTime createdDateTime
+  +String action
+  +String type
+  +String toString()
+}
+
+class "bkrm::services::info::managementInfo::storeInfo.dart::Store" {
+  -int? _id
+  -String? _name
+  -String? _chainId
+  -String? _address
+  -DateTime? _createdTime
+  -DateTime? _updatedTime
+  +DateTime? updatedTime
+  +DateTime? createdTime
+  +String? address
+  +String? chainId
+  +String? name
+  +int? id
+}
+
+class "bkrm::services::info::managementInfo::userInfo.dart::UserInfo" {
+  +int? userId
+  +String name
+  +String? email
+  +String username
+  +String? phone
+  +String? gender
+  +DateTime? dateOfBirth
+  +int? storeId
+  +String? storeName
+  +int? storeOwnerId
+  +int? branchId
+  +String branchName
+  +String branchAddress
+  +String? token
+  +List<String> roles
+  +String avatarUrl
+  +String avatarFile
+  +Map<String, dynamic> toJson()
+}
+
+class "bkrm::services::info::report::categoryReportInfo.dart::CategoryReportInfo" {
+  +List<Category> totalSellPriceCategory
+  +int totalSellPrice
+}
+
+class "bkrm::services::info::report::categoryReportInfo.dart::Category" {
+  +int id
+  +String name
+  +int totalSellPrice
+  +int totalQuantity
+}
+
+class "bkrm::services::info::report::chartInfo.dart::ChartInfo" {
+  +DateTime fromFate
+  +DateTime toDate
+  +String unit
+  +List<int> revenue
+  +List<int> profit
+  +List<int> capital
+  +List<int> purchase
+  +int maxValue
+  +int minValue
+  +int totalRevenue
+  +int totalCapital
+  +int totalProfit
+  +int totalPurchase
+  +List<ItemInfo> noPurchasePriceItem
+  +int getTotalRevenue()
+  +int getTotalProfit()
+  +int getTotalCapital()
+  +int getTotalPurchase()
+  +String toString()
+}
+
+class "bkrm::services::info::report::customerReportInfo.dart::CustomerReportInfo" {
+  +List<Customer> listCustomer
+}
+
+class "bkrm::services::info::report::customerReportInfo.dart::Customer" {
+  +String name
+  +int totalBuyPrice
+}
+
+class "bkrm::services::info::report::itemReportInfo.dart::ItemReportInfo" {
+  +List<Item> top3TotalSellPriceItems
+  +List<Item> top3SoldQuantityItems
+  +int totalSellPrice
+  +int totalSellQuantity
+}
+
+class "bkrm::services::info::report::itemReportInfo.dart::Item" {
+  +int id
+  +String name
+  +String imageUrl
+  +int totalSellPrice
+  +int totalQuantity
+}
+
+class "bkrm::services::info::report::supplierReportInfo.dart::SupplierReportInfo" {
+  +List<Supplier> listSupplier
+}
+
+class "bkrm::services::info::report::supplierReportInfo.dart::Supplier" {
+  +String name
+  +int totalPurchasePrice
+}
+
+class "bkrm::services::info::sellingInfo::customerInfo.dart::CustomerInfo" {
+  -int? _id
+  -int? _branchId
+  -String? _name
+  -String? _phoneNumber
+  -String? _address
+  -String? _gender
+  -String? _email
+  +int? customerPoint
+  -DateTime? _dateOfBirth
+  +String? customerCode
+  +DateTime? createdDate
+  +bool? deleted
+  +String? phoneNumber
+  +String? name
+  +int? id
+  +String? email
+  +String? gender
+  +String? address
+  +int? storeId
+  +int? branchId
+  +DateTime? dateOfBirth
+  +Map<String, dynamic> toJson()
+}
+
+class "bkrm::services::info::sellingInfo::invoicePagination.dart::InvoicePagination" {
+  +int currentPage
+  +int lastPage
+  +int invoicePerPAge
+  +List<InvoiceReceivedWhenGet> invoices
+}
+
+class "bkrm::services::info::sellingInfo::refundInfo.dart::RefundSheet" {
+  +int? refundSheetId
+  +int? invoiceId
+  +int? refunderId
+  +String? refunderName
+  +int? customerId
+  +String? customerName
+  +String? customerPhone
+  +int? totalRefundPrice
+  +String? reason
+  +DateTime? createdDatetime
+}
+
+class "bkrm::services::info::sellingInfo::refundInfo.dart::DetailRefundSheet" {
+  +RefundSheet refundInfo
+  +List<RefundItem> refundItems
+}
+
+"bkrm::services::info::sellingInfo::refundInfo.dart::DetailRefundSheet" o-- "bkrm::services::info::sellingInfo::refundInfo.dart::RefundSheet"
+
+class "bkrm::services::info::sellingInfo::refundInfo.dart::RefundItem" {
+  +int? refundSheetId
+  +int? refundItemId
+  +int? itemId
+  +String name
+  +int? sellPrice
+  +int? quantity
+  +String? imageUrl
+}
+
+class "bkrm::services::info::sellingInfo::refundPagination.dart::RefundPagination" {
+  +int currentPage
+  +int lastPage
+  +int refundPerPAge
+  +List<RefundSheet> refunds
+}
+
+class "bkrm::services::printer::barcode_printer.dart::BarcodePrinter" {
+  +String barcode
+  +String name
+  +_BarcodePrinterState createState()
+}
+
+class "bkrm::services::printer::barcode_printer.dart::_BarcodePrinterState" {
+  +TextEditingController amountController
+  +bool amountValid
+  +int amount
+  +Uint8List normalSizeText
+  +Uint8List onlyBoldText
+  +Uint8List boldWithLargeText
+  +Uint8List strongText
+  +int characterOnOneLine
+  -List<BluetoothDevice>? _devices
+  +BlueThermalPrinter bluetooth
+  +Future<List<BluetoothDevice>?>? bluetoothInit
+  +void initState()
+  +Future<List<BluetoothDevice>?> initPlatformState()
+  +dynamic printCustom()
+  +dynamic printLeftRight()
+  +dynamic printBarcodeItem()
+  +Widget build()
+}
+
+"bkrm::services::printer::barcode_printer.dart::_BarcodePrinterState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"bkrm::services::printer::barcode_printer.dart::_BarcodePrinterState" o-- "dart::typed_data::Uint8List"
+"bkrm::services::printer::barcode_printer.dart::_BarcodePrinterState" o-- "blue_thermal_printer::blue_thermal_printer.dart::BlueThermalPrinter"
+
+class "bkrm::services::printer::invoice_printer.dart::FormatBluetooth" {
+  {static} +Uint8List defaultSize
+  {static} +Uint8List normalSizeText
+  {static} +Uint8List smallSize
+  {static} +Uint8List bold
+  {static} +Uint8List doubleHeight
+  {static} +Uint8List doubleWidth
+  {static} +Uint8List doubleHeightAndWidth
+  {static} +Uint8List alignLeft
+  {static} +Uint8List alignRight
+  {static} +Uint8List alignCenter
+  {static} +Uint8List characterSize
+}
+
+"bkrm::services::printer::invoice_printer.dart::FormatBluetooth" o-- "dart::typed_data::Uint8List"
+
+class "bkrm::services::printer::invoice_printer.dart::InvoicePrinter" {
+  +DetailInvoiceInfo? invoice
+  +_InvoicePrinterState createState()
+}
+
+"bkrm::services::printer::invoice_printer.dart::InvoicePrinter" o-- "bkrm::services::info::invoice::invoiceReceivedWhenCreated.dart::DetailInvoiceInfo"
+
+class "bkrm::services::printer::invoice_printer.dart::_InvoicePrinterState" {
+  +Uint8List normalSizeText
+  +Uint8List onlyBoldText
+  +Uint8List boldWithLargeText
+  +Uint8List strongText
+  +int characterOnOneLine
+  -List<BluetoothDevice>? _devices
+  +BlueThermalPrinter bluetooth
+  +Future<List<BluetoothDevice>?>? bluetoothInit
+  +void initState()
+  +Future<List<BluetoothDevice>?> initPlatformState()
+  +dynamic printCustom()
+  +dynamic printLeftRight()
+  +dynamic printInvoice()
+  +Widget build()
+}
+
+"bkrm::services::printer::invoice_printer.dart::_InvoicePrinterState" o-- "dart::typed_data::Uint8List"
+"bkrm::services::printer::invoice_printer.dart::_InvoicePrinterState" o-- "blue_thermal_printer::blue_thermal_printer.dart::BlueThermalPrinter"
+
+class "bkrm::services::printer::invoice_printer.dart::PreviewPrinterPage" {
+  +DetailInvoiceInfo invoice
+  +List<Widget> listWidgetItem
+  +Widget build()
+}
+
+"bkrm::services::printer::invoice_printer.dart::PreviewPrinterPage" o-- "bkrm::services::info::invoice::invoiceReceivedWhenCreated.dart::DetailInvoiceInfo"
+
+class "bkrm::services::printer::qrCodePrinter.dart::QrCodePrinter" {
+  +String qrCode
+  +_QrCodePrinterState createState()
+}
+
+class "bkrm::services::printer::qrCodePrinter.dart::_QrCodePrinterState" {
+  +Uint8List normalSizeText
+  +Uint8List onlyBoldText
+  +Uint8List boldWithLargeText
+  +Uint8List strongText
+  +int characterOnOneLine
+  -List<BluetoothDevice>? _devices
+  +BlueThermalPrinter bluetooth
+  +Future<List<BluetoothDevice>?>? bluetoothInit
+  +void initState()
+  +Future<List<BluetoothDevice>?> initPlatformState()
+  +dynamic printCustom()
+  +dynamic printLeftRight()
+  +dynamic printQrCode()
+  +Widget build()
+}
+
+"bkrm::services::printer::qrCodePrinter.dart::_QrCodePrinterState" o-- "dart::typed_data::Uint8List"
+"bkrm::services::printer::qrCodePrinter.dart::_QrCodePrinterState" o-- "blue_thermal_printer::blue_thermal_printer.dart::BlueThermalPrinter"
+
+class "bkrm::services::services.dart::MsgInfoCode" {
+  +int index
+  {static} +List<MsgInfoCode> values
+  {static} +MsgInfoCode actionSuccess
+  {static} +MsgInfoCode actionFail
+  {static} +MsgInfoCode signUpSuccess
+  {static} +MsgInfoCode signUpFail
+  {static} +MsgInfoCode usernameAlreadyBeenTaken
+  {static} +MsgInfoCode phoneNumberAlreadyBeenTaken
+  {static} +MsgInfoCode logInSucess
+  {static} +MsgInfoCode logInFail
+  {static} +MsgInfoCode wrongPasswordOrUsername
+  {static} +MsgInfoCode serverNotAvailable
+  {static} +MsgInfoCode alreadyHaveUserLogedIn
+  {static} +MsgInfoCode logOutSuccess
+  {static} +MsgInfoCode inputIsNull
+  {static} +MsgInfoCode alreadyWorkInShift
+}
+
+"bkrm::services::services.dart::MsgInfoCode" o-- "bkrm::services::services.dart::MsgInfoCode"
+
+class "bkrm::services::services.dart::BkrmService" {
+  {static} -BkrmService _instance
+  +ApiService api
+  -CartService? _cart
+  +List<CartService> listCart
+  -ImportGoodService? _importGood
+  -UserInfo? _currentUser
+  -Database? _noSqlDb
+  -StoreRef<dynamic, dynamic>? _noSqlStore
+  +Timer? timer
+  +bool prevNetworkState
+  +bool networkAvailable
+  +List<ItemInfo> storedItemInfo
+  +List<ItemInfo> storedItemPageItemNameAsc
+  +List<ItemInfo> storedItemPageItemNameDesc
+  +List<ItemInfo> storedItemPageSellPriceAsc
+  +List<ItemInfo> storedItemPageSellPriceDesc
+  +List<ItemInfo> storedItemPageCreatedDateAsc
+  +List<ItemInfo> storedItemPageCreatedDateDesc
+  +List<CustomerInfo> storedCustomerInfo
+  +List<CategoryInfo> storedCategoryInfo
+  -StreamController<dynamic> _cartServiceController
+  +UserInfo? currentUser
+  +Database? db
+  +StoreRef<dynamic, dynamic>? store
+  +ImportGoodService? importGood
+  +CartService? cart
+  +Stream<dynamic> cartServiceStream
+  +Future<bool> networkAvailableCheck()
+  +void requestCart()
+  +void dispose()
+  +dynamic initDb()
+  +Future<UserInfo?> getLastLogInUser()
+  +Future<bool> storeCurrentUserLoggedIn()
+  +Future<bool> clearLastUserLoggedIn()
+  +Future<bool> addDeliverNameToSupplier()
+  +Future<List<String>> getDeliverNameOfSupplier()
+  +Future<bool> storeDataForThisSession()
+  +Future<bool> getDataFromLastSessionForThisSession()
+  +Future<bool> addRequestToQueue()
+  +Future<bool> addAllRequestToQueue()
+  +Future<List<Map<String, dynamic>>> getQueuedRequest()
+  +Future<bool> removeAllQueuedRequest()
+  +Future<UserInfo?> getLastSessionUser()
+  +Future<bool> checkToChangeToOfflineMode()
+  +dynamic prepareDataForOffline()
+  +dynamic generateSortListForItem()
+  +Future<MsgInfoCode> signUp()
+  +Future<MsgInfoCode> logInUser()
+  +Future<void> logOut()
+  +Future<MsgInfoCode> changePassword()
+  +Future<MsgInfoCode?> createEmployeeUser()
+  +Future<MsgInfoCode?> createCustomer()
+  +Future<MsgInfoCode?> createSupplier()
+  +Future<MsgInfoCode?> createCategory()
+  +Future<MsgInfoCode?> createNewProduct()
+  +Future<MsgInfoCode?> createRefundSheet()
+  +Future<MsgInfoCode?> createReturnPurchasedSheet()
+  +Future<MsgInfoCode?> createShift()
+  +Future<MsgInfoCode?> createSchedule()
+  +Future<MsgInfoCode?> createAttendance()
+  +Future<MsgInfoCode?> createQuantityCheckingSheet()
+  +Future<List<ItemInfo>> getAllItemForReserved()
+  +List<ItemInfo> filterStoredList()
+  +ItemPage? getStoredListItem()
+  +Future<ItemPage?> getAllItem()
+  +Future<List<ItemInfo>> getItems()
+  +Future<List<ItemInfo>> searchItemInBranch()
+  +Future<List<DefaultItemInfo>> searchItemInDefaultDb()
+  +Future<DashboardInfo?> getDashboardInfo()
+  +Future<List<SupplierInfo>> getSupplier()
+  +Future<List<CategoryInfo>> getCategory()
+  +Future<List<CustomerInfo>> getCustomer()
+  +Future<List<EmployeeInfo>> getEmployee()
+  +Future<PurchasedSheetPagination?> getImportInvoices()
+  +Future<DetailPurchasedSheetInfo?> getDetailPurchasedSheet()
+  +Future<InvoicePagination?> getInvoices()
+  +Future<DetailInvoiceInfo?> getDetailInvoice()
+  +Future<RefundPagination?> getRefundSheets()
+  +Future<ReturnPurchasedSheetPagination?> getReturnPurchasedSheet()
+  +Future<DetailRefundSheet?> getDetailRefundSheet()
+  +Future<DetailReturnPurchasedSheetInfo?> getDetailReturnPurchasedSheet()
+  +Future<List<ShiftInfo>> getShifts()
+  +Future<List<ScheduleInfo>> getSchedules()
+  +Future<List<AttendanceInfo>> getAttendances()
+  +Future<List<Map<String, dynamic>>> getAttendancesFromDateToDate()
+  +Future<ChartInfo?> getCharts()
+  +Future<ItemReportInfo?> getReportItems()
+  +Future<CategoryReportInfo?> getReportCategories()
+  +Future<CustomerReportInfo?> getReportCustomer()
+  +Future<SupplierReportInfo?> getReportSupplier()
+  +Future<PriceHistory?> getPriceHistory()
+  +Future<QuantityHistory?> getQuantityHistory()
+  +Future<List<ItemInfo>> getItemsWithNoPurchasePrice()
+  +Future<List<HistoryInfo>> getHistory()
+  +Future<MsgInfoCode?> editProduct()
+  +Future<MsgInfoCode> editCurrentUser()
+  +Future<MsgInfoCode?> editCustomer()
+  +Future<MsgInfoCode?> editSupplier()
+  +Future<MsgInfoCode?> editCategory()
+  +Future<MsgInfoCode?> editShift()
+  +Future<MsgInfoCode?> editBranch()
+  +Future<MsgInfoCode?> editEmployeeInfo()
+  +Future<MsgInfoCode> resetPasswordUserForOwner()
+  +Future<MsgInfoCode?> deleteItem()
+  +Future<MsgInfoCode?> deleteSchedule()
+  +Future<MsgInfoCode?> changeStatusAccount()
+}
+
+"bkrm::services::services.dart::BkrmService" o-- "bkrm::services::services.dart::BkrmService"
+"bkrm::services::services.dart::BkrmService" o-- "bkrm::services::api.dart::ApiService"
+"bkrm::services::services.dart::BkrmService" o-- "bkrm::services::cartService.dart::CartService"
+"bkrm::services::services.dart::BkrmService" o-- "bkrm::services::importGoodService.dart::ImportGoodService"
+"bkrm::services::services.dart::BkrmService" o-- "bkrm::services::info::managementInfo::userInfo.dart::UserInfo"
+"bkrm::services::services.dart::BkrmService" o-- "sembast::src::api::v2::database.dart::Database"
+"bkrm::services::services.dart::BkrmService" o-- "sembast::src::api::store_ref.dart::StoreRef<dynamic, dynamic>"
+"bkrm::services::services.dart::BkrmService" o-- "dart::async::Timer"
+"bkrm::services::services.dart::BkrmService" o-- "dart::async::StreamController<dynamic>"
+"bkrm::services::services.dart::BkrmService" o-- "dart::async::Stream<dynamic>"
+
+class "bkrm::widget::customerFormatter.dart::CustomerFormatter" {
+  +TextInputFormatter currencyFormatter
+  +TextInputFormatter numberFormatter
+  {static} +String formatCurrency()
+}
+
+"bkrm::widget::customerFormatter.dart::CustomerFormatter" o-- "flutter::src::services::text_formatter.dart::TextInputFormatter"
+
+class "bkrm::widget::enumDefine.dart::SortCriteria" {
+  +int index
+  {static} +List<SortCriteria> values
+  {static} +SortCriteria nameAscending
+  {static} +SortCriteria nameDescending
+  {static} +SortCriteria sellerNameAscending
+  {static} +SortCriteria sellerNameDescending
+  {static} +SortCriteria priceAscending
+  {static} +SortCriteria priceDescending
+  {static} +SortCriteria amountStockAscending
+  {static} +SortCriteria amountStockDescending
+  {static} +SortCriteria dateCreateAscending
+  {static} +SortCriteria dateCreateDescending
+  {static} +SortCriteria discountAscending
+  {static} +SortCriteria discountDescending
+  {static} +SortCriteria idAscending
+  {static} +SortCriteria idDescending
+  {static} +SortCriteria dateUpdateAscending
+  {static} +SortCriteria dateUpdateDescending
+}
+
+"bkrm::widget::enumDefine.dart::SortCriteria" o-- "bkrm::widget::enumDefine.dart::SortCriteria"
+
+class "bkrm::widget::enumDefine.dart::Criteria" {
+  +int index
+  {static} +List<Criteria> values
+  {static} +Criteria name
+  {static} +Criteria price
+  {static} +Criteria amount
+  {static} +Criteria date
+  {static} +Criteria discount
+  {static} +Criteria id
+  {static} +Criteria sellerName
+}
+
+"bkrm::widget::enumDefine.dart::Criteria" o-- "bkrm::widget::enumDefine.dart::Criteria"
+
+class "bkrm::widget::enumDefine.dart::SortFunction" {
+  {static} +Function nameAscendingItem
+  {static} +Function nameDescendingItem
+  {static} +Function priceAscendingItem
+  {static} +Function priceDescendingItem
+  {static} +Function amountAscendingItem
+  {static} +Function amountDescendingItem
+  {static} +Function dateCreatedAscendingItem
+  {static} +Function dateCreatedDescendingItem
+  {static} +Function nameAscendingImportInvoice
+  {static} +Function nameDescendingImportInvoice
+  {static} +Function priceAscendingImportInvoice
+  {static} +Function priceDescendingImportInvoice
+  {static} +Function dateDeliveryAscendingImportInvoice
+  {static} +Function dateDeliveryDescendingImportInvoice
+  {static} +Function discountAscendingImportInvoice
+  {static} +Function discountDescendingImportInvoice
+}
+
+class "bkrm::widget::listCategory.dart::ListCategory" {
+  +ListProduct listProduct
+  +int? categoryId
+  +_ListCategoryState createState()
+}
+
+"bkrm::widget::listCategory.dart::ListCategory" o-- "bkrm::widget::listProducts.dart::ListProduct"
+
+class "bkrm::widget::listCategory.dart::_ListCategoryState" {
+  +List<Widget> listCategory
+  +void initState()
+  +void buildListCategory()
+  +Widget build()
+}
+
+class "bkrm::widget::listCustomer.dart::ListCustomers" {
+  -_ListCustomersState _state
+  +_ListCustomersState createState()
+}
+
+"bkrm::widget::listCustomer.dart::ListCustomers" o-- "bkrm::widget::listCustomer.dart::_ListCustomersState"
+
+class "bkrm::widget::listCustomer.dart::_ListCustomersState" {
+  +BkrmService bkrmService
+  +String searchQuery
+  +TextEditingController controller
+  +List<CustomerInfo>? customersData
+  +void initState()
+  +dynamic getCustomerData()
+  +bool isNumeric()
+  +Widget build()
+}
+
+"bkrm::widget::listCustomer.dart::_ListCustomersState" o-- "bkrm::services::services.dart::BkrmService"
+"bkrm::widget::listCustomer.dart::_ListCustomersState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::widget::listProducts.dart::ListProduct" {
+  +TextEditingController editingController
+  +List<ItemInfo>? rawProductsInfo
+  +List<ProductItem> processListProducts
+  +List<ProductItem> displayProducts
+  +int sumProducts
+  +int sumAllQuantityOfProducts
+  -_ListProductState _state
+  +bool hasSlider
+  +BuildContext? parentContext
+  -StreamController<dynamic> _doneGetDataController
+  +double fontSize
+  +dynamic Function(BuildContext, ItemInfo)? onTapOnProduct
+  +dynamic Function(BuildContext, ItemInfo)? onLongPressOnProduct
+  +String searchQuery
+  +Stream<dynamic> getDataDone
+  +void filterSearchResults()
+  +void sortProduct()
+  +void filterCategory()
+  +void refreshList()
+  +_ListProductState createState()
+  +void dispose()
+}
+
+"bkrm::widget::listProducts.dart::ListProduct" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"bkrm::widget::listProducts.dart::ListProduct" o-- "bkrm::widget::listProducts.dart::_ListProductState"
+"bkrm::widget::listProducts.dart::ListProduct" o-- "flutter::src::widgets::framework.dart::BuildContext"
+"bkrm::widget::listProducts.dart::ListProduct" o-- "dart::async::StreamController<dynamic>"
+"bkrm::widget::listProducts.dart::ListProduct" o-- "null::dynamic Function(BuildContext, ItemInfo)"
+"bkrm::widget::listProducts.dart::ListProduct" o-- "dart::async::Stream<dynamic>"
+
+class "bkrm::widget::listProducts.dart::_ListProductState" {
+  +String orderBy
+  +String order
+  +int? filterCategoryId
+  +String? searchQuery
+  +String? barcode
+  +Future<dynamic>? futureCall
+  +SlidableController slideController
+  -PagingController<int, ItemInfo> _pagingController
+  +void initState()
+  -Future<void> _fetchPage()
+  +void sortProducts()
+  +void filterCategory()
+  +void filterSearchResults()
+  +Widget build()
+}
+
+"bkrm::widget::listProducts.dart::_ListProductState" o-- "flutter_slidable::src::widgets::slidable.dart::SlidableController"
+"bkrm::widget::listProducts.dart::_ListProductState" o-- "infinite_scroll_pagination::src::core::paging_controller.dart::PagingController<int, ItemInfo>"
+
+class "bkrm::widget::listSupplier.dart::ListSupplier" {
+  +dynamic Function(BuildContext, SupplierInfo) onTapSupplier
+  +State<StatefulWidget> createState()
+}
+
+"bkrm::widget::listSupplier.dart::ListSupplier" o-- "null::dynamic Function(BuildContext, SupplierInfo)"
+
+class "bkrm::widget::listSupplier.dart::_ListCustomersState" {
+  +BkrmService bkrmService
+  +String searchQuery
+  +TextEditingController controller
+  +List<SupplierInfo>? suppliersData
+  +void initState()
+  +void getCustomerData()
+  +Widget build()
+}
+
+"bkrm::widget::listSupplier.dart::_ListCustomersState" o-- "bkrm::services::services.dart::BkrmService"
+"bkrm::widget::listSupplier.dart::_ListCustomersState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+
+class "bkrm::widget::menuWidget.dart::ExpansionExpand" {
+  +bool isExpanded
+  +Widget header
+  +Widget child
+}
+
+"bkrm::widget::menuWidget.dart::ExpansionExpand" o-- "flutter::src::widgets::framework.dart::Widget"
+
+class "bkrm::widget::menuWidget.dart::ExpansionDrawer" {
+  +BuildContext pageContext
+  +_ExpansionDrawerState createState()
+}
+
+"bkrm::widget::menuWidget.dart::ExpansionDrawer" o-- "flutter::src::widgets::framework.dart::BuildContext"
+
+class "bkrm::widget::menuWidget.dart::_ExpansionDrawerState" {
+  +List<ExpansionExpand> expansion
+  +List<Widget> listMenu
+  +BkrmService bkrmService
+  +void initState()
+  +dynamic buildExpansionFirstTime()
+  +dynamic buildDrawer()
+  +Widget build()
+}
+
+"bkrm::widget::menuWidget.dart::_ExpansionDrawerState" o-- "bkrm::services::services.dart::BkrmService"
+
+class "bkrm::widget::productItem.dart::ProductItem" {
+  +String? imageLink
+  +String? productName
+  +String? productCode
+  +String? productPrice
+  +String? productAmount
+  +ItemInfo rawDataItem
+  +bool hasSlider
+  +SlidableController? controller
+  +double fontSize
+  +void Function(BuildContext, ItemInfo)? onTapOnProduct
+  +void Function(BuildContext, ItemInfo)? onLongPressedOnProduct
+  -PagingController<dynamic, dynamic>? _pagingController
+  +NumberFormat formatter
+  +Widget build()
+}
+
+"bkrm::widget::productItem.dart::ProductItem" o-- "bkrm::services::info::inventoryInfo::itemInfo.dart::ItemInfo"
+"bkrm::widget::productItem.dart::ProductItem" o-- "flutter_slidable::src::widgets::slidable.dart::SlidableController"
+"bkrm::widget::productItem.dart::ProductItem" o-- "null::void Function(BuildContext, ItemInfo)"
+"bkrm::widget::productItem.dart::ProductItem" o-- "infinite_scroll_pagination::src::core::paging_controller.dart::PagingController<dynamic, dynamic>"
+"bkrm::widget::productItem.dart::ProductItem" o-- "intl::src::intl::number_format.dart::NumberFormat"
+
+class "bkrm::widget::sortListCriteria.dart::SortListCriteriaProduct" {
+  +ListProduct listProduct
+  +SortCriteria? sortCriteria
+  +Criteria? selectedCriteria
+  +_SortListCriteriaProductState createState()
+}
+
+"bkrm::widget::sortListCriteria.dart::SortListCriteriaProduct" o-- "bkrm::widget::listProducts.dart::ListProduct"
+"bkrm::widget::sortListCriteria.dart::SortListCriteriaProduct" o-- "bkrm::widget::enumDefine.dart::SortCriteria"
+"bkrm::widget::sortListCriteria.dart::SortListCriteriaProduct" o-- "bkrm::widget::enumDefine.dart::Criteria"
+
+class "bkrm::widget::sortListCriteria.dart::_SortListCriteriaProductState" {
+  +Widget radioButtonGroup
+  +void initState()
+  +void buildRadioButton()
+  +Widget build()
+}
+
+"bkrm::widget::sortListCriteria.dart::_SortListCriteriaProductState" o-- "flutter::src::widgets::framework.dart::Widget"
+
+
+@enduml
