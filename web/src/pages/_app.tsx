@@ -5,7 +5,9 @@ import Provider from "@components/shared/Provider"
 function MyApp({ Component, pageProps }: AppProps) {
 	return (
 		<Provider>
-			<Component {...pageProps} />
+			<Box h="100vh" overflow="hidden">
+				<Component {...pageProps} />
+			</Box>
 		</Provider>
 	)
 }

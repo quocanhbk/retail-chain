@@ -1,0 +1,37 @@
+### API PATH: https://149.28.148.73/bkrm/public/api
+POST https://149.28.148.73/bkrm/public/api/register
+content-type: "application/json"
+
+{
+    "name": "La Quoc Anh",
+    "username": "laquocanh",
+    "password": "123456",
+    "email": "quocanhbk17@gmail.com",
+    "phone": "0384415336",
+    "date_of_birth": "1999-06-01",
+    "gender": "male",
+    "store_name": "Hexagon",
+    "branch_name": "Hexagon",
+    "branch_address": "Ho Chi Minh City"
+}
+
+###
+POST https://149.28.148.73/bkrm/public/api/login
+content-type: "application/json"
+
+{
+    "username": "laquocanh",
+    "password": "123456"
+}
+
+###
+POST https://149.28.148.73/bkrm/public/api/store/35/branch/40/item/create
+content-type: "application/json"
+
+{
+    "item_name": "Lazer sword",
+    "bar_code": "123129312817232",
+    "sell_price": 1000000000,
+    "purchase_price": 900000000,
+    "quantity": 1000
+}

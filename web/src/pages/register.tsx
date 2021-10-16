@@ -1,8 +1,8 @@
-import { LoginUI } from "@components/UI"
+import { RegisterUI } from "@components/UI"
 import type { NextPage } from "next"
 
 const Home: NextPage = () => {
-	return <LoginUI />
+	return <RegisterUI />
 }
 
 export default Home

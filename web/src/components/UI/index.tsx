@@ -1,1 +1,2 @@
-export * from "./HomeUI"
+export * from "./RegisterUI"
+export * from "./LoginUI"
