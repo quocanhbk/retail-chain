@@ -7,11 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cookie;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use App\FrequentQuery;
 use App\TokenController;
+
 
 class UserController extends Controller
 {
@@ -33,7 +35,7 @@ class UserController extends Controller
             'avatar'            => 'nullable|file'
         ];
         $validator = Validator::make($data, $rules);
-        
+
         if($validator->fails()){
             $state = 'fail';
             $errors = $validator->errors();
@@ -105,7 +107,7 @@ class UserController extends Controller
                 $state = 'success';
                 $errors = $validator->errors();
             }
-            
+
             $state = 'success';
             $errors = 'none';
             return response()->json(compact('state', 'errors', 'data'));
@@ -127,15 +129,18 @@ class UserController extends Controller
             return response()->json(compact('state', 'errors', 'data'));
         } else {
             $credentials = $request->only('username', 'password');
-            $credentials['status'] = 'enable'; 
+            $credentials['status'] = 'enable';
             $token = null;
+
             try {
-                if (!$token = auth()->attempt($credentials, ['status' => 'enable'])) {
+                $token = JWTAuth::attempt($credentials, ['status' => 'enable']);
+
+                if (!$token) {
                     $state = 'fail';
                     $errors = "Invalid username, password or account is disable";
                     return response()->json(compact('state', 'errors', 'data'));
                 }
-            } catch (JWTAuthException $e) {
+            } catch (JWTAuth $e) {
                 $state = 'fail';
                 $errors = "Failed to create token";
                 return response()->json(compact('state', 'errors', 'data'));
@@ -158,22 +163,22 @@ class UserController extends Controller
                                 ->get();
                     $role_array = [];
                     foreach($roles as $role){
-                        $role_array[] = $role->name; 
-                    }           
+                        $role_array[] = $role->name;
+                    }
                     $user_info[$i]->roles = $role_array;
                 }
-                
+
                 //add invalidate all old token and store new token to table
                 TokenController::invalidateByID($user->id);
                 TokenController::create($user->id, $token);
             }
             $state = 'success';
             $errors = 'none';
-            // return response()->json(compact('state', 'errors', 'credentials'));
+            $user_info = $user_info[0];
             return response()->json(compact('state', 'errors', 'token', 'user_info'));
         }
     }
-    
+
     public function logout(Request $request)
     {
         $user = auth()->user();
@@ -185,7 +190,7 @@ class UserController extends Controller
         $errors = 'none';
         return response()->json(compact('state', 'errors'));
     }
-    
+
     public function refreshToken(Request $request)
     {
         $old_token = $request->input('token');
@@ -203,7 +208,7 @@ class UserController extends Controller
             $token_error = "JWT invalid or missing, please try reset or login again";
             return response()->json(compact('state', 'token_error'));
         }
-    }    
+    }
 
     public function getCurrentUserInfo(Request $request, $store_id, $branch_id)
     {
@@ -227,11 +232,11 @@ class UserController extends Controller
                         ->get();
             $role_array = [];
             foreach($roles as $role){
-                $role_array[] = $role->name; 
-            }           
+                $role_array[] = $role->name;
+            }
             $user_info[$i]->roles = $role_array;
         }
-        
+
         $state ='success';
         $errors = 'none';
         return response()->json(compact('state', 'errors', 'data', 'user_info'));
@@ -291,7 +296,7 @@ class UserController extends Controller
                     }
                 }
             });
-            
+
             $state ='success';
             $errors = 'none';
             return response()->json(compact('state', 'errors', 'data'));
@@ -324,7 +329,7 @@ class UserController extends Controller
                         'password'      => Hash::make($request->input('new_password'))
                     ]);
                 });
-                
+
                 TokenController::invalidateAllByIDExceptToken($user->id, $request->token);
                 $state ='success';
                 $errors = 'none';

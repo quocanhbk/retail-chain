@@ -1,13 +1,13 @@
 import { login, LoginInput } from "@api"
 import { useFormCore } from "@hooks"
+import useStore from "@store"
+import { useRouter } from "next/router"
 import { useMutation } from "react-query"
 
 const useRegister = () => {
-	const { values, setValue, errors, setError } = useFormCore<LoginInput>({
-		username: "",
-		password: "",
-	})
-
+	const authData = useStore((s) => s.authData)
+	const initInfo = useStore((s) => s.initInfo)
+	const { values, setValue, errors, setError } = useFormCore<LoginInput>(authData)
 	const validate = () => {
 		let isSubmittable = true
 
@@ -24,7 +24,12 @@ const useRegister = () => {
 	}
 	const { mutate, isLoading } = useMutation(() => login(values), {
 		onSuccess: (data) => {
-			console.log(data)
+			if (data.state === "fail") {
+				setError("username", data.errors)
+			} else {
+				console.log(data)
+				initInfo(data)
+			}
 		},
 	})
 

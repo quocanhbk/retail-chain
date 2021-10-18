@@ -1,6 +1,8 @@
 import { register, RegisterInput } from "@api"
 import { isEmail } from "@helper"
 import { useFormCore } from "@hooks"
+import useStore from "@store"
+import { useRouter } from "next/router"
 import { useMutation } from "react-query"
 
 interface RegisterFormInput extends RegisterInput {
@@ -8,6 +10,8 @@ interface RegisterFormInput extends RegisterInput {
 }
 
 const useRegister = () => {
+	const initAuthData = useStore((s) => s.initAuthData)
+	const router = useRouter()
 	const { values, setValue, errors, setError, initError } = useFormCore<RegisterFormInput>({
 		name: "",
 		email: "",
@@ -59,7 +63,8 @@ const useRegister = () => {
 					),
 				})
 			} else {
-				console.log("Success", data)
+				initAuthData({ username: values.username, password: values.password })
+				router.push("/login")
 			}
 		},
 	})

@@ -21,7 +21,8 @@
 			"@hooks": ["src/hooks"],
 			"@api": ["src/api"],
 			"@helper": ["src/helper"],
-			"@@types": ["src/types/index"]
+			"@@types": ["src/types/index"],
+			"@store": ["src/store/index"]
 		}
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
