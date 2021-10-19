@@ -18,7 +18,7 @@ class ItemController extends Controller
         $user = auth()->user();
         $data = $request->except('token');
         $rules = [
-            'category_id'       => ['required', 
+            'category_id'       => ['required',
                                     Rule::exists('item_categories', 'id')
                                         ->where('branch_id', $branch_id)
                                         ->where('deleted',0)],
@@ -63,7 +63,7 @@ class ItemController extends Controller
                     'branch_id'     => $branch_id,
                     'quantity'      => $request->input('quantity')
                 ]);
-                
+
                 //create purchase price of item by create a new purchased_sheet and purchased_item with quantity = 0
                 $purchase_price = $request->input('purchase_price')? $request->input('purchase_price') : 0;
                 $purchased_sheet_id = DB::table('purchased_sheets')->insertGetId([
@@ -156,7 +156,7 @@ class ItemController extends Controller
                 $item = $item->where(function ($query) use ($item_id_list){
                     foreach($item_id_list as $item_id){
                         $query = $query->orWhere('items.id',$item_id);
-                    } 
+                    }
                 });
             }
             $item = $request->input('category_id')? $item->where('item_categories.id', $request->input('category_id')) : $item;
@@ -193,7 +193,7 @@ class ItemController extends Controller
 
             if($request->input('item_id') || $request->input('is_get_all')){
                 $item = $item->get();
-            } else {                
+            } else {
                 $item = $item->paginate(10);
             }
             // $item = $request->input('item_id')? $item->get():$item->paginate(10);
@@ -218,7 +218,7 @@ class ItemController extends Controller
         $user = auth()->user();
         $data = $request->except('token');
         $rules = [
-            'category_id'   => ['required', 
+            'category_id'   => ['required',
                                 Rule::exists('item_categories', 'id')
                                     ->where('branch_id', $branch_id)
                                     ->where('deleted',0)],
@@ -249,7 +249,7 @@ class ItemController extends Controller
                     'items.point_ratio'         => $request->input('point_ratio'),
                     'item_quantities.quantity'   => $request->input('quantity'),
                 ]);
-                
+
                 $item_price = FrequentQuery::getItemInfo($branch_id);
                 $item_price = $item_price->where('items.id',$request->input('item_id'))
                                 ->select('item_prices.sell_price')
@@ -264,7 +264,7 @@ class ItemController extends Controller
                             'change_by'     => $user->id,
                         ]);
                 }
-    
+
                 if ($request->hasFile('image')){
                     $image = $request->image;
                     $ext = $image->getClientOriginalExtension();
@@ -275,7 +275,7 @@ class ItemController extends Controller
                             ->update([
                                 'image_url' =>  $img_url.$item_id.'.'.$ext,
                             ]);
-    
+
                         $image->move('../public/'.$img_url,$item_id.'.'.$ext);
                     } else {
                         $img_error_flag = 1;
@@ -331,8 +331,7 @@ class ItemController extends Controller
         }
     }
 
-    public function deleteItem(Request $request, $store_id, $branch_id)
-    {
+    public function deleteItem(Request $request, $store_id, $branch_id) {
         $user = auth()->user();
         $data = $request->except('token');
         $rules = [
@@ -397,7 +396,7 @@ class ItemController extends Controller
             return response()->json(compact('state', 'errors', 'data'));
         }
     }
-    
+
     public function checkItemWithZeroOrNullPurchasePrice(Request $request, $store_id, $branch_id){
         $user = auth()->user();
         $data = $request->except('token');

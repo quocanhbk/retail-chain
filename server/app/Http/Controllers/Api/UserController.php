@@ -116,11 +116,13 @@ class UserController extends Controller
 
     public function login(Request $request){
         // $data = $request->only($keys);
+        // get everything from request except token
         $data = $request->except('token');
         $rules = [
             'username'  => 'required',
             'password'  => 'required'
         ];
+        // validate data if satisfy the rule
         $validator = Validator::make($data, $rules);
 
         if($validator->fails()){
@@ -170,6 +172,7 @@ class UserController extends Controller
 
                 //add invalidate all old token and store new token to table
                 TokenController::invalidateByID($user->id);
+                // store jwt in database => why ? I don't know
                 TokenController::create($user->id, $token);
             }
             $state = 'success';
@@ -179,8 +182,7 @@ class UserController extends Controller
         }
     }
 
-    public function logout(Request $request)
-    {
+    public function logout(Request $request) {
         $user = auth()->user();
         if($user !== null){
             TokenController::invalidateByID($user->id);

@@ -111,8 +111,6 @@ Route::middleware(['jwt.confirm'])->group(function () {
             Route::get('/report/category', [ReportController::class, 'getReportCategories']);
             Route::get('/report/customer', [ReportController::class, 'getReportCustomer']);
             Route::get('/report/supplier', [ReportController::class, 'getReportSupplier']);
-
-            /** I don' know what this function do */
             Route::get('/role/get', [RoleController::class, 'getRole']);
 
         });
