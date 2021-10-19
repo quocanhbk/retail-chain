@@ -1,6 +1,7 @@
 import { LoginInput, LoginOutput } from "@api"
 import create from "zustand"
 
+// luu token trong state la giai phap tam thoi, do chua tim cach de token trong cookie duoc
 export interface StoreState {
 	info: Pick<LoginOutput, "token" | "user_info"> | null
 	initInfo: (loginOutput?: LoginOutput) => void
