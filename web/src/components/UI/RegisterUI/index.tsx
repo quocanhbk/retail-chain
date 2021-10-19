@@ -1,5 +1,6 @@
-import { Heading, Flex, Box, Button } from "@chakra-ui/react"
+import { Heading, Flex, Box, Button, chakra } from "@chakra-ui/react"
 import { DateControl, RadioControl, TextControl } from "@components/shared"
+import { format } from "date-fns"
 import useRegister from "./useRegister"
 
 export const RegisterUI = () => {
@@ -24,7 +25,7 @@ export const RegisterUI = () => {
 			</Box>
 			<Box flex={1} w="full" overflow="auto" p={4}>
 				<Flex justify="center" w="full">
-					<Box w="full" maxW="40rem">
+					<chakra.form w="full" maxW="40rem" onSubmit={(e) => e.preventDefault()}>
 						<Heading size="small" mb={2}>
 							{"Thông tin cá nhân"}
 						</Heading>
@@ -46,6 +47,7 @@ export const RegisterUI = () => {
 								value={phone}
 								onChange={(v) => setValue("phone", v)}
 								error={errors.phone}
+								type="tel"
 							/>
 							<RadioControl
 								label="Giới tính"
@@ -60,7 +62,7 @@ export const RegisterUI = () => {
 							<DateControl
 								label="Ngày sinh"
 								value={date_of_birth}
-								onChange={(v) => setValue("date_of_birth", v)}
+								onChange={(v) => setValue("date_of_birth", format(new Date(v), "yyyy-MM-dd"))}
 								error={errors.date_of_birth}
 							/>
 						</Box>
@@ -109,10 +111,10 @@ export const RegisterUI = () => {
 								error={errors.confirmPassword}
 							/>
 						</Box>
-						<Button w="full" onClick={mutateRegister} isLoading={isLoading}>
+						<Button w="full" onClick={mutateRegister} isLoading={isLoading} type="submit">
 							{"Đăng Ký"}
 						</Button>
-					</Box>
+					</chakra.form>
 				</Flex>
 			</Box>
 		</Flex>

@@ -66,7 +66,7 @@ class Kernel extends HttpKernel
         'owner.confirm' => \App\Http\Middleware\VerifyOwner::class,
         'branch.confirm' => \App\Http\Middleware\VerifyBranch::class,
         'work.confirm' => \App\Http\Middleware\VerifyWork::class,
-        
+
         'user.confirm' => \App\Http\Middleware\VerifyUserForWebApp::class,
     ];
 }

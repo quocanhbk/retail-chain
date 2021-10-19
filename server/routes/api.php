@@ -25,7 +25,7 @@ Route::post('/logout', [UserController::class, 'logout']);
 Route::post('/refresh', [UserController::class, 'refreshToken']);
 
 Route::middleware(['jwt.confirm'])->group(function () {
-    
+
     Route::prefix('/store/{store_id}/branch/{branch_id}')->group(function () {
         Route::middleware(['branch.confirm', 'work.confirm'])->group(function () {
             Route::middleware(['owner.confirm'])->group(function () {
@@ -42,23 +42,23 @@ Route::middleware(['jwt.confirm'])->group(function () {
 
                 Route::post('/shift/create', [ShiftController::class, 'createShift']);
                 Route::post('/shift/edit', [ShiftController::class, 'editShift']);
-    
+
             });
 
             Route::get('dashboard/get',[DashboardController::class, 'getDashboard']);
-    
+
             Route::post('customer/create',[CustomerController::class, 'createCustomer']);
             Route::post('customer/edit',[CustomerController::class, 'editCustomer']);
             Route::get('customer/get',[CustomerController::class, 'getCustomer']);
-            
+
             Route::post('supplier/create',[SupplierController::class, 'createSupplier']);
             Route::post('supplier/edit',[SupplierController::class, 'editSupplier']);
             Route::get('supplier/get',[SupplierController::class, 'getSupplier']);
-    
+
             Route::post('category/create',[ItemCategoryController::class, 'createCategory']);
             Route::post('category/edit',[ItemCategoryController::class, 'editCategory']);
             Route::get('category/get',[ItemCategoryController::class, 'getCategory']);
-    
+
             Route::post('item/create',[ItemController::class, 'createItem']);
             Route::post('item/edit',[ItemController::class, 'editItem']);
             Route::post('item/delete',[ItemController::class, 'deleteItem']);
@@ -67,9 +67,9 @@ Route::middleware(['jwt.confirm'])->group(function () {
             Route::get('item/price-history',[ItemPriceController::class, 'getItemPriceHistory']);
             Route::get('item/quantity-history',[QuantityCheckingSheetController::class, 'getQuantChangeHistoryOfItem']);
             Route::get('item/check-purchase-price',[ItemController::class, 'checkItemWithZeroOrNullPurchasePrice']);
-            
+
             Route::get('defaultitem/search',[DefaultItemController::class, 'searchItemByBarcode']);
-    
+
             Route::post('invoice/create',[InvoiceController::class, 'createInvoice']);
             Route::get('invoice/get',[InvoiceController::class, 'getInvoice']);
             Route::get('invoice/detail',[InvoiceController::class, 'getInvoiceDetail']);
@@ -78,7 +78,7 @@ Route::middleware(['jwt.confirm'])->group(function () {
             Route::get('refund-sheet/get',[RefundSheetController::class, 'getRefundSheet']);
             Route::get('refund-sheet/detail',[RefundSheetController::class, 'getRefundSheetDetail']);
 
-    
+
             Route::post('purchased-sheet/create',[PurchasedSheetController::class, 'createPurchasedSheet']);
             Route::get('purchased-sheet/get',[PurchasedSheetController::class, 'getPurchasedSheet']);
             Route::get('purchased-sheet/detail',[PurchasedSheetController::class, 'getPurchasedSheetDetail']);
@@ -112,6 +112,7 @@ Route::middleware(['jwt.confirm'])->group(function () {
             Route::get('/report/customer', [ReportController::class, 'getReportCustomer']);
             Route::get('/report/supplier', [ReportController::class, 'getReportSupplier']);
 
+            /** I don' know what this function do */
             Route::get('/role/get', [RoleController::class, 'getRole']);
 
         });

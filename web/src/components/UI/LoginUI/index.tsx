@@ -1,12 +1,10 @@
-import { Heading, Flex, Box, Button, Text } from "@chakra-ui/react"
+import { Heading, Flex, Box, Button, Text, Link, chakra } from "@chakra-ui/react"
 import { TextControl } from "@components/shared"
-import { useRouter } from "next/router"
 import useLogin from "./useLogin"
 
 export const LoginUI = () => {
 	const { values, setValue, errors, isLoading, mutateRegister } = useLogin()
 	const { username, password } = values
-	const router = useRouter()
 	return (
 		<Flex direction="column" h="full" bg="gray.50">
 			<Box p={4} shadow="base" bg="blue.500" color="white">
@@ -15,7 +13,14 @@ export const LoginUI = () => {
 			<Box flex={1} w="full" overflow="auto" p={4}>
 				<Flex justify="center" align="center" w="full" h="full">
 					<Box w="full" maxW="20rem">
-						<Box p={4} rounded="md" shadow="base" mb={4} bg="white">
+						<chakra.form
+							p={4}
+							rounded="md"
+							shadow="base"
+							mb={4}
+							bg="white"
+							onSubmit={(e) => e.preventDefault()}
+						>
 							<TextControl
 								label="Tên đăng nhập"
 								value={username}
@@ -29,25 +34,19 @@ export const LoginUI = () => {
 								error={errors.password}
 								type="password"
 							/>
-							<Button w="full" onClick={mutateRegister} isLoading={isLoading}>
+							<Button w="full" onClick={mutateRegister} isLoading={isLoading} type="submit">
 								{"Đăng Nhập"}
 							</Button>
 							<Box w="full" h="1px" bg="gray.200" my={4} />
 							<Flex justify="space-between" align="center">
-								<Text w="full" textAlign="center" size="small">
-									{"Chưa có tài khoản?"}
-								</Text>
-								<Button
-									w="full"
-									onClick={() => router.push("/register")}
-									variant="outline"
-									size="sm"
-									isLoading={isLoading}
-								>
-									{"Đăng Ký"}
-								</Button>
+								<Text size="small">{"Chưa có tài khoản?"}</Text>
+								<Link href="/register">
+									<Text size="small" fontWeight="semibold" color="blue.500">
+										{"Đăng ký"}
+									</Text>
+								</Link>
 							</Flex>
-						</Box>
+						</chakra.form>
 					</Box>
 				</Flex>
 			</Box>
