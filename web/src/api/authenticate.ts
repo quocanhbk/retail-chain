@@ -61,5 +61,4 @@ export const login = async (input: LoginInput): Promise<LoginOutput> => {
 
 export const logout = async () => {
 	const { data } = await fetcher.post("/logout")
-	console.log(data)
 }

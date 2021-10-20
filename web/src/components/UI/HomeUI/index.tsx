@@ -1,18 +1,21 @@
 import { logout } from "@api"
-import { Flex, Grid, Heading } from "@chakra-ui/layout"
-import { Button } from "@chakra-ui/react"
-import { chakra } from "@chakra-ui/system"
+import { Flex, Grid, Heading, Button, chakra, Avatar, Text, Box, VStack } from "@chakra-ui/react"
 import useStore from "@store"
-import { useRouter } from "next/router"
-import { useEffect } from "react"
+import { MdPointOfSale, MdPeopleAlt, MdAnalytics } from "react-icons/md"
+import { FaWarehouse } from "react-icons/fa"
 import { useMutation } from "react-query"
-
+import { motion } from "framer-motion"
 interface indexProps {}
 
+const menus = [
+	{ id: "sale", text: "Bán hàng", icon: MdPointOfSale },
+	{ id: "warehouse", text: "Kho hàng", icon: FaWarehouse },
+	{ id: "human-resource", text: "Nhân sự", icon: MdPeopleAlt },
+	{ id: "managing", text: "Quản lý", icon: MdAnalytics },
+]
+
 const HomeUI = ({}: indexProps) => {
-	const info = useStore((s) => s.info)
-	const router = useRouter()
-	const initInfo = useStore((s) => s.initInfo)
+	const { initInfo, info } = useStore(s => ({ initInfo: s.initInfo, info: s.info }))
 	const { mutate } = useMutation(logout, {
 		onSuccess: () => {
 			initInfo()
