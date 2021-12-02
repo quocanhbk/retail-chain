@@ -52,8 +52,8 @@ class _LoginPageState extends State<LoginPage> {
     if (widget.lastLoggedIn != null) {
       lastLogedInUser = widget.lastLoggedIn;
       debugPrint(lastLogedInUser.toString());
-      if(widget.lastLoggedIn!.stayLoggedIn==true){
-        Future.delayed(Duration(milliseconds: 100),(){
+      if (widget.lastLoggedIn!.stayLoggedIn == true) {
+        Future.delayed(Duration(milliseconds: 100), () {
           automaticallyLogInForUser();
         });
       }
@@ -63,13 +63,13 @@ class _LoginPageState extends State<LoginPage> {
 
   UserInfo? lastLogedInUser;
 
-  automaticallyLogInForUser()async{
+  automaticallyLogInForUser() async {
     await BkrmService().networkAvailableCheck();
-    if(!BkrmService().networkAvailable){
+    if (!BkrmService().networkAvailable) {
       bool localAuth = await authenticateOnLocal();
-      if(!localAuth){
+      if (!localAuth) {
         return;
-      }else{
+      } else {
         showDialog(
             context: context,
             builder: (context) {
@@ -98,16 +98,17 @@ class _LoginPageState extends State<LoginPage> {
               );
             });
         await BkrmService()
-            .logInUser(usernameController.text, passwordController.text,userRefresh: lastLogedInUser)
+            .logInUser(usernameController.text, passwordController.text,
+                userRefresh: lastLogedInUser)
             .then((result) {
           print("Result: " + result.toString());
           if (result == MsgInfoCode.logInSucess) {
             bool stayLoggedInUser = false;
-            if(widget.lastLoggedIn!=null){
-              stayLoggedInUser=widget.lastLoggedIn!.stayLoggedIn;
+            if (widget.lastLoggedIn != null) {
+              stayLoggedInUser = widget.lastLoggedIn!.stayLoggedIn;
             }
-            if(stayLoggedIn||stayLoggedInUser){
-              BkrmService().currentUser!.stayLoggedIn=true;
+            if (stayLoggedIn || stayLoggedInUser) {
+              BkrmService().currentUser!.stayLoggedIn = true;
             }
             Navigator.pushNamedAndRemoveUntil(
                 context, Nav2App.selectModuleroute, (route) => false);
@@ -128,8 +129,8 @@ class _LoginPageState extends State<LoginPage> {
       }
       return;
     }
-    if(widget.lastLoggedIn!=null){
-      if(widget.lastLoggedIn!.stayLoggedIn==true){
+    if (widget.lastLoggedIn != null) {
+      if (widget.lastLoggedIn!.stayLoggedIn == true) {
         showDialog(
             context: context,
             builder: (context) {
@@ -159,23 +160,30 @@ class _LoginPageState extends State<LoginPage> {
             });
         String? token = await refreshToken(widget.lastLoggedIn!);
         Navigator.pop(context);
-        if(token==null){
+        if (token == null) {
           setState(() {
-            stayLoggedIn=false;
+            stayLoggedIn = false;
           });
-          showDialog(context: context, builder: (context){
-            return AlertDialog(
-              title: Text("Thông báo"),
-              content: Text("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!"),
-              actions: [
-                TextButton(onPressed: (){Navigator.pop(context);}, child: Text("Đóng"))
-              ],
-            );
-          });
-          widget.lastLoggedIn!.stayLoggedIn=false;
+          showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text("Thông báo"),
+                  content: Text(
+                      "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!"),
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text("Đóng"))
+                  ],
+                );
+              });
+          widget.lastLoggedIn!.stayLoggedIn = false;
           await BkrmService().storeUserLoggedIn(widget.lastLoggedIn!);
-        }else{
-          lastLogedInUser!.token=token;
+        } else {
+          lastLogedInUser!.token = token;
           BkrmService bkrmServices = BkrmService();
           showDialog(
               context: context,
@@ -205,16 +213,17 @@ class _LoginPageState extends State<LoginPage> {
                 );
               });
           await bkrmServices
-              .logInUser(usernameController.text, passwordController.text,userRefresh: lastLogedInUser)
+              .logInUser(usernameController.text, passwordController.text,
+                  userRefresh: lastLogedInUser)
               .then((result) {
             print("Result: " + result.toString());
             if (result == MsgInfoCode.logInSucess) {
               bool stayLoggedInUser = false;
-              if(widget.lastLoggedIn!=null){
-                stayLoggedInUser=widget.lastLoggedIn!.stayLoggedIn;
+              if (widget.lastLoggedIn != null) {
+                stayLoggedInUser = widget.lastLoggedIn!.stayLoggedIn;
               }
-              if(stayLoggedIn||stayLoggedInUser){
-                BkrmService().currentUser!.stayLoggedIn=true;
+              if (stayLoggedIn || stayLoggedInUser) {
+                BkrmService().currentUser!.stayLoggedIn = true;
               }
               Navigator.pushNamedAndRemoveUntil(
                   context, Nav2App.selectModuleroute, (route) => false);
@@ -237,11 +246,12 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Future<String?> refreshToken(UserInfo userInfo) async{
-    Map<String,dynamic> refreshResponse = await ApiService().refreshToken(token: userInfo.token);
-    if(refreshResponse["state"]=="success"){
+  Future<String?> refreshToken(UserInfo userInfo) async {
+    Map<String, dynamic> refreshResponse =
+        await ApiService().refreshToken(token: userInfo.token);
+    if (refreshResponse["state"] == "success") {
       return refreshResponse["token"];
-    }else{
+    } else {
       return null;
     }
   }
@@ -296,7 +306,7 @@ class _LoginPageState extends State<LoginPage> {
                   if (passwordValid && usernameValid) {
                     if (!BkrmService().networkAvailable) {
                       bool localAuthenticate = await authenticateOnLocal();
-                      if(!localAuthenticate){
+                      if (!localAuthenticate) {
                         return;
                       }
                     }
@@ -329,21 +339,21 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           );
                         });
-                    MsgInfoCode returnCode = await bkrmServices
-                        .logInUser(
-                            usernameController.text, passwordController.text);
+                    MsgInfoCode returnCode = await bkrmServices.logInUser(
+                        usernameController.text, passwordController.text);
                     debugPrint("Result: " + returnCode.toString());
                     if (returnCode == MsgInfoCode.logInSucess) {
                       bool stayLoggedInUser = false;
-                      if(widget.lastLoggedIn!=null){
-                        stayLoggedInUser=widget.lastLoggedIn!.stayLoggedIn;
+                      if (widget.lastLoggedIn != null) {
+                        stayLoggedInUser = widget.lastLoggedIn!.stayLoggedIn;
                       }
-                      if(stayLoggedIn||stayLoggedInUser){
-                        BkrmService().currentUser!.stayLoggedIn=true;
-                        BkrmService().storeUserLoggedIn(BkrmService().currentUser!);
+                      if (stayLoggedIn || stayLoggedInUser) {
+                        BkrmService().currentUser!.stayLoggedIn = true;
+                        BkrmService()
+                            .storeUserLoggedIn(BkrmService().currentUser!);
                       }
-                      Navigator.pushNamedAndRemoveUntil(context,
-                          Nav2App.selectModuleroute, (route) => false);
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, Nav2App.selectModuleroute, (route) => false);
                     } else {
                       setState(() {
                         msgReturn = returnCode;
@@ -372,7 +382,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<bool> authenticateOnLocal()async{
+  Future<bool> authenticateOnLocal() async {
     try {
       const androidString = const AndroidAuthMessages(
           biometricHint: "",
@@ -382,8 +392,7 @@ class _LoginPageState extends State<LoginPage> {
           signInTitle: "Xác minh danh tính",
           cancelButton: 'Hủy',
           goToSettingsButton: 'Cái đặt',
-          goToSettingsDescription:
-          'Vui lòng thiết lập phương thức bảo mật');
+          goToSettingsDescription: 'Vui lòng thiết lập phương thức bảo mật');
       bool authenticated = await LocalAuthentication().authenticate(
           localizedReason: 'Hãy xác minh để đăng nhập vào hệ thống',
           useErrorDialogs: false,
@@ -404,7 +413,7 @@ class _LoginPageState extends State<LoginPage> {
               );
             });
         return false;
-      }else{
+      } else {
         return true;
       }
     } on PlatformException catch (e) {
@@ -447,7 +456,7 @@ class _LoginPageState extends State<LoginPage> {
         if (passwordValid && usernameValid) {
           if (!BkrmService().networkAvailable) {
             bool localAuthenticate = await authenticateOnLocal();
-            if(!localAuthenticate){
+            if (!localAuthenticate) {
               return;
             }
           }
@@ -479,16 +488,16 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 );
               });
-          MsgInfoCode returnCode = await bkrmServices
-              .logInUser(usernameController.text, passwordController.text);
+          MsgInfoCode returnCode = await bkrmServices.logInUser(
+              usernameController.text, passwordController.text);
           debugPrint("Result: " + returnCode.toString());
           if (returnCode == MsgInfoCode.logInSucess) {
             bool stayLoggedInUser = false;
-            if(widget.lastLoggedIn!=null){
-              stayLoggedInUser=widget.lastLoggedIn!.stayLoggedIn;
+            if (widget.lastLoggedIn != null) {
+              stayLoggedInUser = widget.lastLoggedIn!.stayLoggedIn;
             }
-            if(stayLoggedIn||stayLoggedInUser){
-              BkrmService().currentUser!.stayLoggedIn=true;
+            if (stayLoggedIn || stayLoggedInUser) {
+              BkrmService().currentUser!.stayLoggedIn = true;
               BkrmService().storeUserLoggedIn(BkrmService().currentUser!);
             }
             Navigator.pushNamedAndRemoveUntil(
@@ -655,7 +664,7 @@ class _LoginPageState extends State<LoginPage> {
       text: TextSpan(
           text: 'B',
           style: GoogleFonts.portLligatSans(
-            textStyle: Theme.of(context).textTheme.display1,
+            textStyle: Theme.of(context).textTheme.headline4,
             fontSize: 40,
             fontWeight: FontWeight.w700,
             color: Color(0xff1565c0),
@@ -727,7 +736,7 @@ class _LoginPageState extends State<LoginPage> {
           _entryField("Mật khẩu ", passwordController, isPassword: true,
               validator: (password) {
             if (!BkrmService().networkAvailable) {
-              passwordValid=true;
+              passwordValid = true;
               return null;
             }
             if (password == null || password == "") {
@@ -788,24 +797,29 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(height: 20),
                     lastLogedInUser != null
                         ? CircleAvatar(
-                      radius: 60,
-                      foregroundImage: FileImage(
-                        File(lastLogedInUser!.avatarFile),
-                      ),
-                    )
+                            radius: 60,
+                            foregroundImage: FileImage(
+                              File(lastLogedInUser!.avatarFile),
+                            ),
+                          )
                         : Container(),
                     SizedBox(height: 20),
                     _usernamePasswordWidget(),
                     SizedBox(height: 20),
                     _notice(),
-                    Row(mainAxisAlignment: MainAxisAlignment.end,children: [
-                      Checkbox(value: stayLoggedIn, onChanged: (bool? value){
-                        setState(() {
-                          stayLoggedIn=value!;
-                        });
-                      }),
-                      Text("Duy trì đăng nhập ?")
-                    ],),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Checkbox(
+                            value: stayLoggedIn,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                stayLoggedIn = value!;
+                              });
+                            }),
+                        Text("Duy trì đăng nhập ?")
+                      ],
+                    ),
                     SizedBox(height: 20),
                     _submitButton(),
 /*                  Container(

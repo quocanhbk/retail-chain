@@ -39,7 +39,7 @@ class _SignUpPageState extends State<SignUpPage> {
   bool usernameValid = false;
   bool passwordValid = false;
   bool confirmPasswordValid = false;
-  bool fullNameValid=false;
+  bool fullNameValid = false;
   bool dateOfBirthValid = false;
   bool phoneValid = false;
   bool genderValid = false;
@@ -85,8 +85,8 @@ class _SignUpPageState extends State<SignUpPage> {
             height: 10,
           ),
           TextFormField(
-            maxLength: maxLength,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
+              maxLength: maxLength,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: validation != null
                   ? validation
                   : (String) {
@@ -95,7 +95,7 @@ class _SignUpPageState extends State<SignUpPage> {
               controller: controller,
               obscureText: isPassword,
               decoration: InputDecoration(
-                counterText: "",
+                  counterText: "",
                   border: InputBorder.none,
                   fillColor: Color(0xfff3f3f4),
                   filled: true))
@@ -118,13 +118,13 @@ class _SignUpPageState extends State<SignUpPage> {
             height: 10,
           ),
           TextFormField(
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (phone){
-                if(phone==""||phone==null){
-                  phoneValid=false;
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: (phone) {
+                if (phone == "" || phone == null) {
+                  phoneValid = false;
                   return " * Bắt buộc";
                 }
-                phoneValid=true;
+                phoneValid = true;
                 return null;
               },
               controller: phoneController,
@@ -230,7 +230,7 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           Text(
             genderValid ? "" : " * Bắt buộc",
-            style: TextStyle(color: Colors.red,fontSize: 12),
+            style: TextStyle(color: Colors.red, fontSize: 12),
           ),
         ],
       ),
@@ -245,8 +245,8 @@ class _SignUpPageState extends State<SignUpPage> {
             storeNameValid &&
             usernameValid &&
             emailValid &&
-            confirmPasswordValid&&
-            phoneValid&&
+            confirmPasswordValid &&
+            phoneValid &&
             dateOfBirthValid &&
             genderValid &&
             passwordValid) {
@@ -264,15 +264,15 @@ class _SignUpPageState extends State<SignUpPage> {
               });
           MsgInfoCode signUpStatus = await bkrmService
               .signUp(
-                  username:userNameController.value.text,
-                  email:emailController.value.text,
-                  name:fullNameController.value.text,
-                  password:passwordController.value.text,
+                  username: userNameController.value.text,
+                  email: emailController.value.text,
+                  name: fullNameController.value.text,
+                  password: passwordController.value.text,
                   phoneNumber: phoneController.value.text,
-                  gender:genderValue,
-                  dateOfBirth:dateOfBirth,
-                  branchName:storeNameController.value.text,
-                  branchAddress:storeAddressController.value.text)
+                  gender: genderValue,
+                  dateOfBirth: dateOfBirth,
+                  branchName: storeNameController.value.text,
+                  branchAddress: storeAddressController.value.text)
               .then((returnMsgCode) {
             Navigator.pop(context);
             switch (returnMsgCode) {
@@ -313,10 +313,18 @@ class _SignUpPageState extends State<SignUpPage> {
                               onPressed: () {
                                 Navigator.pop(context);
                                 Navigator.pop(context);
-                                Navigator.push(context, PageTransition(child: LoginPage(userName: userNameController.value.text,password: passwordController.value.text,), type: pageTransitionType));
+                                Navigator.push(
+                                    context,
+                                    PageTransition(
+                                        child: LoginPage(
+                                          userName:
+                                              userNameController.value.text,
+                                          password:
+                                              passwordController.value.text,
+                                        ),
+                                        type: pageTransitionType));
                               },
                               child: Text("Đăng nhập")),
-
                         ],
                       );
                     });
@@ -332,7 +340,8 @@ class _SignUpPageState extends State<SignUpPage> {
                             child: Text(
                               "Tên đăng nhập hoặc email đã tồn tại.",
                               textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
@@ -365,7 +374,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     });
             }
             return returnMsgCode;
-          }).timeout(Duration(seconds: 60),onTimeout: (){
+          }).timeout(Duration(seconds: 60), onTimeout: () {
             showDialog(
                 context: context,
                 builder: (context) {
@@ -449,7 +458,7 @@ class _SignUpPageState extends State<SignUpPage> {
       text: TextSpan(
           text: 'B',
           style: GoogleFonts.portLligatSans(
-            textStyle: Theme.of(context).textTheme.display1,
+            textStyle: Theme.of(context).textTheme.headline4,
             fontSize: 30,
             fontWeight: FontWeight.w700,
             color: Color(0xff1565c0),
@@ -473,8 +482,9 @@ class _SignUpPageState extends State<SignUpPage> {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         children: <Widget>[
-          _entryField("Tên đăng nhập", controller: userNameController,maxLength: 20,
-              validation: (String? username) {
+          _entryField("Tên đăng nhập",
+              controller: userNameController,
+              maxLength: 20, validation: (String? username) {
             if (username == null || username == "") {
               usernameValid = false;
               return "* Bắt buộc";
@@ -510,30 +520,31 @@ class _SignUpPageState extends State<SignUpPage> {
             }
           }),
           _entryField("Nhập lại mật khẩu",
-              isPassword: true,
-              controller: confirmPasswordController, validation: (confirmPassword) {
-                if (confirmPassword == null || confirmPassword == "") {
-                  confirmPasswordValid = false;
-                  return " * Băt buộc";
-                } else {
-                  if(confirmPasswordController.value.text!=passwordController.value.text){
-                    confirmPasswordValid=false;
+              isPassword: true, controller: confirmPasswordController,
+              validation: (confirmPassword) {
+            if (confirmPassword == null || confirmPassword == "") {
+              confirmPasswordValid = false;
+              return " * Băt buộc";
+            } else {
+              if (confirmPasswordController.value.text !=
+                  passwordController.value.text) {
+                confirmPasswordValid = false;
                 return "* Không giống với mật khẩu";
-                  }
-                  confirmPasswordValid = true;
-                  return null;
-                }
-              }),
+              }
+              confirmPasswordValid = true;
+              return null;
+            }
+          }),
           _phoneNumber(),
           _entryField("Họ tên", controller: fullNameController,
               validation: (String? fullName) {
-                if (fullName == null || fullName == "") {
-                  fullNameValid = false;
-                  return "* Bắt buộc";
-                }
-                fullNameValid = true;
-                return null;
-              }),
+            if (fullName == null || fullName == "") {
+              fullNameValid = false;
+              return "* Bắt buộc";
+            }
+            fullNameValid = true;
+            return null;
+          }),
           _dateOfBirth(),
           genderCheckbox(),
           _entryField("Tên cửa hàng", controller: storeNameController,
