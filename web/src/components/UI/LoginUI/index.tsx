@@ -1,55 +1,47 @@
-import { Heading, Flex, Box, Button, Text, Link, chakra } from "@chakra-ui/react"
-import { TextControl } from "@components/shared"
+import { Flex, Box, Button, Text, Link, Grid, chakra, Heading } from "@chakra-ui/react"
+import { FormBox, TextControl } from "@components/shared"
 import useLogin from "./useLogin"
 
-export const LoginUI = () => {
-	const { values, setValue, errors, isLoading, mutateRegister } = useLogin()
-	const { username, password } = values
+interface LoginUIProps {
+	admin?: boolean
+}
+
+export const LoginUI = ({ admin = false }: LoginUIProps) => {
+	const { values, setValue, errors, isLoading, handleLogin, generalError } = useLogin(admin)
+	const { email, password } = values
+
 	return (
-		<Flex direction="column" h="full">
-			<Box p={4} shadow="base" bg="gray.800" color="white">
-				<Heading>{"Đăng Nhập"}</Heading>
-			</Box>
-			<Box flex={1} w="full" overflow="auto" p={4}>
-				<Flex justify="center" align="center" w="full" h="full">
-					<Box w="full" maxW="20rem">
-						<chakra.form
-							p={4}
-							rounded="md"
-							shadow="base"
-							mb={4}
-							bg="white"
-							onSubmit={e => e.preventDefault()}
-						>
-							<TextControl
-								label="Tên đăng nhập"
-								value={username}
-								onChange={v => setValue("username", v)}
-								error={errors.username}
-							/>
-							<TextControl
-								label="Mật khẩu"
-								value={password}
-								onChange={v => setValue("password", v)}
-								error={errors.password}
-								type="password"
-							/>
-							<Button w="full" onClick={mutateRegister} isLoading={isLoading} type="submit">
-								{"Đăng Nhập"}
-							</Button>
-							<Box w="full" h="1px" bg="gray.200" my={4} />
-							<Flex justify="space-between" align="center">
-								<Text size="small">{"Chưa có tài khoản?"}</Text>
-								<Link href="/register">
-									<Text size="small" fontWeight="semibold" color="blue.500">
-										{"Đăng ký"}
-									</Text>
-								</Link>
-							</Flex>
-						</chakra.form>
-					</Box>
-				</Flex>
-			</Box>
+		<Flex h="full" direction={["column", "column", "row"]} overflow="auto" align={["center", "center", "stretch"]}>
+			<Grid placeItems="center" flex={2} bgGradient="linear(to-r, telegram.800, telegram.600)" p={8}>
+				<Text fontSize={["3rem", "3rem", "7rem", "7rem"]} fontWeight="black" color="white" fontFamily="Brandon">
+					BKRM RETAIL MANAGEMENT SYSTEM
+				</Text>
+			</Grid>
+			<Flex direction="column" justify="center" w="24rem" p={8}>
+				<chakra.form onSubmit={e => e.preventDefault()}>
+					<Heading fontWeight="semibold" color="telegram.500">
+						ĐĂNG NHẬP {admin ? "ADMIN" : ""}
+					</Heading>
+					<TextControl
+						label="Email"
+						value={email}
+						onChange={v => setValue("email", v)}
+						error={errors.email}
+					/>
+					<TextControl
+						label="Mật khẩu"
+						value={password}
+						onChange={v => setValue("password", v)}
+						error={errors.password}
+						type="password"
+					/>
+					<Text>{generalError}</Text>
+					<Button w="full" onClick={handleLogin} isLoading={isLoading} type="submit">
+						{"Đăng Nhập"}
+					</Button>
+				</chakra.form>
+				<Box w="full" bg="gray.100" my={2} />
+			</Flex>
 		</Flex>
 	)
 }

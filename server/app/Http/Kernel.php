@@ -21,6 +21,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \App\Http\Middleware\Cors::class
     ];
 
     /**
@@ -66,7 +67,7 @@ class Kernel extends HttpKernel
         'owner.confirm' => \App\Http\Middleware\VerifyOwner::class,
         'branch.confirm' => \App\Http\Middleware\VerifyBranch::class,
         'work.confirm' => \App\Http\Middleware\VerifyWork::class,
-
+        'cors' => \App\Http\Middleware\Cors::class,
         'user.confirm' => \App\Http\Middleware\VerifyUserForWebApp::class,
     ];
 }

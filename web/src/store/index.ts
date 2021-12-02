@@ -1,23 +1,19 @@
-import { LoginInput, LoginOutput } from "@api"
+import { Info } from "@@types"
 import create from "zustand"
 
 // luu token trong state la giai phap tam thoi, do chua tim cach de token trong cookie duoc
 export interface StoreState {
-	info: Pick<LoginOutput, "token" | "user_info"> | null
-	initInfo: (loginOutput?: LoginOutput) => void
-	authData: LoginInput
-	initAuthData: (loginInput: LoginInput) => void
+	info: Info | null
+	setInfo: (info: Info) => void
 }
 
-const useStore = create<StoreState>((set) => ({
+const useStore = create<StoreState>(set => ({
 	info: null,
-	initInfo: (loginOutput?: LoginOutput) =>
+	setInfo: (info: Info | null) => {
 		set(() => {
-			if (loginOutput) return { info: { token: loginOutput.token, user_info: loginOutput.user_info } }
-			else return { info: null }
-		}),
-	authData: { username: "", password: "" },
-	initAuthData: (loginInput: LoginInput) => set(() => ({ authData: loginInput })),
+			return { info }
+		})
+	},
 }))
 
 export default useStore

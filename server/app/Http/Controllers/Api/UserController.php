@@ -169,7 +169,6 @@ class UserController extends Controller
                     }
                     $user_info[$i]->roles = $role_array;
                 }
-
                 //add invalidate all old token and store new token to table
                 TokenController::invalidateByID($user->id);
                 // store jwt in database => why ? I don't know
@@ -178,7 +177,7 @@ class UserController extends Controller
             $state = 'success';
             $errors = 'none';
             $user_info = $user_info[0];
-            return response()->json(compact('state', 'errors', 'token', 'user_info'));
+            return response()->json(compact('state', 'errors', 'token', 'user_info'))->cookie("bkrm-token", $token);
         }
     }
 
@@ -198,8 +197,8 @@ class UserController extends Controller
         $old_token = $request->input('token');
         $validate_token = DB::table('jwt_info')->where('jwt_info.token', $old_token)->where('jwt_info.is_invalidated', 0)->exists();
         if($validate_token){
-            $token = auth()->refresh();
-            $user = auth()->setToken($token)->user();
+            $token = JWTAuth::refresh();
+            $user = JWTAuth::setToken($token)->user();
             TokenController::invalidateByID($user->id);
             TokenController::create($user->id, $token);
             $state ='success';
@@ -212,7 +211,7 @@ class UserController extends Controller
         }
     }
 
-    public function getCurrentUserInfo(Request $request, $store_id, $branch_id)
+    public function getCurrentUserInfo(Request $request)
     {
         $user = auth()->user();
         $data = $request->except('token');
@@ -270,7 +269,7 @@ class UserController extends Controller
                         'name'          => $request->input('name'),
                         'email'         => $request->input('email'),
                         'phone'         => $request->input('phone'),
-                        'date_of_birth' => $request->input('date_of_birth'),
+                        'birthday'      => $request->input('birthday'),
                         'gender'        => $request->input('gender'),
                     ]);
 

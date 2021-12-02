@@ -19,12 +19,18 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::post('/register', [UserController::class, 'createUser']);
-Route::post('/login', [UserController::class, 'login']);
-Route::post('/logout', [UserController::class, 'logout']);
-Route::post('/refresh', [UserController::class, 'refreshToken']);
+Route::post('/register', [User::class, 'register']);
+Route::post('/login', [User::class, 'loginStaff']);
+Route::post('/login/admin', [User::class, 'loginAdmin']);
+Route::post('/logout', [User::class, 'logout']);
+Route::post('/refresh', [User::class, 'refreshToken']);
 
 Route::middleware(['jwt.confirm'])->group(function () {
+    Route::get('/me', [User::class, 'getStaffInfo']);
+    Route::get('/me/admin', [User::class, 'getAdminInfo']);
+    Route::patch('/me', [User::class, 'updateCurrentUserInfo']);
+    Route::patch('/me/password', [User::class, 'changePassword']);
+    Route::post('/employee', [Employee::class, 'create']);
 
     Route::prefix('/store/{store_id}/branch/{branch_id}')->group(function () {
         Route::middleware(['branch.confirm', 'work.confirm'])->group(function () {

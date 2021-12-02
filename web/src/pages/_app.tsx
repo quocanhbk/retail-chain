@@ -4,6 +4,7 @@ import Head from "next/head"
 import Provider from "@components/shared/Provider"
 import { NextPage } from "next"
 import { ReactElement, ReactNode } from "react"
+import "../styles.css"
 
 export type NextPageWithLayout = NextPage & {
 	getLayout?: (page: ReactElement) => ReactNode
@@ -19,7 +20,7 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 	return (
 		<Provider>
 			<Head>
-				<title>Chain Store</title>
+				<title>BKRM Retail System</title>
 			</Head>
 			<Box h="100vh" overflow="hidden">
 				{getLayout(<Component {...pageProps} />)}

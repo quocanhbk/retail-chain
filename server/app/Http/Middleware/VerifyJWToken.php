@@ -17,10 +17,13 @@ class VerifyJWToken
      */
     public function handle(Request $request, Closure $next)
     {
+        if ($request->cookie('bkrm-token')) {
+            $request->headers->set('Authorization', 'Bearer ' . $request->cookie('bkrm-token'));
+        }
         if(!auth()->check()){
             $state = "jwt_error";
             $token_error = "JWT invalid or missing, please try reset or login again";
-            return response()->json(compact('state', 'token_error'));
+            return response()->json(compact('state', 'token_error'), 401);
         }
 
     // return response()->json(compact('user'));

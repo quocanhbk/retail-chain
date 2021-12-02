@@ -1,0 +1,19 @@
+@font-face {
+	font-family: "Brandon";
+	src: url("/fonts/BrandonGrotesque/main.otf");
+	font-style: normal;
+	font-weight: 500;
+}
+
+@font-face {
+	font-family: "Brandon";
+	src: url("/fonts/BrandonGrotesque/black.otf");
+	font-style: normal;
+	font-weight: 900;
+}
+@font-face {
+	font-family: "Brandon";
+	src: url("/fonts/BrandonGrotesque/bold.otf");
+	font-style: normal;
+	font-weight: 800;
+}

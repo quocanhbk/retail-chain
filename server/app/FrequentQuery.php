@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Support\Facades\DB;
 
-class FrequentQuery 
+class FrequentQuery
 {
     public static function getWorkingBranchTable()
     {
@@ -15,6 +15,12 @@ class FrequentQuery
                     ->groupByRaw('works.user_id, works.branch_id');
         return $branch;
     }
+    // =======
+    public static function getRoles($user_id) {
+        $employment_id = DB::table('employments')->where('user_id', $user_id)->pluck('id')->first();
+        return DB::table('employment_roles')->where('employment_id', $employment_id )->pluck('role');
+    }
+    // =======
 
     public static function checkPermission($user_id,$branch_id, $role_list)
     {
@@ -27,7 +33,7 @@ class FrequentQuery
                 $check_role = $check_role->where(function ($query) use ($role_list){
                     foreach($role_list as $role){
                         $query = $query->orWhere('roles.name',$role);
-                    } 
+                    }
                 });
             $check_role = $check_role->exists();
             return $check_role;
@@ -110,13 +116,13 @@ class FrequentQuery
                             ->exists();
         return $is_employee;
     }
-    
+
     public static function getPointRatio($item_id, $branch_id){
         $point_ratio = DB::table('items')->where('items.deleted', 0)->where('items.id', $item_id)
                             ->leftJoin('item_categories','item_categories.id','=','items.category_id')->where('item_categories.branch_id', $branch_id)->where('item_categories.deleted', 0)
                             ->selectRaw('COALESCE(items.point_ratio, item_categories.point_ratio, 0) AS point_ratio')
                             ->first();
-            
+
         return $point_ratio->point_ratio;
     }
 

@@ -2,8 +2,8 @@ import { extendTheme } from "@chakra-ui/react"
 
 const theme = extendTheme({
 	fonts: {
-		heading: "Arimo",
-		body: "Arimo",
+		heading: "Roboto",
+		body: "Roboto",
 	},
 	components: {
 		Heading: {
@@ -43,9 +43,10 @@ const theme = extendTheme({
 		},
 		Button: {
 			defaultProps: {
-				colorScheme: "red",
+				colorScheme: "telegram",
 			},
 		},
+		colors: {},
 	},
 	breakpoints: ["0px", "480px", "960px", "1440px", "1920px"],
 })
