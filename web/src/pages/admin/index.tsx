@@ -1,5 +1,5 @@
 import AdminUI from "@components/UI/AdminUI"
-import { AdminLayout } from "@components/UI/Layout"
+import AdminLayout from "@components/UI/AdminUI/AdminLayout"
 import { ReactElement } from "react"
 
 const Admin = () => {

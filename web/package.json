@@ -1,33 +1,31 @@
 {
-  "name": "web",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@chakra-ui/react": "^1.6.9",
-    "@emotion/react": "^11",
-    "@emotion/styled": "^11",
-    "add": "^2.0.6",
-    "axios": "0.21.1",
-    "date-fns": "^2.25.0",
-    "framer-motion": "^4",
-    "next": "11.1.2",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "react-icons": "^4.3.1",
-    "react-query": "^3.26.0",
-    "yarn": "^1.22.17",
-    "zustand": "^3.5.13"
-  },
-  "devDependencies": {
-    "@types/react": "17.0.27",
-    "eslint": "^8.0.1",
-    "eslint-config-next": "11.1.2",
-    "typescript": "4.4.3"
-  }
+	"name": "web",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "next lint"
+	},
+	"dependencies": {
+		"@chakra-ui/react": "^1.6.9",
+		"@emotion/react": "^11",
+		"@emotion/styled": "^11",
+		"axios": "0.21.4",
+		"date-fns": "^2.25.0",
+		"easy-peasy": "^5.0.4",
+		"framer-motion": "^4",
+		"next": "11.1.2",
+		"react": "17.0.2",
+		"react-dom": "17.0.2",
+		"react-icons": "^4.3.1",
+		"react-query": "3.23.2"
+	},
+	"devDependencies": {
+		"@types/react": "17.0.27",
+		"eslint": "^8.0.1",
+		"eslint-config-next": "11.1.2",
+		"typescript": "4.4.3"
+	}
 }

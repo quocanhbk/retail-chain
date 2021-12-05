@@ -1,11 +1,15 @@
 import { Heading, Flex, Box, Button, HStack, Grid, Text, chakra } from "@chakra-ui/react"
 import { DateControl, FormBox, RadioControl, TextControl } from "@components/shared"
 import { format } from "date-fns"
+import { useRouter } from "next/router"
 import useRegister from "./useRegister"
 
 export const RegisterUI = () => {
 	const { values, setValue, errors, mutateRegister, isLoading } = useRegister()
+
 	const { name, email, password, confirmPassword, store_name } = values
+
+	const router = useRouter()
 
 	return (
 		<Flex h="full" overflow="auto">
@@ -16,7 +20,7 @@ export const RegisterUI = () => {
 			</Grid>
 			<Flex direction="column" justify="center" w="24rem" p={8}>
 				<chakra.form onSubmit={e => e.preventDefault()}>
-					<Heading fontWeight="semibold" color="telegram.500">
+					<Heading fontWeight="semibold" color="telegram.500" fontSize="xl">
 						ĐĂNG KÝ
 					</Heading>
 					<TextControl
@@ -24,14 +28,12 @@ export const RegisterUI = () => {
 						value={store_name}
 						onChange={v => setValue("store_name", v)}
 						error={errors.store_name}
-						size="lg"
 					/>
 					<TextControl
 						label="Tên"
 						value={name}
 						onChange={v => setValue("name", v)}
 						error={errors.name}
-						size="lg"
 						name="name"
 					/>
 					<TextControl
@@ -39,7 +41,6 @@ export const RegisterUI = () => {
 						value={email}
 						onChange={v => setValue("email", v)}
 						error={errors.email}
-						size="lg"
 					/>
 					<TextControl
 						label="Mật khẩu"
@@ -47,7 +48,6 @@ export const RegisterUI = () => {
 						onChange={v => setValue("password", v)}
 						error={errors.password}
 						type="password"
-						size="lg"
 					/>
 					<TextControl
 						label="Nhập lại mật khẩu"
@@ -55,7 +55,6 @@ export const RegisterUI = () => {
 						onChange={v => setValue("confirmPassword", v)}
 						error={errors.confirmPassword}
 						type="password"
-						size="lg"
 					/>
 					<Button
 						w="full"
@@ -63,9 +62,20 @@ export const RegisterUI = () => {
 						onClick={() => mutateRegister()}
 						isLoading={isLoading}
 						type="submit"
+						mb={4}
 					>
 						Đăng ký
 					</Button>
+					<Box h="1px" bg="gray.300" w="full" mb={2} />
+					<Text
+						fontSize="sm"
+						color="telegram.600"
+						cursor="pointer"
+						onClick={() => router.push("/login")}
+						fontWeight="black"
+					>
+						Đăng nhập
+					</Text>
 				</chakra.form>
 			</Flex>
 		</Flex>

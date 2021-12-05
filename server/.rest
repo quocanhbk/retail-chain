@@ -1,0 +1,62 @@
+
+### REGISTER
+post http://localhost:8000/api/admin/auth/register
+content-type: "application/json"
+
+{
+    "name": "QA",
+    "email": "quocanhbk18@gmail.com",
+    "password": "quocanh",
+    "store_name": "Hexagon"
+}
+
+### LOGIN AS OWNER
+post http://localhost:8000/api/admin/auth/login
+content-type: "application/json"
+
+{
+    "email": "quocanhbk18@gmail.com",
+    "password": "quocanh"
+}
+
+### GET ALL BRANCHES YOU OWN
+get http://localhost:8000/api/admin/branch
+
+### CREATE NEW BRANCH
+post http://localhost:8000/api/admin/branch
+content-type: "application/json"
+
+{
+    "name": "1001",
+    "address": "An Giang"
+}
+
+### GET EMPLOYEES
+get http://localhost:8000/api/admin/employee/1
+
+### CREATE EMPLOYEE
+post http://localhost:8000/api/admin/employee
+content-type: "application/json"
+
+{
+    "name": "Tran",
+    "email": "trann@gmail.com",
+    "password": "123456",
+    "branch_id": 1,
+    "roles": ["managing"]
+}
+
+### LOGIN AS EMPLOYEE
+post http://localhost:8000/api/auth/login
+content-type: "application/json"
+
+{
+    "email": "quanh123@gmail.com",
+    "password": "123456"
+}
+
+### GET ME
+get http://localhost:8000/api/me
+
+### GET ME ADMIN
+get http://localhost:8000/api/admin/me

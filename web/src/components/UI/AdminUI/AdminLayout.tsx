@@ -1,10 +1,11 @@
-import { Grid, Box, Heading } from "@chakra-ui/react"
+import { Grid, Flex, Heading, Box } from "@chakra-ui/react"
 import { useState } from "react"
 import { useRouter } from "next/router"
 import { useQuery } from "react-query"
-import { me, meAdmin } from "@api"
-import useStore from "@store"
-interface indexProps {}
+import { meAsAdmin } from "@api"
+import { useStoreActions } from "@store"
+import Sidebar from "./Sidebar"
+import Header from "./Header"
 
 interface AdminLayoutProps {
 	children: React.ReactNode
@@ -13,16 +14,17 @@ interface AdminLayoutProps {
 export const AdminLayout = ({ children }: AdminLayoutProps) => {
 	const router = useRouter()
 	const [loading, setLoading] = useState(true)
-	const setInfo = useStore(s => s.setInfo)
 
-	useQuery("meAdmin", () => meAdmin(), {
+	const setInfo = useStoreActions(a => a.setInfo)
+
+	useQuery("meAdmin", () => meAsAdmin(), {
 		enabled: loading,
 		onSuccess: data => {
 			setInfo(data.info)
 			setLoading(false)
 		},
 		onError: () => {
-			router.push("/admin/login")
+			router.push("/login")
 			setLoading(false)
 		},
 		retry: false,
@@ -36,7 +38,15 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
 		)
 	}
 
-	return <Box>{children}</Box>
+	return (
+		<Flex direction="column" h="100vh">
+			<Header />
+			<Flex flex={1}>
+				<Sidebar />
+				<Box flex={1}>{children}</Box>
+			</Flex>
+		</Flex>
+	)
 }
 
 export default AdminLayout

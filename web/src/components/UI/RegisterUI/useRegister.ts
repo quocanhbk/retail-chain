@@ -1,7 +1,8 @@
-import { register, RegisterInput } from "@api"
+import { RegisterInput } from "@@types"
+import { register } from "@api"
 import { isEmail } from "@helper"
 import { useFormCore } from "@hooks"
-import useStore from "@store"
+import { useStoreActions } from "@store"
 import router, { useRouter } from "next/router"
 import { useMutation } from "react-query"
 
@@ -10,7 +11,7 @@ interface RegisterFormInput extends RegisterInput {
 }
 
 const useRegister = () => {
-	const setInfo = useStore(s => s.setInfo)
+	const setInfo = useStoreActions(a => a.setInfo)
 	const { values, setValue, errors, setError, initError } = useFormCore<RegisterFormInput>({
 		name: "",
 		email: "",

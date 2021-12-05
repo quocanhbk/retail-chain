@@ -13,7 +13,7 @@ interface TextControlProps extends Omit<FormControlProps, "onChange"> {
 
 export const TextControl = ({ label, error, value, onChange, type, name, size, ...rest }: TextControlProps) => {
 	return (
-		<FormControl isInvalid={!!error} mb={4} {...rest}>
+		<FormControl isInvalid={!!error} mb={4} w="full" {...rest}>
 			<FormLabel mb={1}>{label}</FormLabel>
 			<Input
 				type={type}
@@ -22,6 +22,7 @@ export const TextControl = ({ label, error, value, onChange, type, name, size, .
 				onChange={e => onChange && onChange(e.target.value)}
 				variant="outline"
 				size={size}
+				w="full"
 			/>
 			<FormErrorMessage>{error}</FormErrorMessage>
 		</FormControl>

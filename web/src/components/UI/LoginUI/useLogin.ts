@@ -1,18 +1,27 @@
-import { LoginInput, login, loginAdmin } from "@api"
+import { LoginInput } from "@@types"
+import { login, loginAsAdmin } from "@api"
 import { useFormCore } from "@hooks"
-import useStore from "@store"
+import { useStoreActions } from "@store"
 import { useRouter } from "next/router"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useMutation } from "react-query"
+import fetcher from "src/api/fetcher"
 
-const useRegister = (admin: boolean) => {
-	const setInfo = useStore(s => s.setInfo)
+const useLogin = (admin: boolean) => {
+	const setInfo = useStoreActions(a => a.setInfo)
+
 	const router = useRouter()
+
 	const [generalError, setGeneralError] = useState("")
+
 	const { values, setValue, errors, setError } = useFormCore<LoginInput>({
 		email: "",
 		password: "",
 	})
+
+	useEffect(() => {
+		setGeneralError("")
+	}, [values])
 
 	const validate = () => {
 		let isSubmittable = true
@@ -29,29 +38,33 @@ const useRegister = (admin: boolean) => {
 		return isSubmittable
 	}
 
-	const { mutate: mutateLogin, isLoading: isLoadingLogin } = useMutation(() => login(values), {
-		onSuccess: data => {
-			setInfo(data.info)
-			router.push("/")
-		},
-		onError: (err: any) => {
-			setGeneralError(err.reponse.errors)
-		},
-	})
+	const { mutate: mutateLogin, isLoading: isLoadingLogin } = useMutation(
+		() => fetcher.post("/auth/login", values).then(res => res.data),
+		{
+			onSuccess: data => {
+				setInfo(data.info)
+				router.push("/")
+			},
+			onError: (err: any) => {
+				setGeneralError(err.response.data.errors)
+			},
+			onSettled: data => console.log(data),
+		}
+	)
 
-	const { mutate: mutateLoginAdmin, isLoading: isLoadingLoginAdmin } = useMutation(() => loginAdmin(values), {
+	const { mutate: mutateLoginAsAdmin, isLoading: isLoadingLoginAdmin } = useMutation(() => loginAsAdmin(values), {
 		onSuccess: data => {
 			setInfo(data.info)
 			router.push("/admin")
 		},
 		onError: (err: any) => {
-			setGeneralError(err.reponse.errors)
+			setGeneralError(err.response.data.errors)
 		},
 	})
 
 	const handleLogin = () => {
 		if (validate()) {
-			admin ? mutateLoginAdmin() : mutateLogin()
+			admin ? mutateLoginAsAdmin() : mutateLogin()
 		}
 	}
 
@@ -65,4 +78,4 @@ const useRegister = (admin: boolean) => {
 		generalError,
 	}
 }
-export default useRegister
+export default useLogin

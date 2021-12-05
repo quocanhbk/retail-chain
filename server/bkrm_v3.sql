@@ -1,4 +1,4 @@
-drop databse retail;
+drop database retail;
 create database retail;
 use retail;
 

@@ -5,42 +5,12 @@ const theme = extendTheme({
 		heading: "Roboto",
 		body: "Roboto",
 	},
+	globals: {
+		html: {
+			fontSize: ["14px", "15px", "15px", "16px", "16px"],
+		},
+	},
 	components: {
-		Heading: {
-			baseStyle: {
-				fontWeight: 600,
-			},
-			sizes: {
-				small: {
-					fontSize: ["lg", "xl"],
-				},
-				medium: {
-					fontSize: ["xl", "2xl"],
-				},
-				large: {
-					fontSize: ["2xl", "3xl"],
-				},
-			},
-			defaultProps: {
-				size: "medium",
-			},
-		},
-		Text: {
-			sizes: {
-				small: {
-					fontSize: ["xs", "sm"],
-				},
-				medium: {
-					fontSize: ["sm", "md"],
-				},
-				large: {
-					fontSize: ["md", "lg"],
-				},
-			},
-			defaultProps: {
-				size: "medium",
-			},
-		},
 		Button: {
 			defaultProps: {
 				colorScheme: "telegram",

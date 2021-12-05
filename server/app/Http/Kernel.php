@@ -69,5 +69,9 @@ class Kernel extends HttpKernel
         'work.confirm' => \App\Http\Middleware\VerifyWork::class,
         'cors' => \App\Http\Middleware\Cors::class,
         'user.confirm' => \App\Http\Middleware\VerifyUserForWebApp::class,
+        //=======
+        'only-owner' => \App\Http\Middleware\OnlyOwner::class,
+        'only-employee' => \App\Http\Middleware\OnlyEmployee::class,
+        'jwt-verify' => \App\Http\Middleware\VerifyJWToken::class
     ];
 }

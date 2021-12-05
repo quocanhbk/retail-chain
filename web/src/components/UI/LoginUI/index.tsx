@@ -1,27 +1,55 @@
-import { Flex, Box, Button, Text, Link, Grid, chakra, Heading } from "@chakra-ui/react"
-import { FormBox, TextControl } from "@components/shared"
+import { Flex, Box, Button, Text, Grid, chakra, Heading } from "@chakra-ui/react"
+import { TextControl } from "@components/shared"
+import { useRouter } from "next/router"
+import { useState } from "react"
 import useLogin from "./useLogin"
 
-interface LoginUIProps {
-	admin?: boolean
-}
+const loginMode = [
+	{ id: "employee", text: "Nhân viên" },
+	{ id: "owner", text: "Chủ cửa hàng" },
+] as const
 
-export const LoginUI = ({ admin = false }: LoginUIProps) => {
-	const { values, setValue, errors, isLoading, handleLogin, generalError } = useLogin(admin)
+type LoginMode = typeof loginMode[number]["id"]
+
+export const LoginUI = () => {
+	const router = useRouter()
+
+	const [currentMode, setCurrentMode] = useState<LoginMode>("employee")
+
+	const { values, setValue, errors, isLoading, handleLogin, generalError } = useLogin(currentMode === "owner")
+
 	const { email, password } = values
 
 	return (
 		<Flex h="full" direction={["column", "column", "row"]} overflow="auto" align={["center", "center", "stretch"]}>
-			<Grid placeItems="center" flex={2} bgGradient="linear(to-r, telegram.800, telegram.600)" p={8}>
-				<Text fontSize={["3rem", "3rem", "7rem", "7rem"]} fontWeight="black" color="white" fontFamily="Brandon">
+			<Grid placeItems="center" flex={[1, 2]} bgColor="telegram.600" p={8} display={["none", "none", "flex"]}>
+				<Text fontSize={["4rem", "5rem", "6rem", "7rem"]} fontWeight="black" color="white" fontFamily="Brandon">
 					BKRM RETAIL MANAGEMENT SYSTEM
 				</Text>
 			</Grid>
-			<Flex direction="column" justify="center" w="24rem" p={8}>
+			<Flex direction="column" justify="center" w="24rem" p={8} h="full">
+				<Flex shadow="base" overflow="hidden" mb={4} rounded="md">
+					{loginMode.map(mode => (
+						<Box
+							key={mode.id}
+							flex={1}
+							p={2}
+							textAlign="center"
+							cursor="pointer"
+							bg={currentMode === mode.id ? "red.500" : "transparent"}
+							color={currentMode === mode.id ? "white" : "black"}
+							fontWeight={currentMode === mode.id ? "bold" : "normal"}
+							onClick={() => setCurrentMode(mode.id)}
+						>
+							{mode.text}
+						</Box>
+					))}
+				</Flex>
 				<chakra.form onSubmit={e => e.preventDefault()}>
-					<Heading fontWeight="semibold" color="telegram.500">
-						ĐĂNG NHẬP {admin ? "ADMIN" : ""}
+					<Heading fontWeight="semibold" color="telegram.500" fontSize="xl" mb={4}>
+						ĐĂNG NHẬP
 					</Heading>
+
 					<TextControl
 						label="Email"
 						value={email}
@@ -35,12 +63,23 @@ export const LoginUI = ({ admin = false }: LoginUIProps) => {
 						error={errors.password}
 						type="password"
 					/>
-					<Text>{generalError}</Text>
-					<Button w="full" onClick={handleLogin} isLoading={isLoading} type="submit">
+					<Text fontSize="sm" w="full" textAlign="center" color="red.500" mb={2}>
+						{generalError}
+					</Text>
+					<Button w="full" onClick={() => handleLogin()} isLoading={isLoading} type="submit" mb={4}>
 						{"Đăng Nhập"}
 					</Button>
+					<Box h="1px" bg="gray.300" w="full" mb={2} />
+					<Text
+						fontSize="sm"
+						color="telegram.600"
+						cursor="pointer"
+						onClick={() => router.push("/register")}
+						fontWeight="black"
+					>
+						Tạo cửa hàng
+					</Text>
 				</chakra.form>
-				<Box w="full" bg="gray.100" my={2} />
 			</Flex>
 		</Flex>
 	)
