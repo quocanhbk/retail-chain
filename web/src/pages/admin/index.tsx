@@ -1,13 +1,13 @@
-import AdminUI from "@components/UI/AdminUI"
 import AdminLayout from "@components/UI/AdminUI/AdminLayout"
+import StoreDashboardUI from "@components/UI/AdminUI/Dashboard"
 import { ReactElement } from "react"
 
-const Admin = () => {
-	return <AdminUI />
+const StoreDashboard = () => {
+	return <StoreDashboardUI />
 }
 
-Admin.getLayout = function getLayout(page: ReactElement) {
+StoreDashboard.getLayout = function getLayout(page: ReactElement) {
 	return <AdminLayout>{page}</AdminLayout>
 }
 
-export default Admin
+export default StoreDashboard

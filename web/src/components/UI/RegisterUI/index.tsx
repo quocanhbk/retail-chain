@@ -7,13 +7,13 @@ import useRegister from "./useRegister"
 export const RegisterUI = () => {
 	const { values, setValue, errors, mutateRegister, isLoading } = useRegister()
 
-	const { name, email, password, confirmPassword, store_name } = values
+	const { name, email, password, password_confirmation, remember } = values
 
 	const router = useRouter()
 
 	return (
 		<Flex h="full" overflow="auto">
-			<Grid placeItems="center" flex={2} bgColor="telegram.600" p={8}>
+			<Grid placeItems="center" flex={2} bgColor="telegram.600" p={8} display={["none", "none", "block"]}>
 				<Text fontSize="7rem" fontWeight="black" color="white" fontFamily="Brandon">
 					BKRM RETAIL MANAGEMENT SYSTEM
 				</Text>
@@ -25,16 +25,9 @@ export const RegisterUI = () => {
 					</Heading>
 					<TextControl
 						label="Tên cửa hàng"
-						value={store_name}
-						onChange={v => setValue("store_name", v)}
-						error={errors.store_name}
-					/>
-					<TextControl
-						label="Tên"
 						value={name}
 						onChange={v => setValue("name", v)}
 						error={errors.name}
-						name="name"
 					/>
 					<TextControl
 						label="Email"
@@ -51,14 +44,14 @@ export const RegisterUI = () => {
 					/>
 					<TextControl
 						label="Nhập lại mật khẩu"
-						value={confirmPassword}
-						onChange={v => setValue("confirmPassword", v)}
-						error={errors.confirmPassword}
+						value={password_confirmation}
+						onChange={v => setValue("password_confirmation", v)}
+						error={errors.password_confirmation}
 						type="password"
 					/>
 					<Button
 						w="full"
-						colorScheme="telegram"
+						colorScheme="gray"
 						onClick={() => mutateRegister()}
 						isLoading={isLoading}
 						type="submit"
@@ -69,7 +62,7 @@ export const RegisterUI = () => {
 					<Box h="1px" bg="gray.300" w="full" mb={2} />
 					<Text
 						fontSize="sm"
-						color="telegram.600"
+						color="gray.600"
 						cursor="pointer"
 						onClick={() => router.push("/login")}
 						fontWeight="black"

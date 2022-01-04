@@ -1,19 +1,20 @@
-import { Info } from "@@types"
+import { RegisterStoreOutput } from "./api/auth"
 import { createStore, action, Action, createTypedHooks } from "easy-peasy"
 
-interface Store {
-	info: Info | null
-	setInfo: Action<Store, Info | null>
+interface StoreModel {
+	info: RegisterStoreOutput | null
+	setInfo: Action<StoreModel, RegisterStoreOutput | null>
 }
 
-export const store = createStore<Store>({
+const store = createStore<StoreModel>({
 	info: null,
 	setInfo: action((state, payload) => {
 		state.info = payload
 	}),
 })
 
-const typedHooks = createTypedHooks<Store>()
-
+const typedHooks = createTypedHooks<StoreModel>()
 export const useStoreActions = typedHooks.useStoreActions
 export const useStoreState = typedHooks.useStoreState
+
+export default store

@@ -1,5 +1,5 @@
 import { ChakraProvider } from "@chakra-ui/react"
-import { store } from "@store"
+import store from "@store"
 import { StoreProvider } from "easy-peasy"
 import { QueryClient, QueryClientProvider } from "react-query"
 import theme from "src/theme"
