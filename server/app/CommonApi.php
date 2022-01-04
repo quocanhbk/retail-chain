@@ -56,6 +56,13 @@ class CommonApi {
         TokenController::create($user->id, $token);
 
         $info = $admin ? compact('user') : CommonQuery::getInfo($user->id);
+
+        if (!$info) {
+            $state = 'failed';
+            $errors = 'Employee account is terminated';
+            return response()->json(compact('state', 'errors'), 404);
+        }
+
         $state = 'success';
         $errors = 'none';
         return response()->json(compact('state', 'errors', 'info'))->cookie("bkrm-token", $token);

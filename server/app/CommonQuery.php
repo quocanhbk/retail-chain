@@ -18,6 +18,10 @@ class CommonQuery {
 
         $store = DB::table('stores')->where('id', '=', $user->store_id)->first();
         $employment = DB::table('employments')->where('user_id','=', $user->id)->whereNull('to')->first();
+
+        // if user is terminated
+        if (!$employment) return null;
+
         $branch = DB::table('branches')->where('id', $employment->branch_id)->first();
         $roles = DB::table('employment_roles')->where('employment_id', $employment->id)->pluck('role');
         $user_info = compact('user', 'store', 'branch', 'roles');

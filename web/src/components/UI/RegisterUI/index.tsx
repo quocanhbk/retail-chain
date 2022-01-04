@@ -13,7 +13,7 @@ export const RegisterUI = () => {
 
 	return (
 		<Flex h="full" overflow="auto">
-			<Grid placeItems="center" flex={2} bgGradient="linear(to-r, telegram.800, telegram.600)" p={8}>
+			<Grid placeItems="center" flex={2} bgColor="telegram.600" p={8}>
 				<Text fontSize="7rem" fontWeight="black" color="white" fontFamily="Brandon">
 					BKRM RETAIL MANAGEMENT SYSTEM
 				</Text>

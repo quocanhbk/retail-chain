@@ -48,12 +48,34 @@ class Branch extends Controller
 
         $data = $request->all();
 
-        $branches = DB::table('branches')->where('store_id', $user->store_id)->get();
+        $branches = DB::table('branches')->where('store_id', $user->store_id)->where('deleted', false)->get();
 
         $info = compact('branches');
         $state = 'success';
 
         return response()->json(compact('state', 'info'), 200);
+    }
+
+    public function deleteBranch(Request $request) {
+        $user = auth()->user();
+        $data = $request->all();
+
+        $rules = [
+            'branch_id' => 'required|number'
+        ];
+
+        $validator = Validator::make($data, $rules);
+
+        if ($validator->failed()) {
+            $state = 'failed';
+            $errors = $validator->errors();
+            return response()->json(compact('state', 'errors'), 400);
+        }
+
+        DB::table('branches')->where('id', $request->input('id'))->update(['deleted' => true]);
+
+        $state = 'success';
+        return response()->json(compact('state'), 200);
     }
 
 }

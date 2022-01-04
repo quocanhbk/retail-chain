@@ -221,4 +221,28 @@ class Admin extends Controller
         return response()->json(compact('state', 'info' ), 200);
     }
 
+    public function terminateEmployee(Request $request) {
+        $owner = auth()->user();
+        $data = $request->all();
+        $rules = [
+            'user_id'             => 'required|number'
+        ];
+        $validator = Validator::make($data, $rules);
+
+        if ($validator->failed()) {
+            $state = 'failed';
+            $errors = $validator->errors();
+            return response()->json(compact('state', 'errors'), 400);
+        }
+
+        $terminated_user = CommonQuery::getUser($request->input('user_id'));
+
+        if ($owner->store_id != $terminated_user->store_id) {
+            $state = 'failed';
+            $errors = 'Permission denied';
+            return response()->json(compact('state', 'errors'), 403);
+        }
+
+        DB::table('employments')->where('user_id', $terminated_user->user_id)->update(['to', date('Y-m-d')]);
+    }
 }

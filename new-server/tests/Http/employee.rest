@@ -1,0 +1,30 @@
+### Create an employee
+POST http://localhost:8000/api/employee
+Content-Type: application/json
+
+{
+    "name": "john",
+    "email": "john@gmail.com",
+    "password": "johnjohn",
+    "password_confirmation": "johnjohn",
+    "branch_id": 1,
+    "roles": ["manage", "import"]
+}
+
+### Get all employees
+GET http://localhost:8000/api/employee
+
+### Get an employee
+GET http://localhost:8000/api/employee/5
+
+### Get me
+GET http://localhost:8000/api/employee/me
+
+### Login
+POST http://localhost:8000/api/employee/login
+Content-Type: application/json
+
+{
+    "email": "john@gmail.com",
+    "password": "johnjohn"
+}
