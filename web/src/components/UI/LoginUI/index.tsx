@@ -1,7 +1,9 @@
+import { getGuard } from "@api"
 import { Flex, Box, Button, Text, Grid, chakra, Heading } from "@chakra-ui/react"
 import { TextControl } from "@components/shared"
 import { useRouter } from "next/router"
 import { useState } from "react"
+import { useQuery } from "react-query"
 import useLogin from "./useLogin"
 
 const loginMode = [
@@ -19,6 +21,14 @@ export const LoginUI = () => {
 	const { values, setValue, errors, isLoading, handleLogin, generalError } = useLogin(currentMode === "owner")
 
 	const { email, password } = values
+
+	useQuery("get-guard", () => getGuard(), {
+		onSuccess: role => {
+			if (role === "store") router.push("/admin")
+			else if (role === "employee") router.push("/")
+		},
+	})
+
 	return (
 		<Flex h="full" direction={["column", "column", "row"]} overflow="auto" align={["center", "center", "stretch"]}>
 			<Grid placeItems="center" flex={[1, 2]} bgColor="gray.600" p={8} display={["none", "none", "flex"]}>

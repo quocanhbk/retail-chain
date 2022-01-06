@@ -37,7 +37,7 @@ const StoreInfo = () => {
 				<BsThreeDots size="1.2rem" />
 				<Box pos="absolute" top="100%" right={0}>
 					<Collapse in={isOpen}>
-						<Box background="white" border="1px" borderColor={"gray.300"} rounded="md" w="10rem">
+						<Box background="white" shadow="base" rounded="md" w="10rem" p={2}>
 							<Text px={2} py={1}>
 								Chỉnh sửa
 							</Text>

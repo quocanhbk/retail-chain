@@ -30,7 +30,7 @@ export const getStoreInfo = async (): Promise<RegisterStoreOutput> => {
 	return data
 }
 
-export const isStoreOwner = async (): Promise<boolean> => {
-	const { data } = await fetcher.get("/is-store-owner")
+export const getGuard = async (): Promise<string> => {
+	const { data } = await fetcher.get("/auth")
 	return data
 }

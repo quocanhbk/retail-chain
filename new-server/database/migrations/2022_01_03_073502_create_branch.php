@@ -18,6 +18,7 @@ class CreateBranch extends Migration
             $table->string('name');
             $table->string('address');
             $table->integer('store_id');
+            $table->string('image');
             $table->softDeletes();
             $table->timestamps();
         });

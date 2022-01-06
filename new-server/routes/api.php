@@ -16,10 +16,15 @@ Route::prefix('/store')->group(function () {
     Route::get('/me', [StoreController::class, 'getStore'])->middleware([OnlyStoreAdmin::class]);
 });
 
+Route::get('/auth', [StoreController::class, 'getGuard']);
+
 Route::prefix('/branch')->middleware([OnlyStoreAdmin::class])->group(function () {
-    Route::post('/create', [BranchController::class, 'create']);
+    Route::post('/', [BranchController::class, 'create']);
     Route::get('/', [BranchController::class, 'getBranches']);
     Route::get('/{branch_id}', [BranchController::class, 'getBranch']);
+    Route::get('/image/{filePath}', [BranchController::class, 'getBranchImage'])
+        ->where(['filePath' => '^([A-z0-9-_+]+\/)*([A-z0-9-\.]+)(\?\d+)?$'])
+        ->middleware([OnlyStoreAdmin::class]);
 });
 
 Route::prefix('/employee')->group(function () {

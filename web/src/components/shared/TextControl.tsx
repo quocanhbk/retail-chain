@@ -9,9 +9,20 @@ interface TextControlProps extends Omit<FormControlProps, "onChange"> {
 	onChange?: (value: string) => void
 	type?: ComponentProps<typeof Input>["type"]
 	size?: ComponentProps<typeof Input>["size"]
+	inputRef?: ComponentProps<typeof Input>["ref"]
 }
 
-export const TextControl = ({ label, error, value, onChange, type, name, size, ...rest }: TextControlProps) => {
+export const TextControl = ({
+	label,
+	error,
+	value,
+	onChange,
+	type,
+	name,
+	size,
+	inputRef,
+	...rest
+}: TextControlProps) => {
 	return (
 		<FormControl isInvalid={!!error} mb={4} w="full" {...rest}>
 			<FormLabel mb={1}>{label}</FormLabel>
@@ -23,6 +34,7 @@ export const TextControl = ({ label, error, value, onChange, type, name, size, .
 				variant="outline"
 				size={size}
 				w="full"
+				ref={inputRef}
 			/>
 			<FormErrorMessage>{error}</FormErrorMessage>
 		</FormControl>

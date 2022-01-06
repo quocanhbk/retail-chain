@@ -28,3 +28,6 @@ Content-Type: application/json
     "email": "john@gmail.com",
     "password": "johnjohn"
 }
+
+### Logout
+POST http://localhost:8000/api/employee/logout

@@ -15,8 +15,8 @@ const NavMenus = () => {
 			{menus.map(menu => (
 				<Link href={menu.path} key={menu.id}>
 					<Text
-						color={menu.id === currentPath ? "black" : "gray.600"}
-						fontWeight={"semibold"}
+						color={menu.id === currentPath ? "telegram.500" : "blackAlpha.700"}
+						fontWeight={500}
 						cursor={"pointer"}
 					>
 						{menu.text}

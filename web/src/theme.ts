@@ -13,7 +13,7 @@ const theme = extendTheme({
 	components: {
 		Button: {
 			defaultProps: {
-				colorScheme: "gray",
+				colorScheme: "telegram",
 			},
 		},
 		colors: {},

@@ -27,3 +27,6 @@ content-type: "application/json"
 ###
 GET http://localhost:8000/api/me/admin
 content-type: "application/json"
+
+###
+GET http://localhost:8000/api/branch

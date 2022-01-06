@@ -5,7 +5,16 @@ import StoreInfo from "./StoreInfo"
 export const Header = () => {
 	return (
 		<Flex align="center" w="full" justify="space-between" px={4} shadow="base" py={2}>
-			<Heading fontSize="xl" color="gray.500" fontWeight={"900"}>
+			<Heading
+				fontSize="2xl"
+				backgroundColor="telegram.500"
+				color="white"
+				rounded="md"
+				px={2}
+				py={1}
+				fontWeight={"900"}
+				fontFamily={"Brandon"}
+			>
 				BKRM ADMIN
 			</Heading>
 			<HStack align="center" spacing={8}>

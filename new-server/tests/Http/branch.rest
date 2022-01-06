@@ -1,9 +1,9 @@
 ### Create branch
-POST http://localhost:8000/api/branch/create
+POST http://localhost:8000/api/branch/
 Content-Type: application/json
 
 {
-    "name": "002",
+    "name": "003",
     "address": "Tran Hung Dao"
 }
 

@@ -87,4 +87,15 @@ class StoreController extends Controller
     public function getStore() {
         return response()->json(Auth::guard('stores')->user());
     }
+
+    /** Check if user is store owner */
+    public function getGuard() {
+        if (Auth::guard('stores')->check()) {
+            return response()->json("store");
+        }
+        if (Auth::guard('employees')->check()) {
+            return response()->json("employee");
+        }
+        return response()->json("guest");
+    }
 }

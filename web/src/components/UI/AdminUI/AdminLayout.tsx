@@ -5,6 +5,8 @@ import { useQuery } from "react-query"
 import Header from "./Header"
 import { useStoreActions } from "@store"
 import { getStoreInfo } from "@api"
+import { AnimatePresence } from "framer-motion"
+import { LoadingScreen, Motion } from "@components/shared"
 interface AdminLayoutProps {
 	children: React.ReactNode
 }
@@ -28,22 +30,24 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
 		retry: false,
 	})
 
-	if (loading) {
-		return (
-			<Grid w="full" h="full" placeItems="center">
-				<Heading>Loading</Heading>
-			</Grid>
-		)
-	}
-
 	return (
 		<Flex direction="column" h="100vh">
-			<Header />
-			<Flex flex={1} w="full" justify={"center"}>
-				<Box w="full" maxW="64rem">
-					{children}
-				</Box>
-			</Flex>
+			<AnimatePresence>
+				{loading ? (
+					<Motion.Box initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} h="full">
+						<LoadingScreen />
+					</Motion.Box>
+				) : (
+					<>
+						<Header />
+						<Flex flex={1} w="full" justify={"center"} overflow={"auto"}>
+							<Box w="full" maxW="64rem">
+								{children}
+							</Box>
+						</Flex>
+					</>
+				)}
+			</AnimatePresence>
 		</Flex>
 	)
 }
