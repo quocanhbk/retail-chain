@@ -5,21 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Branch;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class BranchController extends Controller {
 
     public function create(Request $request) {
-        // retrieve data from form data
         $store_id = Auth::guard('stores')->user()->id;
         $data = $request->all();
-
-
         $rules = [
             'name' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string', 'max:1000'],
-            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:5012'],
         ];
 
         $validator = Validator::make($data, $rules);
@@ -33,37 +28,20 @@ class BranchController extends Controller {
 
         // check if branch name within the same store is used
         $branch = Branch::where('name', $data['name'])->where('store_id', $store_id)->first();
+        error_log($branch);
         if ($branch) {
             return response()->json([
                 'message' => 'Branch name already exists.',
             ], 400);
         }
 
-        // check if image exist
-        $isExist = $request->hasFile('image');
-        $path = $isExist
-            ? $request->file('image')->storeAs('branches', $store_id . $request->input('name') . "." . $request->file('image')->getClientOriginalExtension() )
-            : 'branches/default.jpg';
-
         $branch = Branch::create([
             'name' => $data['name'],
             'address' => $data['address'],
             'store_id' => Auth::guard('stores')->user()->id,
-            'image' => $path,
         ]);
 
         return response()->json($branch);
-    }
-
-    public function getBranchImage($filePath) {
-        // $filePath = 'branches' . '/' . $fileName;
-        error_log("Got file: " . $filePath);
-        if (!Storage::exists($filePath)) {
-            return response()->json([
-                'message' => 'File not found.',
-            ], 404);
-        }
-        return response()->file(storage_path('app' . DIRECTORY_SEPARATOR . $filePath));
     }
 
     public function getBranches() {
@@ -120,6 +98,7 @@ class BranchController extends Controller {
 
     public function delete(Request $request, $branch_id) {
         $store_id = Auth::guard('stores')->user()->id;
+        $data = $request->all();
         // make sure store owns branch
         $branch = Branch::where('store_id', $store_id)->where('id', $branch_id)->first();
         $branch->delete();

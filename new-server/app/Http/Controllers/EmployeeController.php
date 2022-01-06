@@ -13,22 +13,7 @@ use Illuminate\Support\Facades\Validator;
 
 class EmployeeController extends Controller
 {
-    private function getEmployeeDetail ($id) {
-        $employee = Employee::find($id);
-        $employment = Employment::where('employee_id', $id)->first();
-        // get employment roles, convert to array of strings
-        $roles = EmploymentRoles::where('employment_id', $employment->id)->get()->pluck('role')->toArray();
-        // get branch
-        $branch = Branch::find($employment->branch_id);
-        // assign roles to employment
-        $employment->roles = $roles;
-        // assign branch to employment
-        $employment->branch = $branch;
-        // assign employment to employee
-        $employee->employment = $employment;
 
-        return $employee;
-    }
     // Create a new employee
     public function create(Request $request) {
         $store_id = Auth::guard('stores')->user()->id;
@@ -106,17 +91,9 @@ class EmployeeController extends Controller
     // Get an employee
     public function getEmployee(Request $request, $id) {
         $store_id = Auth::guard('stores')->user()->id;
-
-        // get employee
-        $employee = Employee::where('store_id', $store_id)->where('id', $id)->first();
-        if (!$employee) {
-            return response()->json([
-                'message' => 'Employee not found.',
-            ], 404);
-        }
-
-        $employee = $this->getEmployeeDetail($id);
-
+        $employee = Employee::with(['employment' => function ($query) {
+            $query->with(['roles:id,role,employment_id'])->get();
+        }])->where('store_id', $store_id)->where('id', $id)->first();
         return response()->json($employee);
     }
 
@@ -148,10 +125,7 @@ class EmployeeController extends Controller
             ], 401);
         }
 
-        $id = Auth::guard('employees')->user()->id;
-        $employee = $this->getEmployeeDetail($id);
-
-        return response()->json($employee);
+        return response()->json(Auth::guard('employees')->user());
     }
 
     // Logout as an employee
@@ -164,7 +138,7 @@ class EmployeeController extends Controller
 
     // Get the current employee
     public function me(Request $request) {
-        $employee = $this->getEmployeeDetail(Auth::guard('employees')->user()->id);
+        $employee = Auth::guard('employees')->user();
         return response()->json($employee);
     }
 

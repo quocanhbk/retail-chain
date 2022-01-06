@@ -14,7 +14,6 @@ class Branch extends Model
     protected $fillable = [
         'name',
         'address',
-        'image',
         'store_id'
     ];
 
@@ -26,5 +25,10 @@ class Branch extends Model
     public function employments()
     {
         return $this->hasMany(Employment::class);
+    }
+
+    public function shift()
+    {
+        return $this->hasMany(Shift::class);
     }
 }

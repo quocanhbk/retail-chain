@@ -35,3 +35,9 @@ Route::prefix('/employee')->group(function () {
     Route::post('/logout', [EmployeeController::class, 'logout'])->middleware([OnlyStoreAdmin::class]);
     Route::get('/{employee_id}', [EmployeeController::class, 'getEmployee'])->middleware([OnlyStoreAdmin::class]);
 });
+
+Route::prefix('/shift')->middleware([OnlyStoreAdmin::class])->group(function () {
+    Route::post('/', [ShiftController::class, 'create']);
+    Route::get('/', [ShiftController::class, 'getShiftes']);
+    Route::get('/{name}', [ShiftController::class, 'getShift']);
+});
