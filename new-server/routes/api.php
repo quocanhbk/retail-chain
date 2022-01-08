@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Http\Middleware\AdminOrPurchaser;
 use App\Http\Middleware\Employee\HaveManageRole;
 use App\Http\Middleware\Employee\NotEmployee;
 use App\Http\Middleware\Employee\OnlyEmployee;
@@ -73,6 +75,19 @@ Route::prefix('/work-schedule')->middleware([HaveManageRole::class])->group(func
     Route::get('/{date}', [WorkScheduleController::class, 'getWorkSchedulesByDate']);
     // PATCH /work-schedule/{work_schedule_id} - update a work schedule by id
     Route::patch('/{work_schedule_id}', [WorkScheduleController::class, 'update']);
-    // DELETE /work-schedule/{work_schedule_id} - deactivate a work schedule by id
+    // DELETE /work-schedule/{work_schedule_id} - delete a work schedule by id
     Route::delete('/{work_schedule_id}', [WorkScheduleController::class, 'delete']);
+});
+
+Route::prefix('/supplier')->middleware([AdminOrPurchaser::class])->group(function () {
+    // POST /supplier - create a new supplier
+    Route::post('/', [SupplierController::class, 'create'])->middleware([OnlyStoreAdmin::class]);
+    // GET /supplier - get all suppliers
+    Route::get('/', [SupplierController::class, 'getSuppliers']);
+    // GET /supplier/{supplier_id} - get a supplier by id
+    Route::get('/{supplier_id}', [SupplierController::class, 'getSupplier']);
+    // PATCH /supplier/{supplier_id} - update a supplier by id
+    Route::patch('/{supplier_id}', [SupplierController::class, 'update']);
+    // DELETE /supplier/{supplier_id} - delete a supplier by id
+    Route::delete('/{supplier_id}', [SupplierController::class, 'delete']);
 });
