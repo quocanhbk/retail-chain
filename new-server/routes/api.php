@@ -2,23 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Middleware\AdminOrPurchaser;
-use App\Http\Middleware\Employee\HaveManageRole;
-use App\Http\Middleware\Employee\NotEmployee;
-use App\Http\Middleware\Employee\OnlyEmployee;
-use App\Http\Middleware\Store\NotStoreAdmin;
-use App\Http\Middleware\Store\OnlyStoreAdmin;
+use App\Http\Middleware\Role\AdminOrPurchaser;
+use App\Http\Middleware\Role\AdminOrSaleOrPurchaser;
+use App\Http\Middleware\Role\HaveManageRole;
+use App\Http\Middleware\Role\NotEmployee;
+use App\Http\Middleware\Role\OnlyEmployee;
+use App\Http\Middleware\Role\NotStoreAdmin;
+use App\Http\Middleware\Role\OnlyStoreAdmin;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('/store')->group(function () {
-    // POST /store/register - register a new store
-    Route::post('/register', [StoreController::class, 'register'])->middleware([NotStoreAdmin::class]);
-    // POST /store/login - login as store admin
-    Route::post('/login', [StoreController::class, 'login'])->middleware([NotStoreAdmin::class]);
-    // GET /store/logout - logout as store admin
-    Route::post('/logout', [StoreController::class, 'logout'])->middleware([OnlyStoreAdmin::class]);
-    // GET /store/me - get store info
-    Route::get('/me', [StoreController::class, 'getStore'])->middleware([OnlyStoreAdmin::class]);
+    Route::middleware([NotStoreAdmin::class])->group(function () {
+        // POST /store/register - register a new store
+        Route::post('/register', [StoreController::class, 'register']);
+        // POST /store/login - login as store admin
+        Route::post('/login', [StoreController::class, 'login']);
+    });
+    Route::middleware([OnlyStoreAdmin::class])->group(function () {
+        // GET /store/logout - logout as store admin
+        Route::post('/logout', [StoreController::class, 'logout']);
+        // GET /store/me - get store info
+        Route::get('/me', [StoreController::class, 'getStore']);
+    });
 });
 
 // GET /auth - get auth info
@@ -39,20 +44,22 @@ Route::prefix('/branch')->middleware([OnlyStoreAdmin::class])->group(function ()
 });
 
 Route::prefix('/employee')->group(function () {
-    // POST /employee - create a new employee
-    Route::post('/', [EmployeeController::class, 'create'])->middleware([OnlyStoreAdmin::class]);
-    // GET /employee - get all employees
-    Route::get('/', [EmployeeController::class, 'getEmployees'])->middleware([OnlyStoreAdmin::class]);
+    Route::middleware([OnlyStoreAdmin::class])->group(function () {
+        // POST /employee - create a new employee
+        Route::post('/', [EmployeeController::class, 'create']);
+        // GET /employee - get all employees
+        Route::get('/', [EmployeeController::class, 'getEmployees']);
+        // GET /employee/{employee_id} - get an employee by id
+        Route::get('/{employee_id}', [EmployeeController::class, 'getEmployee']);
+        // POST /employee/transfer - transfer an employee to another branch
+        Route::post('/transfer', [EmployeeController::class, 'transfer']);
+    });
     // GET /employee/me - get current employee info
     Route::get('/me', [EmployeeController::class, 'me'])->middleware([OnlyEmployee::class]);
     // POST /employee/login - login as employee
     Route::post('/login', [EmployeeController::class, 'login'])->middleware([NotStoreAdmin::class, NotEmployee::class]);
     // POST /employee/logout - logout as employee
-    Route::post('/logout', [EmployeeController::class, 'logout'])->middleware([OnlyStoreAdmin::class]);
-    // GET /employee/{employee_id} - get an employee by id
-    Route::get('/{employee_id}', [EmployeeController::class, 'getEmployee'])->middleware([OnlyStoreAdmin::class]);
-    // POST /employee/transfer - transfer an employee to another branch
-    Route::post('/transfer', [EmployeeController::class, 'transfer'])->middleware([OnlyStoreAdmin::class]);
+    Route::post('/logout', [EmployeeController::class, 'logout'])->middleware([OnlyEmployee::class]);
 });
 
 Route::prefix('/shift')->middleware([HaveManageRole::class])->group(function () {
@@ -90,4 +97,40 @@ Route::prefix('/supplier')->middleware([AdminOrPurchaser::class])->group(functio
     Route::patch('/{supplier_id}', [SupplierController::class, 'update']);
     // DELETE /supplier/{supplier_id} - delete a supplier by id
     Route::delete('/{supplier_id}', [SupplierController::class, 'delete']);
+});
+
+Route::prefix('/item-category')->middleware([OnlyStoreAdmin::class])->group(function () {
+    // POST /item-category - create a new item category
+    Route::post('/', [ItemCategoryController::class, 'create']);
+    // POST /item-category/bulk - create multiple item categories
+    Route::post('/bulk', [ItemCategoryController::class, 'createBulk']);
+    // GET /item-category - get all item categories
+    Route::get('/', [ItemCategoryController::class, 'getItemCategories']);
+    // PATCH /item-category/{item_category_id} - update an item category by id
+    Route::patch('/{item_category_id}', [ItemCategoryController::class, 'update']);
+    // DELETE /item-category/{item_category_id} - delete an item category by id
+    Route::delete('/{item_category_id}', [ItemCategoryController::class, 'delete']);
+});
+
+Route::prefix('/item')->group(function () {
+    Route::middleware([OnlyStoreAdmin::class])->group(function () {
+        // POST /item - create a new item
+        Route::post('/', [ItemController::class, 'create']);
+        // PATCH /item/{item_id} - update an item by id
+        Route::patch('/{item_id}', [ItemController::class, 'update']);
+        // DELETE /item/{item_id} - delete an item by id
+        Route::delete('/{item_id}', [ItemController::class, 'delete']);
+    });
+    Route::middleware([AdminOrSaleOrPurchaser::class])->group(function () {
+        // GET /item - get all items
+        Route::get('/', [ItemController::class, 'getItems']);
+        // GET /item/{item_id} - get an item by id
+        Route::get('/{item_id}', [ItemController::class, 'getItem']);
+        // GET /item/{bar_code} - get an item by bar code
+        Route::get('/{bar_code}', [ItemController::class, 'getItemByBarCode']);
+        // GET /item/{search} - search items by name, code, bar code or category
+        Route::get('/{search}', [ItemController::class, 'search']);
+        // GET /item/price_history/{item_id} - get price history of an item
+        Route::get('/price_history/{item_id}', [ItemController::class, 'getPriceHistory']);
+    });
 });

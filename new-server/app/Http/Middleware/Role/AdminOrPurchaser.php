@@ -18,8 +18,8 @@ class AdminOrPurchaser
             return $next($request);
         }
         if (Auth::guard('employees')->check()) {
-            $have_manage_role = Auth::user()->employment->roles->where('role', 'manage')->first();
-            if (!$have_manage_role) {
+            $have_purchase_role = Auth::user()->employment->roles->where('role', 'purchase')->first();
+            if (!$have_purchase_role) {
                 return response()->json([
                     'message' => 'Unauthorized.',
                 ], 403);
