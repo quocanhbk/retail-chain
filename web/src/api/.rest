@@ -1,6 +1,6 @@
 
 ###
-POST http://localhost:8000/api/admin/auth/register
+POST http://localhost:8000/api/store/register
 content-type: "application/json"
 
 {
@@ -27,3 +27,6 @@ content-type: "application/json"
 ###
 GET http://localhost:8000/api/me/admin
 content-type: "application/json"
+
+###
+GET http://localhost:8000/api/branch

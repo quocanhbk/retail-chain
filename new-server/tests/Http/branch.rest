@@ -1,14 +1,23 @@
 ### Create branch
-POST http://localhost:8000/api/branch/create
+POST http://localhost:8000/api/branch/
 Content-Type: application/json
 
 {
-    "name": "002",
-    "address": "Tran Hung Dao"
+    "name": "004",
+    "address": "Ly Thai To"
 }
 
 ### Get branches
 GET http://localhost:8000/api/branch
 
 ### Get branch
-GET http://localhost:8000/api/branch/1
+GET http://localhost:8000/api/branch/6
+
+### Update branch
+PATCH http://localhost:8000/api/branch/6
+Content-Type: application/json
+
+{
+    "address": "Ly Thai To update",
+    "name": "004 update"
+}

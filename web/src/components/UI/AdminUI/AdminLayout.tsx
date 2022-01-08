@@ -2,11 +2,11 @@ import { Grid, Flex, Heading, Box } from "@chakra-ui/react"
 import { useState } from "react"
 import { useRouter } from "next/router"
 import { useQuery } from "react-query"
-import { meAsAdmin } from "@api"
-import { useStoreActions } from "@store"
-import Sidebar from "./Sidebar"
 import Header from "./Header"
-
+import { useStoreActions } from "@store"
+import { getStoreInfo } from "@api"
+import { AnimatePresence } from "framer-motion"
+import { LoadingScreen, Motion } from "@components/shared"
 interface AdminLayoutProps {
 	children: React.ReactNode
 }
@@ -15,12 +15,12 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
 	const router = useRouter()
 	const [loading, setLoading] = useState(true)
 
-	const setInfo = useStoreActions(a => a.setInfo)
+	const setInfo = useStoreActions(action => action.setInfo)
 
-	useQuery("meAdmin", () => meAsAdmin(), {
+	useQuery("store-info", () => getStoreInfo(), {
 		enabled: loading,
 		onSuccess: data => {
-			setInfo(data.info)
+			setInfo(data)
 			setLoading(false)
 		},
 		onError: () => {
@@ -30,21 +30,24 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
 		retry: false,
 	})
 
-	if (loading) {
-		return (
-			<Grid w="full" h="full" placeItems="center">
-				<Heading>Loading</Heading>
-			</Grid>
-		)
-	}
-
 	return (
 		<Flex direction="column" h="100vh">
-			<Header />
-			<Flex flex={1}>
-				<Sidebar />
-				<Box flex={1}>{children}</Box>
-			</Flex>
+			<AnimatePresence>
+				{loading ? (
+					<Motion.Box initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} h="full">
+						<LoadingScreen />
+					</Motion.Box>
+				) : (
+					<>
+						<Header />
+						<Flex flex={1} w="full" justify={"center"} overflow={"auto"}>
+							<Box w="full" maxW="64rem">
+								{children}
+							</Box>
+						</Flex>
+					</>
+				)}
+			</AnimatePresence>
 		</Flex>
 	)
 }

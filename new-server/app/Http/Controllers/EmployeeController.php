@@ -10,9 +10,26 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class EmployeeController extends Controller
 {
+    private function getEmployeeDetail ($id) {
+        $employee = Employee::find($id);
+        $employment = Employment::where('employee_id', $id)->first();
+        // get employment roles, convert to array of strings
+        $roles = EmploymentRoles::where('employment_id', $employment->id)->get()->pluck('role')->toArray();
+        // get branch
+        $branch = Branch::find($employment->branch_id);
+        // assign roles to employment
+        $employment->roles = $roles;
+        // assign branch to employment
+        $employment->branch = $branch;
+        // assign employment to employee
+        $employee->employment = $employment;
+
+        return $employee;
+    }
 
     // Create a new employee
     public function create(Request $request) {
@@ -91,9 +108,17 @@ class EmployeeController extends Controller
     // Get an employee
     public function getEmployee(Request $request, $id) {
         $store_id = Auth::guard('stores')->user()->id;
-        $employee = Employee::with(['employment' => function ($query) {
-            $query->with(['roles:id,role,employment_id'])->get();
-        }])->where('store_id', $store_id)->where('id', $id)->first();
+
+        // get employee
+        $employee = Employee::where('store_id', $store_id)->where('id', $id)->first();
+        if (!$employee) {
+            return response()->json([
+                'message' => 'Employee not found.',
+            ], 404);
+        }
+
+        $employee = $this->getEmployeeDetail($id);
+
         return response()->json($employee);
     }
 
@@ -114,10 +139,11 @@ class EmployeeController extends Controller
             ], 400);
         }
 
+        $remember = $request->input('remember') ? true : false;
         $check = Auth::guard('employees')->attempt([
             'email' => $data['email'],
             'password' => $data['password'],
-        ], $request->input('remember'));
+        ], $remember);
 
         if (!$check) {
             return response()->json([
@@ -125,7 +151,10 @@ class EmployeeController extends Controller
             ], 401);
         }
 
-        return response()->json(Auth::guard('employees')->user());
+        $id = Auth::guard('employees')->user()->id;
+        $employee = $this->getEmployeeDetail($id);
+
+        return response()->json($employee);
     }
 
     // Logout as an employee
@@ -138,7 +167,7 @@ class EmployeeController extends Controller
 
     // Get the current employee
     public function me(Request $request) {
-        $employee = Auth::guard('employees')->user();
+        $employee = $this->getEmployeeDetail(Auth::guard('employees')->user()->id);
         return response()->json($employee);
     }
 
@@ -147,10 +176,29 @@ class EmployeeController extends Controller
         $store_id = Auth::guard('stores')->user()->id;
         $data = $request->all();
         $rules = [
-            'employee_id' => ['required', 'exists:employees,id'],
-            'branch_id' => ['required', 'exists:branches,id'],
-            'roles' => ['required', 'array'],
+            'employee_id' => ['required', Rule::exists('employees', 'id')->where('store_id', $store_id)],
+            'branch_id' => ['required', Rule::exists('branches', 'id')->where('store_id', $store_id)],
+            'roles' => ['required', 'array', 'min:1'],
         ];
+        $validator = Validator::make($data, $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed.',
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        // employee must currently not working in the destination branch
+        $employment = Employment::where('employee_id', $data['employee_id'])
+            ->where('branch_id', $data['branch_id'])
+            ->where('to', null)
+            ->first();
+
+        if ($employment) {
+            return response()->json([
+                'message' => 'Employee is already working in this branch.',
+            ], 400);
+        }
 
         $validator = Validator::make($data, $rules);
         if ($validator->failed()) {
@@ -160,36 +208,12 @@ class EmployeeController extends Controller
             ], 400);
         }
 
-        // check if branch belong to store
-        $branch = Branch::where('id', $data['branch_id'])->where('store_id', $store_id)->first();
-        if (!$branch) {
-            return response()->json([
-                'message' => 'Branch not found.',
-            ], 404);
-        }
-
-        // check if employee belong to store
-        $employee = Employee::where('id', $data['employee_id'])->where('store_id', $store_id)->first();
-        if (!$employee) {
-            return response()->json([
-                'message' => 'Employee not found.',
-            ], 404);
-        }
-
-        // response error if roles is empty
-        if (empty($data['roles'])) {
-            return response()->json([
-                'message' => 'Employee must have at least one role.',
-            ], 400);
-        }
-
-
-        $old_employment = Employment::where('employee_id', $employee->id)->where('to', null)->first();
+        $old_employment = Employment::where('employee_id', $data['employee_id'])->where('to', null)->first();
         $old_employment->to = date("Y/m/d");
         $old_employment->save();
 
         $new_employment = Employment::create([
-            'employee_id' => $employee->id,
+            'employee_id' => $data['employee_id'],
             'branch_id' => $data['branch_id'],
             'from' => date("Y/m/d")
         ]);
@@ -204,7 +228,7 @@ class EmployeeController extends Controller
 
         $employee = Employee::with(['employment' => function ($query) {
             $query->with(['roles:id,role,employment_id'])->get();
-        }])->where('store_id', $store_id)->where('id', $employee->id)->first();
+        }])->where('store_id', $store_id)->where('id', $data['employee_id'])->first();
 
         return response()->json($employee);
     }

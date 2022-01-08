@@ -1,22 +1,21 @@
-import { LoginInput } from "@@types"
-import { login, loginAsAdmin } from "@api"
+import { loginEmployee, LoginEmployeeInput, loginStore } from "@api"
 import { useFormCore } from "@hooks"
 import { useStoreActions } from "@store"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { useMutation } from "react-query"
-import fetcher from "src/api/fetcher"
 
 const useLogin = (admin: boolean) => {
-	const setInfo = useStoreActions(a => a.setInfo)
+	const setInfo = useStoreActions(s => s.setInfo)
 
 	const router = useRouter()
 
 	const [generalError, setGeneralError] = useState("")
 
-	const { values, setValue, errors, setError } = useFormCore<LoginInput>({
+	const { values, setValue, errors, setError } = useFormCore<LoginEmployeeInput>({
 		email: "",
 		password: "",
+		remember: false,
 	})
 
 	useEffect(() => {
@@ -27,49 +26,49 @@ const useLogin = (admin: boolean) => {
 		let isSubmittable = true
 
 		// Check required fields
-		let valuesKeys = Object.keys(values) as Array<keyof LoginInput>
+		const valuesKeys = Object.keys(values) as Array<keyof LoginEmployeeInput>
 		valuesKeys.forEach(key => {
-			if (!values[key]) {
+			if (values[key] === "") {
 				setError(key, `Required`)
 				isSubmittable = false
 			}
 		})
-
 		return isSubmittable
 	}
 
-	const { mutate: mutateLogin, isLoading: isLoadingLogin } = useMutation(
-		() => fetcher.post("/auth/login", values).then(res => res.data),
+	const { mutate: mutateLoginEmployee, isLoading: isLoadingLoginEmployee } = useMutation(
+		() => loginEmployee(values),
 		{
 			onSuccess: data => {
-				setInfo(data.info)
+				setInfo(data)
 				router.push("/")
 			},
 			onError: (err: any) => {
-				setGeneralError(err.response.data.errors)
+				console.log(err)
 			},
-			onSettled: data => console.log(data),
 		}
 	)
 
-	const { mutate: mutateLoginAsAdmin, isLoading: isLoadingLoginAdmin } = useMutation(() => loginAsAdmin(values), {
+	const { mutate: mutateLoginStore, isLoading: isLoadingLoginStore } = useMutation(() => loginStore(values), {
 		onSuccess: data => {
-			setInfo(data.info)
+			setInfo(data)
 			router.push("/admin")
 		},
 		onError: (err: any) => {
-			setGeneralError(err.response.data.errors)
+			console.log(err)
 		},
 	})
 
 	const handleLogin = () => {
 		if (validate()) {
-			admin ? mutateLoginAsAdmin() : mutateLogin()
+			admin ? mutateLoginStore() : mutateLoginEmployee()
 		}
 	}
 
+	const isLoading = admin ? isLoadingLoginStore : isLoadingLoginEmployee
+
 	return {
-		isLoading: admin ? isLoadingLoginAdmin : isLoadingLogin,
+		isLoading,
 		handleLogin,
 		values,
 		setValue,

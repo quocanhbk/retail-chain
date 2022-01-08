@@ -1,32 +1,29 @@
-import { RegisterInput } from "@@types"
-import { register } from "@api"
+import { registerStore, RegisterStoreInput } from "@api"
 import { isEmail } from "@helper"
 import { useFormCore } from "@hooks"
 import { useStoreActions } from "@store"
-import router, { useRouter } from "next/router"
+import { useRouter } from "next/router"
 import { useMutation } from "react-query"
 
-interface RegisterFormInput extends RegisterInput {
-	confirmPassword: ""
-}
-
 const useRegister = () => {
-	const setInfo = useStoreActions(a => a.setInfo)
-	const { values, setValue, errors, setError, initError } = useFormCore<RegisterFormInput>({
+	const router = useRouter()
+	const setInfo = useStoreActions(s => s.setInfo)
+
+	const { values, setValue, errors, setError, initError } = useFormCore<RegisterStoreInput>({
 		name: "",
 		email: "",
 		password: "",
-		confirmPassword: "",
-		store_name: "",
+		password_confirmation: "",
+		remember: false,
 	})
 
 	const validate = () => {
 		let isSubmittable = true
 
 		// Check required fields
-		let valuesKeys = Object.keys(values) as Array<keyof RegisterInput>
+		const valuesKeys = Object.keys(values) as Array<keyof RegisterStoreInput>
 		valuesKeys.forEach(key => {
-			if (!values[key]) {
+			if (values[key] === "") {
 				setError(key, `Required`)
 				isSubmittable = false
 			}
@@ -38,23 +35,25 @@ const useRegister = () => {
 		}
 
 		// Check if password is confirmed correctly
-		if (values.password && values.confirmPassword && values.password !== values.confirmPassword) {
-			setError("confirmPassword", "Password is not match")
+		if (values.password && values.password_confirmation && values.password !== values.password_confirmation) {
+			setError("password_confirmation", "Password is not match")
+			isSubmittable = false
 		}
 
 		return isSubmittable
 	}
 
-	const { mutate, isLoading } = useMutation(() => register(values), {
+	const { mutate, isLoading } = useMutation(() => registerStore(values), {
 		onSuccess: data => {
-			setInfo(data.info)
+			setInfo(data)
 			router.push("/admin")
 		},
 		onError: (err: any) => {
-			initError({
-				...errors,
-				...Object.fromEntries(Object.keys(err.errors).map(errorKey => [errorKey, err.errors[errorKey][0]])),
-			})
+			console.log(err)
+			// initError({
+			// 	...errors,
+			// 	...Object.fromEntries(Object.keys(err.errors).map(errorKey => [errorKey, err.errors[errorKey][0]])),
+			// })
 		},
 	})
 

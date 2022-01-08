@@ -14,6 +14,12 @@ class EmploymentRoles extends Model
         'role'
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at'
+    ];
+
     public function employment()
     {
         return $this->belongsTo(Employment::class);

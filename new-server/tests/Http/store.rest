@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
     "name": "Hexagon",
-    "email": "hexagon@gmail.com",
+    "email": "hexagonb@gmail.com",
     "password": "hexagon",
     "password_confirmation": "hexagon",
     "remember": true

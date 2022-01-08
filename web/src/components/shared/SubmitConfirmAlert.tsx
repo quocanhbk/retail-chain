@@ -9,6 +9,7 @@ import {
 	AlertDialogFooter,
 	Button,
 	AlertDialogCloseButton,
+	chakra,
 } from "@chakra-ui/react"
 import { RefObject, useRef } from "react"
 
@@ -42,20 +43,22 @@ const SubmitConfirmAlert = ({
 		<AlertDialog isOpen={isOpen} onClose={onClose} leastDestructiveRef={leastDestructiveRef || cancelRef}>
 			<AlertDialogOverlay>
 				<AlertDialogContent>
-					<AlertDialogHeader fontSize="lg" fontWeight="semibold">
-						{title}
-					</AlertDialogHeader>
-					<AlertDialogCloseButton onClick={onClose} />
-					<AlertDialogBody>{children}</AlertDialogBody>
+					<chakra.form>
+						<AlertDialogHeader fontSize="lg" fontWeight="semibold">
+							{title}
+						</AlertDialogHeader>
+						<AlertDialogCloseButton onClick={onClose} />
+						<AlertDialogBody>{children}</AlertDialogBody>
 
-					<AlertDialogFooter>
-						<Button ref={cancelRef} variant="ghost" colorScheme={color} onClick={onClose}>
-							{cancelText}
-						</Button>
-						<Button colorScheme={color} onClick={onConfirm} ml={3} isLoading={isLoading}>
-							{confirmText}
-						</Button>
-					</AlertDialogFooter>
+						<AlertDialogFooter>
+							<Button ref={cancelRef} variant="ghost" colorScheme={color} onClick={onClose}>
+								{cancelText}
+							</Button>
+							<Button type="submit" colorScheme={color} onClick={onConfirm} ml={3} isLoading={isLoading}>
+								{confirmText}
+							</Button>
+						</AlertDialogFooter>
+					</chakra.form>
 				</AlertDialogContent>
 			</AlertDialogOverlay>
 		</AlertDialog>

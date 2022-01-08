@@ -16,8 +16,12 @@ class CreateEmploymentRoles extends Migration
         Schema::create('employment_roles', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->integer('employment_id');
+            $table->unsignedBigInteger('employment_id');
             $table->string('role');
+        });
+
+        Schema::table('employment_roles', function (Blueprint $table) {
+            $table->foreign('employment_id')->references('id')->on('employments');
         });
     }
 

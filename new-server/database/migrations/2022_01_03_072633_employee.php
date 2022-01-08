@@ -22,11 +22,15 @@ class Employee extends Migration
             $table->date('birthday')->nullable();
             $table->string('gender')->nullable();
             $table->boolean('active')->default(true);
-            $table->integer('store_id');
+            $table->unsignedBigInteger('store_id');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+        });
+
+        Schema::table('employees', function (Blueprint $table) {
+            $table->foreign('store_id')->references('id')->on('stores');
         });
     }
 
