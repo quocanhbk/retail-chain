@@ -4,26 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Shift extends Model
 {
     use HasFactory;
-    use SoftDeletes;
 
     protected $fillable = [
         'name',
         'start_time',
         'end_time',
-        'monday',
-        'tuesday',
-        'wednesday',
-        'thursday',
-        'friday',
-        'saturday',
-        'sunday',
-        'start_date',
-        'end_date'
+        'is_active',
+        'branch_id'
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at'
     ];
 
     public function branch()
@@ -31,7 +28,7 @@ class Shift extends Model
         return $this->belongsTo(Branch::class);
     }
 
-    public function shifts()
+    public function workSchedules()
     {
         return $this->hasMany(WorkSchedule::class);
     }

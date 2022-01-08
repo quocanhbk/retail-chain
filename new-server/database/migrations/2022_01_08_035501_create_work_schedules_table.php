@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEmploymentsTable extends Migration
+class CreateWorkSchedulesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,18 +13,20 @@ class CreateEmploymentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('employments', function (Blueprint $table) {
+        Schema::create('work_schedules', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->unsignedBigInteger('shift_id');
             $table->unsignedBigInteger('employee_id');
             $table->unsignedBigInteger('branch_id');
-            $table->date('from');
-            $table->date('to')->nullable();
+            $table->date('date');
+            $table->string('note')->nullable();
+            $table->boolean('is_absent')->default(false);
         });
 
-        Schema::table('employments', function (Blueprint $table) {
+        Schema::table('work_schedules', function (Blueprint $table) {
+            $table->foreign('shift_id')->references('id')->on('shifts');
             $table->foreign('employee_id')->references('id')->on('employees');
-            $table->foreign('branch_id')->references('id')->on('branches');
         });
     }
 
@@ -35,6 +37,6 @@ class CreateEmploymentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('employments');
+        Schema::dropIfExists('work_schedules');
     }
 }

@@ -17,10 +17,14 @@ class CreateBranch extends Migration
             $table->id();
             $table->string('name');
             $table->string('address');
-            $table->integer('store_id');
+            $table->unsignedBigInteger('store_id');
             $table->string('image');
             $table->softDeletes();
             $table->timestamps();
+        });
+
+        Schema::table('branches', function (Blueprint $table) {
+            $table->foreign('store_id')->references('id')->on('stores');
         });
     }
 

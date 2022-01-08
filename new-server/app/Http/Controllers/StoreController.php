@@ -37,7 +37,8 @@ class StoreController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
-        Auth::guard('stores')->login($store);
+        $remember = $data['remember'] ?? false;
+        Auth::guard('stores')->login($store, $remember);
 
         return response()->json($store);
     }
@@ -50,7 +51,6 @@ class StoreController extends Controller
             'password' => ['required', 'string', 'min:6'],
             'remember' => ['boolean', 'nullable'],
         ];
-
         $validator = Validator::make($data, $rules);
         if ($validator->fails()) {
             return response()->json([
@@ -59,10 +59,12 @@ class StoreController extends Controller
             ], 400);
         }
 
+        $remember = $data['remember'] ?? false;
+
         $check = Auth::guard('stores')->attempt([
             'email' => $data['email'],
             'password' => $data['password'],
-        ], $data['remember']);
+        ], $remember);
 
         if (!$check) {
             return response()->json([
@@ -86,5 +88,15 @@ class StoreController extends Controller
     /** Get store info */
     public function getStore() {
         return response()->json(Auth::guard('stores')->user());
+    }
+
+    public function getGuard() {
+        if (Auth::guard('stores')->check()) {
+            return response()->json("store");
+        }
+        if (Auth::guard('employees')->check()) {
+            return response()->json("employee");
+        }
+        return response()->json("guest");
     }
 }

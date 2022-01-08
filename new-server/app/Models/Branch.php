@@ -14,7 +14,14 @@ class Branch extends Model
     protected $fillable = [
         'name',
         'address',
-        'store_id'
+        'store_id',
+        'image'
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at'
     ];
 
     public function store()
@@ -27,7 +34,7 @@ class Branch extends Model
         return $this->hasMany(Employment::class);
     }
 
-    public function shift()
+    public function shifts()
     {
         return $this->hasMany(Shift::class);
     }
