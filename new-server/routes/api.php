@@ -6,8 +6,8 @@ use App\Http\Middleware\Role\AdminOrPurchaser;
 use App\Http\Middleware\Role\AdminOrSaleOrPurchaser;
 use App\Http\Middleware\Role\HaveManageRole;
 use App\Http\Middleware\Role\NotEmployee;
-use App\Http\Middleware\Role\OnlyEmployee;
 use App\Http\Middleware\Role\NotStoreAdmin;
+use App\Http\Middleware\Role\OnlyEmployee;
 use App\Http\Middleware\Role\OnlyStoreAdmin;
 use Illuminate\Support\Facades\Route;
 
@@ -124,13 +124,13 @@ Route::prefix('/item')->group(function () {
     Route::middleware([AdminOrSaleOrPurchaser::class])->group(function () {
         // GET /item - get all items
         Route::get('/', [ItemController::class, 'getItems']);
+        // GET /item/bar_code/{bar_code} - get an item by bar code
+        Route::get('/bar_code/{bar_code}', [ItemController::class, 'getItemsByBarCode']);
+        // GET /item/search/{search} - search items by name, code, bar code or category
+        Route::get('/search/{search}', [ItemController::class, 'search']);
+        // GET /item/{item_id}/price_history - get price history of an item
+        Route::get('/{item_id}/price_history', [ItemController::class, 'getPriceHistory']);
         // GET /item/{item_id} - get an item by id
         Route::get('/{item_id}', [ItemController::class, 'getItem']);
-        // GET /item/{bar_code} - get an item by bar code
-        Route::get('/{bar_code}', [ItemController::class, 'getItemByBarCode']);
-        // GET /item/{search} - search items by name, code, bar code or category
-        Route::get('/{search}', [ItemController::class, 'search']);
-        // GET /item/price_history/{item_id} - get price history of an item
-        Route::get('/price_history/{item_id}', [ItemController::class, 'getPriceHistory']);
     });
 });

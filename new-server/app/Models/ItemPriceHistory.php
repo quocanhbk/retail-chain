@@ -9,6 +9,8 @@ class ItemPriceHistory extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'item_id',
         'price',
