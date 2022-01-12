@@ -3,7 +3,7 @@ import { Box, Collapse, Flex, Text, useOutsideClick } from "@chakra-ui/react"
 import { useStoreState } from "@store"
 import { useRouter } from "next/router"
 import { useRef, useState } from "react"
-import { BsThreeDots } from "react-icons/bs"
+import { BsPower, BsThreeDots } from "react-icons/bs"
 import { useMutation } from "react-query"
 
 const StoreInfo = () => {
@@ -38,12 +38,20 @@ const StoreInfo = () => {
 				<Box pos="absolute" top="100%" right={0}>
 					<Collapse in={isOpen}>
 						<Box background="white" shadow="base" rounded="md" w="10rem" p={2}>
-							<Text px={2} py={1}>
-								Chỉnh sửa
-							</Text>
-							<Text px={2} py={1} cursor={"pointer"} onClick={() => mutateLogoutStore()}>
-								Đăng xuất
-							</Text>
+							<Flex
+								align="center"
+								w="full"
+								cursor="pointer"
+								onClick={() => mutateLogoutStore()}
+								px={2}
+								py={1}
+								color="red.600"
+							>
+								<BsPower />
+								<Text onClick={() => mutateLogoutStore()} ml={2}>
+									Đăng xuất
+								</Text>
+							</Flex>
 						</Box>
 					</Collapse>
 				</Box>

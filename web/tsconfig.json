@@ -22,7 +22,8 @@
 			"@api": ["src/api"],
 			"@helper": ["src/helper"],
 			"@@types": ["src/types/index"],
-			"@store": ["src/store"]
+			"@store": ["src/store"],
+			"@constants": ["src/constants"]
 		}
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

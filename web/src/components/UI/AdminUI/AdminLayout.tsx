@@ -1,4 +1,4 @@
-import { Grid, Flex, Heading, Box } from "@chakra-ui/react"
+import { Flex } from "@chakra-ui/react"
 import { useState } from "react"
 import { useRouter } from "next/router"
 import { useQuery } from "react-query"
@@ -11,12 +11,30 @@ interface AdminLayoutProps {
 	children: React.ReactNode
 }
 
+const variants = {
+	initial: {
+		opacity: 0,
+		x: "-100%",
+		y: 0,
+	},
+	animate: {
+		opacity: 1,
+		x: 0,
+		y: 0,
+	},
+	exit: {
+		opacity: 0,
+		x: 0,
+		y: "100%",
+	},
+}
+
 export const AdminLayout = ({ children }: AdminLayoutProps) => {
 	const router = useRouter()
 	const [loading, setLoading] = useState(true)
 
 	const setInfo = useStoreActions(action => action.setInfo)
-
+	console.log(router.pathname)
 	useQuery("store-info", () => getStoreInfo(), {
 		enabled: loading,
 		onSuccess: data => {
@@ -32,22 +50,29 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
 
 	return (
 		<Flex direction="column" h="100vh">
-			<AnimatePresence>
-				{loading ? (
-					<Motion.Box initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} h="full">
-						<LoadingScreen />
-					</Motion.Box>
-				) : (
-					<>
-						<Header />
-						<Flex flex={1} w="full" justify={"center"} overflow={"auto"}>
-							<Box w="full" maxW="64rem">
-								{children}
-							</Box>
-						</Flex>
-					</>
-				)}
-			</AnimatePresence>
+			<LoadingScreen isLoading={loading} />
+			<Flex direction="column" h="100vh">
+				<Header />
+				<AnimatePresence exitBeforeEnter initial={false}>
+					<Motion.Flex
+						flex={1}
+						w="full"
+						justify={"center"}
+						overflow={"auto"}
+						backgroundColor={"gray.50"}
+						key={router.pathname}
+						variants={variants}
+						initial="initial"
+						animate="animate"
+						exit="exit"
+						transition={{ type: "tween", duration: 0.25 }}
+					>
+						<Motion.Box w="full" maxW="64rem">
+							{children}
+						</Motion.Box>
+					</Motion.Flex>
+				</AnimatePresence>
+			</Flex>
 		</Flex>
 	)
 }

@@ -10,11 +10,6 @@ class HaveManageRole
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::check()) {
-            return response()->json([
-                'message' => 'Unauthorized.',
-            ], 403);
-        }
         $have_manage_role = Auth::user()->employment->roles->where('role', 'manage')->first();
         if (!$have_manage_role) {
             return response()->json([

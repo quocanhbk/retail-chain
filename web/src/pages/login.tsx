@@ -1,8 +1,14 @@
+import { AuthLayout } from "@components/module"
 import { LoginUI } from "@components/UI"
-import type { NextPage } from "next"
+import { ReactElement } from "react"
+import { NextPageWithLayout } from "./_app"
 
-const Home: NextPage = () => {
+const LoginPage: NextPageWithLayout = () => {
 	return <LoginUI />
 }
 
-export default Home
+LoginPage.getLayout = function getLayout(page: ReactElement) {
+	return <AuthLayout>{page}</AuthLayout>
+}
+
+export default LoginPage

@@ -8,7 +8,13 @@ interface ProviderProps {
 	children: React.ReactNode
 }
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+	defaultOptions: {
+		queries: {
+			keepPreviousData: true,
+		},
+	},
+})
 
 export const Provider = ({ children }: ProviderProps) => {
 	return (

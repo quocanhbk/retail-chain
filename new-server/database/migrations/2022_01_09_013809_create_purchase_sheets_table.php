@@ -18,7 +18,7 @@ class CreatePurchaseSheetsTable extends Migration
             $table->timestamps();
             $table->string('code');
             $table->bigInteger('employee_id')->unsigned();
-            $table->bigInteger('brand_id')->unsigned();
+            $table->bigInteger('branch_id')->unsigned();
             $table->bigInteger('supplier_id')->unsigned();
             $table->decimal('discount', 15, 2);
             $table->string('discount_type');

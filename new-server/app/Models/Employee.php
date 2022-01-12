@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User;
 
 class Employee extends User
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $guard = 'employees';
 
@@ -16,11 +18,10 @@ class Employee extends User
         'email',
         'password',
         'store_id',
-        'avatar_url',
+        'avatar',
         'phone',
         'birthday',
-        'gender',
-        'active'
+        'gender'
     ];
 
     protected $hidden = [

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use App\Models\ItemPriceHistory;
+use App\Models\ItemQuantity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -181,5 +182,12 @@ class ItemController extends Controller
 
         $item->delete();
         return response()->json($item);
+    }
+
+    public function getStock(Request $request, $item_id) {
+        $branch_id = Auth::user()->employment->branch_id;
+        $item_quantity = ItemQuantity::where('branch_id', $branch_id)->where('id', $item_id)->first();
+        $item_quantity = $item_quantity ? $item_quantity->quantity : 0;
+        return response()->json($item_quantity);
     }
 }

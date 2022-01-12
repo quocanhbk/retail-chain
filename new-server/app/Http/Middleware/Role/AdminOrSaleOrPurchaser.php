@@ -35,7 +35,7 @@ class AdminOrSaleOrPurchaser
             return $next($request);
         }
         return response()->json([
-            'message' => 'Unauthorized.',
-        ], 403);
+            'message' => 'Unauthenticated.',
+        ], 401);
     }
 }

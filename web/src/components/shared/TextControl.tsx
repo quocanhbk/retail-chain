@@ -10,6 +10,7 @@ interface TextControlProps extends Omit<FormControlProps, "onChange"> {
 	type?: ComponentProps<typeof Input>["type"]
 	size?: ComponentProps<typeof Input>["size"]
 	inputRef?: ComponentProps<typeof Input>["ref"]
+	readOnly?: boolean
 }
 
 export const TextControl = ({
@@ -21,6 +22,7 @@ export const TextControl = ({
 	name,
 	size,
 	inputRef,
+	readOnly,
 	...rest
 }: TextControlProps) => {
 	return (
@@ -35,6 +37,8 @@ export const TextControl = ({
 				size={size}
 				w="full"
 				ref={inputRef}
+				backgroundColor={"white"}
+				readOnly={readOnly}
 			/>
 			<FormErrorMessage>{error}</FormErrorMessage>
 		</FormControl>

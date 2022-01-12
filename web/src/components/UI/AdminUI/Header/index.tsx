@@ -1,26 +1,42 @@
 import { Flex, Heading, HStack } from "@chakra-ui/react"
+import { Motion } from "@components/shared"
+import { adminNavMenus } from "@constants"
+import { useRouter } from "next/router"
+import { useEffect, useState } from "react"
 import NavMenus from "./NavMenus"
 import StoreInfo from "./StoreInfo"
+import SubNavMenus from "./SubNavMenus"
 
 export const Header = () => {
+	const [selectedMenu, setSelectedMenu] = useState("")
+	const router = useRouter()
+	useEffect(() => {
+		if (router.isReady) setSelectedMenu(router.pathname.split("/")[2] || "")
+	}, [router.isReady, router.pathname])
+
 	return (
-		<Flex align="center" w="full" justify="space-between" px={4} shadow="base" py={2}>
-			<Heading
-				fontSize="2xl"
-				backgroundColor="telegram.500"
-				color="white"
-				rounded="md"
-				px={2}
-				py={1}
-				fontWeight={"900"}
-				fontFamily={"Brandon"}
-			>
-				BKRM ADMIN
-			</Heading>
-			<HStack align="center" spacing={8}>
-				<NavMenus />
-				<StoreInfo />
-			</HStack>
+		<Flex direction="column" shadow="xs" background="white">
+			<Flex align="center" w="full" justify="space-between" px={4} py={2} shadow="xs">
+				<Heading
+					fontSize="2xl"
+					backgroundColor="telegram.500"
+					color="white"
+					rounded="md"
+					px={2}
+					py={1}
+					fontWeight={"900"}
+					fontFamily={"Brandon"}
+				>
+					BKRM ADMIN
+				</Heading>
+				<HStack align="center" spacing={8}>
+					<NavMenus menus={adminNavMenus} />
+					<StoreInfo />
+				</HStack>
+			</Flex>
+			<Motion.Box key={adminNavMenus.find(m => m.id === selectedMenu)?.subMenus.length}>
+				<SubNavMenus menu={adminNavMenus.find(m => m.id === selectedMenu)?.subMenus ?? []} />
+			</Motion.Box>
 		</Flex>
 	)
 }

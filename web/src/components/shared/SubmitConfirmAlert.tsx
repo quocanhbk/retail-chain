@@ -26,7 +26,7 @@ interface SubmitConfirmAlertProps {
 	children: React.ReactNode
 }
 
-const SubmitConfirmAlert = ({
+export const SubmitConfirmAlert = ({
 	isOpen,
 	onClose,
 	onConfirm,

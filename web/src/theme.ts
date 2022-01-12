@@ -14,9 +14,19 @@ const theme = extendTheme({
 		Button: {
 			defaultProps: {
 				colorScheme: "telegram",
+				size: "sm",
 			},
 		},
-		colors: {},
+		// color="telegram.500" size="sm" thickness="3px"
+		Spinner: {
+			defaultProps: {
+				size: "xs",
+				thickness: "5px",
+			},
+			baseStyle: {
+				color: "telegram.600",
+			},
+		},
 	},
 	breakpoints: ["0px", "480px", "960px", "1440px", "1920px"],
 })

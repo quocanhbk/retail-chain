@@ -12,7 +12,7 @@ class PurchaseSheet extends Model
     protected $fillable = [
         'code',
         'employee_id',
-        'brand_id',
+        'branch_id',
         'supplier_id',
         'discount',
         'discount_type',
@@ -22,7 +22,6 @@ class PurchaseSheet extends Model
     ];
 
     protected $hidden = [
-        'created_at',
         'updated_at',
         'deleted_at'
     ];
@@ -32,9 +31,9 @@ class PurchaseSheet extends Model
         return $this->belongsTo(Employee::class);
     }
 
-    public function brand()
+    public function branch()
     {
-        return $this->belongsTo(Brand::class);
+        return $this->belongsTo(Branch::class);
     }
 
     public function supplier()

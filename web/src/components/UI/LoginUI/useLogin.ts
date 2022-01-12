@@ -1,5 +1,5 @@
 import { loginEmployee, LoginEmployeeInput, loginStore } from "@api"
-import { useFormCore } from "@hooks"
+import { useChakraToast, useFormCore } from "@hooks"
 import { useStoreActions } from "@store"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
@@ -7,7 +7,7 @@ import { useMutation } from "react-query"
 
 const useLogin = (admin: boolean) => {
 	const setInfo = useStoreActions(s => s.setInfo)
-
+	const toast = useChakraToast()
 	const router = useRouter()
 
 	const [generalError, setGeneralError] = useState("")
@@ -44,7 +44,8 @@ const useLogin = (admin: boolean) => {
 				router.push("/")
 			},
 			onError: (err: any) => {
-				console.log(err)
+				console.log(err.response)
+				toast({ title: "Error", message: err.response.data.message, status: "error" })
 			},
 		}
 	)
@@ -55,7 +56,8 @@ const useLogin = (admin: boolean) => {
 			router.push("/admin")
 		},
 		onError: (err: any) => {
-			console.log(err)
+			console.log(err.response)
+			toast({ title: "Error", message: err.response.data.message, status: "error" })
 		},
 	})
 

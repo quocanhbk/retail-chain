@@ -12,8 +12,8 @@ class OnlyEmployee
     {
         if (!Auth::guard('employees')->check()) {
             return response()->json([
-                'message' => 'Unauthorized.',
-            ], 403);
+                'message' => 'Unauthenticated.',
+            ], 401);
         }
         return $next($request);
     }

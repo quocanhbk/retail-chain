@@ -8,6 +8,11 @@ module.exports = {
 				destination: "/login",
 				permanent: true,
 			},
+			{
+				source: "/admin/manage",
+				destination: "/admin/manage/branch",
+				permanent: true,
+			},
 		]
 	},
 	images: {
