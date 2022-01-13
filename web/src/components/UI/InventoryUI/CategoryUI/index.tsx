@@ -1,4 +1,4 @@
-import dataFetcher from "@api"
+// import dataFetcher from "@api"
 import { Box, Flex, Heading, Wrap, WrapItem, Text } from "@chakra-ui/react"
 import { useState } from "react"
 import { BsPlus, BsX } from "react-icons/bs"
@@ -11,7 +11,7 @@ interface CategoryUIProps {}
 const CategoryUI = ({}: CategoryUIProps) => {
 	const [isOpen, setIsOpen] = useState(false)
 	const [deletingId, setDeletingId] = useState<number | null>(null)
-	const { data } = useQuery("category", () => dataFetcher.getCategory())
+	// const { data } = useQuery("category", () => dataFetcher.getCategory())
 
 	return (
 		<Flex direction="column" w="full" p={4}>
@@ -19,7 +19,7 @@ const CategoryUI = ({}: CategoryUIProps) => {
 				<Heading>{"Danh mục sản phẩm"}</Heading>
 			</Box>
 			<Flex flex={1} justify="center" w="full">
-				<Wrap w="full">
+				{/* <Wrap w="full">
 					{data?.map(category => (
 						<WrapItem
 							key={category.id}
@@ -56,13 +56,13 @@ const CategoryUI = ({}: CategoryUIProps) => {
 							<BsPlus size="1.2rem" />
 						</Box>
 					</WrapItem>
-				</Wrap>
+				</Wrap> */}
 				<AddCategoryModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
-				<DeleteCategoryModal
+				{/* <DeleteCategoryModal
 					deletingId={deletingId}
 					setDeletingId={setDeletingId}
 					categoryName={data?.find(cate => cate.id === deletingId)?.name}
-				/>
+				/> */}
 			</Flex>
 		</Flex>
 	)
