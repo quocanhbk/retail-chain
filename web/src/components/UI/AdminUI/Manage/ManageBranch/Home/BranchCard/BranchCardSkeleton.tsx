@@ -1,4 +1,4 @@
-import { Text, Flex, Skeleton, VStack } from "@chakra-ui/react"
+import { Text, Flex, Skeleton } from "@chakra-ui/react"
 import Container from "./Container"
 
 const BranchCardSkeleton = () => {
@@ -7,16 +7,17 @@ const BranchCardSkeleton = () => {
 			<Flex justify={"center"} h="10rem" w="full" bg="white">
 				<Skeleton h="full" w="full" />
 			</Flex>
-			<VStack flex={1} direction="column" align="center" justify="center" spacing={1}>
+
+			<Flex flex={1} px={4} direction="column" w="full" py={2} overflow="hidden">
 				<Skeleton>
-					<Text fontSize={"xl"} fontWeight={"bold"}>
+					<Text fontSize={"lg"} fontWeight={"bold"}>
 						Branch Name
 					</Text>
 				</Skeleton>
 				<Skeleton>
 					<Text>Branch Address</Text>
 				</Skeleton>
-			</VStack>
+			</Flex>
 		</Container>
 	)
 }

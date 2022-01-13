@@ -1,11 +1,12 @@
 import { Motion } from "@components/shared"
+import { ComponentProps } from "react"
 
-interface ContainerProps {
+interface ContainerProps extends ComponentProps<typeof Motion["Flex"]> {
 	custom: number
 	children: React.ReactNode
 }
 
-const Container = ({ custom, children }: ContainerProps) => {
+const Container = ({ custom, children, ...rest }: ContainerProps) => {
 	const variants = {
 		visible: (i: number) => ({
 			opacity: 1,
@@ -21,9 +22,9 @@ const Container = ({ custom, children }: ContainerProps) => {
 		<Motion.Flex
 			direction="column"
 			align="center"
-			bg="gray.50"
+			bg="white"
 			w="15rem"
-			h="15rem"
+			h="16rem"
 			rounded="md"
 			overflow={"hidden"}
 			color="blackAlpha.800"
@@ -34,6 +35,7 @@ const Container = ({ custom, children }: ContainerProps) => {
 			initial="hidden"
 			shadow="base"
 			_hover={{ shadow: "lg" }}
+			{...rest}
 		>
 			{children}
 		</Motion.Flex>

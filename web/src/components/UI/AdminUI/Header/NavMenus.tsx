@@ -2,12 +2,11 @@ import { Stack, Text } from "@chakra-ui/react"
 import Link from "next/link"
 import { useRouter } from "next/router"
 
-const menus = [
-	{ id: "", text: "Trang chủ", path: "/admin" },
-	{ id: "manage", text: "Quản lý", path: "/admin/manage" },
-]
+interface NavMenusProps {
+	menus: { id: string; text: string; path: string }[]
+}
 
-const NavMenus = () => {
+const NavMenus = ({ menus }: NavMenusProps) => {
 	const router = useRouter()
 	const currentPath = router.pathname.split("/")[2] || ""
 	return (
@@ -15,7 +14,7 @@ const NavMenus = () => {
 			{menus.map(menu => (
 				<Link href={menu.path} key={menu.id}>
 					<Text
-						color={menu.id === currentPath ? "telegram.500" : "blackAlpha.700"}
+						color={menu.id === currentPath ? "telegram.600" : "blackAlpha.700"}
 						fontWeight={500}
 						cursor={"pointer"}
 					>

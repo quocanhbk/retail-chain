@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Middleware\Store;
+namespace App\Http\Middleware\Role;
 
 use Closure;
 use Illuminate\Http\Request;
@@ -13,8 +13,8 @@ class OnlyStoreAdmin
         error_log("OnlyStoreAdmin");
         if (!Auth::guard('stores')->check()) {
             return response()->json([
-                'message' => 'Unauthorized.',
-            ], 403);
+                'message' => 'Unauthenticated.',
+            ], 401);
         }
         return $next($request);
     }

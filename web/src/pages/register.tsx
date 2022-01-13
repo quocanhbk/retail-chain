@@ -1,8 +1,14 @@
+import { AuthLayout } from "@components/module"
 import { RegisterUI } from "@components/UI"
-import type { NextPage } from "next"
+import { ReactElement } from "react"
+import { NextPageWithLayout } from "./_app"
 
-const Register: NextPage = () => {
+const Register: NextPageWithLayout = () => {
 	return <RegisterUI />
+}
+
+Register.getLayout = function getLayout(page: ReactElement) {
+	return <AuthLayout>{page}</AuthLayout>
 }
 
 export default Register

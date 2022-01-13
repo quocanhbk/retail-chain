@@ -9,7 +9,9 @@ use App\Models\EmploymentRoles;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class EmployeeController extends Controller
@@ -37,15 +39,16 @@ class EmployeeController extends Controller
         $data = $request->all();
         $rules = [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:employees'],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('employees')->where('store_id', $store_id)],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
-            'branch_id' => ['required', 'exists:branches,id'],
+            'branch_id' => ['required', 'integer', Rule::exists('branches', 'id')->where('store_id', $store_id)],
             'roles' => ['required', 'array'],
             'phone' => ['nullable', 'string', 'max:255'],
-            'avatar_url' => ['nullable', 'string', 'max:1000'],
+            'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
             'birthday' => ['nullable', 'date'],
             'gender' => ['nullable', 'string']
         ];
+
         $validator = Validator::make($data, $rules);
         if ($validator->fails()) {
             return response()->json([
@@ -54,21 +57,10 @@ class EmployeeController extends Controller
             ], 400);
         }
 
-        // check if branch belong to store
-        $branch = Branch::where('id', $data['branch_id'])->where('store_id', $store_id)->first();
-        if (!$branch) {
-            return response()->json([
-                'message' => 'Branch not found.',
-            ], 404);
-        }
+        $avatar_exist = $request->hasFile('avatar');
+        $avatar_image_path = $avatar_exist ?
+            $request->file('avatar')->storeAs('employees', $store_id . Str::uuid() . "." . $request->file('avatar')->getClientOriginalExtension()) : null;
 
-        // check if employee is already in the store
-        $employee = Employee::where('store_id', $store_id)->where('email', $data['email'])->first();
-        if ($employee) {
-            return response()->json([
-                'message' => 'Employee already exists.',
-            ], 400);
-        }
 
         $employee = Employee::create([
             'store_id' => $store_id,
@@ -77,7 +69,7 @@ class EmployeeController extends Controller
             'password' => Hash::make($data['password']),
             'phone' => $request->input('phone'),
             'birthday' => $request->input('birthday'),
-            'avatar_url' => $request->input('avatar_url'),
+            'avatar_url' => $avatar_image_path,
             'gender' => $request->input('gender')
         ]);
 
@@ -98,10 +90,23 @@ class EmployeeController extends Controller
         return response()->json($employee);
     }
 
+    // Get avatar
+    public function getAvatar($employee_id) {
+        $employee = Employee::find($employee_id);
+        $avatar = $employee->avatar;
+        if (!Storage::exists($avatar)) {
+            return response()->json([
+                'message' => 'File not found.',
+            ], 404);
+        }
+        return response()->file(storage_path('app' . DIRECTORY_SEPARATOR . $avatar));
+    }
+
     // Get all employees
     public function getEmployees(Request $request) {
         $store_id = Auth::guard('stores')->user()->id;
-        $employees = Employee::where('store_id', $store_id)->get();
+        $employees = Employee::with('employment.roles')->where('store_id', $store_id)->get();
+
         return response()->json($employees);
     }
 
@@ -120,6 +125,13 @@ class EmployeeController extends Controller
         $employee = $this->getEmployeeDetail($id);
 
         return response()->json($employee);
+    }
+
+    public function getEmployeesByBranchId(Request $request, $branch_id) {
+        $store_id = Auth::guard('stores')->user()->id;
+
+        $employees = Employee::with('employment')->where('store_id', $store_id)->whereRelation('employment', 'branch_id', $branch_id)->get();
+        return response()->json($employees);
     }
 
     // Login as an employee
@@ -231,5 +243,30 @@ class EmployeeController extends Controller
         }])->where('store_id', $store_id)->where('id', $data['employee_id'])->first();
 
         return response()->json($employee);
+    }
+
+    public function delete(Request $request, $id) {
+        $store_id = Auth::guard('stores')->user()->id;
+
+        // get employee
+        $employee = Employee::where('store_id', $store_id)->where('id', $id)->first();
+        if (!$employee) {
+            return response()->json([
+                'message' => 'Employee not found.',
+            ], 404);
+        }
+
+        $employee->delete();
+
+        // terminate employment
+        $employment = Employment::where('employee_id', $id)->where('to', null)->first();
+        if ($employment) {
+            $employment->to = date("Y/m/d");
+            $employment->save();
+        }
+
+        return response()->json([
+            'message' => 'Employee deleted.',
+        ]);
     }
 }

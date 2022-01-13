@@ -22,7 +22,7 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 			<Head>
 				<title>BKRM Retail System</title>
 			</Head>
-			<Box h="100vh" overflow="hidden">
+			<Box h="100vh" overflow="hidden" bg="gray.50">
 				{getLayout(<Component {...pageProps} />)}
 			</Box>
 		</Provider>

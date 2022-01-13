@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace App\Http\Middleware\Role;
 
 use Closure;
 use Illuminate\Http\Request;
@@ -31,7 +31,7 @@ class AdminOrPurchaser
             return $next($request);
         }
         return response()->json([
-            'message' => 'Unauthorized.',
-        ], 403);
+            'message' => 'Unauthenticated.',
+        ], 401);
     }
 }

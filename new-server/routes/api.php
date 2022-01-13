@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Middleware\Role\AdminOrPurchaser;
 use App\Http\Middleware\Role\AdminOrSaleOrPurchaser;
 use App\Http\Middleware\Role\HaveManageRole;
+use App\Http\Middleware\Role\HavePurchaseRole;
 use App\Http\Middleware\Role\NotEmployee;
-use App\Http\Middleware\Role\OnlyEmployee;
 use App\Http\Middleware\Role\NotStoreAdmin;
+use App\Http\Middleware\Role\OnlyEmployee;
 use App\Http\Middleware\Role\OnlyStoreAdmin;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +31,9 @@ Route::prefix('/store')->group(function () {
 Route::get('/auth', [StoreController::class, 'getGuard']);
 
 Route::prefix('/branch')->middleware([OnlyStoreAdmin::class])->group(function () {
+    // GET /branch/image/{filePath} - get a branch image
+    Route::get('/image/{filePath}', [BranchController::class, 'getBranchImage'])
+        ->where(['filePath' => '^([A-z0-9-_+]+\/)*([A-z0-9-\.]+)(\?\d+)?$']);
     // POST /branch - create a new branch
     Route::post('/', [BranchController::class, 'create']);
     // GET /branch - get all branches
@@ -37,22 +41,26 @@ Route::prefix('/branch')->middleware([OnlyStoreAdmin::class])->group(function ()
     // GET /branch/{branch_id} - get a branch by id
     Route::get('/{branch_id}', [BranchController::class, 'getBranch']);
     // PATCH /branch/{branch_id} - update a branch by id
-    Route::patch('/{branch_id}', [BranchController::class, 'update']);
-    // GET /branch/image/{filePath} - get a branch image
-    Route::get('/image/{filePath}', [BranchController::class, 'getBranchImage'])
-        ->where(['filePath' => '^([A-z0-9-_+]+\/)*([A-z0-9-\.]+)(\?\d+)?$']);
+    Route::post('/{branch_id}', [BranchController::class, 'update']);
+    // DELETE /branch/{branch_id} - delete a branch by id
+    Route::delete('/{branch_id}', [BranchController::class, 'delete']);
 });
 
 Route::prefix('/employee')->group(function () {
+    Route::get('/avatar/{employee_Id}', [EmployeeController::class, 'getAvatar']);
     Route::middleware([OnlyStoreAdmin::class])->group(function () {
         // POST /employee - create a new employee
         Route::post('/', [EmployeeController::class, 'create']);
         // GET /employee - get all employees
         Route::get('/', [EmployeeController::class, 'getEmployees']);
+        // GET /employee/branch/{branch_id} - get employees by branch id
+        Route::get('/branch/{branch_id}', [EmployeeController::class, 'getEmployeesByBranchId']);
+        // GET /employee/avatar/{avatar_path} - get an employee avatar
         // GET /employee/{employee_id} - get an employee by id
         Route::get('/{employee_id}', [EmployeeController::class, 'getEmployee']);
         // POST /employee/transfer - transfer an employee to another branch
         Route::post('/transfer', [EmployeeController::class, 'transfer']);
+
     });
     // GET /employee/me - get current employee info
     Route::get('/me', [EmployeeController::class, 'me'])->middleware([OnlyEmployee::class]);
@@ -62,7 +70,7 @@ Route::prefix('/employee')->group(function () {
     Route::post('/logout', [EmployeeController::class, 'logout'])->middleware([OnlyEmployee::class]);
 });
 
-Route::prefix('/shift')->middleware([HaveManageRole::class])->group(function () {
+Route::prefix('/shift')->middleware([OnlyEmployee::class, HaveManageRole::class])->group(function () {
     // POST /shift - create a new shift
     Route::post('/', [ShiftController::class, 'create']);
     // GET /shift - get all shifts
@@ -73,7 +81,7 @@ Route::prefix('/shift')->middleware([HaveManageRole::class])->group(function () 
     Route::post('/deactivate/{shift_id}', [ShiftController::class, 'deactivate']);
 });
 
-Route::prefix('/work-schedule')->middleware([HaveManageRole::class])->group(function () {
+Route::prefix('/work-schedule')->middleware([OnlyEmployee::class, HaveManageRole::class])->group(function () {
     // POST /work-schedule - create a new work schedule
     Route::post('/', [WorkScheduleController::class, 'create']);
     // GET /work-schedule - get all work schedules
@@ -124,13 +132,29 @@ Route::prefix('/item')->group(function () {
     Route::middleware([AdminOrSaleOrPurchaser::class])->group(function () {
         // GET /item - get all items
         Route::get('/', [ItemController::class, 'getItems']);
+        // GET /item/bar_code/{bar_code} - get an item by bar code
+        Route::get('/bar_code/{bar_code}', [ItemController::class, 'getItemsByBarCode']);
+        // GET /item/search/{search} - search items by name, code, bar code or category
+        Route::get('/search/{search}', [ItemController::class, 'search']);
+        // GET /item/{item_id}/price_history - get price history of an item
+        Route::get('/{item_id}/price_history', [ItemController::class, 'getPriceHistory']);
         // GET /item/{item_id} - get an item by id
         Route::get('/{item_id}', [ItemController::class, 'getItem']);
-        // GET /item/{bar_code} - get an item by bar code
-        Route::get('/{bar_code}', [ItemController::class, 'getItemByBarCode']);
-        // GET /item/{search} - search items by name, code, bar code or category
-        Route::get('/{search}', [ItemController::class, 'search']);
-        // GET /item/price_history/{item_id} - get price history of an item
-        Route::get('/price_history/{item_id}', [ItemController::class, 'getPriceHistory']);
     });
+    Route::get('/{item_id}/stock', [ItemController::class, 'getStock'])->middleware([OnlyEmployee::class]);
+});
+
+Route::prefix('/purchase-sheet')->middleware([OnlyEmployee::class, HavePurchaseRole::class])->group(function () {
+    // POST /purchase-sheet - create a new purchase sheet
+    Route::post('/', [PurchaseSheetController::class, 'create']);
+    // GET /purchase-sheet - get all purchase sheets
+    Route::get('/', [PurchaseSheetController::class, 'getPurchaseSheets']);
+    // GET /purchase-sheet/{purchase_sheet_id} - get a purchase sheet by id
+    Route::get('/{purchase_sheet_id}', [PurchaseSheetController::class, 'getPurchaseSheet']);
+    // PATCH /purchase-sheet/{purchase_sheet_id} - update a purchase sheet by id
+    Route::patch('/{purchase_sheet_id}', [PurchaseSheetController::class, 'update']);
+    // PATCH /purchase-sheet/{purchase_sheet_id}/note - update a purchase sheet note by id
+    Route::patch('/{purchase_sheet_id}/note', [PurchaseSheetController::class, 'updateNote']);
+    // DELETE /purchase-sheet/{purchase_sheet_id} - delete a purchase sheet by id
+    Route::delete('/{purchase_sheet_id}', [PurchaseSheetController::class, 'delete']);
 });
