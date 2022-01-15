@@ -31,13 +31,12 @@ Route::prefix('/store')->group(function () {
 Route::get('/auth', [StoreController::class, 'getGuard']);
 
 Route::prefix('/branch')->middleware([OnlyStoreAdmin::class])->group(function () {
-    // GET /branch/image/{filePath} - get a branch image
-    Route::get('/image/{filePath}', [BranchController::class, 'getBranchImage'])
-        ->where(['filePath' => '^([A-z0-9-_+]+\/)*([A-z0-9-\.]+)(\?\d+)?$']);
     // POST /branch - create a new branch
     Route::post('/', [BranchController::class, 'create']);
     // GET /branch - get all branches
     Route::get('/', [BranchController::class, 'getBranches']);
+    // GET /branch/{branch_id}/image - get branch image by id
+    Route::get('/{branch_id}/image', [BranchController::class, 'getBranchImage']);
     // GET /branch/{branch_id} - get a branch by id
     Route::get('/{branch_id}', [BranchController::class, 'getBranch']);
     // PATCH /branch/{branch_id} - update a branch by id
@@ -47,7 +46,6 @@ Route::prefix('/branch')->middleware([OnlyStoreAdmin::class])->group(function ()
 });
 
 Route::prefix('/employee')->group(function () {
-    Route::get('/avatar/{employee_Id}', [EmployeeController::class, 'getAvatar']);
     Route::middleware([OnlyStoreAdmin::class])->group(function () {
         // POST /employee - create a new employee
         Route::post('/', [EmployeeController::class, 'create']);
@@ -55,9 +53,10 @@ Route::prefix('/employee')->group(function () {
         Route::get('/', [EmployeeController::class, 'getEmployees']);
         // GET /employee/branch/{branch_id} - get employees by branch id
         Route::get('/branch/{branch_id}', [EmployeeController::class, 'getEmployeesByBranchId']);
-        // GET /employee/avatar/{avatar_path} - get an employee avatar
         // GET /employee/{employee_id} - get an employee by id
         Route::get('/{employee_id}', [EmployeeController::class, 'getEmployee']);
+        // GET /employee/{employee_id}/avatar - get an employee avatar
+        Route::get('/{employee_id}/avatar', [EmployeeController::class, 'getAvatar']);
         // POST /employee/transfer - transfer an employee to another branch
         Route::post('/transfer', [EmployeeController::class, 'transfer']);
 

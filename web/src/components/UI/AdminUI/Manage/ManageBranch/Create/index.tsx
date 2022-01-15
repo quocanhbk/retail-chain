@@ -6,61 +6,13 @@ import router from "next/router"
 import { FormEvent, useEffect, useRef } from "react"
 import { useMutation, useQueryClient } from "react-query"
 import ImageInput from "../ImageInput"
+import useCreateBranch from "./useCreateBranch"
+interface CreateBranchUIProps {
+	id?: number
+}
 
-const CreateBranchUI = () => {
-	const { values, setValue, errors, setError } = useFormCore<CreateBranchInput>({
-		name: "",
-		address: "",
-		image: null,
-	})
-	const toast = useChakraToast()
-
-	const qc = useQueryClient()
-
-	const inputRef = useRef<HTMLInputElement>(null)
-
-	const validate = () => {
-		let isSubmittable = true
-		if (!values.name) {
-			setError("name", "Tên chi nhánh không được để trống")
-			isSubmittable = false
-		}
-		if (!values.address) {
-			setError("address", "Địa chỉ không được để trống")
-			isSubmittable = false
-		}
-		return isSubmittable
-	}
-
-	const { mutate, isLoading } = useMutation(() => createBranch(values), {
-		onSuccess: () => {
-			toast({
-				title: "Tạo chi nhánh thành công",
-				status: "success",
-			})
-			qc.invalidateQueries("branches")
-			router.push("/admin/manage/branch")
-		},
-		onError: (err: any) => {
-			console.log(err.response.data.message)
-
-			toast({
-				title: err.response.data.message,
-				status: "error",
-			})
-		},
-	})
-
-	const handleCreateBranch = (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault()
-		if (validate()) {
-			mutate()
-		}
-	}
-
-	useEffect(() => {
-		inputRef.current?.focus()
-	}, [])
+const CreateBranchUI = ({ id }: CreateBranchUIProps) => {
+	const { values, setValue, errors,  handleCreateBranch, isLoading, inputRef } = useCreateBranch(id)
 
 	return (
 		<Box p={4}>

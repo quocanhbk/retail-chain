@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class BranchController extends Controller {
@@ -48,13 +49,21 @@ class BranchController extends Controller {
         return response()->json($branch);
     }
 
-    public function getBranchImage($filePath) {
-        if (!Storage::exists($filePath)) {
+    public function getBranchImage($branch_id) {
+        $branch = Branch::find($branch_id);
+        if(!$branch) {
+            return response()->json([
+                'message' => 'Branch not found.',
+            ], 404);
+        }
+
+        $file_path = $branch->image;
+        if (!Storage::exists($file_path)) {
             return response()->json([
                 'message' => 'File not found.',
             ], 404);
         }
-        return response()->file(storage_path('app' . DIRECTORY_SEPARATOR . $filePath));
+        return response()->file(storage_path('app' . DIRECTORY_SEPARATOR . $file_path));
     }
 
     public function getBranches(Request $request) {
@@ -112,10 +121,18 @@ class BranchController extends Controller {
 
         $branch = Branch::where('store_id', $store_id)->where('id', $branch_id)->first();
 
-        $isExist = $request->hasFile('image');
-        // replace space in branch name with underscore
-        $image_name = $store_id . str_replace(' ', '_', $data['name']);
-        $path = $isExist
+        $image_exist = $request->hasFile('image');
+
+        // delete old image if new image is uploaded
+        if ($image_exist) {
+            $old_image = $branch->image;
+            if ($old_image != 'branches/default.jpg') {
+                Storage::delete($old_image);
+            }
+        }
+
+        $image_name = $store_id . Str::uuid();
+        $path = $image_exist
             ? $request->file('image')->storeAs('branches', $image_name . "." . $request->file('image')->getClientOriginalExtension() )
             : $branch->image;
 

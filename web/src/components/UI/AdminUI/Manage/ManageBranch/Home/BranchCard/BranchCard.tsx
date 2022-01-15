@@ -1,6 +1,5 @@
-import { Branch } from "@api"
+import { Branch, getBranchImage } from "@api"
 import { Text, Img, Flex } from "@chakra-ui/react"
-import { baseURL } from "src/api/fetcher"
 import Container from "./Container"
 import Link from "next/link"
 
@@ -10,13 +9,13 @@ interface BranchCardProps {
 }
 
 const BranchCard = ({ data, index }: BranchCardProps) => {
-	const { name, address, image } = data
+	const { name, address, id } = data
 
 	return (
 		<Link href={`/admin/manage/branch/${data.id}`}>
 			<Container custom={index} pos="relative">
 				<Flex justify={"center"} h="10rem" w="full" bg="white" flexShrink={0}>
-					<Img src={`${baseURL}/branch/image/${image}`} alt="store" h="full" />
+					<Img src={getBranchImage(id)} alt="store" h="full" />
 				</Flex>
 				<Flex flex={1} px={4} direction="column" w="full" py={2} overflow="hidden">
 					<Text fontSize={"lg"} fontWeight={"bold"}>

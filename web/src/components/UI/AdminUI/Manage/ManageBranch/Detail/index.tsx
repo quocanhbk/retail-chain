@@ -18,13 +18,13 @@ const BranchDetailUI = ({ id }: BranchDetailUIProps) => {
 		enabled: false,
 		onSuccess: data => {
 			initForm({ ...data, image: `${baseURL}/branch/image/${data.image}` })
-		},
+		}
 	})
 
 	const { values, setValue, errors, setError, initForm } = useFormCore<CreateBranchInput>({
 		name: "",
 		address: "",
-		image: null,
+		image: null
 	})
 	const toast = useChakraToast()
 
@@ -49,7 +49,7 @@ const BranchDetailUI = ({ id }: BranchDetailUIProps) => {
 		onSuccess: () => {
 			toast({
 				title: "Chỉnh sửa chi nhánh thành công",
-				status: "success",
+				status: "success"
 			})
 			qc.invalidateQueries("branches")
 			router.push("/admin/manage/branch")
@@ -59,9 +59,9 @@ const BranchDetailUI = ({ id }: BranchDetailUIProps) => {
 
 			toast({
 				title: err.response.data.message,
-				status: "error",
+				status: "error"
 			})
-		},
+		}
 	})
 
 	const handleCreateBranch = (e: FormEvent<HTMLFormElement>) => {

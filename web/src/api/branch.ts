@@ -1,4 +1,4 @@
-import fetcher from "./fetcher"
+import fetcher, { baseURL } from "./fetcher"
 
 export interface Branch {
 	id: number
@@ -18,6 +18,8 @@ export const getBranch = async (id: number): Promise<Branch> => {
 	const { data } = await fetcher.get(`/branch/${id}`)
 	return data
 }
+
+export const getBranchImage = (id: number) => `${baseURL}/branch/${id}/image`
 
 export const createBranch = async (input: CreateBranchInput): Promise<Branch> => {
 	const formData = new FormData()

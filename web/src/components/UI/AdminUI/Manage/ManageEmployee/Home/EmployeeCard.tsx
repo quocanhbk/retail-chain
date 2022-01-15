@@ -9,9 +9,18 @@ interface EmployeeCardProps {
 
 const EmployeeCard = ({ data }: EmployeeCardProps) => {
 	return (
-		<Flex key={data.id} bg="white" rounded="md" shadow="base" p={2} align="center" w="full">
+		<Flex
+			key={data.id}
+			rounded="md"
+			align="center"
+			w="full"
+			cursor="pointer"
+			_hover={{ bg: "gray.100" }}
+			px={2}
+			py={2}
+		>
 			<Avatar size="xs" src={`${baseURL}/employee/avatar/${data.id}`} alt={data.name} mr={2} />
-			<Text fontWeight={500} w="15rem" isTruncated mr={2} flexShrink={0}>
+			<Text w="15rem" isTruncated mr={2} flexShrink={0}>
 				{data.name}
 			</Text>
 			<Text fontSize={"sm"} color="blackAlpha.600" w="15rem" isTruncated flexShrink={0} mr={2}>

@@ -1,8 +1,6 @@
 import { Branch, Employee } from "@api"
-import { Box, Button, Flex, HStack, Text, VStack } from "@chakra-ui/react"
+import { Box, Flex, Text, VStack } from "@chakra-ui/react"
 import { useState } from "react"
-import { BsPerson } from "react-icons/bs"
-import Link from "next/link"
 import EmployeeCard from "./EmployeeCard"
 
 interface BranchAccordionProps {
@@ -36,7 +34,7 @@ const BranchAccordion = ({ data: branch, employees }: BranchAccordionProps) => {
 			>
 				<Text>{branch.name}</Text>
 			</Flex>
-			<VStack align="stretch" py={2} borderTop={"1px"} borderColor={"blackAlpha.200"}>
+			<VStack align="stretch" py={2} borderTop={"1px"} borderColor={"blackAlpha.200"} spacing={0}>
 				{renderEmployees()}
 			</VStack>
 		</Box>

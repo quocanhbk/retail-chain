@@ -1,5 +1,5 @@
 import { DateInput } from "@components/module/DateInput.tsx"
-import fetcher from "./fetcher"
+import fetcher, { baseURL } from "./fetcher"
 
 export interface EmploymentRole {
 	id: number
@@ -70,3 +70,5 @@ export const getEmployeesByBranchId = async (branchId: number): Promise<Employee
 	const { data } = await fetcher.get(`/employee/branch/${branchId}`)
 	return data
 }
+
+export const getEmployeeAvatar = (id: number) => `${baseURL}/employee/${id}/avatar`
