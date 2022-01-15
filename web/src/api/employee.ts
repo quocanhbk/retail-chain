@@ -65,7 +65,7 @@ export const getEmployees = async (): Promise<Employee[]> => {
 	const { data } = await fetcher.get(`/employee`)
 	return data
 }
- 
+
 export const getEmployeesByBranchId = async (branchId: number): Promise<Employee[]> => {
 	const { data } = await fetcher.get(`/employee/branch/${branchId}`)
 	return data
