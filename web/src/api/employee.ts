@@ -60,7 +60,7 @@ export const createEmployee = async (input: CreateEmployeeInput): Promise<Employ
 	const { data } = await fetcher.post("/employee", formData)
 	return data
 }
-
+ 
 export const getEmployees = async (): Promise<Employee[]> => {
 	const { data } = await fetcher.get(`/employee`)
 	return data
