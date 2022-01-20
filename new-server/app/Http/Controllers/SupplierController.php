@@ -13,6 +13,7 @@ class SupplierController extends Controller
     public function create(Request $request) {
         $store_id = Auth::guard('stores')->user()->id;
         $data = $request->all();
+        error_log($data["name"]);
         $rules = [
             'name' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string', 'max:255'],
@@ -77,14 +78,14 @@ class SupplierController extends Controller
                 'errors' => $validator->errors(),
             ], 400);
         }
-
+        error_log($data['name']);
         $supplier = Supplier::where('store_id', $store_id)->where('id', $supplier_id)->first();
         $supplier->name = $data['name'] ?? $supplier->name;
         $supplier->address = $data['address'] ?? $supplier->address;
         $supplier->phone = $data['phone'] ?? $supplier->phone;
         $supplier->email = $data['email'] ?? $supplier->email;
         $supplier->save();
-
+        error_log($supplier);
         return response()->json($supplier);
     }
 
