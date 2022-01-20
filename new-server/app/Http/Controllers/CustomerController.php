@@ -74,8 +74,8 @@ class CustomerController extends Controller
             'name' => ['nullable', 'string', 'max:255'],
             'address' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:255'],
-            'email' => ['nullable', 'string', 'email', 'max:255']
-            'birthday' => ['nullable', 'date'],
+            'email' => ['nullable', 'string', 'email', 'max:255'],
+            'birthday' => ['nullable','date'],
             'gender' => ['nullable', 'string']
         ];
 

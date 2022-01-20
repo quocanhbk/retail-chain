@@ -117,6 +117,19 @@ Route::prefix('/supplier')->middleware([AdminOrPurchaser::class])->group(functio
     Route::delete('/{supplier_id}', [SupplierController::class, 'delete']);
 });
 
+Route::prefix('/customer')->middleware([AdminOrPurchaser::class])->group(function () {
+    // POST /customer - create a new customer
+    Route::post('/', [CustomerController::class, 'create'])->middleware([OnlyStoreAdmin::class]);
+    // GET /customer - get all customer
+    Route::get('/', [CustomerController::class, 'getAllCustomers']);
+    // GET /customer/{customer_id} - get a customer by id
+    Route::get('/{customer_id}', [CustomerController::class, 'getCustomer']);
+    // PATCH /customer/{customer_id} - update a customer by id
+    Route::patch('/{customer_id}', [CustomerController::class, 'update']);
+    // DELETE /customer/{supplier_id} - delete a customer by id
+    Route::delete('/{customer_id}', [CustomerController::class, 'delete']);
+});
+
 Route::prefix('/item-category')->middleware([OnlyStoreAdmin::class])->group(function () {
     // POST /item-category - create a new item category
     Route::post('/', [ItemCategoryController::class, 'create']);
