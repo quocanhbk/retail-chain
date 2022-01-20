@@ -1,17 +1,5 @@
 import { getBranches } from "@api"
-import {
-	Box,
-	Button,
-	Flex,
-	Heading,
-	IconButton,
-	Input,
-	InputGroup,
-	InputLeftElement,
-	InputRightElement,
-	Wrap,
-	WrapItem,
-} from "@chakra-ui/react"
+import { Box, Button, Flex, Heading, Wrap, WrapItem } from "@chakra-ui/react"
 import { useQuery } from "react-query"
 import BranchCard from "./BranchCard/BranchCard"
 import BranchCardSkeleton from "./BranchCard/BranchCardSkeleton"
@@ -19,15 +7,19 @@ import Link from "next/link"
 import { useState } from "react"
 import { useThrottle } from "@hooks"
 import { SearchInput } from "@components/shared"
+import Sorter from "./Sorter"
 
 const HomeBranchUI = () => {
 	const [searchText, setSearchText] = useState("")
+	const [currentSort, setCurrentSort] = useState({ key: "name", order: "asc" })
 	const throttledSearchText = useThrottle(searchText, 500)
-	const { data, isLoading } = useQuery(["branches", throttledSearchText], () => getBranches(throttledSearchText))
+	const { data, isLoading } = useQuery(["branches", throttledSearchText, currentSort.key, currentSort.order], () =>
+		getBranches({ search: throttledSearchText, sort_key: currentSort.key, sort_order: currentSort.order })
+	)
 	const render = () => {
 		if (isLoading) {
 			return (
-				<Wrap>
+				<Wrap spacing={4}>
 					{[...Array(12)].map((_, index) => (
 						<WrapItem key={index}>
 							<BranchCardSkeleton />
@@ -38,7 +30,7 @@ const HomeBranchUI = () => {
 		}
 		if (data) {
 			return (
-				<Wrap>
+				<Wrap spacing={4}>
 					{data.map((branch, index) => (
 						<WrapItem key={branch.id}>
 							<BranchCard data={branch} index={index} />
@@ -61,14 +53,15 @@ const HomeBranchUI = () => {
 					</Button>
 				</Link>
 			</Flex>
-			<SearchInput
-				value={searchText}
-				onChange={e => setSearchText(e.target.value)}
-				placeholder="Tìm kiếm chi nhánh"
-				mb={4}
-				onClear={() => setSearchText("")}
-			/>
-
+			<Flex align="center" mb={4}>
+				<SearchInput
+					value={searchText}
+					onChange={e => setSearchText(e.target.value)}
+					placeholder="Tìm kiếm chi nhánh"
+					onClear={() => setSearchText("")}
+				/>
+				<Sorter currentSort={currentSort} onChange={setCurrentSort} />
+			</Flex>
 			{render()}
 		</Box>
 	)

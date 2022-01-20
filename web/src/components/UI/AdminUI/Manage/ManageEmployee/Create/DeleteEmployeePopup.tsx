@@ -1,35 +1,33 @@
-import { deleteBranch } from "@api"
+import { deleteEmployee } from "@api"
 import { Text } from "@chakra-ui/react"
 import { SubmitConfirmAlert } from "@components/shared"
 import { useRouter } from "next/router"
 import { useMutation } from "react-query"
 
 interface DeleteBranchPopupProps {
-	branchId: number
-	branchName?: string
+	employeeId?: number
+	employeeName?: string
 	isOpen: boolean
 	onClose: () => void
 }
 
-const DeleteBranchPopup = ({ branchId, branchName, isOpen, onClose }: DeleteBranchPopupProps) => {
+const DeleteEmployeePopup = ({ employeeId, employeeName, isOpen, onClose }: DeleteBranchPopupProps) => {
 	const router = useRouter()
-	const { mutate, isLoading } = useMutation(deleteBranch, {
+	const { mutate, isLoading } = useMutation(deleteEmployee, {
 		onSuccess: () => {
 			onClose()
-			router.push("/admin/manage/branch")
-		},
+			router.push("/admin/manage/employee")
+		}
 	})
 
 	const handleDelete = () => {
-		if (!branchId) return
-		mutate(branchId)
+		if (!employeeId) return
+		mutate(employeeId)
 	}
-
-	console.log(branchId)
 
 	return (
 		<SubmitConfirmAlert
-			title="Xóa chi nhánh"
+			title="Xóa nhân viên"
 			isOpen={isOpen}
 			onClose={onClose}
 			onConfirm={handleDelete}
@@ -38,9 +36,9 @@ const DeleteBranchPopup = ({ branchId, branchName, isOpen, onClose }: DeleteBran
 			color="red"
 			isLoading={isLoading}
 		>
-			<Text>{`Bạn chắc chắn muốn xóa ${branchName}`}</Text>
+			<Text>{`Bạn chắc chắn muốn xóa ${employeeName}`}</Text>
 		</SubmitConfirmAlert>
 	)
 }
 
-export default DeleteBranchPopup
+export default DeleteEmployeePopup

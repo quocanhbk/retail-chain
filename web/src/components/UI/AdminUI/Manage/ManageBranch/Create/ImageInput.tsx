@@ -40,6 +40,8 @@ export const ImageInput = ({ onSubmit, file, readOnly = false }: Props) => {
 							rounded={"full"}
 							border="1px"
 							borderColor={"blackAlpha.200"}
+							background="gray.900"
+							color="white"
 						>
 							<Input
 								pos="absolute"

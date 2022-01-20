@@ -36,10 +36,12 @@ Route::prefix('/branch')->middleware([OnlyStoreAdmin::class])->group(function ()
     // GET /branch - get all branches
     Route::get('/', [BranchController::class, 'getBranches']);
     // GET /branch/{branch_id}/image - get branch image by id
-    Route::get('/{branch_id}/image', [BranchController::class, 'getBranchImage']);
+    Route::get('/image/{image_key}', [BranchController::class, 'getBranchImage']);
+    // POST /branch/image - upload branch image
+    Route::post('/image', [BranchController::class, 'updateBranchImage']);
     // GET /branch/{branch_id} - get a branch by id
     Route::get('/{branch_id}', [BranchController::class, 'getBranch']);
-    // PATCH /branch/{branch_id} - update a branch by id
+    // POST /branch/{branch_id} - update a branch by id
     Route::post('/{branch_id}', [BranchController::class, 'update']);
     // DELETE /branch/{branch_id} - delete a branch by id
     Route::delete('/{branch_id}', [BranchController::class, 'delete']);
@@ -49,6 +51,10 @@ Route::prefix('/employee')->group(function () {
     Route::middleware([OnlyStoreAdmin::class])->group(function () {
         // POST /employee - create a new employee
         Route::post('/', [EmployeeController::class, 'create']);
+        // POST /employee/many - create many employees
+        Route::post('/many', [EmployeeController::class, 'createMany']);
+        // POST /employee/{employee_id} - update an employee by id
+        Route::post('/{employee_id}', [EmployeeController::class, 'update']);
         // GET /employee - get all employees
         Route::get('/', [EmployeeController::class, 'getEmployees']);
         // GET /employee/branch/{branch_id} - get employees by branch id
@@ -56,10 +62,15 @@ Route::prefix('/employee')->group(function () {
         // GET /employee/{employee_id} - get an employee by id
         Route::get('/{employee_id}', [EmployeeController::class, 'getEmployee']);
         // GET /employee/{employee_id}/avatar - get an employee avatar
-        Route::get('/{employee_id}/avatar', [EmployeeController::class, 'getAvatar']);
+        Route::get('/avatar/{avatar_key}', [EmployeeController::class, 'getAvatar']);
+        // POST /employee/{employee_id}/avatar - update an employee avatar
+        Route::post('/avatar/{employee_id}', [EmployeeController::class, 'updateAvatar']);
         // POST /employee/transfer - transfer an employee to another branch
         Route::post('/transfer', [EmployeeController::class, 'transfer']);
-
+        // POST /employee/transfer/many - transfer many employees to another branch
+        Route::post('/transfer/many', [EmployeeController::class, 'transferMany']);
+        // DELETE /employee/{employee_id} - delete an employee by id
+        Route::delete('/{employee_id}', [EmployeeController::class, 'delete']);
     });
     // GET /employee/me - get current employee info
     Route::get('/me', [EmployeeController::class, 'me'])->middleware([OnlyEmployee::class]);

@@ -1,97 +1,204 @@
-import { Box, Button, chakra, Stack } from "@chakra-ui/react"
-import { MultipleSelectControl } from "@components/module"
-import { DateInputControl } from "@components/module/DateInput.tsx"
-import RadioInputControl from "@components/module/RadioInput.tsx/RadioInputControl"
-import { SelectControl } from "@components/module/Select"
-import { BackableTitle, TextControl } from "@components/shared"
+import {
+	Box,
+	Button,
+	chakra,
+	Checkbox,
+	CheckboxGroup,
+	Flex,
+	HStack,
+	Input,
+	Radio,
+	RadioGroup,
+	Stack,
+	Text,
+	VStack
+} from "@chakra-ui/react"
+import { BackableTitle, DateInput, FormControl, Select } from "@components/shared"
 import { employeeRoles, genders } from "@constants"
+import { useTheme } from "@hooks"
 import AvatarInput from "./AvatarInput"
+import DeleteEmployeePopup from "./DeleteEmployeePopup"
 import useCreateEmployee from "./useCreateEmployee"
 
-const CreateEmployeeUI = () => {
-	const { branches, values, setValue, errors, handleSubmit, isLoading } = useCreateEmployee()
+interface CreateEmployeeUIProps {
+	id?: number
+}
+
+const CreateEmployeeUI = ({ id }: CreateEmployeeUIProps) => {
+	const {
+		branches,
+		values,
+		setValue,
+		handleSubmit,
+		isLoading,
+		readOnly,
+		setReadOnly,
+		confirmDelete,
+		setConfirmDelete,
+		employee
+	} = useCreateEmployee(id)
+	const { backgroundThird, fillDanger, borderPrimary } = useTheme()
 
 	return (
-		<Box p={4}>
-			<BackableTitle backPath="/admin/manage/employee" text="Tạo nhân viên" />
-			<chakra.form onSubmit={handleSubmit}>
-				<AvatarInput file={values.avatar} onSubmit={f => setValue("avatar", f)} />
-				<Stack direction={["column", "row"]} spacing={8}>
+		<Box p={4} w="full" maxW="50rem">
+			<BackableTitle backPath="/admin/manage/employee" text={id ? "Xem nhân viên" : "Tạo nhân viên"}>
+				{id && (
+					<VStack align="stretch" spacing={0}>
+						<Text
+							onClick={() => setReadOnly(!readOnly)}
+							cursor="pointer"
+							px={2}
+							py={1}
+							_hover={{ bg: backgroundThird }}
+							rounded="md"
+						>
+							{readOnly ? "Chỉnh sửa" : "Hủy chỉnh sửa"}
+						</Text>
+						<Text
+							onClick={() => setConfirmDelete(true)}
+							color={fillDanger}
+							cursor="pointer"
+							px={2}
+							py={1}
+							_hover={{ bg: backgroundThird }}
+							rounded="md"
+						>
+							{"Xóa"}
+						</Text>
+					</VStack>
+				)}
+			</BackableTitle>
+			<chakra.form onSubmit={handleSubmit} noValidate>
+				<AvatarInput file={values.avatar} onSubmit={f => setValue("avatar", f)} readOnly={readOnly} />
+				<Stack direction={["column", "row"]} justify="space-between" spacing={8}>
 					<Box w="full" maxW="24rem">
-						<SelectControl
-							label="Chi nhánh làm việc"
-							selected={
-								branches!.map(b => ({ ...b, value: b.name })).find(b => b.id === values.branch_id) ||
-								null
-							}
-							selections={branches!.map(b => ({ ...b, value: b.name }))}
-							onChange={newBranch => setValue("branch_id", newBranch ? newBranch.id : null)}
-						/>
+						<FormControl label="Chi nhánh làm việc" mb={4} isRequired={!readOnly}>
+							<Select
+								selected={
+									branches!
+										.map(b => ({ ...b, value: b.name }))
+										.find(b => b.id === values.branch_id) || null
+								}
+								selections={branches!.map(b => ({ ...b, value: b.name }))}
+								onChange={newBranch => setValue("branch_id", newBranch ? newBranch.id : null)}
+								readOnly={readOnly}
+							/>
+						</FormControl>
+						<FormControl label="Tên nhân viên" mb={4} isRequired={!readOnly}>
+							<Input
+								value={values.name}
+								onChange={e => setValue("name", e.target.value)}
+								readOnly={readOnly}
+							/>
+						</FormControl>
 
-						<TextControl
-							label="Tên nhân viên"
-							value={values.name}
-							onChange={newValue => setValue("name", newValue)}
-							error={errors.name}
-						/>
-						<TextControl
-							label="Email"
-							value={values.email}
-							onChange={newValue => setValue("email", newValue)}
-							error={errors.email}
-						/>
-						<TextControl
-							label="Mật khẩu"
-							value={values.password}
-							onChange={newValue => setValue("password", newValue)}
-							type="password"
-							error={errors.password}
-						/>
-						<TextControl
-							label="Xác nhận mật khẩu"
-							value={values.password_confirmation}
-							onChange={newValue => setValue("password_confirmation", newValue)}
-							type="password"
-							error={errors.password_confirmation}
-						/>
+						<FormControl label="Email" mb={4} isRequired={!readOnly}>
+							<Input
+								value={values.email}
+								onChange={e => setValue("email", e.target.value)}
+								readOnly={readOnly}
+								type="email"
+								autoComplete="new-password"
+							/>
+						</FormControl>
+
+						{!id && (
+							<>
+								<FormControl label="Mật khẩu" mb={4} isRequired={!readOnly}>
+									<Input
+										value={values.password}
+										onChange={e => setValue("password", e.target.value)}
+										readOnly={readOnly}
+										type="password"
+										autoComplete="new-password"
+									/>
+								</FormControl>
+								<FormControl label="Xác nhận mật khẩu" mb={4} isRequired={!readOnly}>
+									<Input
+										value={values.password_confirmation}
+										onChange={e => setValue("password_confirmation", e.target.value)}
+										readOnly={readOnly}
+										type="password"
+										autoComplete="new-password"
+									/>
+								</FormControl>
+							</>
+						)}
 					</Box>
 					<Box w="full" maxW="24rem">
-						<MultipleSelectControl
-							label="Quyền"
-							selections={employeeRoles}
-							selected={employeeRoles.filter(role => values.roles.includes(role.id))}
-							onChange={newRoles =>
-								setValue(
-									"roles",
-									newRoles.map(role => role.id)
-								)
-							}
-							error={errors.roles}
-						/>
-						<TextControl
-							label="Số điện thoại"
-							value={values.phone}
-							onChange={newValue => setValue("phone", newValue)}
-							error={errors.phone}
-						/>
-						<DateInputControl
-							label="Ngày sinh"
-							value={values.birthday}
-							onChange={newValue => setValue("birthday", newValue)}
-							error={errors.birthday}
-						/>
-						<RadioInputControl
-							label="Giới tính"
-							data={genders}
-							value={values.gender || "unknown"}
-							onChange={g => setValue("gender", g)}
-						/>
-						<Button type="submit" isLoading={isLoading}>
-							{"Xác nhận"}
-						</Button>
+						<FormControl label="Quyền" mb={4} isRequired={!readOnly}>
+							<CheckboxGroup value={values.roles} onChange={value => setValue("roles", value)}>
+								<HStack
+									border="1px"
+									borderColor={borderPrimary}
+									px={4}
+									h="2.5rem"
+									rounded="md"
+									justify="space-between"
+								>
+									{employeeRoles.map(r => (
+										<Checkbox key={r.id} value={r.id} isReadOnly={readOnly}>
+											{r.value}
+										</Checkbox>
+									))}
+								</HStack>
+							</CheckboxGroup>
+						</FormControl>
+						<FormControl label="Số điện thoại" mb={4}>
+							<Input
+								value={values.phone}
+								onChange={e => setValue("phone", e.target.value)}
+								readOnly={readOnly}
+								type="tel"
+								autoComplete="new-password"
+							/>
+						</FormControl>
+						<FormControl label="Ngày sinh" mb={4}>
+							<DateInput
+								value={values.birthday}
+								onChange={value => setValue("birthday", value)}
+								readOnly={readOnly}
+							/>
+						</FormControl>
+						<FormControl label="Giới tính" mb={4}>
+							<RadioGroup value={values.gender || undefined} onChange={v => setValue("gender", v)}>
+								<HStack
+									border="1px"
+									borderColor={borderPrimary}
+									px={4}
+									h="2.5rem"
+									rounded="md"
+									justify="space-between"
+								>
+									{genders.map(gender => (
+										<Radio key={gender.id} value={gender.id} isReadOnly={readOnly}>
+											{gender.value}
+										</Radio>
+									))}
+								</HStack>
+							</RadioGroup>
+						</FormControl>
+						<HStack mt={7}>
+							{!readOnly && (
+								<Button type="submit" isLoading={isLoading}>
+									{"Xác nhận"}
+								</Button>
+							)}
+							{!readOnly && id && (
+								<Button variant="ghost" onClick={() => setReadOnly(true)} w="6rem" c>
+									Hủy
+								</Button>
+							)}
+						</HStack>
 					</Box>
 				</Stack>
 			</chakra.form>
+			<DeleteEmployeePopup
+				isOpen={confirmDelete}
+				onClose={() => setConfirmDelete(false)}
+				employeeId={id}
+				employeeName={employee?.name}
+			/>
 		</Box>
 	)
 }

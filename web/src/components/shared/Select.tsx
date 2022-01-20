@@ -7,13 +7,12 @@ import {
 	InputGroup,
 	InputLeftElement,
 	InputRightElement,
-	Text,
-	useOutsideClick,
-	Wrap,
+	Text
 } from "@chakra-ui/react"
-import { Motion, SearchInput } from "@components/shared"
+import { Motion } from "@components/shared"
+import { useClickOutside, useTheme } from "@hooks"
 import { AnimatePresence } from "framer-motion"
-import { useRef, useState } from "react"
+import { useState } from "react"
 import { BsChevronDown, BsSearch, BsX } from "react-icons/bs"
 
 interface Item {
@@ -28,16 +27,20 @@ interface SelectProps {
 	onChange: (items: Item | null) => void
 	keyField?: string
 	valueField?: string
+	readOnly?: boolean
 }
 
-export const Select = ({ selections, selected, onChange, keyField = "id", valueField = "value" }: SelectProps) => {
+export const Select = ({
+	selections,
+	selected,
+	onChange,
+	keyField = "id",
+	valueField = "value",
+	readOnly = false
+}: SelectProps) => {
 	const [isOpen, setIsOpen] = useState(false)
 
-	const boxRef = useRef<HTMLDivElement>(null)
-	useOutsideClick({
-		ref: boxRef,
-		handler: () => setIsOpen(false),
-	})
+	const boxRef = useClickOutside<HTMLDivElement>(() => setIsOpen(false))
 
 	const isItemSelected = (item: Item) => (selected ? selected[keyField] === item[keyField] : false)
 
@@ -48,53 +51,56 @@ export const Select = ({ selections, selected, onChange, keyField = "id", valueF
 		setIsOpen(false)
 	}
 
+	const handleOpen = () => {
+		if (readOnly) return
+		setIsOpen(!isOpen)
+	}
+
+	const { backgroundSecondary, backgroundPrimary, fillPrimary, textPrimary, borderPrimary, backgroundThird } =
+		useTheme()
+
 	return (
 		<Box pos="relative" ref={boxRef}>
 			<Flex
 				w="full"
 				justify="space-between"
-				bg="white"
 				border="1px"
-				borderColor={"gray.200"}
+				borderColor={borderPrimary}
 				minH="2.5rem"
 				rounded="md"
 				px={4}
 				align="center"
 				cursor="pointer"
-				onClick={() => setIsOpen(!isOpen)}
+				onClick={handleOpen}
 			>
 				<Flex flex={1}>
-					<AnimatePresence exitBeforeEnter>
-						{selected && (
-							<Motion.Box
-								key={selected[keyField]}
-								rounded="sm"
-								initial={{ opacity: 0 }}
-								animate={{ opacity: 1 }}
-								exit={{ opacity: 0 }}
-								transition={{ duration: 0.25, type: "tween" }}
-								cursor={"pointer"}
-								onClick={() => onChange(null)}
-							>
-								<Text>{selected[valueField]}</Text>
-							</Motion.Box>
-						)}
-					</AnimatePresence>
+					{selected && (
+						<Box key={selected[keyField]} rounded="sm" cursor={"pointer"} onClick={() => onChange(null)}>
+							<Text>{selected[valueField]}</Text>
+						</Box>
+					)}
 				</Flex>
-				<Box transform="auto" rotate={isOpen ? 180 : 0}>
-					<BsChevronDown />
-				</Box>
+				{!readOnly && (
+					<Box transform="auto" rotate={isOpen ? 180 : 0}>
+						<BsChevronDown />
+					</Box>
+				)}
 			</Flex>
 			<Box pos="absolute" top="100%" left={0} w="full" transform="translateY(0.5rem)" zIndex="dropdown">
 				<Collapse in={isOpen}>
-					<Box border="1px" borderColor="gray.200" rounded="md" background="white" overflow="hidden">
+					<Box
+						rounded="md"
+						background={backgroundSecondary}
+						overflow="hidden"
+						border="1px"
+						borderColor={borderPrimary}
+					>
 						<InputGroup>
 							<InputLeftElement>
 								<BsSearch />
 							</InputLeftElement>
 							<Input
 								w="full"
-								background="white"
 								value={search}
 								onChange={e => setSearch(e.target.value)}
 								rounded={"null"}
@@ -122,11 +128,11 @@ export const Select = ({ selections, selected, onChange, keyField = "id", valueF
 									cursor="pointer"
 									onClick={() => handleChange(item)}
 									px={4}
-									py={1}
-									_even={{ backgroundColor: "gray.50" }}
-									_notLast={{ borderBottom: "1px", borderColor: "gray.200" }}
-									_hover={{ bg: "gray.100" }}
-									color={isItemSelected(item) ? "telegram.600" : "blackAlpha.700"}
+									py={2}
+									_even={{ backgroundColor: backgroundPrimary }}
+									_notLast={{ borderBottom: "1px", borderColor: borderPrimary }}
+									_hover={{ bg: backgroundThird }}
+									color={isItemSelected(item) ? fillPrimary : textPrimary}
 								>
 									<Text>{item[valueField]}</Text>
 								</Box>

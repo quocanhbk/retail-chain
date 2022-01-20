@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBranch extends Migration
+class CreateBranchesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,7 +18,8 @@ class CreateBranch extends Migration
             $table->string('name');
             $table->string('address');
             $table->unsignedBigInteger('store_id');
-            $table->string('image');
+            $table->string('image')->nullable();
+            $table->string('image_key')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

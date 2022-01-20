@@ -9,7 +9,7 @@ import {
 	AlertDialogFooter,
 	Button,
 	AlertDialogCloseButton,
-	chakra,
+	chakra
 } from "@chakra-ui/react"
 import { RefObject, useRef } from "react"
 
@@ -32,11 +32,11 @@ export const SubmitConfirmAlert = ({
 	onConfirm,
 	title,
 	children,
-	cancelText = "Cancel",
-	confirmText = "Confirm",
+	cancelText = "Hủy",
+	confirmText = "Xác nhận",
 	color,
 	leastDestructiveRef,
-	isLoading,
+	isLoading
 }: SubmitConfirmAlertProps) => {
 	const cancelRef = useRef<HTMLButtonElement>(null)
 	return (

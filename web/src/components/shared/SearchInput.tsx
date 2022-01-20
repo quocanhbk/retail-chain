@@ -1,4 +1,5 @@
 import { InputGroup, InputLeftElement, Input, InputRightElement, IconButton, InputGroupProps } from "@chakra-ui/react"
+import { useTheme } from "@hooks"
 import { BsSearch, BsX } from "react-icons/bs"
 
 interface SearchInputProps extends InputGroupProps {
@@ -8,12 +9,13 @@ interface SearchInputProps extends InputGroupProps {
 }
 
 export const SearchInput = ({ onClear, value, ...props }: SearchInputProps) => {
+	const { backgroundSecondary } = useTheme()
 	return (
 		<InputGroup {...props}>
 			<InputLeftElement>
 				<BsSearch />
 			</InputLeftElement>
-			<Input w="full" background="white" value={value} {...props} />
+			<Input w="full" value={value} background={backgroundSecondary} {...props} />
 			<InputRightElement>
 				<IconButton
 					variant="ghost"

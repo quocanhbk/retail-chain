@@ -1,14 +1,17 @@
-import { getBranches, createEmployee } from "@api"
+import { getBranches, createEmployee, getEmployee, updateEmployee, getEmployeeAvatar } from "@api"
+import { dateToDateInput } from "@helper"
 import { useChakraToast, useFormCore } from "@hooks"
 import { useRouter } from "next/router"
+import { useEffect, useState } from "react"
 import { useMutation, useQuery } from "react-query"
 import { CreateEmployeeInput } from "src/api/employee"
 
-const useCreateEmployee = () => {
+const useCreateEmployee = (id: number | undefined) => {
 	const router = useRouter()
 	const toast = useChakraToast()
-
-	const { values, setValue, errors, setError } = useFormCore<CreateEmployeeInput>({
+	const [readOnly, setReadOnly] = useState(!!id)
+	const [confirmDelete, setConfirmDelete] = useState(false)
+	const { values, setValue, initForm } = useFormCore<CreateEmployeeInput>({
 		branch_id: router.query.branch_id ? parseInt(router.query.branch_id as string) : 0,
 		name: "",
 		email: "",
@@ -18,57 +21,83 @@ const useCreateEmployee = () => {
 		birthday: null,
 		phone: "",
 		roles: [],
-		gender: "",
+		gender: ""
 	})
+
+	const { data: employee, refetch } = useQuery(["employee", id], () => getEmployee(id!), {
+		enabled: false,
+		onSuccess: data => {
+			initForm({
+				name: data.name,
+				email: data.email,
+				branch_id: data.employment.branch_id,
+				avatar: getEmployeeAvatar(data.avatar_key),
+				birthday: dateToDateInput(data.birthday),
+				phone: data.phone,
+				roles: data.employment.roles.map(r => r.role),
+				gender: data.gender,
+				password: "",
+				password_confirmation: ""
+			})
+		}
+	})
+
+	useEffect(() => {
+		if (readOnly) {
+			refetch()
+		}
+	}, [readOnly])
 
 	const { data: branches } = useQuery("branches", () => getBranches(), { initialData: [] })
 
 	const validate = () => {
-		let isSubmittable = true
-		;["name", "email", "password"].forEach(field => {
-			if (!values[field]) {
-				setError(field as keyof CreateEmployeeInput, "Bắt buộc")
-				isSubmittable = false
-			}
-		})
-
 		if (values.password !== values.password_confirmation) {
-			setError("password_confirmation", "Mật khẩu không khớp")
-			isSubmittable = false
+			toast({
+				title: "Mật khẩu không khớp",
+				status: "error"
+			})
+			return false
 		}
 
 		if (values.roles.length === 0) {
-			setError("roles", "Cần chọn ít nhất 1 quyền")
+			toast({
+				title: "Vui lòng chọn ít nhất 1 quyền",
+				status: "error"
+			})
+			return false
 		}
 
 		if (values.branch_id === 0) {
-			setError("branch_id", "Bắt buộc")
-			isSubmittable = false
+			toast({
+				title: "Vui lòng chọn chi nhánh",
+				status: "error"
+			})
+			return false
 		}
 
 		if (values.birthday !== null && Object.values(values.birthday).some(v => v === null)) {
-			setError("birthday", "Ngày sinh không hợp lệ")
-			isSubmittable = false
+			toast({
+				title: "Ngày sinh không hợp lệ",
+				status: "error"
+			})
+			return false
 		}
-
-		return isSubmittable
+		return true
 	}
 
-	const { mutate, isLoading } = useMutation(() => createEmployee(values), {
+	const mutationFn = id ? () => updateEmployee(id, values) : () => createEmployee(values)
+	const { mutate, isLoading } = useMutation(mutationFn, {
 		onSuccess: () => {
-			toast({ title: "Tạo nhân viên thành công", status: "success" })
+			toast({ title: id ? "Chỉnh sửa nhân viên thành công" : "Tạo nhân viên thành công", status: "success" })
 			router.push("/admin/manage/employee")
 		},
 		onError: (err: any) => {
 			console.log(err)
 			const errors = err.response.data.errors
 			if (errors) {
-				Object.entries(errors).forEach(([key, value]) => {
-					setError(key as keyof CreateEmployeeInput, (value as any)[0])
-				})
+				toast({ title: "Lỗi", status: "error", message: errors.join("\n") })
 			}
-			toast({ title: "Tạo nhân viên thất bại", status: "error" })
-		},
+		}
 	})
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -82,11 +111,14 @@ const useCreateEmployee = () => {
 	return {
 		values,
 		setValue,
-		errors,
-		setError,
 		branches,
 		handleSubmit,
 		isLoading,
+		readOnly,
+		setReadOnly,
+		confirmDelete,
+		setConfirmDelete,
+		employee
 	}
 }
 

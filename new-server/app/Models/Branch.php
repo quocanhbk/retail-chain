@@ -15,7 +15,8 @@ class Branch extends Model
         'name',
         'address',
         'store_id',
-        'image'
+        'image',
+        'image_key',
     ];
 
     protected $hidden = [
