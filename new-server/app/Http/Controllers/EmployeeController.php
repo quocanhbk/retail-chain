@@ -6,6 +6,7 @@ use App\Models\Branch;
 use App\Models\Employee;
 use App\Models\Employment;
 use App\Models\EmploymentRoles;
+use App\Traits\EmployeeTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -16,22 +17,7 @@ use Illuminate\Validation\Rule;
 
 class EmployeeController extends Controller
 {
-    private function getEmployeeDetail ($id) {
-        $employee = Employee::find($id);
-        $employment = Employment::where('employee_id', $id)->first();
-        // get employment roles, convert to array of strings
-        $roles = EmploymentRoles::where('employment_id', $employment->id)->get()->pluck('role')->toArray();
-        // get branch
-        $branch = Branch::find($employment->branch_id);
-        // assign roles to employment
-        $employment->roles = $roles;
-        // assign branch to employment
-        $employment->branch = $branch;
-        // assign employment to employee
-        $employee->employment = $employment;
-
-        return $employee;
-    }
+    use EmployeeTrait;
 
     // Create a new employee
     public function create(Request $request) {
@@ -58,47 +44,168 @@ class EmployeeController extends Controller
         }
 
         $avatar_exist = $request->hasFile('avatar');
-        $avatar_image_path = $avatar_exist ?
-            $request->file('avatar')->storeAs('employees', $store_id . Str::uuid() . "." . $request->file('avatar')->getClientOriginalExtension()) : null;
 
-
-        $employee = Employee::create([
-            'store_id' => $store_id,
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'phone' => $request->input('phone'),
-            'birthday' => $request->input('birthday'),
-            'avatar_url' => $avatar_image_path,
-            'gender' => $request->input('gender')
-        ]);
-
-        $employment = Employment::create([
-            'employee_id' => $employee->id,
-            'branch_id' => $data['branch_id'],
-            'from' => date("Y/m/d")
-        ]);
-
-        // create employment roles
-        foreach ($data['roles'] as $role) {
-            EmploymentRoles::create([
-                'employment_id' => $employment->id,
-                'role' => $role
-            ]);
-        }
+        $employee = $this->createEmployee($store_id, $data, $avatar_exist ? $request->file('avatar') : null);
 
         return response()->json($employee);
     }
 
-    // Get avatar
-    public function getAvatar($employee_id) {
+    // Create many employees
+    public function createMany(Request $request) {
+        $store_id = Auth::guard('stores')->user()->id;
+        $data = $request->all();
+        $rules = [
+            'employees' => ['required', 'array'],
+            'employees.*.branch_id' => ['required', 'integer', Rule::exists('branches', 'id')->where('store_id', $store_id)],
+            'employees.*.name' => ['required', 'string', 'max:255'],
+            'employees.*.email' => ['required', 'string', 'email', 'max:255', Rule::unique('employees')->where('store_id', $store_id)],
+            'employees.*.password' => ['required', 'string', 'min:6', 'confirmed'],
+            'employees.*.roles' => ['required', 'array'],
+            'employees.*.phone' => ['nullable', 'string', 'max:255'],
+            'employees.*.birthday' => ['nullable', 'date'],
+            'employees.*.gender' => ['nullable', 'string']
+        ];
+
+        $validator = Validator::make($data, $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed.',
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        foreach ($data['employees'] as $employee_data) {
+            $this->createEmployee($store_id, $employee_data);
+        }
+
+        return response()->json([
+            'message' => 'Employees created successfully.'
+        ]);
+
+    }
+
+    // Update employee's avatar
+    public function updateAvatar(Request $request, $employee_id) {
+        $store_id = Auth::guard('stores')->user()->id;
+        $data = $request->all();
+        $data['employee_id'] = $employee_id;
+        $rules = [
+            'employee_id' => ['required', 'integer', Rule::exists('employees', 'id')->where('store_id', $store_id)],
+            'avatar' => ['required', 'image', 'mimes:jpeg,png,jpg', 'max:2048']
+        ];
+
+        $validator = Validator::make($data, $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed.',
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
         $employee = Employee::find($employee_id);
+        $avatar_image_path = $request->file('avatar')->storeAs('employees', $store_id . Str::uuid() . "." . $request->file('avatar')->getClientOriginalExtension());
+
+        $employee->avatar = $avatar_image_path;
+        $employee->avatar_key = Str::uuid();
+        $employee->save();
+
+        return response()->json([
+            'message' => 'Avatar updated successfully.'
+        ]);
+    }
+
+    // Update an employee
+    public function update(Request $request, $id) {
+        $store_id = Auth::guard('stores')->user()->id;
+        $data = $request->all();
+        $data['id'] = $id;
+        error_log(json_encode($data));
+        $rules = [
+            'id' => ['required', 'integer', Rule::exists('employees', 'id')->where('store_id', $store_id)],
+            'branch_id' => ['nullable', 'integer', Rule::exists('branches', 'id')->where('store_id', $store_id)],
+            'name' => ['nullable', 'string', 'max:255'],
+            'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique('employees')->where('store_id', $store_id)->ignore($id)],
+            'roles' => ['nullable', 'array'],
+            'phone' => ['nullable', 'string', 'max:255'],
+            'birthday' => ['nullable', 'date'],
+            'gender' => ['nullable', 'string']
+        ];
+        $validator = Validator::make($data, $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed.',
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $employee = Employee::find($id);
+        $employee->name = $data['name'] ?? $employee->name;
+        $employee->email = $data['email'] ?? $employee->email;
+        $employee->phone = $data['phone'] ?? $employee->phone;
+        $employee->birthday = $data['birthday'] ?? $employee->birthday;
+        $employee->gender = $data['gender'] ?? $employee->gender;
+
+        $has_avatar = $request->hasFile('avatar');
+        // if there is avatar, update and delete old avatar
+        if ($has_avatar) {
+            $old_avatar = $employee->avatar;
+            if ($old_avatar != null) {
+                Storage::delete($old_avatar);
+            }
+            $employee->avatar_key = Str::uuid();
+        }
+        $avatar_image_path = $has_avatar ?
+            $request->file('avatar')->storeAs('employees', $store_id . Str::uuid() . "." . $request->file('avatar')->getClientOriginalExtension()) : $employee->avatar;
+        $employee->avatar = $avatar_image_path;
+
+        // update employment roles
+        if (isset($data['roles'])) {
+            $employment = Employment::where('employee_id', $id)->first();
+            EmploymentRoles::where('employment_id', $employment->id)->delete();
+            foreach ($data['roles'] as $role) {
+                EmploymentRoles::create([
+                    'employment_id' => $employment->id,
+                    'role' => $role
+                ]);
+            }
+        }
+
+        // if branch_id is provided, changed employee working branch
+        if (isset($data['branch_id']) && $data['branch_id'] != $employee->employment->branch_id) {
+            // terminate old employment, start new employment
+            $old_employment = $employee->employment;
+            $old_employment->to = date("Y/m/d");
+            $old_employment->save();
+            Employment::create([
+                'employee_id' => $employee->id,
+                'branch_id' => $data['branch_id'],
+                'from' => date("Y/m/d")
+            ]);
+        }
+
+        $employee->save();
+
+        return response()->json($employee);
+
+    }
+
+    // Get avatar
+    public function getAvatar($avatar_key) {
+        $employee = Employee::where('avatar_key', $avatar_key)->first();
+
+        if (!$employee) {
+            return response()->json([
+                'message' => 'Avatar not found.'
+            ], 404);
+        }
+
         $avatar = $employee->avatar;
         if (!Storage::exists($avatar)) {
             return response()->json([
                 'message' => 'File not found.',
             ], 404);
         }
+
         return response()->file(storage_path('app' . DIRECTORY_SEPARATOR . $avatar));
     }
 
@@ -122,7 +229,7 @@ class EmployeeController extends Controller
             ], 404);
         }
 
-        $employee = $this->getEmployeeDetail($id);
+        $employee = Employee::with('employment.roles')->where('store_id', $store_id)->where('id', $id)->first();
 
         return response()->json($employee);
     }
@@ -130,7 +237,7 @@ class EmployeeController extends Controller
     public function getEmployeesByBranchId(Request $request, $branch_id) {
         $store_id = Auth::guard('stores')->user()->id;
 
-        $employees = Employee::with('employment')->where('store_id', $store_id)->whereRelation('employment', 'branch_id', $branch_id)->get();
+        $employees = Employee::with('employment.roles')->where('store_id', $store_id)->whereRelation('employment', 'branch_id', $branch_id)->get();
         return response()->json($employees);
     }
 
@@ -164,7 +271,7 @@ class EmployeeController extends Controller
         }
 
         $id = Auth::guard('employees')->user()->id;
-        $employee = $this->getEmployeeDetail($id);
+        $employee = Employee::with('employment.roles')->where('id', $id)->first();
 
         return response()->json($employee);
     }
@@ -179,7 +286,8 @@ class EmployeeController extends Controller
 
     // Get the current employee
     public function me(Request $request) {
-        $employee = $this->getEmployeeDetail(Auth::guard('employees')->user()->id);
+        $id = Auth::guard('employees')->user()->id;
+        $employee = Employee::with('employment.roles')->where('id', $id)->first();
         return response()->json($employee);
     }
 
@@ -200,49 +308,39 @@ class EmployeeController extends Controller
             ], 400);
         }
 
-        // employee must currently not working in the destination branch
-        $employment = Employment::where('employee_id', $data['employee_id'])
-            ->where('branch_id', $data['branch_id'])
-            ->where('to', null)
-            ->first();
+        $this->transferEmployee($data['employee_id'], $data['branch_id'], $data['roles']);
 
-        if ($employment) {
-            return response()->json([
-                'message' => 'Employee is already working in this branch.',
-            ], 400);
-        }
+        return response()->json([
+            'message' => 'Employee transferred.',
+        ]);
+    }
 
-        $validator = Validator::make($data, $rules);
-        if ($validator->failed()) {
+    // Transfer many employees to other branch
+    public function transferMany(Request $request) {
+        $store_id = Auth::guard('stores')->user()->id;
+        $data = $request->all();
+        $rule = [
+            'branch_id' => ['required', Rule::exists('branches', 'id')->where('store_id', $store_id)],
+            'employees' => ['required', 'array'],
+            'employees.*.id' => ['required', Rule::exists('employees')->where('store_id', $store_id), Rule::unique('employments', 'employee_id')->where('branch_id', $data['branch_id'])->where('to', null)],
+            'employees.*.roles' => ['required', 'array', 'min:1']
+        ];
+
+        $validator = Validator::make($data, $rule);
+        if ($validator->fails()) {
             return response()->json([
                 'message' => 'Validation failed.',
                 'errors' => $validator->errors(),
             ], 400);
         }
 
-        $old_employment = Employment::where('employee_id', $data['employee_id'])->where('to', null)->first();
-        $old_employment->to = date("Y/m/d");
-        $old_employment->save();
-
-        $new_employment = Employment::create([
-            'employee_id' => $data['employee_id'],
-            'branch_id' => $data['branch_id'],
-            'from' => date("Y/m/d")
-        ]);
-
-        // create employment roles
-        foreach ($data['roles'] as $role) {
-            EmploymentRoles::create([
-                'employment_id' => $new_employment->id,
-                'role' => $role
-            ]);
+        foreach ($data['employees'] as $employee) {
+            $this->transferEmployee($employee['id'], $data['branch_id'], $employee['roles']);
         }
 
-        $employee = Employee::with(['employment' => function ($query) {
-            $query->with(['roles:id,role,employment_id'])->get();
-        }])->where('store_id', $store_id)->where('id', $data['employee_id'])->first();
-
-        return response()->json($employee);
+        return response()->json([
+            'message' => 'Employees transferred.',
+        ]);
     }
 
     public function delete(Request $request, $id) {

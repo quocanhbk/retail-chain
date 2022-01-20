@@ -19,6 +19,7 @@ class Employee extends User
         'password',
         'store_id',
         'avatar',
+        'avatar_key',
         'phone',
         'birthday',
         'gender'

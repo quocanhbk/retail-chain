@@ -1,4 +1,5 @@
 import { Box, Flex, Grid, Text } from "@chakra-ui/react"
+import { useTheme } from "@hooks"
 import Image from "next/image"
 import { ReactNode } from "react"
 import retailImage from "./retail.jpg"
@@ -8,6 +9,7 @@ interface AuthLayoutProps {
 }
 
 export const AuthLayout = ({ children }: AuthLayoutProps) => {
+	const { backgroundSecondary } = useTheme()
 	return (
 		<Box h="100vh" pos="relative">
 			<Image src={retailImage} layout="fill" />
@@ -29,7 +31,14 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
 						BKRM RETAIL MANAGEMENT SYSTEM
 					</Text>
 				</Grid>
-				<Flex direction="column" justify="center" w="24rem" p={8} h="full" backgroundColor={"white"}>
+				<Flex
+					direction="column"
+					justify="center"
+					w="24rem"
+					p={8}
+					h="full"
+					backgroundColor={backgroundSecondary}
+				>
 					{children}
 				</Flex>
 			</Flex>

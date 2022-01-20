@@ -1,8 +1,6 @@
 import { Branch, Employee } from "@api"
-import { Box, Button, Flex, HStack, Text, VStack } from "@chakra-ui/react"
-import { useState } from "react"
-import { BsPerson } from "react-icons/bs"
-import Link from "next/link"
+import { Box, Flex, Text, VStack } from "@chakra-ui/react"
+import { useTheme } from "@hooks"
 import EmployeeCard from "./EmployeeCard"
 
 interface BranchAccordionProps {
@@ -11,12 +9,11 @@ interface BranchAccordionProps {
 }
 
 const BranchAccordion = ({ data: branch, employees }: BranchAccordionProps) => {
-	const [isOpen, setIsOpen] = useState(false)
-
+	const { textSecondary } = useTheme()
 	const renderEmployees = () => {
 		if (employees.length === 0)
 			return (
-				<Text color="blackAlpha.600" fontSize={"sm"}>
+				<Text color={textSecondary} fontSize={"sm"}>
 					{"Không có nhân viên tại chi nhánh này"}
 				</Text>
 			)
@@ -29,14 +26,12 @@ const BranchAccordion = ({ data: branch, employees }: BranchAccordionProps) => {
 				align="center"
 				justify="space-between"
 				py={1}
-				color={isOpen ? "telegram.600" : "black"}
 				transition={"color 0.25s ease-in-out"}
 				cursor={"pointer"}
-				onClick={() => setIsOpen(!isOpen)}
 			>
 				<Text>{branch.name}</Text>
 			</Flex>
-			<VStack align="stretch" py={2} borderTop={"1px"} borderColor={"blackAlpha.200"}>
+			<VStack align="stretch" py={2} borderTop={"1px"} borderColor={"blackAlpha.200"} spacing={0}>
 				{renderEmployees()}
 			</VStack>
 		</Box>

@@ -1,6 +1,7 @@
 import { Flex, Heading, HStack } from "@chakra-ui/react"
 import { Motion } from "@components/shared"
 import { adminNavMenus } from "@constants"
+import { useTheme } from "@hooks"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import NavMenus from "./NavMenus"
@@ -14,8 +15,10 @@ export const Header = () => {
 		if (router.isReady) setSelectedMenu(router.pathname.split("/")[2] || "")
 	}, [router.isReady, router.pathname])
 
+	const { backgroundSecondary } = useTheme()
+
 	return (
-		<Flex direction="column" shadow="xs" background="white">
+		<Flex direction="column" shadow="xs" bg={backgroundSecondary}>
 			<Flex align="center" w="full" justify="space-between" px={4} py={2} shadow="xs">
 				<Heading
 					fontSize="2xl"

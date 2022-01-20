@@ -7,6 +7,7 @@ import { useStoreActions } from "@store"
 import { getStoreInfo } from "@api"
 import { AnimatePresence } from "framer-motion"
 import { LoadingScreen, Motion } from "@components/shared"
+import { useTheme } from "@hooks"
 interface AdminLayoutProps {
 	children: React.ReactNode
 }
@@ -15,26 +16,26 @@ const variants = {
 	initial: {
 		opacity: 0,
 		x: "-100%",
-		y: 0,
+		y: 0
 	},
 	animate: {
 		opacity: 1,
 		x: 0,
-		y: 0,
+		y: 0
 	},
 	exit: {
 		opacity: 0,
 		x: 0,
-		y: "100%",
-	},
+		y: "100%"
+	}
 }
 
 export const AdminLayout = ({ children }: AdminLayoutProps) => {
 	const router = useRouter()
 	const [loading, setLoading] = useState(true)
-
+	const { backgroundPrimary } = useTheme()
 	const setInfo = useStoreActions(action => action.setInfo)
-	console.log(router.pathname)
+
 	useQuery("store-info", () => getStoreInfo(), {
 		enabled: loading,
 		onSuccess: data => {
@@ -45,7 +46,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
 			router.push("/login")
 			setLoading(false)
 		},
-		retry: false,
+		retry: false
 	})
 
 	return (
@@ -59,7 +60,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
 						w="full"
 						justify={"center"}
 						overflow={"auto"}
-						backgroundColor={"gray.50"}
+						backgroundColor={backgroundPrimary}
 						key={router.pathname}
 						variants={variants}
 						initial="initial"

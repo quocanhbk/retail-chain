@@ -1,4 +1,5 @@
 import { Stack, Text } from "@chakra-ui/react"
+import { useTheme } from "@hooks"
 import Link from "next/link"
 import { useRouter } from "next/router"
 
@@ -9,12 +10,13 @@ interface NavMenusProps {
 const NavMenus = ({ menus }: NavMenusProps) => {
 	const router = useRouter()
 	const currentPath = router.pathname.split("/")[2] || ""
+	const { textSecondary, fillPrimary } = useTheme()
 	return (
 		<Stack direction="row" spacing={8}>
 			{menus.map(menu => (
 				<Link href={menu.path} key={menu.id}>
 					<Text
-						color={menu.id === currentPath ? "telegram.600" : "blackAlpha.700"}
+						color={menu.id === currentPath ? fillPrimary : textSecondary}
 						fontWeight={500}
 						cursor={"pointer"}
 					>

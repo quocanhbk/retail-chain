@@ -1,4 +1,5 @@
 import { Flex, Input } from "@chakra-ui/react"
+import { useTheme } from "@hooks"
 
 export interface DateInput {
 	day: number | null
@@ -9,13 +10,14 @@ export interface DateInput {
 interface DateInputProps {
 	value: DateInput | null
 	onChange: (value: DateInput | null) => void
+	readOnly?: boolean
 }
 
-export const DateInput = ({ value, onChange }: DateInputProps) => {
+export const DateInput = ({ value, onChange, readOnly = false }: DateInputProps) => {
 	const getEmptyDateInput = (): DateInput => ({
 		day: null,
 		month: null,
-		year: null,
+		year: null
 	})
 
 	const isEmptyDateInput = (dateInput: DateInput): boolean => {
@@ -35,21 +37,22 @@ export const DateInput = ({ value, onChange }: DateInputProps) => {
 		}
 	}
 
+	const { borderPrimary } = useTheme()
+
 	return (
-		<Flex h="2.5rem" border="1px" borderColor={"gray.200"} bg="white" rounded="md">
+		<Flex h="2.5rem" border="1px" borderColor={borderPrimary} rounded="md" overflow={"hidden"}>
 			<Input
 				variant="unstyled"
 				rounded="none"
 				textAlign={"right"}
 				px={4}
-				_notLast={{
-					borderRight: "1px",
-					borderColor: "gray.200",
-				}}
 				placeholder="Ngày"
 				type={"number"}
 				value={value?.day || ""}
 				onChange={handleChange("day")}
+				borderRight={"1px"}
+				borderColor={borderPrimary}
+				readOnly={readOnly}
 			/>
 
 			<Input
@@ -57,14 +60,13 @@ export const DateInput = ({ value, onChange }: DateInputProps) => {
 				rounded="none"
 				textAlign={"right"}
 				px={4}
-				_notLast={{
-					borderRight: "1px",
-					borderColor: "gray.200",
-				}}
 				placeholder="Tháng"
 				type={"number"}
 				value={value?.month || ""}
 				onChange={handleChange("month")}
+				borderRight={"1px"}
+				borderColor={borderPrimary}
+				readOnly={readOnly}
 			/>
 
 			<Input
@@ -72,14 +74,12 @@ export const DateInput = ({ value, onChange }: DateInputProps) => {
 				rounded="none"
 				textAlign={"right"}
 				px={4}
-				_notLast={{
-					borderRight: "1px",
-					borderColor: "gray.200",
-				}}
 				placeholder="Năm"
 				type={"number"}
 				value={value?.year || ""}
 				onChange={handleChange("year")}
+				borderColor={borderPrimary}
+				readOnly={readOnly}
 			/>
 		</Flex>
 	)

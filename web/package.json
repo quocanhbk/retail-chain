@@ -6,10 +6,13 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
-		"lint": "next lint"
+		"lint": "next lint",
+		"gen:theme-typings": "chakra-cli tokens src/theme.ts",
+		"postinstall": "yarn run gen:theme-typings"
 	},
 	"dependencies": {
 		"@chakra-ui/react": "^1.6.9",
+		"@chakra-ui/styled-system": "^1.16.0",
 		"@emotion/react": "^11",
 		"@emotion/styled": "^11",
 		"axios": "0.21.4",
@@ -23,6 +26,7 @@
 		"react-query": "3.23.2"
 	},
 	"devDependencies": {
+		"@chakra-ui/cli": "^1.7.0",
 		"@types/react": "17.0.27",
 		"@typescript-eslint/eslint-plugin": "^5.9.0",
 		"@typescript-eslint/parser": "^5.9.0",

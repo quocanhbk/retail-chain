@@ -1,7 +1,7 @@
 import type { AppProps } from "next/app"
 import { Box } from "@chakra-ui/react"
 import Head from "next/head"
-import Provider from "@components/shared/Provider"
+import Provider, { getServerSideProps } from "@components/shared/Provider"
 import { NextPage } from "next"
 import { ReactElement, ReactNode } from "react"
 import "../styles.css"
@@ -16,16 +16,18 @@ type AppPropsWithLayout = AppProps & {
 
 const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 	const getLayout = Component.getLayout || (page => page)
-
 	return (
-		<Provider>
+		<Provider cookies={pageProps.cookies}>
 			<Head>
 				<title>BKRM Retail System</title>
 			</Head>
-			<Box h="100vh" overflow="hidden" bg="gray.50">
+			<Box h="100vh" overflow="hidden">
 				{getLayout(<Component {...pageProps} />)}
 			</Box>
 		</Provider>
 	)
 }
+
+export { getServerSideProps }
+
 export default MyApp

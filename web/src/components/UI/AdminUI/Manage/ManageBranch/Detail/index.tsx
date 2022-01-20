@@ -1,146 +1,70 @@
-import { createBranch, CreateBranchInput, editBranch, getBranch } from "@api"
-import { Box, Button, chakra, Flex, HStack } from "@chakra-ui/react"
-import { BackableTitle, TextControl } from "@components/shared"
-import { useChakraToast, useFormCore } from "@hooks"
-import router from "next/router"
-import { FormEvent, useEffect, useRef, useState } from "react"
-import { useMutation, useQuery, useQueryClient } from "react-query"
-import { baseURL } from "src/api/fetcher"
-import DeleteBranchPopup from "./DeleteBranchPopup"
-import ImageInput from "../ImageInput"
+import { Box, Button, chakra, Flex, Stack, Text } from "@chakra-ui/react"
+import { BackableTitle, FormControl, ModeInput } from "@components/shared"
+import ImageInput from "./ImageInput"
+import useBranchDetail from "./useBranchDetail"
+import CreateEmployeeModal from "./CreateEmployeeModal"
+import AddEmployeeButton from "./AddEmployeeButton"
+import EmployeesTable from "./EmployeesTable"
+import TransferEmployeeModal from "./TransferEmployeeModal"
+import { getBranchImage } from "@api"
 
 interface BranchDetailUIProps {
 	id: number
 }
 
 const BranchDetailUI = ({ id }: BranchDetailUIProps) => {
-	const { refetch, data } = useQuery(["branch", id], () => getBranch(id), {
-		enabled: false,
-		onSuccess: data => {
-			initForm({ ...data, image: `${baseURL}/branch/image/${data.image}` })
-		},
-	})
+	const { branch, isLoading, employees, setIsAddingEmployee, values, setValue, handleUpdateBranch, handleUpdateImage, isAddingEmployee } =
+		useBranchDetail(id)
 
-	const { values, setValue, errors, setError, initForm } = useFormCore<CreateBranchInput>({
-		name: "",
-		address: "",
-		image: null,
-	})
-	const toast = useChakraToast()
-
-	const qc = useQueryClient()
-
-	const inputRef = useRef<HTMLInputElement>(null)
-
-	const validate = () => {
-		let isSubmittable = true
-		if (!values.name) {
-			setError("name", "Tên chi nhánh không được để trống")
-			isSubmittable = false
-		}
-		if (!values.address) {
-			setError("address", "Địa chỉ không được để trống")
-			isSubmittable = false
-		}
-		return isSubmittable
+	if (isLoading) {
+		return <Text>{"Loading..."}</Text>
 	}
 
-	const { mutate, isLoading } = useMutation(() => editBranch(id, values), {
-		onSuccess: () => {
-			toast({
-				title: "Chỉnh sửa chi nhánh thành công",
-				status: "success",
-			})
-			qc.invalidateQueries("branches")
-			router.push("/admin/manage/branch")
-		},
-		onError: (err: any) => {
-			console.log(err.response.data.message)
-
-			toast({
-				title: err.response.data.message,
-				status: "error",
-			})
-		},
-	})
-
-	const handleCreateBranch = (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault()
-		if (readOnly) {
-			setReadOnly(false)
-			return
-		}
-		if (validate()) {
-			mutate()
-		}
+	if (!branch || !employees) {
+		return <Text>{"Không tìm thấy chi nhánh"}</Text>
 	}
-
-	useEffect(() => {
-		inputRef.current?.focus()
-	}, [])
-
-	const [readOnly, setReadOnly] = useState(true)
-
-	useEffect(() => {
-		if (readOnly) {
-			refetch()
-		}
-	}, [readOnly])
-
-	const [confirmDelete, setConfirmDelete] = useState(false)
 
 	return (
 		<Box p={4}>
-			<BackableTitle
-				text={readOnly ? "Xem chi nhánh" : "Chỉnh sửa chi nhánh"}
-				backPath="/admin/manage/branch"
-				mb={4}
-			/>
-			<Box w="24rem" maxW="full">
-				<chakra.form onSubmit={handleCreateBranch}>
-					<ImageInput
-						file={values.image ?? "/images/store.jpg"}
-						onSubmit={f => setValue("image", f)}
-						readOnly={readOnly}
-					/>
-					<TextControl
-						label="Tên chi nhánh"
-						value={values.name}
-						onChange={value => setValue("name", value)}
-						error={errors.name}
-						inputRef={inputRef}
-						readOnly={readOnly}
-					/>
-					<TextControl
-						label="Địa chỉ chi nhánh"
-						value={values.address}
-						onChange={value => setValue("address", value)}
-						error={errors.address}
-						readOnly={readOnly}
-					/>
-					<Flex w="full" align="center" justify="space-between">
-						<HStack>
-							<Button isLoading={isLoading} type="submit" w="6rem">
-								{"Chỉnh sửa"}
-							</Button>
-							{!readOnly && (
-								<Button variant="ghost" onClick={() => setReadOnly(true)} w="6rem">
-									Hủy
-								</Button>
-							)}
-						</HStack>
-						<Button colorScheme={"red"} variant="ghost" onClick={() => setConfirmDelete(true)} w="6rem">
-							Xóa
-						</Button>
+			<Box w="full">
+				<BackableTitle text={"Tạo chi nhánh"} backPath="/admin/manage/branch" mb={4} />
+
+				<chakra.form>
+					<Stack direction="row" spacing={4} w="full" mb={4}>
+						<Box flex={1}>
+							<ImageInput file={getBranchImage(branch?.image_key) ?? "/images/store.jpg"} onSubmit={handleUpdateImage} />
+						</Box>
+						<Box flex={1}>
+							<Stack direction="column" spacing={2} w="full">
+								<FormControl label="Tên" isRequired={true}>
+									<ModeInput
+										value={values.name}
+										onChange={e => setValue("name", e.target.value)}
+										onSave={handleUpdateBranch}
+									/>
+								</FormControl>
+
+								<FormControl label="Địa chỉ" isRequired={true}>
+									<ModeInput
+										value={values.address}
+										onChange={e => setValue("address", e.target.value)}
+										onSave={handleUpdateBranch}
+									/>
+								</FormControl>
+							</Stack>
+						</Box>
+					</Stack>
+					<Flex align="center" mb={2} w="full" justify="space-between">
+						<Text fontSize={"xl"} fontWeight={500}>
+							{"Danh sách nhân viên"}
+						</Text>
+						<AddEmployeeButton setIsCreatingEmployee={setIsAddingEmployee} />
 					</Flex>
+					<EmployeesTable employees={employees} />
 				</chakra.form>
 			</Box>
-			<DeleteBranchPopup
-				branchId={id}
-				branchName={data?.name}
-				isOpen={confirmDelete}
-				onClose={() => setConfirmDelete(false)}
-			/>
+			<CreateEmployeeModal isOpen={isAddingEmployee === "create"} onClose={() => setIsAddingEmployee(null)} branch_id={id} />
+			<TransferEmployeeModal isOpen={isAddingEmployee === "transfer"} onClose={() => setIsAddingEmployee(null)} branch_id={id} />
 		</Box>
 	)
 }
