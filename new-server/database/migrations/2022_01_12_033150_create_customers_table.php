@@ -16,6 +16,13 @@ class CreateCustomersTable extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->softDeletes();
+            $table->string('name');
+            $table->string('phone');
+            $table->string('code');
+            $table->string('email')->nullable();
+            $table->integer('point')->default(0);
+            $table->foreign('store_id')->references('id')->on('stores')->onDelete('cascade');
         });
     }
 

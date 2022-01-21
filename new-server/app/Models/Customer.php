@@ -12,19 +12,15 @@ class Customer extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'store_id',
         'name',
-        'address',
         'phone',
         'email',
-        'gender',
-        'store_id',
-        'birthday'
-
+        'point',
+        'code'
     ];
 
     protected $hidden = [
-        'point',
-        'code',
         'created_at',
         'updated_at',
         'deleted_at'

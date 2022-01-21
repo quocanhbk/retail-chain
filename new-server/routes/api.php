@@ -6,6 +6,7 @@ use App\Http\Middleware\Role\AdminOrPurchaser;
 use App\Http\Middleware\Role\AdminOrSaleOrPurchaser;
 use App\Http\Middleware\Role\HaveManageRole;
 use App\Http\Middleware\Role\HavePurchaseRole;
+use App\Http\Middleware\Role\HaveSaleRole;
 use App\Http\Middleware\Role\NotEmployee;
 use App\Http\Middleware\Role\NotStoreAdmin;
 use App\Http\Middleware\Role\OnlyEmployee;
@@ -167,4 +168,21 @@ Route::prefix('/purchase-sheet')->middleware([OnlyEmployee::class, HavePurchaseR
     Route::patch('/{purchase_sheet_id}/note', [PurchaseSheetController::class, 'updateNote']);
     // DELETE /purchase-sheet/{purchase_sheet_id} - delete a purchase sheet by id
     Route::delete('/{purchase_sheet_id}', [PurchaseSheetController::class, 'delete']);
+});
+
+Route::prefix('/customer')->middleware([OnlyEmployee::class, HaveSaleRole::class])->group(function () {
+    // POST /customer - create a new customer
+    Route::post('/', [CustomerController::class, 'create']);
+    // GET /customer - get all customers
+    Route::get('/', [CustomerController::class, 'getCustomers']);
+    // GET /customer/{customer_id} - get a customer by id
+    Route::get('/{customer_id}', [CustomerController::class, 'getCustomer']);
+    // GET /customer/code/{code} - get a customer by code
+    Route::get('/code/{code}', [CustomerController::class, 'getCustomerByCode']);
+    // PATCH /customer/{customer_id} - update a customer by id
+    Route::patch('/{customer_id}', [CustomerController::class, 'update']);
+    // POST /customer/add-point/{customer_id} - add point to a customer by id
+    Route::post('/add-point/{customer_id}', [CustomerController::class, 'addPoint']);
+    // POST /customer/use-point/{customer_id} - use point from a customer by id
+    Route::post('/use-point/{customer_id}', [CustomerController::class, 'usePoint']);
 });
