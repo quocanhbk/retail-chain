@@ -85,8 +85,8 @@ class CustomerController extends Controller
         $rules = [
             'id' => ['required', 'integer', Rule::exists('customer', 'id')->where('store_id', $store_id)],
             'name' => ['nullable', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:255'],
-            'email' => ['nullable', 'string', 'email', 'max:255']
+            'phone' => ['nullable', 'string', 'max:255', Rule::unique('customers')->where('store_id', $store_id)->ignore($id)],
+            'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique('customers')->where('store_id', $store_id)->ignore($id)],
         ];
 
         $validator = Validator::make($data, $rules);
