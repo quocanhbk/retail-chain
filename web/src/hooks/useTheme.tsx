@@ -7,6 +7,7 @@ const useThemeHook = () => {
 	const backgroundPrimary = useColorModeValue("gray.50", "gray.800")
 	const backgroundSecondary = useColorModeValue("white", "gray.900")
 	const backgroundThird = useColorModeValue("gray.100", "gray.700")
+	const backgroundFade = useColorModeValue("blackAlpha.200", "whiteAlpha.200")
 	const fillPrimary = useColorModeValue("telegram.600", "telegram.400")
 	const fillDanger = useColorModeValue("red.600", "red.400")
 	const fillSuccess = useColorModeValue("green.600", "green.400")
@@ -23,7 +24,8 @@ const useThemeHook = () => {
 		fillSuccess,
 		fillWarning,
 		borderPrimary,
-		backgroundThird
+		backgroundThird,
+		backgroundFade
 	}
 }
 
