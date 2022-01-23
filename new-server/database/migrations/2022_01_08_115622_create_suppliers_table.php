@@ -22,6 +22,8 @@ class CreateSuppliersTable extends Migration
             $table->string('address');
             $table->string('phone')->nullable();
             $table->string('email');
+            $table->string('tax')->nullable();
+            $table->string('note')->nullable();
             $table->foreign('store_id')->references('id')->on('stores');
         });
     }

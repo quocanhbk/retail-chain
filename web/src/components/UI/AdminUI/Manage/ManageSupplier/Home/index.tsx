@@ -6,7 +6,6 @@ import Link from "next/link"
 import { getSuppliers } from "@api"
 import SupplierCardSkeleton from "./SupplierCardSkeleton"
 import SupplierCard from "./SupplierCard"
-// import BranchAccordion from "./BranchAccordion"
 
 const HomeSupplierUI = () => {
 	const {data: suppliers, isLoading } =  useQuery("supplier", () => getSuppliers())
@@ -33,21 +32,17 @@ const HomeSupplierUI = () => {
 			)
 		return (
 			<Accordion allowMultiple>
-				{suppliers.map((supplier, index) => (
-					<SupplierCard
-						key={index}
-						data={supplier}
-					/>
+				{suppliers
+					.filter(supplier => (
+						`${supplier.name.toLowerCase()} , ${supplier.phone} , ${supplier.email}`.indexOf(searchText) !== -1
+					))
+					.map((supplier, index) => (
+						<SupplierCard
+							key={index}
+							data={supplier}
+						/>
 				))}
 			</Accordion>
-			// 	<VStack align="stretch">
-					// {suppliers.map((supplier,index) => (
-					// 	<SupplierCard
-					// 		key={index}
-					// 		data = {supplier}
-					// 	/>
-					// ))}
-			// </VStack>
 		)
 	}
 
@@ -71,22 +66,6 @@ const HomeSupplierUI = () => {
 				mb={2}
 				onClear={() => setSearchText("")}
 			/>
-			{/* <VStack align="stretch">
-				<Box>
-					1
-				</Box> */}
-				{/* {branches.map(branch => (
-					<BranchAccordion
-						key={branch.id}
-						data={branch}
-						employees={employees.filter(
-							employee =>
-								employee.employment.branch_id === branch.id &&
-								getEmployeeSeachValue(employee).includes(searchText.toLowerCase())
-						)}
-					/>
-				))} */}
-			{/* </VStack> */}
 			{render()}
 		</Box>
 	)

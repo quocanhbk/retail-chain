@@ -13,12 +13,13 @@ class SupplierController extends Controller
     public function create(Request $request) {
         $store_id = Auth::guard('stores')->user()->id;
         $data = $request->all();
-        error_log($data["name"]);
         $rules = [
             'name' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('suppliers')->where('store_id', $store_id)],
+            'tax' => ['nullable','string','max:255'],
+            'note' => ['nullable','string','max:255']
         ];
 
         $validator = Validator::make($data, $rules);
@@ -36,6 +37,8 @@ class SupplierController extends Controller
             'address' => $data['address'],
             'phone' => $data['phone'] ?? null,
             'email' => $data['email'],
+            'tax' => $data['tax'] ?? null,
+            'note' => $data['note'] ?? null,
         ]);
 
         return response()->json($supplier);
@@ -68,7 +71,9 @@ class SupplierController extends Controller
             'name' => ['nullable', 'string', 'max:255'],
             'address' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:255'],
-            'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique('suppliers')->where('store_id', $store_id)->ignore($supplier_id)]
+            'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique('suppliers')->where('store_id', $store_id)->ignore($supplier_id)],
+            'tax' => ['nullable', 'string', 'max:255'],
+            'note' => ['nullable', 'string', 'max:255']
         ];
 
         $validator = Validator::make($data, $rules);
@@ -78,14 +83,14 @@ class SupplierController extends Controller
                 'errors' => $validator->errors(),
             ], 400);
         }
-        error_log($data['name']);
         $supplier = Supplier::where('store_id', $store_id)->where('id', $supplier_id)->first();
         $supplier->name = $data['name'] ?? $supplier->name;
         $supplier->address = $data['address'] ?? $supplier->address;
         $supplier->phone = $data['phone'] ?? $supplier->phone;
         $supplier->email = $data['email'] ?? $supplier->email;
+        $supplier->tax = $data['tax'] ?? $supplier->tax;
+        $supplier->note = $data['note'] ?? $supplier->note;
         $supplier->save();
-        error_log($supplier);
         return response()->json($supplier);
     }
 

@@ -1,5 +1,5 @@
 import { editSupplier, getSupplier ,CreateSupplierInput} from "@api"
-import { Box, Button, chakra, Flex, HStack } from "@chakra-ui/react"
+import { Box, Button, chakra, Flex, HStack, Stack } from "@chakra-ui/react"
 import { BackableTitle, TextControl } from "@components/shared"
 import { useChakraToast, useFormCore } from "@hooks"
 import router from "next/router"
@@ -28,6 +28,8 @@ const DetailSupplierUI = ({id} : SupplierDetailUiProps) => {
 		address: "",
 		email: "",
 		phone: "",
+		tax: "",
+		note: ""
 	})
     const [readOnly, setReadOnly] = useState(true)
 	const toast = useChakraToast()
@@ -96,50 +98,67 @@ const DetailSupplierUI = ({id} : SupplierDetailUiProps) => {
 	return (
 		<Box p={4}>
 			{/* <BackableTitle text="Tạo nhà cung cấp" backPath="/admin/manage/supplier" mb={4} /> */}
-            <BackableTitle
-				text={readOnly ? "Xem nhà cung cấp" : "Chỉnh sửa nhà cung cấp"}
-				backPath="/admin/manage/supplier"
-				mb={4}
-			/>
-			<Box w="24rem" maxW="full">
+			<BackableTitle text={readOnly ? "Xem nhà cung cấp" : "Chỉnh sửa nhà cung cấp"} backPath="/admin/manage/supplier" mb={4} />
+			<Box w="50rem" maxW="full">
 				<chakra.form onSubmit={handleCreateSupplier}>
 					{/* <ImageInput
 						file={(values.image as File) ?? "/images/store.jpg"}
 						onSubmit={f => setValue("image", f)}
 					/> */}
-					<TextControl
-						label="Tên nhà cung cấp"
-						value={values.name}
-						onChange={value => setValue("name", value)}
-						error={errors.name}
-						inputRef={inputRef}
-                        readOnly={readOnly}
-					/>
-					<TextControl
-						label="Địa chỉ nhà cung cấp"
-						value={values.address}
-						onChange={value => setValue("address", value)}
-						error={errors.address}
-                        readOnly={readOnly}
-					/>
-					<TextControl
-						label="Email nhà cung cấp"
-						value={values.email}
-						onChange={value => setValue("email", value)}
-						error={errors.email}
-                        readOnly={readOnly}
-					/>
-					<TextControl
-						label="Số điện thoại nhà cung cấp"
-						value={values.phone || ""}
-						onChange={value => setValue("phone", value)}
-						error={errors.phone}
-                        readOnly={readOnly}
-					/>
-                    <Flex w="full" align="center" justify="space-between">
+					<Stack direction={["column", "row"]} justify="space-between" spacing={8}>
+						<Box w="full" maxW="24rem">
+							<TextControl
+								label="Tên nhà cung cấp"
+								value={values.name}
+								onChange={value => setValue("name", value)}
+								error={errors.name}
+								inputRef={inputRef}
+								readOnly={readOnly}
+							/>
+							<TextControl
+								label="Địa chỉ nhà cung cấp"
+								value={values.address}
+								onChange={value => setValue("address", value)}
+								error={errors.address}
+								readOnly={readOnly}
+							/>
+							<TextControl
+								label="Email nhà cung cấp"
+								value={values.email}
+								onChange={value => setValue("email", value)}
+								error={errors.email}
+								readOnly={readOnly}
+							/>
+						</Box>
+
+						<Box w="full" maxW="24rem">
+							<TextControl
+								label="Số điện thoại nhà cung cấp"
+								value={values.phone || ""}
+								onChange={value => setValue("phone", value)}
+								error={errors.phone}
+								readOnly={readOnly}
+							/>
+							<TextControl
+								label="Mã số thuế"
+								value={values.tax}
+								onChange={value => setValue("tax", value)}
+								error={errors.tax}
+								readOnly={readOnly}
+							/>
+							<TextControl
+								label="Ghi chú"
+								value={values.note}
+								onChange={value => setValue("note", value)}
+								error={errors.note}
+								readOnly={readOnly}
+							/>
+						</Box>
+					</Stack>
+					<Flex w="24rem" align="center" justify="space-between">
 						<HStack>
 							<Button isLoading={isLoading} type="submit" w="6rem">
-								{readOnly? "Chỉnh sửa" : "Lưu thay đổi"}
+								{readOnly ? "Chỉnh sửa" : "Lưu thay đổi"}
 							</Button>
 							{!readOnly && (
 								<Button variant="ghost" onClick={() => setReadOnly(true)} w="6rem">
@@ -147,20 +166,13 @@ const DetailSupplierUI = ({id} : SupplierDetailUiProps) => {
 								</Button>
 							)}
 						</HStack>
-						<Button colorScheme={"red"} variant="ghost" 
-                            onClick={() => setConfirmDelete(true)} 
-                            w="6rem">
+						<Button colorScheme={"red"} variant="ghost" onClick={() => setConfirmDelete(true)} w="6rem">
 							Xóa
 						</Button>
 					</Flex>
 				</chakra.form>
 			</Box>
-            <DeleteSupplierPopup
-                supplierId = {id}
-                supplierName = {data?.name}
-                isOpen = {confirmDelete}
-                onClose={() => setConfirmDelete(false)}
-            />
+			<DeleteSupplierPopup supplierId={id} supplierName={data?.name} isOpen={confirmDelete} onClose={() => setConfirmDelete(false)} />
 		</Box>
 	)
 }

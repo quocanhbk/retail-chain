@@ -48,6 +48,12 @@ Route::prefix('/branch')->middleware([OnlyStoreAdmin::class])->group(function ()
 });
 
 Route::prefix('/employee')->group(function () {
+    // GET /employee/me - get current employee info
+    Route::get('/me', [EmployeeController::class, 'me'])->middleware([OnlyEmployee::class]);
+    // POST /employee/login - login as employee
+    Route::post('/login', [EmployeeController::class, 'login'])->middleware([NotStoreAdmin::class, NotEmployee::class]);
+    // POST /employee/logout - logout as employee
+    Route::post('/logout', [EmployeeController::class, 'logout'])->middleware([OnlyEmployee::class]);
     Route::middleware([OnlyStoreAdmin::class])->group(function () {
         // POST /employee - create a new employee
         Route::post('/', [EmployeeController::class, 'create']);
@@ -72,12 +78,6 @@ Route::prefix('/employee')->group(function () {
         // DELETE /employee/{employee_id} - delete an employee by id
         Route::delete('/{employee_id}', [EmployeeController::class, 'delete']);
     });
-    // GET /employee/me - get current employee info
-    Route::get('/me', [EmployeeController::class, 'me'])->middleware([OnlyEmployee::class]);
-    // POST /employee/login - login as employee
-    Route::post('/login', [EmployeeController::class, 'login'])->middleware([NotStoreAdmin::class, NotEmployee::class]);
-    // POST /employee/logout - logout as employee
-    Route::post('/logout', [EmployeeController::class, 'logout'])->middleware([OnlyEmployee::class]);
 });
 
 Route::prefix('/shift')->middleware([OnlyEmployee::class, HaveManageRole::class])->group(function () {
