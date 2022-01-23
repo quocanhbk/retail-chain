@@ -15,18 +15,12 @@ class SupplierController extends Controller
         $data = $request->all();
         $rules = [
             'name' => ['required', 'string', 'max:255'],
-<<<<<<< HEAD
-            'address' => ['required', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('suppliers')->where('store_id', $store_id)],
-            'tax' => ['nullable','string','max:255'],
-            'note' => ['nullable','string','max:255']
-=======
+            'tax' => ['nullable', 'string', 'max:255'],
+            'note' => ['nullable','string','max:255'],
             'code' => ['nullable', 'string', 'max:255', Rule::unique('suppliers')->where('store_id', $store_id)],
             'address' => ['nullable', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:255', Rule::unique('suppliers')->where('store_id', $store_id)],
             'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique('suppliers')->where('store_id', $store_id)],
->>>>>>> 6a919a73f62fe07bed7e2215e04984448b252da6
         ];
 
         $validator = Validator::make($data, $rules);
@@ -47,18 +41,12 @@ class SupplierController extends Controller
         $supplier = Supplier::create([
             'store_id' => $store_id,
             'name' => $data['name'],
-<<<<<<< HEAD
+            'code' => $data['code'],
             'address' => $data['address'],
             'phone' => $data['phone'] ?? null,
             'email' => $data['email'],
             'tax' => $data['tax'] ?? null,
             'note' => $data['note'] ?? null,
-=======
-            'phone' => $data['phone'],
-            'email' => $data['email'] ?? null,
-            'address' => $data['address'] ?? null,
-            'code' => $data['code'],
->>>>>>> 6a919a73f62fe07bed7e2215e04984448b252da6
         ]);
 
         return response()->json($supplier);
@@ -111,10 +99,6 @@ class SupplierController extends Controller
                 'errors' => $validator->errors(),
             ], 400);
         }
-<<<<<<< HEAD
-=======
-
->>>>>>> 6a919a73f62fe07bed7e2215e04984448b252da6
         $supplier = Supplier::where('store_id', $store_id)->where('id', $supplier_id)->first();
         $supplier->name = $data['name'] ?? $supplier->name;
         $supplier->address = $data['address'] ?? $supplier->address;
@@ -123,7 +107,6 @@ class SupplierController extends Controller
         $supplier->tax = $data['tax'] ?? $supplier->tax;
         $supplier->note = $data['note'] ?? $supplier->note;
         $supplier->save();
-<<<<<<< HEAD
         return response()->json($supplier);
     }
 
@@ -137,8 +120,6 @@ class SupplierController extends Controller
         }
 
         $supplier->delete();
-=======
->>>>>>> 6a919a73f62fe07bed7e2215e04984448b252da6
 
         return response()->json($supplier);
     }

@@ -129,14 +129,14 @@ class ItemController extends Controller
         // else, search in the default items
         $item = DefaultItem::where('bar_code', $barcode)->first();
 
-        if ($item) {
-            return response()->json([
-                'store_id' => $store_id,
-                'barcode' => $item->bar_code,
-                'name' => $item->product_name,
-                'image'
-            ])
-        }
+        // if ($item) {
+        //     return response()->json([
+        //         'store_id' => $store_id,
+        //         'barcode' => $item->bar_code,
+        //         'name' => $item->product_name,
+        //         'image'
+        //     ])
+        // }
 
     }
 
