@@ -186,3 +186,12 @@ Route::prefix('/customer')->middleware([OnlyEmployee::class, HaveSaleRole::class
     // POST /customer/use-point/{customer_id} - use point from a customer by id
     Route::post('/use-point/{customer_id}', [CustomerController::class, 'usePoint']);
 });
+
+Route::prefix('/default-item')->group(function () {
+    // GET /default-item - get all default items
+    Route::get('/', [DefaultItemController::class, 'getItems']);
+    // GET /default-item/barcode/{barcode} - get a default item by barcode
+    Route::get('/barcode/{barcode}', [DefaultItemController::class, 'getItemByBarcode']);
+    // GET /default-item/category/{category_id} - get default items by category id
+    Route::get('/category/{category_id}', [DefaultItemController::class, 'getItemsByCategoryId']);
+});

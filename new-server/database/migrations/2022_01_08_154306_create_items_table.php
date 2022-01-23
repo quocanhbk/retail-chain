@@ -17,11 +17,9 @@ class CreateItemsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->softDeletes();
-            $table->string('code');
             $table->string('barcode');
             $table->string('name');
             $table->string('image')->nullable();
-            $table->decimal('price', 13, 0);
             $table->unsignedBigInteger('store_id');
             $table->foreign('store_id')->references('id')->on('stores');
             $table->unsignedBigInteger('category_id');

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateItemQuantitiesTable extends Migration
+class CreateItemPropertiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,15 @@ class CreateItemQuantitiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('item_quantities', function (Blueprint $table) {
+        Schema::create('item_properties', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->bigInteger('item_id')->unsigned();
-            $table->bigInteger('branch_id')->unsigned();
             $table->integer('quantity');
+            $table->decimal('sell_price', 13, 0, true);
+            $table->decimal('base_price', 13, 0, true);
             $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
             $table->foreign('branch_id')->references('id')->on('branches')->onDelete('cascade');
+
         });
     }
 
@@ -31,6 +32,6 @@ class CreateItemQuantitiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('item_quantities');
+        Schema::dropIfExists('item_properties');
     }
 }

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DefaultItem;
 use App\Models\Employee;
+use App\Models\Item;
+use App\Models\ItemProperty;
 use App\Models\PurchaseSheet;
 use App\Models\PurchaseSheetItem;
 use Illuminate\Http\Request;
@@ -12,6 +15,10 @@ use Illuminate\Validation\Rule;
 
 class PurchaseSheetController extends Controller
 {
+    // Purchaser create purchase sheet, along with:
+    // * Item that is sold before in the store (has data in `items` table)
+    // * Item that is never sold before in the store (get from `default_items.barcode_data`)
+    // * Item that is never sold before in the store (create manually)
     public function create(Request $request) {
         $store_id = Auth::user()->store_id;
         $employee_id = Auth::user()->id;
@@ -19,19 +26,22 @@ class PurchaseSheetController extends Controller
         $data = $request->all();
         $rules = [
             'code' => ['nullable', 'string', 'max:255', Rule::unique('purchase_sheets')->where('branch_id', $branch_id)],
-            'supplier_id' => ['required', 'integer', Rule::exists('suppliers', 'id')->where('store_id', $store_id)],
+            // Purchase sheet may have unknown supplier
+            'supplier_id' => ['nullable', 'integer', Rule::exists('suppliers', 'id')->where('store_id', $store_id)],
             'discount' => ['nullable', 'numeric'],
             'discount_type' => ['nullable', 'string', 'max:255'],
             'status' => ['required', 'string', 'max:255'],
             'note' => ['nullable', 'string', 'max:255'],
 
-            'items' => ['required', 'array', 'min:1'],
-            'items.*.item_id' => ['required', 'integer', Rule::exists('items', 'id')->where('store_id', $store_id)],
+            // * Item that is sold before in the store (has data in `items` table)
+            'items' => ['nullable', 'array', 'min:1'],
+            'items.*.barcode' => ['required', 'string', 'max:255', Rule::exists('items', 'barcode')->where('store_id', $store_id)],
             'items.*.quantity' => ['required', 'numeric', 'min:1'],
-            'items.*.unit' => ['required', 'string', 'max:255'],
+            'items.*.unit' => ['nullable', 'string', 'max:255'],
             'items.*.price' => ['required', 'numeric', 'min:0'],
             'items.*.discount' => ['nullable', 'numeric'],
             'items.*.discount_type' => ['nullable', 'in:cash,percent'],
+
         ];
 
         $validator = Validator::make($data, $rules);
@@ -39,9 +49,9 @@ class PurchaseSheetController extends Controller
             return response()->json(['error' => $validator->errors()], 400);
         }
 
-        // calculate total of each item
+        // calculate total for each item
         $items = $data['items'];
-        foreach ($items as &$item) {
+        foreach($items as &$item) {
             $item['total'] = $item['quantity'] * $item['price'];
             if (isset($item['discount'])) {
                 if ($item['discount_type'] == 'percent') {
@@ -110,7 +120,9 @@ class PurchaseSheetController extends Controller
         $items = PurchaseSheetItem::insert($itemsData);
         $purchase_sheet['items'] = $items;
 
-        return response()->json($purchase_sheet);
+        return response()->json([
+            'message' => 'Purchase sheet created successfully',
+        ]);
     }
 
     public function getPurchaseSheets(Request $request) {

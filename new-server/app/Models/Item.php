@@ -12,12 +12,10 @@ class Item extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'code',
+        'store_id',
         'barcode',
         'name',
         'image',
-        'price',
-        'store_id',
         'category_id',
     ];
 
@@ -36,4 +34,6 @@ class Item extends Model
     {
         return $this->belongsTo(ItemCategory::class);
     }
+
+
 }

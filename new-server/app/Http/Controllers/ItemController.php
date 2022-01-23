@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DefaultItem;
 use App\Models\Item;
 use App\Models\ItemPriceHistory;
+use App\Models\ItemProperty;
 use App\Models\ItemQuantity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,16 +14,20 @@ use Illuminate\Validation\Rule;
 
 class ItemController extends Controller
 {
+    // Purchaser will create new item, in the case he didn't find it from default items
+    // * Create item for the store, initial quantity, base price, sell price for the purchaser's branch
     public function create(Request $request) {
-        $store_id = Auth::guard('stores')->user()->id;
+        $store_id = Auth::user()->store_id;
+        $branch_id = Auth::user()->employment->branch_id;
         $data = $request->all();
         $rules = [
             'category_id' => ['required', 'integer', Rule::exists('item_categories', 'id')->where('store_id', $store_id)],
             'code' => ['nullable', 'string', 'max:255', Rule::unique('items')->where('store_id', $store_id)],
             'barcode' => ['required', 'string', 'max:255', Rule::unique('items')->where('store_id', $store_id)],
             'name' => ['required', 'string', 'max:255'],
-            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-            'price' => ['required', 'numeric', 'integer', 'min:0'],
+            'quantity' => ['nullable', 'numberic', 'min:0'],
+            'base_price' => ['nullable', 'numeric', 'min:0'],
+            'sell_price' => ['nullable', 'numeric', 'min:0'],
         ];
 
         $validator = Validator::make($data, $rules);
@@ -32,14 +38,9 @@ class ItemController extends Controller
             ], 400);
         }
 
-        $path = $request->hasFile('image')
-            ? $request->file('image')
-                ->storeAs('items', $store_id . $data['barcode'] . "." . $request->file('image')->getClientOriginalExtension())
-            : null;
+        $count = Item::where('store_id', $store_id)->count();
 
-        $count = Item::where('store_id', $store_id)->count() + 1;
-
-        $code = $data['code'] ?? "SP" . str_pad($count, 6, '0', STR_PAD_LEFT);
+        $code = $data['code'] ?? "SP" . str_pad($count + 1, 6, '0', STR_PAD_LEFT);
         // ensure code is unique
         while (Item::where('code', $code)->where('store_id', $store_id)->exists()) {
             $count++;
@@ -51,52 +52,92 @@ class ItemController extends Controller
             'code' => $code,
             'barcode' => $data['barcode'],
             'name' => $data['name'],
-            'image' => $path,
             'price' => $data['price'],
             'store_id' => $store_id,
         ]);
 
-        // insert into price history
-        ItemPriceHistory::create([
+        ItemProperty::create([
             'item_id' => $item->id,
-            'price' => $data['price'],
-            'start_date' => date('Y-m-d'),
-            'end_date' => null,
+            'branch_id' => $branch_id,
+            'quantity' => $data['quantity'] ?? 0,
+            'sell_price' => $data['sell_price'] ?? 0,
+            'base_price' => $data['base_price'] ?? 0,
         ]);
 
         return response()->json($item);
     }
 
+    public function updateImage(Request $request) {
+        $store_id = Auth::user()->store_id;
+        $rules = [
+            'id' => ['required', 'integer', Rule::exists('items', 'id')->where('store_id', $store_id)],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+        $item = Item::find($request->id);
+        $path = $request->file('image')
+            ->storeAs('items', $store_id . $item->barcode . "." . $request->file('image')->getClientOriginalExtension());
+        $item->image = $path;
+        $item->save();
+
+        return response()->json([
+            'message' => 'Image updated'
+        ]);
+    }
+
     public function getItems(Request $request) {
         $store_id = $request->get('store_id');
-        $items = Item::where('store_id', $store_id)->get();
+        $search = $request->query('search') ?? '';
+        $count = $request->query('count') ?? 10;
+
+        // search by code, barcode, name, category
+        $items = Item::with('category')->where('store_id', $store_id)
+            ->where('code', 'like', '%' . $search . '%')
+            ->orWhere('barcode', 'like', '%' . $search . '%')
+            ->orWhere('name', 'like', '%' . $search . '%')
+            ->orWhereHas('category', function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%');
+            })->take($count)->get();
+
         return response()->json($items);
     }
 
+    // * Only used for item that is already added to the database
     public function getItem(Request $request, $item_id) {
         $store_id = $request->get('store_id');
         $item = Item::where('id', $item_id)->where('store_id', $store_id)->first();
         return response()->json($item);
     }
 
+    // * Used for both item from the database and item from the default database
     public function getItemsByBarCode(Request $request, $barcode) {
         $store_id = $request->get('store_id');
         $item = Item::where('store_id', $store_id)->where('barcode', $barcode)->first();
-        return response()->json($item);
-    }
 
-    public function search(Request $request, $search) {
-        $store_id = $request->get('store_id');
-        // perform search on code, barcode, name, category
-        $items = Item::where('store_id', $store_id)
-            ->where('code', 'like', '%' . $search . '%')
-            ->orWhere('barcode', 'like', '%' . $search . '%')
-            ->orWhere('name', 'like', '%' . $search . '%')
-            ->orWhereHas('category', function ($query) use ($search) {
-                $query->where('name', 'like', '%' . $search . '%');
-            })
-            ->get();
-        return response()->json($items);
+        if ($item) {
+            return response()->json($item);
+        }
+
+        // else, search in the default items
+        $item = DefaultItem::where('bar_code', $barcode)->first();
+
+        if ($item) {
+            return response()->json([
+                'store_id' => $store_id,
+                'barcode' => $item->bar_code,
+                'name' => $item->product_name,
+                'image'
+            ])
+        }
+
     }
 
     public function getPriceHistory(Request $request, $item_id) {
@@ -113,6 +154,7 @@ class ItemController extends Controller
         return response()->json($price_history);
     }
 
+    // maybe only for manager ?
     public function update(Request $request, $item_id) {
         $store_id = Auth::guard('stores')->user()->id;
         $data = $request->all();
@@ -122,8 +164,6 @@ class ItemController extends Controller
             'code' => ['nullable', 'string', 'max:255', Rule::unique('items')->where('store_id', $store_id)->ignore($item_id)],
             'barcode' => ['nullable', 'string', 'max:255', Rule::unique('items')->where('store_id', $store_id)->ignore($item_id)],
             'name' => ['nullable', 'string', 'max:255'],
-            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-            'price' => ['nullable', 'numeric'],
             'category_id' => ['nullable', 'integer', Rule::exists('item_categories', 'id')->where('store_id', $store_id)],
         ];
 
@@ -136,58 +176,12 @@ class ItemController extends Controller
         }
 
         $item = Item::find($item_id);
-        $old_price = $item->price;
         $item->code = $data['code'] ?? $item->code;
         $item->barcode = $data['barcode'] ?? $item->barcode;
         $item->name = $data['name'] ?? $item->name;
-        $item->price = $data['price'] ?? $item->price;
         $item->category_id = $data['category_id'] ?? $item->category_id;
-        // if price changes, update price history
-        if ($old_price != $item->price) {
-            $price_history = ItemPriceHistory::where('item_id', $item_id)->where('end_date', null)->first();
-            $price_history->end_date = date('Y-m-d');
-            $price_history->save();
-
-            ItemPriceHistory::create([
-                'item_id' => $item_id,
-                'price' => $data['price'],
-                'start_date' => date('Y-m-d'),
-                'end_date' => null,
-            ]);
-        }
-
-        // if image changes, update image
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')
-                ->storeAs('items', $store_id . $data['barcode'] . "." . $request->file('image')->getClientOriginalExtension());
-            $item->image = $path;
-        }
-
         $item->save();
+
         return response()->json($item);
-    }
-
-    public function delete(Request $request, $item_id) {
-        $store_id = Auth::guard('stores')->user()->id;
-        $item = Item::where('id', $item_id)->where('store_id', $store_id)->first();
-        if (!$item) {
-            return response()->json([
-                'message' => 'Item not found'
-            ], 404);
-        }
-        // update price history
-        $price_history = ItemPriceHistory::where('item_id', $item_id)->where('end_date', null)->first();
-        $price_history->end_date = date('Y-m-d');
-        $price_history->save();
-
-        $item->delete();
-        return response()->json($item);
-    }
-
-    public function getStock(Request $request, $item_id) {
-        $branch_id = Auth::user()->employment->branch_id;
-        $item_quantity = ItemQuantity::where('branch_id', $branch_id)->where('id', $item_id)->first();
-        $item_quantity = $item_quantity ? $item_quantity->quantity : 0;
-        return response()->json($item_quantity);
     }
 }
