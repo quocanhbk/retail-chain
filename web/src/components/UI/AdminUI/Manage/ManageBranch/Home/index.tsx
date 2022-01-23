@@ -42,7 +42,7 @@ const HomeBranchUI = () => {
 	}
 
 	return (
-		<Box p={4}>
+		<Box p={2}>
 			<Flex w="full" align="center" justify="space-between">
 				<Heading mb={4} fontSize={"2xl"}>
 					Quản lý chi nhánh

@@ -1,6 +1,6 @@
 import { createBranch, CreateBranchInput } from "@api"
 import { createSupplier, CreateSupplierInput } from "@api"
-import { Box, Button, chakra } from "@chakra-ui/react"
+import { Box, Button, chakra, Stack } from "@chakra-ui/react"
 import { BackableTitle, TextControl } from "@components/shared"
 import { useChakraToast, useFormCore } from "@hooks"
 import router from "next/router"
@@ -14,6 +14,8 @@ const CreateSupplierUI = () => {
 		address: "",
 		email: "",
 		phone: "",
+		tax: "",
+		note: ""
 	})
 	const toast = useChakraToast()
 
@@ -42,7 +44,7 @@ const CreateSupplierUI = () => {
 		onSuccess: () => {
 			toast({
 				title: "Tạo chi nhánh thành công",
-				status: "success",
+				status: "success"
 			})
 			qc.invalidateQueries("suppliers")
 			router.push("/admin/manage/supplier")
@@ -52,9 +54,9 @@ const CreateSupplierUI = () => {
 
 			toast({
 				title: err.response.data.message,
-				status: "error",
+				status: "error"
 			})
-		},
+		}
 	})
 
 	const handleCreateSupplier = (e: FormEvent<HTMLFormElement>) => {
@@ -71,37 +73,56 @@ const CreateSupplierUI = () => {
 	return (
 		<Box p={4}>
 			<BackableTitle text="Tạo nhà cung cấp" backPath="/admin/manage/supplier" mb={4} />
-			<Box w="24rem" maxW="full">
+			<Box maxW="50rem">
 				<chakra.form onSubmit={handleCreateSupplier}>
-					{/* <ImageInput
+					<Stack direction={["column", "row"]} justify="space-between" spacing={8}>
+						<Box w="full" maxW="24rem">
+							{/* <ImageInput
 						file={(values.image as File) ?? "/images/store.jpg"}
 						onSubmit={f => setValue("image", f)}
 					/> */}
-					<TextControl
-						label="Tên nhà cung cấp"
-						value={values.name}
-						onChange={value => setValue("name", value)}
-						error={errors.name}
-						inputRef={inputRef}
-					/>
-					<TextControl
-						label="Địa chỉ nhà cung cấp"
-						value={values.address}
-						onChange={value => setValue("address", value)}
-						error={errors.address}
-					/>
-					<TextControl
-						label="Email nhà cung cấp"
-						value={values.email}
-						onChange={value => setValue("email", value)}
-						error={errors.email}
-					/>
-					<TextControl
-						label="Số điện thoại nhà cung cấp"
-						value={values.phone || ""}
-						onChange={value => setValue("phone", value)}
-						error={errors.phone}
-					/>
+							<TextControl
+								label="Tên nhà cung cấp"
+								value={values.name}
+								onChange={value => setValue("name", value)}
+								error={errors.name}
+								inputRef={inputRef}
+							/>
+							<TextControl
+								label="Địa chỉ nhà cung cấp"
+								value={values.address}
+								onChange={value => setValue("address", value)}
+								error={errors.address}
+							/>
+							<TextControl
+								label="Email nhà cung cấp"
+								value={values.email}
+								onChange={value => setValue("email", value)}
+								error={errors.email}
+							/>
+							
+						</Box>
+						<Box w="full" maxW="24rem" mr={4}>
+						<TextControl
+								label="Số điện thoại nhà cung cấp"
+								value={values.phone || ""}
+								onChange={value => setValue("phone", value)}
+								error={errors.phone}
+							/>
+							<TextControl
+								label="Mã số thuế"
+								value={values.tax}
+								onChange={value => setValue("tax", value)}
+								error={errors.tax}
+							/>
+							<TextControl
+								label="Ghi chú"
+								value={values.note}
+								onChange={value => setValue("note", value)}
+								error={errors.note}
+							/>
+						</Box>
+					</Stack>
 					<Button isLoading={isLoading} type="submit">
 						{"Tạo nhà cung cấp"}
 					</Button>

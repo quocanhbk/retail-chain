@@ -19,6 +19,34 @@ export const employeeRoles = [
 	{ id: "sale", value: "Bán hàng" }
 ] as const
 
+export const baseNavMenus = [
+	{
+		id: "inventory",
+		subMenus: [
+			{id:"category", text: "Danh muc", path: "", enable : true},
+			{id:"priceBook", text: "Thiet lap gia", path: "", enable: true},
+			{id:"inventoryCount", text: "Kiem ke", path: "", enable: true}
+		]
+	},
+	{
+		id: "transaction",
+		subMenus: [
+			{id:"cart", text: "Gio hang", path: "", enable : true},
+			{id:"invoice", text: "Don mua hang", path: "", enable: true},
+			{id:"return", text: "Tra hang", path: "", enable: true},
+			{id:"purchaseReceipt", text: "Nhap hang", path: "", enable: true},
+			{id:"purchareReturn", text: "Tra hang nhap", path: "", enable: true},
+		]
+	},
+	{
+		id: "partner",
+		subMenus: [
+			{id:"customer", text: "Khach hang", path: "", enable : true},
+			{id:"supplier", text: "Nha cung cap", path: "", enable: true},
+		]
+	},
+	
+]
 export const genders = [
 	{ id: "male", value: "Nam" },
 	{ id: "female", value: "Nữ" },

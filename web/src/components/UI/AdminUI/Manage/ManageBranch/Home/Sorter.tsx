@@ -43,7 +43,7 @@ const Sorter = ({ currentSort, onChange }: SorterProps) => {
 					<BsFillTriangleFill size="0.5rem" />
 				</Box>
 			</Flex>
-			<Box pos="absolute" left={0} top="100%" transform="translateY(0.5rem)" w="full">
+			<Box pos="absolute" left={0} top="100%" transform="translateY(0.5rem)" w="full" zIndex={10}>
 				<Collapse in={isOpen}>
 					<Box
 						border="1px"

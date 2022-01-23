@@ -7,18 +7,14 @@ export interface Supplier {
     address: string
     email: string
     phone: string | null
+    tax: string
+    note: string
+    
 }
 
 export type CreateSupplierInput = Omit<Supplier, "id" | "store_id"> 
 export const createSupplier = async (input: CreateSupplierInput): Promise<Supplier> => {
-    const formData = new FormData()
-    formData.append("name",input.name)
-    formData.append("address",input.address)
-    formData.append("email",input.email)
-    formData.append("phone",input.phone || "")
-
-
-    const {data} = await fetcher.post("/supplier",formData)
+    const {data} = await fetcher.post("/supplier",input)
     return data
 }
 
@@ -31,14 +27,7 @@ export const getSupplier = async (id: number): Promise<Supplier> => {
 	return data
 }
 export const editSupplier = async (supplierId: number, input: CreateSupplierInput): Promise<Supplier> => {
-    const formData = new FormData()
-    console.log("input",input)
-    formData.append("name",input.name)
-    formData.append("address",input.address)
-    formData.append("email",input.email)
-    formData.append("phone",input.phone || "")
-    const {data} = await fetcher.patch(`/supplier/${supplierId}`, formData)
-    console.log("data",data)
+    const {data} = await fetcher.patch(`/supplier/${supplierId}`, input)
     return data
 }
 
