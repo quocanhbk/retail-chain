@@ -108,7 +108,7 @@ Route::prefix('/work-schedule')->middleware([OnlyEmployee::class, HaveManageRole
 
 Route::prefix('/supplier')->middleware([AdminOrPurchaser::class])->group(function () {
     // POST /supplier - create a new supplier
-    Route::post('/', [SupplierController::class, 'create'])->middleware([OnlyStoreAdmin::class]);
+    Route::post('/', [SupplierController::class, 'create']);
     // GET /supplier - get all suppliers
     Route::get('/', [SupplierController::class, 'getSuppliers']);
     // GET /supplier/{supplier_id} - get a supplier by id

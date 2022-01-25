@@ -30,16 +30,17 @@ class PurchaseSheetController extends Controller
             'supplier_id' => ['nullable', 'integer', Rule::exists('suppliers', 'id')->where('store_id', $store_id)],
             'discount' => ['nullable', 'numeric'],
             'discount_type' => ['nullable', 'string', 'max:255'],
+            'paid_amount' => ['required', 'numeric'],
             'note' => ['nullable', 'string', 'max:255'],
 
             // * Item that is sold before in the store (has data in `items` table)
             'items' => ['nullable', 'array', 'min:1'],
             'items.*.item_id' => ['required', 'integer', Rule::exists('items', 'id')->where('store_id', $store_id)],
             'items.*.quantity' => ['required', 'numeric', 'min:1'],
-            'items.*.unit' => ['nullable', 'string', 'max:255'],
             'items.*.price' => ['required', 'numeric', 'min:0'],
             'items.*.discount' => ['nullable', 'numeric'],
             'items.*.discount_type' => ['nullable', 'in:cash,percent'],
+
 
         ];
 
@@ -97,6 +98,7 @@ class PurchaseSheetController extends Controller
             'discount' => $data['discount'] ?? 0,
             'discount_type' => $data['discount_type'] ?? 'cash',
             'total' => $total,
+            'paid_amount' => $data['paid_amount'],
             'note' => $data['note'] ?? '',
         ]);
 
@@ -107,7 +109,6 @@ class PurchaseSheetController extends Controller
                 'purchase_sheet_id' => $purchase_sheet->id,
                 'item_id' => $item['item_id'],
                 'quantity' => $item['quantity'],
-                'unit' => $item['unit'],
                 'price' => $item['price'],
                 'discount' => $item['discount'] ?? 0,
                 'discount_type' => $item['discount_type'] ?? 'cash',
@@ -125,7 +126,7 @@ class PurchaseSheetController extends Controller
 
     public function getPurchaseSheets(Request $request) {
         $branch_id = Auth::user()->employment->branch_id;
-        $purchase_sheets = PurchaseSheet::where('branch_id', $branch_id)->get();
+        $purchase_sheets = PurchaseSheet::with(['supplier', 'employee'])->where('branch_id', $branch_id)->get();
         return response()->json($purchase_sheets);
     }
 

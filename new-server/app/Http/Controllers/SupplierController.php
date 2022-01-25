@@ -11,7 +11,7 @@ use App\Models\Supplier;
 class SupplierController extends Controller
 {
     public function create(Request $request) {
-        $store_id = Auth::guard('stores')->user()->id;
+        $store_id = $request->get('store_id');
         $data = $request->all();
         $rules = [
             'name' => ['required', 'string', 'max:255'],
@@ -23,15 +23,18 @@ class SupplierController extends Controller
             'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique('suppliers')->where('store_id', $store_id)],
         ];
 
-        $validator = Validator::make($data, $rules);
+        $validator = Validator::make($data, $rules, [
+            'code.unique' => 'Mã nhà cung cấp đã tồn tại',
+            'phone.unique' => 'Số điện thoại đã được sử dụng',
+        ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'message' => 'Validation failed.',
-                'errors' => $validator->errors(),
+                'message' => 'Thông tin không hợp lệ',
+                // concat validation errors into a single string
+                'error' => $this->formatValidationError($validator->errors()),
             ], 400);
         }
-
         // create code if not provided
         if (!$data['code']) {
             $supplier_count = Supplier::where('store_id', $store_id)->count();

@@ -15,6 +15,7 @@ class Supplier extends Model
         'store_id',
         'name',
         'address',
+        'code',
         'phone',
         'email',
         'tax',
