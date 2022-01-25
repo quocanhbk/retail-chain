@@ -43,10 +43,8 @@ const HomeBranchUI = () => {
 
 	return (
 		<Box p={2}>
-			<Flex w="full" align="center" justify="space-between">
-				<Heading mb={4} fontSize={"2xl"}>
-					Quản lý chi nhánh
-				</Heading>
+			<Flex w="full" align="center" justify="space-between" mb={4}>
+				<Heading fontSize={"2xl"}>Quản lý chi nhánh</Heading>
 				<Link href="/admin/manage/branch/create">
 					<Button size="sm" variant="ghost">
 						{"Tạo chi nhánh"}

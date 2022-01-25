@@ -3,6 +3,7 @@ import fetcher from "./fetcher"
 export interface Supplier {
 	id: number
 	store_id: number
+	code: string
 	name: string
 	address: string
 	email: string
@@ -12,8 +13,9 @@ export interface Supplier {
 }
 
 export type CreateSupplierInput = Omit<Supplier, "id" | "store_id">
+
 export const createSupplier = async (input: CreateSupplierInput): Promise<Supplier> => {
-	const { data } = await fetcher.post("/supplier", input)
+	const { data } = await fetcher.post("/supplier", { ...input, code: input.code || null, email: input.email || null })
 	return data
 }
 

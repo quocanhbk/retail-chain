@@ -24,9 +24,9 @@ export const useChakraToast = ({ defaultDuration }: UseChakraToastOptions = { de
 						position: "bottom",
 						variant: "subtle",
 						title,
-						description: message,
+						description: message?.split("\n").map((line, i) => <p key={i}>{line}</p>),
 						status,
-						duration,
+						duration
 					}),
 				250
 			)

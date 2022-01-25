@@ -35,7 +35,7 @@ export const CommonLayout = ({ children, isLoading, maxW = "64rem", ...headerPro
 	return (
 		<Flex direction="column" h="100vh">
 			<LoadingScreen isLoading={isLoading} />
-			<Flex direction="column" h="100vh">
+			<Flex direction="column" h="100vh" backgroundColor={backgroundPrimary}>
 				<Header {...headerProps} />
 				<AnimatePresence exitBeforeEnter initial={false}>
 					<Motion.Flex

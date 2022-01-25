@@ -7,7 +7,7 @@ const ImportCreatePage = () => {
 }
 
 ImportCreatePage.getLayout = function getLayout(page: ReactElement) {
-	return <EmployeeLayout>{page}</EmployeeLayout>
+	return <EmployeeLayout maxW="80rem">{page}</EmployeeLayout>
 }
 
 export default ImportCreatePage

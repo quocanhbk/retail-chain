@@ -17,7 +17,7 @@ const QuantityChanger = ({ value, onChange }: QuantityChangerProps) => {
 			flexShrink={0}
 			variant={"filled"}
 		>
-			<NumberInputField />
+			<NumberInputField textAlign={"right"} />
 			<NumberInputStepper>
 				<NumberIncrementStepper />
 				<NumberDecrementStepper />

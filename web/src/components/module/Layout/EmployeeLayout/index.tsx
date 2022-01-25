@@ -5,11 +5,13 @@ import { useStoreActions, useStoreState } from "@store"
 import { getInfoEmployee, logoutEmployee } from "@api"
 import { CommonLayout } from ".."
 import { employeeNavMenus } from "@constants"
+import { BoxProps } from "@chakra-ui/react"
 interface AdminLayoutProps {
 	children: React.ReactNode
+	maxW?: BoxProps["maxW"]
 }
 
-export const EmployeeLayout = ({ children }: AdminLayoutProps) => {
+export const EmployeeLayout = ({ children, maxW = "64rem" }: AdminLayoutProps) => {
 	const router = useRouter()
 	const [loading, setLoading] = useState(true)
 	const setEmployeeInfo = useStoreActions(action => action.setEmployeeInfo)
@@ -45,7 +47,7 @@ export const EmployeeLayout = ({ children }: AdminLayoutProps) => {
 			subNavmenus={employeeNavMenus.find(m => m.id === selectedMenu)?.subMenus ?? []}
 			name={employeeInfo?.name || ""}
 			onLogout={mutate}
-			maxW={"80rem"}
+			maxW={maxW}
 		>
 			{children}
 		</CommonLayout>

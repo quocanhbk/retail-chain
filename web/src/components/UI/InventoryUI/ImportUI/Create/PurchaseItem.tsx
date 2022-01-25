@@ -6,7 +6,7 @@ import QuantityChanger from "./QuantityChanger"
 import useCreateImport from "./useCreateImport"
 
 interface PurchaseItemProps {
-	data: ReturnType<typeof useCreateImport>["mappedValues"][number]
+	data: ReturnType<typeof useCreateImport>["mappedItems"][number]
 }
 
 const PurchaseItem = ({ data }: PurchaseItemProps) => {
@@ -35,7 +35,7 @@ const PurchaseItem = ({ data }: PurchaseItemProps) => {
 				w="8rem"
 				variant={"filled"}
 			>
-				<NumberInputField />
+				<NumberInputField textAlign={"right"} w="full" pr={4} />
 			</NumberInput>
 			<DiscountInput
 				value={data.discount}
