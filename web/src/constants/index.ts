@@ -19,39 +19,24 @@ export const employeeRoles = [
 	{ id: "sale", value: "Bán hàng" }
 ] as const
 
-export const baseNavMenus = [
+export const employeeNavMenus = [
+	{
+		id: "sale",
+		text: "Bán hàng",
+		path: "/main/sale/cart",
+		subMenus: [
+			{ id: "cart", text: "Giỏ hàng", path: "/main/sale/cart" }
+		]
+	},
 	{
 		id: "inventory",
-		text: "Hàng hóa",
-		path: "/product",
+		text: "Kho hàng",
+		path: "/main/inventory/import",
 		subMenus: [
-			{id:"category", text: "Danh mục", path: "/product", enable : true},
-			{id:"priceBook", text: "Thiết lập giá", path: "/priceBook", enable: true},
-			{id:"inventoryCount", text: "Kiểm kê", path: "/inventoryCount", enable: true}
+			{ id: "import", text: "Nhập hàng", path: "/main/inventory/import" },
+			{id:"product", text: "Hàng hóa", path: "/main/inventory/product"},
 		]
-	},
-	{
-		id: "transaction",
-		text: "Giao dịch",
-		path: "/cart",
-		subMenus: [
-			{id:"cart", text: "Giỏ hàng", path: "/cart", enable : true},
-			{id:"invoice", text: "Đơn mua hàng", path: "/invoice", enable: true},
-			{id:"return", text: "Trả hàng", path: "/return", enable: true},
-			{id:"purchaseReceipt", text: "Nhập hàng", path: "/purchaseReceipt", enable: true},
-			{id:"purchaseReturn", text: "Trả hàng nhập", path: "/purchaseReturn", enable: true},
-		]
-	},
-	{
-		id: "partner",
-		text: "Đối tác",
-		path: "/customer",
-		subMenus: [
-			{id:"customer", text: "Khách hàng", path: "/customer", enable : true},
-			{id:"supplier", text: "Nhà cung cấp", path: "/supplier", enable: true},
-		]
-	},
-	
+	}
 ]
 export const genders = [
 	{ id: "male", value: "Nam" },

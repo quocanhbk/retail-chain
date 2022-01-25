@@ -24,7 +24,7 @@ export const LoginUI = () => {
 	useQuery("get-guard", () => getGuard(), {
 		onSuccess: role => {
 			if (role === "store") router.push("/admin")
-			else if (role === "employee") router.push("/product")
+			else if (role === "employee") router.push("/main")
 		}
 	})
 
@@ -75,13 +75,7 @@ export const LoginUI = () => {
 					{"Đăng Nhập"}
 				</Button>
 				<Box h="1px" bg={textSecondary} w="full" mb={2} />
-				<Text
-					fontSize="sm"
-					color={fillPrimary}
-					cursor="pointer"
-					onClick={() => router.push("/register")}
-					fontWeight="black"
-				>
+				<Text fontSize="sm" color={fillPrimary} cursor="pointer" onClick={() => router.push("/register")} fontWeight="black">
 					Tạo cửa hàng
 				</Text>
 			</chakra.form>

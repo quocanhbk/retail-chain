@@ -10,7 +10,7 @@ export const useThrottle = <T>(value: T, timeOut = 200) => {
 	}, [value])
 
 	useEffect(() => {
-		if (!delay) {
+		if (!delay && state !== lastValue) {
 			setState(lastValue)
 			setDelay(true)
 		}
