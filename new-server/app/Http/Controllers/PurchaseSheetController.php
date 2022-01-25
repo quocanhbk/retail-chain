@@ -30,12 +30,11 @@ class PurchaseSheetController extends Controller
             'supplier_id' => ['nullable', 'integer', Rule::exists('suppliers', 'id')->where('store_id', $store_id)],
             'discount' => ['nullable', 'numeric'],
             'discount_type' => ['nullable', 'string', 'max:255'],
-            'status' => ['required', 'string', 'max:255'],
             'note' => ['nullable', 'string', 'max:255'],
 
             // * Item that is sold before in the store (has data in `items` table)
             'items' => ['nullable', 'array', 'min:1'],
-            'items.*.barcode' => ['required', 'string', 'max:255', Rule::exists('items', 'barcode')->where('store_id', $store_id)],
+            'items.*.item_id' => ['required', 'integer', Rule::exists('items', 'id')->where('store_id', $store_id)],
             'items.*.quantity' => ['required', 'numeric', 'min:1'],
             'items.*.unit' => ['nullable', 'string', 'max:255'],
             'items.*.price' => ['required', 'numeric', 'min:0'],
@@ -98,7 +97,6 @@ class PurchaseSheetController extends Controller
             'discount' => $data['discount'] ?? 0,
             'discount_type' => $data['discount_type'] ?? 'cash',
             'total' => $total,
-            'status' => $data['status'],
             'note' => $data['note'] ?? '',
         ]);
 

@@ -17,7 +17,6 @@ class PurchaseSheet extends Model
         'discount',
         'discount_type',
         'total',
-        'status',
         'note'
     ];
 

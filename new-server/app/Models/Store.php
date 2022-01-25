@@ -35,4 +35,9 @@ class Store extends User
     {
         return $this->hasMany(Employee::class);
     }
+
+    public function categories()
+    {
+        return $this->hasMany(ItemCategory::class);
+    }
 }

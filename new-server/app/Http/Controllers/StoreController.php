@@ -40,6 +40,22 @@ class StoreController extends Controller
         $remember = $data['remember'] ?? false;
         Auth::guard('stores')->login($store, $remember);
 
+        $store->categories()->createMany([
+            ['name' => 'ĐỒ UỐNG CÁC LOẠI'],
+            ['name' => 'SỮA UỐNG CÁC LOẠI'],
+            ['name' => 'BÁNH KẸO CÁC LOẠI'],
+            ['name' => 'MÌ, CHÁO, PHỞ, BÚN'],
+            ['name' => 'DẦU ĂN, GIA VỊ'],
+            ['name' => 'GẠO, BỘT, ĐỒ KHÔ'],
+            ['name' => 'ĐỒ MÁT, ĐÔNG LẠNH'],
+            ['name' => 'TÃ, ĐỒ CHO BÉ'],
+            ['name' => 'CHĂM SÓC CÁ NHÂN'],
+            ['name' => 'VỆ SINH NHÀ CỬA'],
+            ['name' => 'ĐỒ DÙNG GIA ĐÌNH'],
+            ['name' => 'VĂN PHÒNG PHẨM'],
+            ['name' => 'THUỐC VÀ THỰC PHẨM CHỨC NĂNG'],
+        ]);
+
         return response()->json($store);
     }
 

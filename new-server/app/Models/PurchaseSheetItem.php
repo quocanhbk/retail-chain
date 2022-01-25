@@ -13,7 +13,6 @@ class PurchaseSheetItem extends Model
         'purchase_sheet_id',
         'item_id',
         'quantity',
-        'unit',
         'price',
         'discount',
         'discount_type',

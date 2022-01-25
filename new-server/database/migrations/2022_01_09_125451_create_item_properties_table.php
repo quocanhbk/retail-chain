@@ -19,6 +19,8 @@ class CreateItemPropertiesTable extends Migration
             $table->integer('quantity');
             $table->decimal('sell_price', 13, 0, true);
             $table->decimal('base_price', 13, 0, true);
+            $table->unsignedBigInteger('item_id');
+            $table->unsignedBigInteger('branch_id');
             $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
             $table->foreign('branch_id')->references('id')->on('branches')->onDelete('cascade');
 

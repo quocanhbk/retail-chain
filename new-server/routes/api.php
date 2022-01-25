@@ -55,6 +55,7 @@ Route::prefix('/employee')->group(function () {
     Route::post('/login', [EmployeeController::class, 'login'])->middleware([NotStoreAdmin::class, NotEmployee::class]);
     // POST /employee/logout - logout as employee
     Route::post('/logout', [EmployeeController::class, 'logout'])->middleware([OnlyEmployee::class]);
+
     Route::middleware([OnlyStoreAdmin::class])->group(function () {
         // POST /employee - create a new employee
         Route::post('/', [EmployeeController::class, 'create']);
@@ -141,17 +142,20 @@ Route::prefix('/item')->group(function () {
         Route::delete('/{item_id}', [ItemController::class, 'delete']);
     });
     Route::middleware([AdminOrSaleOrPurchaser::class])->group(function () {
+        // POST /item/move/{bar_code} - move an item from default to current
+        Route::post('/move', [ItemController::class, 'moveItem']);
+        // GET /item/search - search items
+        Route::get('/search', [ItemController::class, 'getItemsBySearch']);
+        // GET /item/bar_code/{bar_code} - get an item by bar code
+        Route::get('/bar_code/{bar_code}', [ItemController::class, 'getItemByBarCode']);
         // GET /item - get all items
         Route::get('/', [ItemController::class, 'getItems']);
-        // GET /item/bar_code/{bar_code} - get an item by bar code
-        Route::get('/bar_code/{bar_code}', [ItemController::class, 'getItemsByBarCode']);
-        // GET /item/search/{search} - search items by name, code, bar code or category
-        Route::get('/search/{search}', [ItemController::class, 'search']);
         // GET /item/{item_id}/price_history - get price history of an item
         Route::get('/{item_id}/price_history', [ItemController::class, 'getPriceHistory']);
         // GET /item/{item_id} - get an item by id
         Route::get('/{item_id}', [ItemController::class, 'getItem']);
     });
+
     Route::get('/{item_id}/stock', [ItemController::class, 'getStock'])->middleware([OnlyEmployee::class]);
 });
 

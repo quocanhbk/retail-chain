@@ -17,13 +17,12 @@ class CreatePurchaseSheetsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('code');
-            $table->bigInteger('employee_id')->unsigned();
-            $table->bigInteger('branch_id')->unsigned();
-            $table->bigInteger('supplier_id')->unsigned();
+            $table->unsignedBigInteger('employee_id');
+            $table->unsignedBigInteger('branch_id');
+            $table->unsignedBigInteger('supplier_id');
             $table->decimal('discount', 15, 2);
             $table->string('discount_type');
             $table->decimal('total', 15, 2);
-            $table->string('status');
             $table->string('note')->nullable();
             $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');
             $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
