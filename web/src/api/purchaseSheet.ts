@@ -7,7 +7,7 @@ export interface PurchaseSheetItem {
 	quantity: number
 	price: number
 	discount: number
-	discount_type: string
+	discount_type: "cash" | "percent"
 }
 
 export interface PurchaseSheet {
@@ -17,7 +17,7 @@ export interface PurchaseSheet {
 	branch_id: number
 	supplier_id: number | null
 	discount: number
-	discount_type: string
+	discount_type: "cash" | "percent"
 	note?: string
 }
 

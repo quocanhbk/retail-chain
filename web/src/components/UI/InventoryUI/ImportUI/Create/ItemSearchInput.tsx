@@ -107,21 +107,8 @@ export const ItemSearchInput = ({
 					placeholder="Tìm kiếm sản phẩm"
 					onFocus={() => setIsOpen(true)}
 				/>
-				<InputRightElement>
-					<IconButton
-						variant="ghost"
-						aria-label="clear-search"
-						icon={<BsX size="1.5rem" />}
-						rounded="full"
-						size="sm"
-						colorScheme={searchText ? "red" : "gray"}
-						onClick={() => setSearchText("")}
-						_focus={{ shadow: "none" }}
-						disabled={!searchText}
-					/>
-				</InputRightElement>
 			</InputGroup>
-			<Box pos="absolute" top="100%" left={0} w="full" transform="translateY(0.5rem)">
+			<Box pos="absolute" top="100%" left={0} w="full" transform="translateY(0.5rem)" zIndex="dropdown">
 				<ScaleFade in={isOpen && searchText.length > 0} unmountOnExit>
 					<Box p={4} rounded="md" border="1px" background={backgroundPrimary} borderColor={borderPrimary} overflow={"auto"}>
 						{renderItems()}

@@ -1,4 +1,4 @@
-import { DateInput } from "@components/module/DateInput.tsx"
+import { DateInput } from "@@types"
 
 export const isEmail = (email: string) => {
 	const re =
@@ -17,4 +17,8 @@ export const dateToDateInput = (date: string | null): DateInput | null => {
 		month: dateObj.getMonth() + 1,
 		day: dateObj.getDate()
 	}
+}
+
+export const currency = (value: number) => {
+	return value ? value.toLocaleString(undefined, { maximumFractionDigits: 0 }) : 0
 }

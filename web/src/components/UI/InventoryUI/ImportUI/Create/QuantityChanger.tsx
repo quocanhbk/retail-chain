@@ -1,4 +1,4 @@
-import { NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper } from "@chakra-ui/react"
+import { NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper } from "@chakra-ui/react"
 
 interface QuantityChangerProps {
 	value: number
@@ -7,7 +7,16 @@ interface QuantityChangerProps {
 
 const QuantityChanger = ({ value, onChange }: QuantityChangerProps) => {
 	return (
-		<NumberInput value={value} min={0} step={1} onChange={(_, value) => onChange(value)}>
+		<NumberInput
+			value={value}
+			min={0}
+			step={1}
+			onChange={(_, value) => onChange(value)}
+			h="2.5rem"
+			w="6rem"
+			flexShrink={0}
+			variant={"filled"}
+		>
 			<NumberInputField />
 			<NumberInputStepper>
 				<NumberIncrementStepper />

@@ -45,6 +45,8 @@ const useCreateImport = () => {
 
 	const mappedValues = values.items.map(item => ({
 		...item,
+		discountValue: item.discount_type === "cash" ? item.discount : (item.discount / 100) * item.price,
+		total: item.quantity * (item.price - (item.discount_type === "cash" ? item.discount : (item.discount / 100) * item.price)),
 		onChangeQuantity: (quantity: number) => {
 			setValue(
 				"items",
@@ -55,6 +57,18 @@ const useCreateImport = () => {
 			setValue(
 				"items",
 				values.items.map(i => (i.item_id === item.item_id ? { ...i, price } : i))
+			)
+		},
+		onChangeDiscount: (discount: number) => {
+			setValue(
+				"items",
+				values.items.map(i => (i.item_id === item.item_id ? { ...i, discount } : i))
+			)
+		},
+		onChangeDiscountType: (discountType: string) => {
+			setValue(
+				"items",
+				values.items.map(i => (i.item_id === item.item_id ? { ...i, discount: 0, discount_type: discountType } : i))
 			)
 		}
 	}))

@@ -20,7 +20,7 @@ class AdminOrSaleOrPurchaser
         }
         if (Auth::guard('employees')->check()) {
             $have_role = Auth::user()->employment->roles
-                ->whereIn('role', ['sale', 'purchaser'])
+                ->whereIn('role', array('sale', 'purchase'))
                 ->first();
             if (!$have_role) {
                 return response()->json([
