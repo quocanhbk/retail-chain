@@ -1,20 +1,19 @@
 import { Flex, Heading, HStack } from "@chakra-ui/react"
 import { Motion } from "@components/shared"
-import { adminNavMenus } from "@constants"
 import { useTheme } from "@hooks"
-import { useRouter } from "next/router"
-import { useEffect, useState } from "react"
 import NavMenus from "./NavMenus"
 import StoreInfo from "./StoreInfo"
 import SubNavMenus from "./SubNavMenus"
 
-export const Header = () => {
-	const [selectedMenu, setSelectedMenu] = useState("")
-	const router = useRouter()
-	useEffect(() => {
-		if (router.isReady) setSelectedMenu(router.pathname.split("/")[2] || "")
-	}, [router.isReady, router.pathname])
+export interface HeaderProps {
+	title: string
+	menus: { id: string; text: string; path: string }[]
+	subNavmenus: { id: string; text: string; path: string }[]
+	name: string
+	onLogout: () => void
+}
 
+export const Header = ({ title, menus, subNavmenus, name, onLogout }: HeaderProps) => {
 	const { backgroundSecondary } = useTheme()
 
 	return (
@@ -30,15 +29,15 @@ export const Header = () => {
 					fontWeight={"900"}
 					fontFamily={"Brandon"}
 				>
-					BKRM ADMIN
+					{title}
 				</Heading>
 				<HStack align="center" spacing={8}>
-					<NavMenus menus={adminNavMenus} />
-					<StoreInfo />
+					<NavMenus menus={menus} />
+					<StoreInfo name={name} onLogout={onLogout} />
 				</HStack>
 			</Flex>
-			<Motion.Box key={adminNavMenus.find(m => m.id === selectedMenu)?.subMenus.length}>
-				<SubNavMenus menu={adminNavMenus.find(m => m.id === selectedMenu)?.subMenus ?? []} />
+			<Motion.Box key={subNavmenus.length}>
+				<SubNavMenus menu={subNavmenus ?? []} />
 			</Motion.Box>
 		</Flex>
 	)

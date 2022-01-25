@@ -1,4 +1,4 @@
-import AdminLayout from "@components/UI/AdminUI/AdminLayout"
+import AdminLayout from "@components/module/Layout/AdminLayout"
 import HomeSupplierUI from "@components/UI/AdminUI/Manage/ManageSupplier/Home"
 import { ReactElement } from "react"
 

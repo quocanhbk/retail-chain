@@ -7,14 +7,14 @@ import { useMutation } from "react-query"
 
 const useRegister = () => {
 	const router = useRouter()
-	const setInfo = useStoreActions(s => s.setInfo)
+	const setInfo = useStoreActions(s => s.setStoreInfo)
 
 	const { values, setValue, errors, setError, initError } = useFormCore<RegisterStoreInput>({
 		name: "",
 		email: "",
 		password: "",
 		password_confirmation: "",
-		remember: false,
+		remember: false
 	})
 
 	const validate = () => {
@@ -54,7 +54,7 @@ const useRegister = () => {
 			// 	...errors,
 			// 	...Object.fromEntries(Object.keys(err.errors).map(errorKey => [errorKey, err.errors[errorKey][0]])),
 			// })
-		},
+		}
 	})
 
 	const mutateRegister = () => {
@@ -68,7 +68,7 @@ const useRegister = () => {
 		values,
 		setValue,
 		errors,
-		mutateRegister,
+		mutateRegister
 	}
 }
 export default useRegister

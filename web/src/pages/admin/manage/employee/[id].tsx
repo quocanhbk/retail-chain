@@ -1,4 +1,4 @@
-import AdminLayout from "@components/UI/AdminUI/AdminLayout"
+import AdminLayout from "@components/module/Layout/AdminLayout"
 import CreateEmployeeUI from "@components/UI/AdminUI/Manage/ManageEmployee/Create"
 import { NextPageWithLayout } from "@pages/_app"
 import { useRouter } from "next/router"

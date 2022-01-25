@@ -6,7 +6,8 @@ import { useEffect, useState } from "react"
 import { useMutation } from "react-query"
 
 const useLogin = (admin: boolean) => {
-	const setInfo = useStoreActions(s => s.setInfo)
+	const setStoreInfo = useStoreActions(s => s.setStoreInfo)
+	const setEmployeeInfo = useStoreActions(s => s.setEmployeeInfo)
 	const toast = useChakraToast()
 	const router = useRouter()
 
@@ -15,7 +16,7 @@ const useLogin = (admin: boolean) => {
 	const { values, setValue, errors, setError } = useFormCore<LoginEmployeeInput>({
 		email: "",
 		password: "",
-		remember: false,
+		remember: false
 	})
 
 	useEffect(() => {
@@ -36,29 +37,26 @@ const useLogin = (admin: boolean) => {
 		return isSubmittable
 	}
 
-	const { mutate: mutateLoginEmployee, isLoading: isLoadingLoginEmployee } = useMutation(
-		() => loginEmployee(values),
-		{
-			onSuccess: data => {
-				setInfo(data)
-				router.push("/sale")
-			},
-			onError: (err: any) => {
-				console.log(err.response)
-				toast({ title: "Error", message: err.response.data.message, status: "error" })
-			},
+	const { mutate: mutateLoginEmployee, isLoading: isLoadingLoginEmployee } = useMutation(() => loginEmployee(values), {
+		onSuccess: data => {
+			setEmployeeInfo(data)
+			router.push("/")
+		},
+		onError: (err: any) => {
+			console.log(err.response)
+			toast({ title: "Error", message: err.response.data.message, status: "error" })
 		}
-	)
+	})
 
 	const { mutate: mutateLoginStore, isLoading: isLoadingLoginStore } = useMutation(() => loginStore(values), {
 		onSuccess: data => {
-			setInfo(data)
+			setStoreInfo(data)
 			router.push("/admin")
 		},
 		onError: (err: any) => {
 			console.log(err.response)
 			toast({ title: "Error", message: err.response.data.message, status: "error" })
-		},
+		}
 	})
 
 	const handleLogin = () => {
@@ -76,7 +74,7 @@ const useLogin = (admin: boolean) => {
 		setValue,
 		errors,
 		validate,
-		generalError,
+		generalError
 	}
 }
 export default useLogin

@@ -1,4 +1,4 @@
-import AdminLayout from "@components/UI/AdminUI/AdminLayout"
+import AdminLayout from "@components/module/Layout/AdminLayout"
 import BranchDetailUI from "@components/UI/AdminUI/Manage/ManageBranch/Detail"
 import { useRouter } from "next/router"
 import { ReactElement } from "react"

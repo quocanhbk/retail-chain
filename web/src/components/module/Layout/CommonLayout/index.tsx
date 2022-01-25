@@ -1,16 +1,9 @@
-import { Flex } from "@chakra-ui/react"
-import { useState } from "react"
+import { BoxProps, Flex } from "@chakra-ui/react"
 import { useRouter } from "next/router"
-import { useQuery } from "react-query"
-import Header from "./Header"
-import { useStoreActions } from "@store"
-import { getStoreInfo } from "@api"
+import Header, { HeaderProps } from "./Header"
 import { AnimatePresence } from "framer-motion"
 import { LoadingScreen, Motion } from "@components/shared"
 import { useTheme } from "@hooks"
-interface AdminLayoutProps {
-	children: React.ReactNode
-}
 
 const variants = {
 	initial: {
@@ -30,30 +23,20 @@ const variants = {
 	}
 }
 
-export const AdminLayout = ({ children }: AdminLayoutProps) => {
+interface CommonLayoutProps extends HeaderProps {
+	children: React.ReactNode
+	isLoading?: boolean
+	maxW?: BoxProps["maxW"]
+}
+
+export const CommonLayout = ({ children, isLoading, maxW = "64rem", ...headerProps }: CommonLayoutProps) => {
 	const router = useRouter()
-	const [loading, setLoading] = useState(true)
 	const { backgroundPrimary } = useTheme()
-	const setInfo = useStoreActions(action => action.setInfo)
-
-	useQuery("store-info", () => getStoreInfo(), {
-		enabled: loading,
-		onSuccess: data => {
-			setInfo(data)
-			setLoading(false)
-		},
-		onError: () => {
-			router.push("/login")
-			setLoading(false)
-		},
-		retry: false
-	})
-
 	return (
 		<Flex direction="column" h="100vh">
-			<LoadingScreen isLoading={loading} />
+			<LoadingScreen isLoading={isLoading} />
 			<Flex direction="column" h="100vh">
-				<Header />
+				<Header {...headerProps} />
 				<AnimatePresence exitBeforeEnter initial={false}>
 					<Motion.Flex
 						flex={1}
@@ -68,7 +51,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
 						exit="exit"
 						transition={{ type: "tween", duration: 0.25 }}
 					>
-						<Motion.Box w="full" maxW="64rem">
+						<Motion.Box w="full" maxW={maxW}>
 							{children}
 						</Motion.Box>
 					</Motion.Flex>
@@ -78,4 +61,4 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
 	)
 }
 
-export default AdminLayout
+export default CommonLayout
