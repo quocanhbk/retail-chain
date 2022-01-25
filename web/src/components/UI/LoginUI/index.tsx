@@ -24,7 +24,7 @@ export const LoginUI = () => {
 	useQuery("get-guard", () => getGuard(), {
 		onSuccess: role => {
 			if (role === "store") router.push("/admin")
-			else if (role === "employee") router.push("/sale")
+			else if (role === "employee") router.push("/product")
 		}
 	})
 

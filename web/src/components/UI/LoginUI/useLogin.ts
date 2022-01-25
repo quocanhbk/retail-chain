@@ -41,7 +41,7 @@ const useLogin = (admin: boolean) => {
 		{
 			onSuccess: data => {
 				setInfo(data)
-				router.push("/sale")
+				router.push("/product")
 			},
 			onError: (err: any) => {
 				console.log(err.response)

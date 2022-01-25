@@ -68,7 +68,7 @@ export const EmployeeLayout = ({ children }: EmployeeLayoutProps) => {
 						exit="exit"
 						transition={{ type: "tween", duration: 0.25 }}
 					>
-						<Motion.Box w="full" maxW="64rem">
+						<Motion.Box w="full" maxW={"110rem"}>
 							{children}
 						</Motion.Box>
 					</Motion.Flex>

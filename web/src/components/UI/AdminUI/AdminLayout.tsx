@@ -51,7 +51,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
 
 	return (
 		<Flex direction="column" h="100vh">
-			<LoadingScreen isLoading={loading} />
+			<LoadingScreen isLoading={loading} isAdmin/>
 			<Flex direction="column" h="100vh">
 				<Header />
 				<AnimatePresence exitBeforeEnter initial={false}>

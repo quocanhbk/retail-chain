@@ -5,9 +5,10 @@ import { Motion } from "."
 
 interface LoadingScreenProps {
 	isLoading?: boolean
+	isAdmin?: boolean
 }
 
-export const LoadingScreen = ({ isLoading }: LoadingScreenProps) => {
+export const LoadingScreen = ({ isLoading, isAdmin }: LoadingScreenProps) => {
 	const { backgroundSecondary } = useTheme()
 
 	return (
@@ -37,7 +38,7 @@ export const LoadingScreen = ({ isLoading }: LoadingScreenProps) => {
 								fontFamily={"Brandon"}
 								mb={4}
 							>
-								BKRM ADMIN
+								BKRM{isAdmin&& "ADMIN"} 
 							</Heading>
 							<Flex align="center">
 								<Spinner color="telegram.500" size="sm" thickness="3px" />

@@ -22,27 +22,33 @@ export const employeeRoles = [
 export const baseNavMenus = [
 	{
 		id: "inventory",
+		text: "Hàng hóa",
+		path: "/product",
 		subMenus: [
-			{id:"category", text: "Danh muc", path: "", enable : true},
-			{id:"priceBook", text: "Thiet lap gia", path: "", enable: true},
-			{id:"inventoryCount", text: "Kiem ke", path: "", enable: true}
+			{id:"category", text: "Danh mục", path: "/product", enable : true},
+			{id:"priceBook", text: "Thiết lập giá", path: "/priceBook", enable: true},
+			{id:"inventoryCount", text: "Kiểm kê", path: "/inventoryCount", enable: true}
 		]
 	},
 	{
 		id: "transaction",
+		text: "Giao dịch",
+		path: "/cart",
 		subMenus: [
-			{id:"cart", text: "Gio hang", path: "", enable : true},
-			{id:"invoice", text: "Don mua hang", path: "", enable: true},
-			{id:"return", text: "Tra hang", path: "", enable: true},
-			{id:"purchaseReceipt", text: "Nhap hang", path: "", enable: true},
-			{id:"purchareReturn", text: "Tra hang nhap", path: "", enable: true},
+			{id:"cart", text: "Giỏ hàng", path: "/cart", enable : true},
+			{id:"invoice", text: "Đơn mua hàng", path: "/invoice", enable: true},
+			{id:"return", text: "Trả hàng", path: "/return", enable: true},
+			{id:"purchaseReceipt", text: "Nhập hàng", path: "/purchaseReceipt", enable: true},
+			{id:"purchaseReturn", text: "Trả hàng nhập", path: "/purchaseReturn", enable: true},
 		]
 	},
 	{
 		id: "partner",
+		text: "Đối tác",
+		path: "/customer",
 		subMenus: [
-			{id:"customer", text: "Khach hang", path: "", enable : true},
-			{id:"supplier", text: "Nha cung cap", path: "", enable: true},
+			{id:"customer", text: "Khách hàng", path: "/customer", enable : true},
+			{id:"supplier", text: "Nhà cung cấp", path: "/supplier", enable: true},
 		]
 	},
 	
