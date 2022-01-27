@@ -7,7 +7,7 @@ import {
 } from "@chakra-ui/react"
 import { FormControl } from "@components/shared"
 import { ChakraModal, DateInput } from "@components/shared"
-import { useChakraToast, useFormCore } from "@hooks"
+import { useChakraToast,useTheme, useFormCore } from "@hooks"
 import { useRouter } from "next/router"
 import { useEffect, useRef, useState } from "react"
 import CategorySearchInput from "./CategorySearchInput"
@@ -22,6 +22,7 @@ interface AddNewProductModalProps {
 const AddNewProductModal = ({ isOpen, onClose }: AddNewProductModalProps) => {
 	const toast = useChakraToast()
 	const router = useRouter()
+	const { backgroundSecondary } = useTheme()
 	const {
 		values,
 		setValue,
@@ -53,7 +54,7 @@ const AddNewProductModal = ({ isOpen, onClose }: AddNewProductModalProps) => {
 		<ChakraModal title="Thêm hàng hóa" isOpen={isOpen} onClose={onClose} size="6xl" initialFocusRef={inputRef}>
 			<chakra.form onSubmit={handleSubmit} noValidate>
 				<FormControl label="Mã hàng hóa" mb={4} isRequired={false}>
-					<Input value={values.code} onChange={e => setValue("code", e.target.value)} placeholder="Mã tư động" ref={inputRef} />
+					<Input value={values.code} bg={backgroundSecondary} onChange={e => setValue("code", e.target.value)} placeholder="Mã tư động" ref={inputRef} />
 				</FormControl>
 
 				<FormControl label="Mã vạch" mb={4} isRequired={true}>
