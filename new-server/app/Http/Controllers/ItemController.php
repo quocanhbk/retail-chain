@@ -40,6 +40,7 @@ class ItemController extends Controller
             'quantity' => ['nullable', 'numberic', 'min:0'],
             'base_price' => ['nullable', 'numeric', 'min:0'],
             'sell_price' => ['nullable', 'numeric', 'min:0'],
+            'image' => ['nullable', 'string', 'max:2048']
         ];
 
         $validator = Validator::make($data, $rules);
@@ -57,8 +58,8 @@ class ItemController extends Controller
             'code' => $code,
             'barcode' => $data['barcode'],
             'name' => $data['name'],
-            'price' => $data['price'],
             'store_id' => $store_id,
+            'image' => $data['image'],
         ]);
 
         ItemProperty::create([
@@ -102,7 +103,7 @@ class ItemController extends Controller
     public function getItems(Request $request) {
         $store_id = $request->get('store_id');
         $search = $request->query('search') ?? '';
-        $count = $request->query('count') ?? 10;
+        $count = $request->query('count') ?? 20;
 
         // search by code, barcode, name, category
         $items = Item::with('category')->where('store_id', $store_id)
@@ -154,9 +155,7 @@ class ItemController extends Controller
     }
 
     public function getItemsBySearch(Request $request) {
-        error_log("getItemsBySearch");
         $store_id = $request->get('store_id');
-        error_log($store_id);
         $search = $request->query('search') ?? '';
         $count = $request->query('count') ?? 10;
 

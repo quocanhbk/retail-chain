@@ -1,6 +1,7 @@
 import { createBranch, CreateBranchInput } from "@api"
 import { createSupplier, CreateSupplierInput } from "@api"
-import { Box, Button, chakra, Stack } from "@chakra-ui/react"
+import { Box, Button, chakra, Input, Stack } from "@chakra-ui/react"
+import { FormControl } from "@components/shared"
 import { BackableTitle, TextControl } from "@components/shared"
 import { useChakraToast, useFormCore } from "@hooks"
 import router from "next/router"
@@ -12,6 +13,7 @@ const CreateSupplierUI = () => {
 	const { values, setValue, errors, setError } = useFormCore<CreateSupplierInput>({
 		name: "",
 		address: "",
+		code:"",
 		email: "",
 		phone: "",
 		tax: "",
@@ -77,50 +79,63 @@ const CreateSupplierUI = () => {
 				<chakra.form onSubmit={handleCreateSupplier}>
 					<Stack direction={["column", "row"]} justify="space-between" spacing={8}>
 						<Box w="full" maxW="24rem">
-							{/* <ImageInput
-						file={(values.image as File) ?? "/images/store.jpg"}
-						onSubmit={f => setValue("image", f)}
-					/> */}
-							<TextControl
-								label="Tên nhà cung cấp"
-								value={values.name}
-								onChange={value => setValue("name", value)}
-								error={errors.name}
-								inputRef={inputRef}
-							/>
-							<TextControl
-								label="Địa chỉ nhà cung cấp"
-								value={values.address}
-								onChange={value => setValue("address", value)}
-								error={errors.address}
-							/>
-							<TextControl
-								label="Email nhà cung cấp"
-								value={values.email}
-								onChange={value => setValue("email", value)}
-								error={errors.email}
-							/>
-							
+							<FormControl label={"Mã nhà cung cấp"} mb={4} isRequired={false}>
+								<Input
+									value={values.code}
+									onChange={e => setValue("code", e.target.value)}
+									placeholder="Mã tự động"
+									type="text"
+								/>
+							</FormControl>
+							<FormControl label="Tên nhà cung cấp" mb={4} isRequired={true}>
+								<Input
+									value={values.name}
+									onChange={e => setValue("name", e.target.value)}
+									error={errors.name}
+									type="text"
+								/>
+							</FormControl>
+							<FormControl label="Địa chỉ nhà cung cấp" mb={4} isRequired={false}>
+								<Input
+									value={values.address}
+									onChange={e => setValue("address", e.target.value)}
+									error={errors.address}
+									type="text"
+								/>
+							</FormControl>
+							<FormControl label="Email nhà cung cấp" mb={4} isRequired={false}>
+								<Input
+									value={values.email}
+									onChange={e => setValue("email", e.target.value)}
+									error={errors.email}
+									type="email"
+								/>
+							</FormControl>
 						</Box>
 						<Box w="full" maxW="24rem" mr={4}>
-						<TextControl
-								label="Số điện thoại nhà cung cấp"
-								value={values.phone || ""}
-								onChange={value => setValue("phone", value)}
-								error={errors.phone}
-							/>
-							<TextControl
-								label="Mã số thuế"
-								value={values.tax}
-								onChange={value => setValue("tax", value)}
-								error={errors.tax}
-							/>
-							<TextControl
-								label="Ghi chú"
-								value={values.note}
-								onChange={value => setValue("note", value)}
-								error={errors.note}
-							/>
+							<FormControl label="Số điện thoại nhà cung cấp" mb={4} isRequired={true}>
+								<Input
+									value={values.phone || ""}
+									onChange={e => setValue("phone", e.target.value)}
+									error={errors.phone}
+									type="phone"
+								/>
+							</FormControl>
+							<FormControl label="Mã số thuế" mb={4} isRequired={false}>
+								<Input
+									value={values.tax}
+									onChange={e => setValue("tax", e.target.value)}
+									error={errors.tax}
+									type="text"
+								/>
+							</FormControl>
+							<FormControl label="Ghi chú" mb={4} isRequired={false}>
+								<Input
+									value={values.note}
+									onChange={e => setValue("note", e.target.value)}
+									type="text"
+								/>
+							</FormControl>
 						</Box>
 					</Stack>
 					<Button isLoading={isLoading} type="submit">
