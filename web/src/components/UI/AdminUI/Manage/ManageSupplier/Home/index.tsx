@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, VStack, Text, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon} from "@chakra-ui/react"
+import { Box, Button, Flex, Heading, Text, SimpleGrid } from "@chakra-ui/react"
 import { SearchInput } from "@components/shared"
 import { useQuery } from "react-query"
 import { useState } from "react"
@@ -6,43 +6,36 @@ import Link from "next/link"
 import { getSuppliers } from "@api"
 import SupplierCardSkeleton from "./SupplierCardSkeleton"
 import SupplierCard from "./SupplierCard"
+import { useTheme } from "@hooks"
 
 const HomeSupplierUI = () => {
-	const {data: suppliers, isLoading } =  useQuery("supplier", () => getSuppliers())
-	const isError = !suppliers
+	const { data: suppliers, isLoading, isError } = useQuery("suppliers", () => getSuppliers())
 	const [searchText, setSearchText] = useState("")
+	const theme = useTheme()
 
 	const render = () => {
 		if (isLoading)
 			return (
-				<VStack align="stretch">
-					{Array(5)
+				<SimpleGrid columns={4} spacing={4}>
+					{Array(8)
 						.fill(null)
 						.map((_, index) => (
 							<SupplierCardSkeleton key={index} />
 						))}
-				</VStack>
+				</SimpleGrid>
 			)
-		if (isError) return <Box>Error</Box>
-		if (suppliers.length === 0)
-			return (
-				<Text color="blackAlpha.600" fontSize={"sm"}>
-					{"Không có nhà cung cấp nào!"}
-				</Text>
-			)
+		if (isError || !suppliers) return <Box>Error</Box>
+
+		if (suppliers.length === 0) return <Text color={theme.textSecondary}>{"Không có nhà cung cấp nào!"}</Text>
+
 		return (
-			<Accordion allowMultiple>
+			<SimpleGrid columns={4}>
 				{suppliers
-					.filter(supplier => (
-						`${supplier.name.toLowerCase()} , ${supplier.phone} , ${supplier.email}`.indexOf(searchText) !== -1
-					))
+					.filter(supplier => `${supplier.name.toLowerCase()} , ${supplier.phone} , ${supplier.email}`.indexOf(searchText) !== -1)
 					.map((supplier, index) => (
-						<SupplierCard
-							key={index}
-							data={supplier}
-						/>
-				))}
-			</Accordion>
+						<SupplierCard key={index} data={supplier} />
+					))}
+			</SimpleGrid>
 		)
 	}
 
@@ -63,7 +56,7 @@ const HomeSupplierUI = () => {
 				value={searchText}
 				onChange={e => setSearchText(e.target.value)}
 				placeholder="Tìm kiếm nhà cung cấp"
-				mb={2}
+				mb={4}
 				onClear={() => setSearchText("")}
 			/>
 			{render()}

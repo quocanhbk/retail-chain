@@ -1,20 +1,38 @@
-import { Box, Button, Divider, Flex, HStack, Input, NumberInput, NumberInputField, Stack, Text, Textarea, VStack } from "@chakra-ui/react"
-import { BackableTitle, FormControl } from "@components/shared"
+import {
+	Box,
+	Button,
+	Flex,
+	Grid,
+	HStack,
+	Input,
+	NumberInput,
+	NumberInputField,
+	Spinner,
+	Stack,
+	Text,
+	Textarea,
+	theme,
+	VStack
+} from "@chakra-ui/react"
+import { BackableTitle, LoadingOverlay, SubmitConfirmAlert } from "@components/shared"
 import { currency } from "@helper"
 import { useTheme } from "@hooks"
+import { BsThreeDots } from "react-icons/bs"
 import DiscountInput from "./DiscountInput"
 import ItemSearchInput from "./ItemSearchInput"
 import PurchaseItem from "./PurchaseItem"
 import Sidebar from "./Sidebar"
 import SupplierSearchInput from "./Sidebar/SupplierSearchInput"
 import useCreateImport from "./useCreateImport"
+import useSearchQuery from "./useSearchQuery"
 
-const ImportCreateUI = () => {
+interface ImportCreateUIProps {
+	id?: number
+}
+
+const ImportCreateUI = ({ id }: ImportCreateUIProps) => {
 	const { backgroundSecondary, fillPrimary, textSecondary } = useTheme()
 	const {
-		searchText,
-		setSearchText,
-		searchQuery,
 		handleClickDefaultItem,
 		handleClickItem,
 		mappedItems,
@@ -24,12 +42,23 @@ const ImportCreateUI = () => {
 		needToPay,
 		values,
 		setValue,
-		mutateCreatePurchaseSheet,
-		isLoading
-	} = useCreateImport()
+		isLoading,
+		readOnly,
+		handleConfirmButtonClick,
+		mutateDeletePurchaseSheet,
+		isDeletingPurchaseSheet,
+		confirmDelete,
+		setConfirmDelete,
+		data,
+		isLoadingData
+	} = useCreateImport(id)
+
+	const { searchText, setSearchText, searchQuery } = useSearchQuery()
+
 	return (
-		<Flex direction="column" p={4} h="full">
-			<BackableTitle text="Tạo phiếu nhập hàng" backPath="/main/inventory/import" />
+		<Flex direction="column" p={4} h="full" pos="relative">
+			<LoadingOverlay isLoading={isLoadingData} />
+			<BackableTitle text={id ? "Xem phiếu nhập hàng" : "Tạo phiếu nhập hàng"} backPath="/main/inventory/import" />
 			<Stack direction="row" flex={1} spacing={4} overflow="hidden">
 				<VStack align="stretch" bg={backgroundSecondary} p={4} rounded="md" flex={5} flexShrink={0} overflow="hidden" spacing={4}>
 					<ItemSearchInput
@@ -53,11 +82,14 @@ const ImportCreateUI = () => {
 						<Text w="8rem" textAlign={"right"}>
 							Thành tiền
 						</Text>
+						<Box px={2}>
+							<BsThreeDots />
+						</Box>
 					</HStack>
 					{mappedItems.length > 0 ? (
 						<VStack align="stretch" spacing={2}>
 							{mappedItems.map(item => (
-								<PurchaseItem key={item.item_id} data={item} />
+								<PurchaseItem key={item.item_id} data={item} readOnly={readOnly} />
 							))}
 						</VStack>
 					) : (
@@ -69,7 +101,7 @@ const ImportCreateUI = () => {
 				<VStack align="stretch" flex={2} flexShrink={0} spacing={4}>
 					<Sidebar>
 						<VStack align="stretch" spacing={4}>
-							<SupplierSearchInput selectedSupplier={selectedSupplier} onSelectSupplier={setSelectedSupplier} />
+							<SupplierSearchInput selectedSupplier={selectedSupplier} onSelectSupplier={setSelectedSupplier} readOnly={!!id} />
 							<Flex align="center">
 								<Text flex={1}>{"Mã phiếu nhập"}</Text>
 								<Input
@@ -79,6 +111,7 @@ const ImportCreateUI = () => {
 									value={values.code}
 									onChange={e => setValue("code", e.target.value)}
 									variant={"filled"}
+									readOnly={!!id}
 								/>
 							</Flex>
 							<Flex align="center">
@@ -96,6 +129,7 @@ const ImportCreateUI = () => {
 									value={values.discount}
 									onChange={discount => setValue("discount", discount)}
 									maxCash={needToPay}
+									readOnly={readOnly}
 								/>
 							</Flex>
 							<Flex align="center">
@@ -114,6 +148,7 @@ const ImportCreateUI = () => {
 									onChange={(_, value) => setValue("paid_amount", value)}
 									min={0}
 									max={needToPay}
+									isReadOnly={readOnly}
 								>
 									<NumberInputField pr={4} textAlign={"right"} />
 								</NumberInput>
@@ -125,15 +160,36 @@ const ImportCreateUI = () => {
 									onChange={e => setValue("note", e.target.value)}
 									variant="filled"
 									resize={"none"}
+									isReadOnly={readOnly}
 								/>
 							</Box>
 						</VStack>
 					</Sidebar>
-					<Button onClick={() => mutateCreatePurchaseSheet()} isLoading={isLoading} isDisabled={mappedItems.length === 0}>
-						{"Xác nhận"}
+					<Button
+						onClick={handleConfirmButtonClick}
+						isLoading={isLoading}
+						isDisabled={mappedItems.length === 0}
+						colorScheme={readOnly ? "yellow" : "telegram"}
+					>
+						{id && readOnly ? "Chỉnh sửa" : "Xác nhận"}
 					</Button>
+					{id && (
+						<Button onClick={() => setConfirmDelete(true)} variant={"ghost"} colorScheme={"red"}>
+							{"Xóa"}
+						</Button>
+					)}
 				</VStack>
 			</Stack>
+			<SubmitConfirmAlert
+				isOpen={confirmDelete}
+				onClose={() => setConfirmDelete(false)}
+				onConfirm={mutateDeletePurchaseSheet}
+				title="Xác nhận xóa phiếu nhập"
+				isLoading={isDeletingPurchaseSheet}
+				color="red"
+			>
+				<Text>{`Bạn có chắc muốn xóa phiếu nhập hàng ${data?.code}`}</Text>
+			</SubmitConfirmAlert>
 		</Flex>
 	)
 }

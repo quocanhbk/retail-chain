@@ -16,14 +16,13 @@ class CreatePurchaseSheetItemsTable extends Migration
         Schema::create('purchase_sheet_items', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->bigInteger('purchase_sheet_id')->unsigned();
-            $table->bigInteger('item_id')->unsigned();
+            $table->unsignedBigInteger('purchase_sheet_id');
+            $table->unsignedBigInteger('item_id')->unsigned();
             $table->integer('quantity');
-            $table->string('unit');
-            $table->decimal('price', 15, 2);
-            $table->decimal('discount', 15, 2);
+            $table->unsignedBigInteger('price');
+            $table->unsignedBigInteger('discount');
             $table->string('discount_type');
-            $table->decimal('total', 15, 2);
+            $table->unsignedBigInteger('total');
             $table->foreign('purchase_sheet_id')->references('id')->on('purchase_sheets')->onDelete('cascade');
             $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
         });

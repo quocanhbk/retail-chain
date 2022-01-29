@@ -1,41 +1,24 @@
-import { Box, Flex, Text, Skeleton } from "@chakra-ui/react"
-import { useTheme } from "@hooks"
+import { chakra, Skeleton } from "@chakra-ui/react"
 
 const PurchaseSheetCardSkeleton = () => {
-	const theme = useTheme()
-
 	return (
-		<Box py={1} align="stretch" background={theme.backgroundSecondary} rounded="md" w="15rem" cursor="pointer" _hover={{}}>
-			<Box borderBottom={"1px"} borderColor={theme.borderPrimary} py={2} px={4}>
-				<Skeleton>
-					<Text fontWeight={"bold"} w="full">
-						CODE
-					</Text>
-				</Skeleton>
-			</Box>
-			<Box py={2} px={4}>
-				<Flex align="center" mb={2}>
-					<Skeleton>
-						<Text>{"Supplier Name"}</Text>
-					</Skeleton>
-				</Flex>
-				<Flex align="center" mb={2}>
-					<Skeleton>
-						<Text>{"Employee"}</Text>
-					</Skeleton>
-				</Flex>
-				<Flex align="center" mb={2}>
-					<Skeleton>
-						<Text>{"Date Date Date"}</Text>
-					</Skeleton>
-				</Flex>
-				<Flex align="center" mb={2}>
-					<Skeleton>
-						<Text>$$$$$$$$$$$</Text>
-					</Skeleton>
-				</Flex>
-			</Box>
-		</Box>
+		<chakra.tr>
+			<chakra.td p={2}>
+				<Skeleton>CODE</Skeleton>
+			</chakra.td>
+			<chakra.td p={2} textAlign={"center"}>
+				<Skeleton>Supplier name</Skeleton>
+			</chakra.td>
+			<chakra.td p={2} textAlign={"center"}>
+				<Skeleton>Time</Skeleton>
+			</chakra.td>
+			<chakra.td p={2} textAlign={"right"}>
+				<Skeleton>Total</Skeleton>
+			</chakra.td>
+			<chakra.td p={2} textAlign={"right"}>
+				<Skeleton>Need to pay</Skeleton>
+			</chakra.td>
+		</chakra.tr>
 	)
 }
 

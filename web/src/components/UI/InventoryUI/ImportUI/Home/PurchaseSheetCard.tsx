@@ -1,63 +1,43 @@
-import { PurchaseSheet, Employee, Supplier } from "@api"
-import { Box, theme, Flex, Text } from "@chakra-ui/react"
+import { PurchaseSheetDetail } from "@api"
+import { chakra } from "@chakra-ui/react"
 import { useTheme } from "@hooks"
 import { format } from "date-fns"
-import { BsTruck, BsPerson, BsClock, BsCurrencyDollar } from "react-icons/bs"
-
+import { currency } from "@helper"
+import { useRouter } from "next/router"
 interface PurchaseSheetCardProps {
-	data: PurchaseSheet & {
-		employee: Employee
-		supplier: Supplier
-		created_at: string
-	}
+	data: Omit<PurchaseSheetDetail, "purchaseSheetItems" | "branch">
 }
 
 const PurchaseSheetCard = ({ data: ps }: PurchaseSheetCardProps) => {
+	const router = useRouter()
 	const theme = useTheme()
-
 	return (
-		<Box
-			key={ps.id}
-			py={1}
-			align="stretch"
-			background={theme.backgroundSecondary}
-			rounded="md"
-			w="15rem"
+		<chakra.tr
+			onClick={() => router.push(`/main/inventory/import/${ps.id}`)}
 			cursor="pointer"
-			_hover={{ bg: theme.backgroundThird }}
+			_hover={{
+				bg: theme.backgroundThird
+			}}
 		>
-			<Box borderBottom={"1px"} borderColor={theme.borderPrimary} py={2} px={4}>
-				<Text fontWeight={"bold"} w="full">
-					{ps.code}
-				</Text>
-			</Box>
-			<Box py={2} px={4}>
-				<Flex align="center" mb={2}>
-					<Box mr={4}>
-						<BsTruck size="1rem" />
-					</Box>
-					<Text>{ps.supplier.name}</Text>
-				</Flex>
-				<Flex align="center" mb={2}>
-					<Box mr={4}>
-						<BsPerson size="1rem" />
-					</Box>
-					<Text>{ps.employee.name}</Text>
-				</Flex>
-				<Flex align="center" mb={2}>
-					<Box mr={4}>
-						<BsClock size="1rem" />
-					</Box>
-					<Text>{format(new Date(ps.created_at), "HH:mm dd/MM/yyyy")}</Text>
-				</Flex>
-				<Flex align="center" mb={2} color={ps.total - ps.paid_amount > 0 ? theme.fillDanger : theme.textSecondary}>
-					<Box mr={4}>
-						<BsCurrencyDollar size="1rem" />
-					</Box>
-					<Text fontWeight={ps.total - ps.paid_amount > 0 ? "bold" : "normal"}>Tiền cần trả: {ps.total - ps.paid_amount}</Text>
-				</Flex>
-			</Box>
-		</Box>
+			<chakra.td p={2}>{ps.code}</chakra.td>
+			<chakra.td p={2} textAlign={"center"}>
+				{ps.supplier.name}
+			</chakra.td>
+			<chakra.td p={2} textAlign={"center"}>
+				{format(new Date(ps.created_at), "HH:mm dd/MM/yyyy")}
+			</chakra.td>
+			<chakra.td p={2} textAlign={"right"}>
+				{currency(ps.total)}
+			</chakra.td>
+			<chakra.td
+				p={2}
+				textAlign={"right"}
+				color={ps.total - ps.paid_amount > 0 ? theme.fillDanger : theme.textPrimary}
+				fontWeight={ps.total - ps.paid_amount > 0 ? "bold" : "normal"}
+			>
+				{currency(ps.total - ps.paid_amount)}
+			</chakra.td>
+		</chakra.tr>
 	)
 }
 

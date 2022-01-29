@@ -21,7 +21,12 @@ export const getItemsBySearch = async (search: string): Promise<{ currentItems: 
 	}
 }
 
-export const moveItem = async (barcode: string) => {
+export const moveItem = async (barcode: string): Promise<Item> => {
 	const { data } = await fetcher.post(`/item/move`, { barcode })
+	return data
+}
+
+export const getLastPurchasePrice = async (itemId: number): Promise<number> => {
+	const { data } = await fetcher.get(`/item/last-purchase-price/${itemId}`)
 	return data
 }

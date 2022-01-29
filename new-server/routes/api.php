@@ -133,6 +133,9 @@ Route::prefix('/item-category')->middleware([OnlyStoreAdmin::class])->group(func
 });
 
 Route::prefix('/item')->group(function () {
+    // GET /last-purchase-price/{item_id} - get the last purchase price of an item
+    Route::get('/last-purchase-price/{item_id}', [ItemController::class, 'getLastPurchasePrice'])->middleware([OnlyEmployee::class, HavePurchaseRole::class]);
+
     Route::middleware([OnlyStoreAdmin::class])->group(function () {
         // POST /item - create a new item
         Route::post('/', [ItemController::class, 'create']);

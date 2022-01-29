@@ -1,3 +1,4 @@
+import { Branch } from "./branch"
 import { Employee } from "./employee"
 import fetcher from "./fetcher"
 import { Item } from "./item"
@@ -26,6 +27,18 @@ export interface PurchaseSheet {
 	note?: string
 }
 
+export interface PurchaseSheetItemDetail extends PurchaseSheetItem {
+	item: Item
+}
+
+export interface PurchaseSheetDetail extends PurchaseSheet {
+	purchase_sheet_items: PurchaseSheetItemDetail[]
+	employee: Employee
+	branch: Branch
+	supplier: Supplier
+	created_at: string
+}
+
 export interface CreatePurchaseSheetInput
 	extends Pick<PurchaseSheet, "code" | "supplier_id" | "discount" | "discount_type" | "note" | "paid_amount"> {
 	items: (Pick<PurchaseSheetItem, "quantity" | "price" | "discount" | "discount_type" | "item_id"> & { item: Item })[]
@@ -36,7 +49,21 @@ export const createPurchaseSheet = async (input: CreatePurchaseSheetInput) => {
 	return data
 }
 
-export const getPurchaseSheets = async (): Promise<(PurchaseSheet & { employee: Employee; supplier: Supplier; created_at: string })[]> => {
+export const updatePurchaseSheet = async (id: number, input: CreatePurchaseSheetInput) => {
+	const { data } = await fetcher.patch(`/purchase-sheet/${id}`, input)
+	return data
+}
+
+export const getPurchaseSheets = async (): Promise<Omit<PurchaseSheetDetail, "purchaseSheetItems" | "branch">[]> => {
 	const { data } = await fetcher.get("/purchase-sheet")
 	return data
+}
+
+export const getPurchaseSheet = async (id: number): Promise<PurchaseSheetDetail> => {
+	const { data } = await fetcher.get(`/purchase-sheet/${id}`)
+	return data
+}
+
+export const deletePurchaseSheet = async (id: number) => {
+	await fetcher.delete(`/purchase-sheet/${id}`)
 }

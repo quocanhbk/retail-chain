@@ -58,7 +58,7 @@ const theme = extendTheme({
 		text: {
 			primary: {
 				light: "#171717",
-				dark: "#FFFFFF"
+				dark: "#E4E6EB"
 			},
 			secondary: {
 				light: "#4A5568",

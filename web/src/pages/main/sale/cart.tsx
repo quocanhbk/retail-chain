@@ -1,9 +1,15 @@
+import { Grid, Heading } from "@chakra-ui/react"
 import { EmployeeLayout } from "@components/module"
-import ImportHomeUI from "@components/UI/InventoryUI/ImportUI/Home"
+import { useTheme } from "@hooks"
 import { ReactElement } from "react"
 
 const CartPage = () => {
-	return <ImportHomeUI />
+	const theme = useTheme()
+	return (
+		<Grid placeItems={"center"} h="full" pb={24}>
+			<Heading color={theme.textSecondary}>This page is under development</Heading>
+		</Grid>
+	)
 }
 
 CartPage.getLayout = function getLayout(page: ReactElement) {

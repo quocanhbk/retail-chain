@@ -1,21 +1,68 @@
-import { createPurchaseSheet, CreatePurchaseSheetInput, getItemsBySearch, Item, moveItem, Supplier } from "@api"
-import { toast } from "@chakra-ui/react"
-import { useChakraToast, useFormCore, useThrottle } from "@hooks"
+import {
+	createPurchaseSheet,
+	CreatePurchaseSheetInput,
+	deletePurchaseSheet,
+	getLastPurchasePrice,
+	getPurchaseSheet,
+	Item,
+	moveItem,
+	Supplier,
+	updatePurchaseSheet
+} from "@api"
+import { useChakraToast, useFormCore } from "@hooks"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { useMutation, useQuery } from "react-query"
 
-const useCreateImport = () => {
-	const { mutate: mutateMoveItem } = useMutation(moveItem)
-	const [searchText, setSearchText] = useState("")
-	const throttledText = useThrottle(searchText, 1000)
+const useCreateImport = (id?: number) => {
+	const { mutateAsync: mutateMoveItem } = useMutation(moveItem)
 	const toast = useChakraToast()
 	const router = useRouter()
-	const searchQuery = useQuery(["getItemsBySearch", throttledText], () => getItemsBySearch(throttledText), {
-		enabled: throttledText.length > 0
+
+	const [readOnly, setReadOnly] = useState(!!id)
+
+	// refetch data when readonly set to true
+	useEffect(() => {
+		if (readOnly) {
+			refetch()
+		}
+	}, [readOnly])
+
+	const {
+		refetch,
+		data,
+		isLoading: isLoadingData
+	} = useQuery(["getPurchaseSheet", id], () => getPurchaseSheet(id!), {
+		enabled: false,
+		onSuccess: data => {
+			initForm({
+				supplier_id: data.supplier_id,
+				code: data.code,
+				discount: data.discount,
+				discount_type: data.discount_type,
+				note: data.note,
+				paid_amount: data.paid_amount,
+				items: data.purchase_sheet_items.map(item => ({
+					item_id: item.item_id,
+					quantity: item.quantity,
+					price: item.price,
+					discount: item.discount,
+					discount_type: item.discount_type,
+					item: item.item
+				}))
+			})
+			setSelectedSupplier(data.supplier)
+		},
+		onError: () => {
+			toast({
+				title: "Lấy dữ liệu thất bại",
+				message: "Vui lòng thử lại sau",
+				status: "error"
+			})
+		}
 	})
 
-	const { values, setValue } = useFormCore<CreatePurchaseSheetInput>({
+	const { values, setValue, initForm } = useFormCore<CreatePurchaseSheetInput>({
 		supplier_id: null,
 		code: "",
 		discount: 0,
@@ -29,8 +76,7 @@ const useCreateImport = () => {
 	const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null)
 
 	const handleClickDefaultItem = (item: Item) => {
-		mutateMoveItem(item.barcode)
-		handleClickItem(item)
+		mutateMoveItem(item.barcode).then(handleClickItem)
 	}
 
 	const handleClickItem = (item: Item) => {
@@ -47,6 +93,20 @@ const useCreateImport = () => {
 				item
 			}
 		])
+	}
+
+	const handleConfirmButtonClick = () => {
+		if (readOnly) {
+			setReadOnly(false)
+			return
+		}
+
+		if (!id) {
+			mutateCreatePurchaseSheet()
+			return
+		}
+
+		mutateUpdatePurchaseSheet()
 	}
 
 	const mappedItems = values.items.map(item => ({
@@ -76,6 +136,12 @@ const useCreateImport = () => {
 				"items",
 				values.items.map(i => (i.item_id === item.item_id ? { ...i, discount: 0, discount_type: discountType } : i))
 			)
+		},
+		onRemove: () => {
+			setValue(
+				"items",
+				values.items.filter(i => i.item_id !== item.item_id)
+			)
 		}
 	}))
 
@@ -87,7 +153,7 @@ const useCreateImport = () => {
 		setValue("paid_amount", needToPay)
 	}, [needToPay])
 
-	const { mutate: mutateCreatePurchaseSheet, isLoading } = useMutation(
+	const { mutate: mutateCreatePurchaseSheet, isLoading: isCreatingPurchaseSheet } = useMutation(
 		() => createPurchaseSheet({ ...values, supplier_id: selectedSupplier?.id || null }),
 		{
 			onSuccess: () => {
@@ -100,10 +166,38 @@ const useCreateImport = () => {
 		}
 	)
 
+	const { mutate: mutateUpdatePurchaseSheet, isLoading: isUpdatingPurchaseSheet } = useMutation(() => updatePurchaseSheet(id!, values), {
+		onSuccess: () => {
+			toast({
+				title: "Cập nhật phiếu nhập thành công",
+				status: "success"
+			})
+			setReadOnly(true)
+		}
+	})
+
+	const { mutate: mutateDeletePurchaseSheet, isLoading: isDeletingPurchaseSheet } = useMutation(() => deletePurchaseSheet(id!), {
+		onSuccess: () => {
+			toast({
+				title: "Xóa phiếu nhập thành công",
+				status: "success"
+			})
+			router.push("/main/inventory/import")
+		},
+		onError: () => {
+			toast({
+				title: "Xóa phiếu nhập thất bại",
+				message: "Vui lòng thử lại sau",
+				status: "error"
+			})
+		}
+	})
+
+	const [confirmDelete, setConfirmDelete] = useState(false)
+
+	const isLoading = isCreatingPurchaseSheet || isUpdatingPurchaseSheet
+
 	return {
-		searchText,
-		setSearchText,
-		searchQuery,
 		handleClickDefaultItem,
 		handleClickItem,
 		values,
@@ -113,8 +207,16 @@ const useCreateImport = () => {
 		total,
 		needToPay,
 		setValue,
-		mutateCreatePurchaseSheet,
-		isLoading
+		handleConfirmButtonClick,
+		isLoading,
+		readOnly,
+		setReadOnly,
+		mutateDeletePurchaseSheet,
+		isDeletingPurchaseSheet,
+		confirmDelete,
+		setConfirmDelete,
+		data,
+		isLoadingData
 	}
 }
 

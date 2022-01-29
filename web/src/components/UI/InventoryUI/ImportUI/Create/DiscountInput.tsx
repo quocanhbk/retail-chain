@@ -8,9 +8,10 @@ interface DiscountInputProps extends Omit<NumberInputProps, "value" | "onChange"
 	discountType: "cash" | "percent"
 	onChangeDiscountType: (type: "cash" | "percent") => void
 	maxCash: number
+	readOnly?: boolean
 }
 
-const DiscountInput = ({ value, onChange, discountType, maxCash, onChangeDiscountType, ...rest }: DiscountInputProps) => {
+const DiscountInput = ({ value, onChange, discountType, maxCash, onChangeDiscountType, readOnly = false, ...rest }: DiscountInputProps) => {
 	const theme = useTheme()
 
 	// toggle discount type
@@ -29,6 +30,7 @@ const DiscountInput = ({ value, onChange, discountType, maxCash, onChangeDiscoun
 			h="2.5rem"
 			w="8rem"
 			variant={"filled"}
+			isReadOnly={readOnly}
 			{...rest}
 		>
 			<NumberInputField textAlign={"right"} pr={10} />

@@ -1,7 +1,7 @@
 import { createSupplier, CreateSupplierInput, Supplier } from "@api"
 import { isEmail } from "@helper"
 import { useChakraToast, useFormCore } from "@hooks"
-import { FormEvent, useEffect } from "react"
+import { ChangeEvent, FormEvent, useEffect } from "react"
 import { useMutation, useQueryClient } from "react-query"
 
 const useCreateSupplier = (isOpen: boolean, onClose: () => void, onSelectSupplier: (supplier: Supplier | null) => void) => {
@@ -43,9 +43,9 @@ const useCreateSupplier = (isOpen: boolean, onClose: () => void, onSelectSupplie
 	const { values, setValue, initForm } = useFormCore<CreateSupplierInput>({
 		code: "",
 		name: "",
-		address: "",
 		phone: "",
 		email: "",
+		address: "",
 		note: "",
 		tax: ""
 	})
@@ -99,7 +99,7 @@ const useCreateSupplier = (isOpen: boolean, onClose: () => void, onSelectSupplie
 	const formControlData = Object.keys(values).map(key => ({
 		label: formInfo[key].label,
 		value: values[key],
-		onChange: e => setValue(key as keyof CreateSupplierInput, e.target.value),
+		onChange: (e: ChangeEvent<HTMLInputElement>) => setValue(key as keyof CreateSupplierInput, e.target.value),
 		isRequired: formInfo[key].required,
 		placeholder: formInfo[key].placeholder || ""
 	}))

@@ -1,8 +1,8 @@
-import { InputGroup, InputLeftElement, Input, InputRightElement, IconButton, InputGroupProps } from "@chakra-ui/react"
+import { InputGroup, InputLeftElement, Input, InputRightElement, IconButton, InputProps } from "@chakra-ui/react"
 import { useTheme } from "@hooks"
 import { BsSearch, BsX } from "react-icons/bs"
 
-interface SearchInputProps extends InputGroupProps {
+interface SearchInputProps extends InputProps {
 	onClear?: () => void
 	value: string
 	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
@@ -11,7 +11,7 @@ interface SearchInputProps extends InputGroupProps {
 export const SearchInput = ({ onClear, value, ...props }: SearchInputProps) => {
 	const { backgroundSecondary } = useTheme()
 	return (
-		<InputGroup {...props}>
+		<InputGroup>
 			<InputLeftElement>
 				<BsSearch />
 			</InputLeftElement>

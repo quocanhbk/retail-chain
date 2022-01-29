@@ -8,6 +8,7 @@ use App\Models\ItemCategory;
 use App\Models\ItemPriceHistory;
 use App\Models\ItemProperty;
 use App\Models\ItemQuantity;
+use App\Models\PurchaseSheetItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -231,9 +232,7 @@ class ItemController extends Controller
         $item->image = "https://149.28.148.73/merged-db/" . $default_item->image_url;
         $item->save();
 
-        return response()->json([
-            'message' => 'Item moved'
-        ]);
+        return response()->json($item);
     }
 
     public function getPriceHistory(Request $request, $item_id) {
@@ -280,4 +279,19 @@ class ItemController extends Controller
 
         return response()->json($item);
     }
+        // get last purchase price of an item
+        public function getLastPurchasePrice(Request $request, $item_id) {
+            $branch_id = Auth::user()->employment->branch_id;
+
+            // get last purchase sheet item of an item
+            $purchase_sheet_item = PurchaseSheetItem::where('item_id', $item_id)->whereHas('purchaseSheet', function ($query) use ($branch_id) {
+                $query->where('branch_id', $branch_id);
+            })->orderBy('id', 'desc')->first();
+
+            if (!$purchase_sheet_item) {
+                return response()->json(0);
+            }
+
+            return response()->json($purchase_sheet_item->price);
+        }
 }

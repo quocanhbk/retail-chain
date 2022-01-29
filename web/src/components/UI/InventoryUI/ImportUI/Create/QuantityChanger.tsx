@@ -3,9 +3,10 @@ import { NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInpu
 interface QuantityChangerProps {
 	value: number
 	onChange: (value: number) => void
+	readOnly?: boolean
 }
 
-const QuantityChanger = ({ value, onChange }: QuantityChangerProps) => {
+const QuantityChanger = ({ value, onChange, readOnly }: QuantityChangerProps) => {
 	return (
 		<NumberInput
 			value={value}
@@ -16,6 +17,7 @@ const QuantityChanger = ({ value, onChange }: QuantityChangerProps) => {
 			w="6rem"
 			flexShrink={0}
 			variant={"filled"}
+			isReadOnly={readOnly}
 		>
 			<NumberInputField textAlign={"right"} />
 			<NumberInputStepper>

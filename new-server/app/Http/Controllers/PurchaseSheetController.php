@@ -132,7 +132,8 @@ class PurchaseSheetController extends Controller
 
     public function getPurchaseSheet(Request $request, $id) {
         $branch_id = Auth::user()->employment->branch_id;
-        $purchase_sheet = PurchaseSheet::with(['purchaseSheetItems', 'employee', 'branch', 'supplier'])->where('branch_id', $branch_id)->find($id);
+        $purchase_sheet = PurchaseSheet::with(['purchaseSheetItems.item', 'employee', 'branch', 'supplier'])->where('branch_id', $branch_id)->find($id);
+        error_log(json_encode($purchase_sheet));
         return response()->json($purchase_sheet);
     }
 
@@ -145,13 +146,12 @@ class PurchaseSheetController extends Controller
             'id' => ['required', 'integer', Rule::exists('purchase_sheets', 'id')->where('branch_id', $branch_id)->where('employee_id', Auth::user()->id)],
             'discount' => ['nullable', 'numeric'],
             'discount_type' => ['nullable', 'in:cash,percent', 'max:255'],
-            'status' => ['nullable', 'string', 'max:255'],
+            'paid_amount' => ['required', 'numeric'],
             'note' => ['nullable', 'string', 'max:255'],
 
             'items' => ['required', 'array', 'min:1'],
             'items.*.item_id' => ['required', 'integer', Rule::exists('items', 'id')->where('store_id', $store_id)],
             'items.*.quantity' => ['required', 'numeric', 'min:1'],
-            'items.*.unit' => ['required', 'string', 'max:255'],
             'items.*.price' => ['required', 'numeric', 'min:0'],
             'items.*.discount' => ['nullable', 'numeric'],
             'items.*.discount_type' => ['nullable', 'in:cash,percent'],
@@ -164,6 +164,7 @@ class PurchaseSheetController extends Controller
 
         $purchase_sheet = PurchaseSheet::find($id);
 
+        $total = 0;
         // calculate total of each item
         $items = $data['items'];
         foreach ($items as &$item) {
@@ -178,7 +179,6 @@ class PurchaseSheetController extends Controller
         }
 
         // calculate total of purchase sheet
-        $total = 0;
         foreach ($items as $item) {
             $total += $item['total'];
         }
@@ -193,12 +193,13 @@ class PurchaseSheetController extends Controller
             }
         }
 
+
         // update purchase sheet
         $purchase_sheet->update([
-            'discount' => $discount,
-            'discount_type' => $discount_type,
+            'discount' => $data['discount'] ?? $purchase_sheet->discount,
+            'discount_type' => $data['discount_type'] ?? $purchase_sheet->discount_type,
+            'paid_amount' => $data['paid_amount'] ?? $purchase_sheet->paid_amount,
             'total' => $total,
-            'status' => $data['status'] ?? $purchase_sheet->status,
             'note' => $data['note'] ?? $purchase_sheet->note,
         ]);
 
@@ -212,7 +213,6 @@ class PurchaseSheetController extends Controller
                 'purchase_sheet_id' => $purchase_sheet->id,
                 'item_id' => $item['item_id'],
                 'quantity' => $item['quantity'],
-                'unit' => $item['unit'],
                 'price' => $item['price'],
                 'discount' => $item['discount'] ?? 0,
                 'discount_type' => $item['discount_type'] ?? 'cash',
@@ -266,4 +266,6 @@ class PurchaseSheetController extends Controller
 
         return response()->json(['success' => 'Purchase sheet deleted']);
     }
+
+
 }

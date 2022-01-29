@@ -29,4 +29,9 @@ class PurchaseSheetItem extends Model
     {
         return $this->belongsTo(PurchaseSheet::class);
     }
+
+    public function item()
+    {
+        return $this->belongsTo(Item::class);
+    }
 }

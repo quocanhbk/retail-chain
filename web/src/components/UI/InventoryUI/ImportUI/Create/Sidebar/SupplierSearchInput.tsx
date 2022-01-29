@@ -15,16 +15,17 @@ import {
 } from "@chakra-ui/react"
 import { useClickOutside, useTheme, useThrottle } from "@hooks"
 import { ChangeEvent, useState } from "react"
-import { BsPerson, BsPlus, BsSearch, BsTruck, BsX } from "react-icons/bs"
+import { BsPlus, BsSearch, BsTruck, BsX } from "react-icons/bs"
 import { useQuery } from "react-query"
 import CreateSupplierModal from "./CreateSupplierModal"
 
 interface SupplierSearchInputProps {
 	selectedSupplier: Supplier | null
 	onSelectSupplier: (supplier: Supplier | null) => void
+	readOnly: boolean
 }
 
-export const SupplierSearchInput = ({ selectedSupplier, onSelectSupplier }: SupplierSearchInputProps) => {
+export const SupplierSearchInput = ({ selectedSupplier, onSelectSupplier, readOnly }: SupplierSearchInputProps) => {
 	const { backgroundSecondary, backgroundPrimary, borderPrimary, backgroundThird } = useTheme()
 
 	const [isOpen, setIsOpen] = useState(false)
@@ -103,17 +104,19 @@ export const SupplierSearchInput = ({ selectedSupplier, onSelectSupplier }: Supp
 					readOnly={!!selectedSupplier}
 					pr="3rem"
 				/>
-				<InputRightElement width="3rem">
-					<IconButton
-						aria-label="add supplier"
-						icon={selectedSupplier ? <BsX size="1.25rem" /> : <BsPlus size="1.25rem" />}
-						size="sm"
-						onClick={() => (selectedSupplier ? onSelectSupplier(null) : setIsModalOpen(true))}
-						rounded="full"
-						variant={"ghost"}
-						colorScheme={"gray"}
-					/>
-				</InputRightElement>
+				{!readOnly && (
+					<InputRightElement width="3rem">
+						<IconButton
+							aria-label="add supplier"
+							icon={selectedSupplier ? <BsX size="1.25rem" /> : <BsPlus size="1.25rem" />}
+							size="sm"
+							onClick={() => (selectedSupplier ? onSelectSupplier(null) : setIsModalOpen(true))}
+							rounded="full"
+							variant={"ghost"}
+							colorScheme={"gray"}
+						/>
+					</InputRightElement>
+				)}
 			</InputGroup>
 			<Box pos="absolute" top="100%" left={0} w="full" transform="translateY(0.5rem)" zIndex="dropdown">
 				<ScaleFade in={isOpen && searchText.length > 0} unmountOnExit>

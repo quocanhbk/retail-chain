@@ -15,14 +15,14 @@ import {
 } from "@chakra-ui/react"
 import { useClickOutside, useTheme } from "@hooks"
 import { useState } from "react"
-import { BsSearch, BsX } from "react-icons/bs"
+import { BsSearch } from "react-icons/bs"
 import SearchItem from "./SearchItem"
-import useCreateImport from "./useCreateImport"
+import useSearchQuery from "./useSearchQuery"
 
 interface ItemSearchInputProps {
 	searchText: string
 	setSearchText: (text: string) => void
-	searchQuery: ReturnType<typeof useCreateImport>["searchQuery"]
+	searchQuery: ReturnType<typeof useSearchQuery>["searchQuery"]
 	onDefaultItemClick: (item: Item) => void
 	onItemClick: (item: Item) => void
 }
@@ -66,6 +66,7 @@ export const ItemSearchInput = ({
 						item={item}
 						onClick={() => {
 							onItemClick(item)
+							setSearchText("")
 							setIsOpen(false)
 						}}
 					/>
@@ -80,6 +81,7 @@ export const ItemSearchInput = ({
 									item={item}
 									onClick={() => {
 										onDefaultItemClick(item)
+										setSearchText("")
 										setIsOpen(false)
 									}}
 								/>

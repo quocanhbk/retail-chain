@@ -1,58 +1,44 @@
 import { Supplier } from "@api"
-import { AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Avatar, Box, Button, Flex, HStack, Text } from "@chakra-ui/react"
+import { Box, Flex, Text } from "@chakra-ui/react"
+import { useTheme } from "@hooks"
+import { BsPhone } from "react-icons/bs"
+import { FiMail } from "react-icons/fi"
 import Link from "next/link"
-import { employeeRoles } from "@constants"
-import { baseURL } from "src/api/fetcher"
-
 interface SupplierCardProps {
 	data: Supplier
 }
 
 const SupplierCard = ({ data }: SupplierCardProps) => {
-	return (
-		// <Link href={`/admin/manage/supplier/${data.id}`}>
-		// 	<Flex key={data.id} bg="white" rounded="md" shadow="base" p={2} align="center" w="full" cursor="pointer">
-		// 		{/* <Avatar size="xs" src={`${baseURL}/employee/avatar/${data.id}`} alt={data.name} mr={2} /> */}
-		// 		<Text fontWeight={500} w="15rem" isTruncated mr={2} flexShrink={0}>
-		// 			{data.name}
-		// 		</Text>
-		// 		<Text fontSize={"sm"} color="blackAlpha.600" w="15rem" isTruncated flexShrink={0} mr={2}>
-		// 			{data.email}
-		// 		</Text>
+	const theme = useTheme()
 
-		// 		<Text fontSize={"sm"} color="blackAlpha.600" w="15rem" isTruncated flexShrink={0}>
-		// 			{data.address}
-		// 		</Text>
-		// 		<Text fontSize={"sm"} color="blackAlpha.600" w="8rem" isTruncated flexShrink={0} >
-		// 			{data.phone}
-		// 		</Text>
-		// 	</Flex>
-		// </Link>
-		<AccordionItem pt={2} border="none">
-			<Flex bg="white" rounded="md" shadow="base" align="center" w="full" cursor="pointer">
-				<AccordionButton justifyContent="space-between" rounded="md" _expanded={{ bg: '#e1deff' }}>
-					<Text fontWeight={500} w="15rem" isTruncated mr={2} flexShrink={0} textAlign="left">
-					{data.name}
+	return (
+		<Link href={`/admin/manage/supplier/${data.id}`}>
+			<Box rounded="md" backgroundColor={theme.backgroundSecondary} cursor="pointer" _hover={{ bg: theme.backgroundThird }}>
+				<Flex align="center" borderBottom={"1px"} borderColor={theme.borderPrimary} px={4} py={2}>
+					<Text fontWeight={"bold"} fontSize={"lg"}>
+						{data.name}
 					</Text>
-					<Text fontSize={"sm"} color="blackAlpha.600" w="10rem" isTruncated flexShrink={0}>
-					{data.email}
-					</Text>
-					<Text fontSize={"sm"} color="blackAlpha.600" w="12rem" isTruncated flexShrink={0} >
-					{data.address}
-					</Text>
-					<Text fontSize={"sm"} color="blackAlpha.600" w="8rem" isTruncated flexShrink={0} >
-					{data.phone}
-					</Text>
-					<AccordionIcon justifyContent="right"/>
-				</AccordionButton></Flex>
-			<AccordionPanel pb={2}>
-				<Link href={`/admin/manage/supplier/${data.id}`}>
-					<Button size="sm" colorScheme='blue'>
-						{"Chi tiết"}
-					</Button>
-				</Link>
-			</AccordionPanel>
-		</AccordionItem>
+				</Flex>
+				<Box p={4}>
+					<Flex align="center" w="full" mb={2}>
+						<Box>
+							<BsPhone />
+						</Box>
+						<Text ml={2} flex={1} isTruncated>
+							{data.phone}
+						</Text>
+					</Flex>
+					<Flex align="center" w="full">
+						<Box>
+							<FiMail />
+						</Box>
+						<Text ml={2} flex={1} isTruncated>
+							{data.email}
+						</Text>
+					</Flex>
+				</Box>
+			</Box>
+		</Link>
 	)
 }
 

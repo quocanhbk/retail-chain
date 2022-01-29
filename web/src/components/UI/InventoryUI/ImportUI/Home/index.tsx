@@ -1,44 +1,38 @@
-import { Box, Button, Flex, Heading, Text, Wrap, WrapItem } from "@chakra-ui/react"
+import { Box, Button, chakra, Flex, Heading, Text } from "@chakra-ui/react"
 import Link from "next/link"
 import useImportHome from "./useImportHome"
 import PurchaseSheetCard from "./PurchaseSheetCard"
 import PurchaseSheetCardSkeleton from "./PurchaseSheetCardSkeleton"
 import { SearchInput } from "@components/shared"
+import { useTheme } from "@hooks"
 
 const ImportHomeUI = () => {
 	const { purchaseSheetsQuery, search, setSearch } = useImportHome()
 	const { data, isLoading, isError } = purchaseSheetsQuery
+	const theme = useTheme()
 
 	const render = () => {
 		if (isLoading) {
-			return (
-				<Wrap spacing={4}>
-					{[...Array(10)].map((_, i) => (
-						<WrapItem key={i}>
-							<PurchaseSheetCardSkeleton />
-						</WrapItem>
-					))}
-				</Wrap>
-			)
+			return [...Array(8)].map((_, i) => <PurchaseSheetCardSkeleton key={i} />)
 		}
 
 		if (!data || isError) {
-			return <Text>{"Có lỗi xảy ra, vui lòng thử lại sau"}</Text>
+			return (
+				<chakra.tr>
+					<chakra.td colSpan={5} textAlign={"center"}>
+						<Text py={4} color={theme.textSecondary}>
+							{"Có lỗi xảy ra, vui lòng thử lại sau"}
+						</Text>
+					</chakra.td>
+				</chakra.tr>
+			)
 		}
 
-		return (
-			<Wrap spacing={4}>
-				{data.map(ps => (
-					<WrapItem key={ps.id}>
-						<PurchaseSheetCard data={ps} />
-					</WrapItem>
-				))}
-			</Wrap>
-		)
+		return data.map(ps => <PurchaseSheetCard key={ps.id} data={ps} />)
 	}
 
 	return (
-		<Box p={4}>
+		<Flex direction="column" p={4} h="full">
 			<Flex w="full" align="center" justify="space-between" mb={4}>
 				<Heading fontSize={"2xl"}>Nhập hàng</Heading>
 				<Link href="/main/inventory/import/create">
@@ -48,8 +42,27 @@ const ImportHomeUI = () => {
 				</Link>
 			</Flex>
 			<SearchInput value={search} onChange={e => setSearch(e.target.value)} mb={4} />
-			<Box>{render()}</Box>
-		</Box>
+			<Box p={4} rounded="md" background={theme.backgroundSecondary} flex={1}>
+				<chakra.table w="full">
+					<chakra.thead>
+						<chakra.tr borderBottom={"1px"} borderColor={theme.borderPrimary}>
+							<chakra.th textAlign={"left"} p={2}>
+								Mã phiếu
+							</chakra.th>
+							<chakra.th p={2}>Nhà cung cấp</chakra.th>
+							<chakra.th p={2}>Thời gian nhập</chakra.th>
+							<chakra.th p={2} textAlign={"right"}>
+								Tổng tiền
+							</chakra.th>
+							<chakra.th p={2} textAlign={"right"}>
+								Tiền cần trả
+							</chakra.th>
+						</chakra.tr>
+					</chakra.thead>
+					<chakra.tbody>{render()}</chakra.tbody>
+				</chakra.table>
+			</Box>
+		</Flex>
 	)
 }
 
