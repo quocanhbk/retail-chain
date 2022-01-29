@@ -119,7 +119,7 @@ Route::prefix('/supplier')->middleware([AdminOrPurchaser::class])->group(functio
     Route::delete('/{supplier_id}', [SupplierController::class, 'delete']);
 });
 
-Route::prefix('/item-category')->middleware([OnlyStoreAdmin::class])->group(function () {
+Route::prefix('/item-category')->middleware([AdminOrSaleOrPurchaser::class])->group(function () {
     // POST /item-category - create a new item category
     Route::post('/', [ItemCategoryController::class, 'create']);
     // POST /item-category/bulk - create multiple item categories
@@ -136,7 +136,7 @@ Route::prefix('/item')->group(function () {
     // GET /last-purchase-price/{item_id} - get the last purchase price of an item
     Route::get('/last-purchase-price/{item_id}', [ItemController::class, 'getLastPurchasePrice'])->middleware([OnlyEmployee::class, HavePurchaseRole::class]);
 
-    Route::middleware([OnlyStoreAdmin::class])->group(function () {
+    Route::middleware([AdminOrSaleOrPurchaser::class])->group(function () {
         // POST /item - create a new item
         Route::post('/', [ItemController::class, 'create']);
         // PATCH /item/{item_id} - update an item by id

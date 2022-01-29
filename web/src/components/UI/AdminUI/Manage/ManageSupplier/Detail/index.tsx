@@ -18,14 +18,12 @@ const DetailSupplierUI = ({id} : SupplierDetailUiProps) => {
 		onSuccess: data => {
 			initForm({ ...data})
 		},
-        // onSuccess: data => {
-		// 	initForm({ ...data, image: `${baseURL}/branch/image/${data.image}` })
-		// },
 	})
     
 	const { values, setValue, errors, setError , initForm} = useFormCore<CreateSupplierInput>({
 		name: "",
 		address: "",
+		code: "",
 		email: "",
 		phone: "",
 		tax: "",
@@ -101,12 +99,13 @@ const DetailSupplierUI = ({id} : SupplierDetailUiProps) => {
 			<BackableTitle text={readOnly ? "Xem nhà cung cấp" : "Chỉnh sửa nhà cung cấp"} backPath="/admin/manage/supplier" mb={4} />
 			<Box w="50rem" maxW="full">
 				<chakra.form onSubmit={handleCreateSupplier}>
-					{/* <ImageInput
-						file={(values.image as File) ?? "/images/store.jpg"}
-						onSubmit={f => setValue("image", f)}
-					/> */}
 					<Stack direction={["column", "row"]} justify="space-between" spacing={8}>
 						<Box w="full" maxW="24rem">
+							<TextControl
+								label="Mã nhà cung cấp"
+								value={values.name}
+								readOnly={true}
+							/>
 							<TextControl
 								label="Tên nhà cung cấp"
 								value={values.name}

@@ -1,5 +1,5 @@
 import { EmployeeLayout } from "@components/module"
-import ProductHomeUI from "@components/UI/InventoryUI/ProductUI"
+import ProductHomeUI from "@components/UI/InventoryUI/ProductUI/Home"
 
 import { ReactElement } from "react"
 

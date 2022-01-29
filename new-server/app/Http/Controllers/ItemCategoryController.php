@@ -11,7 +11,7 @@ use Illuminate\Validation\Rule;
 class ItemCategoryController extends Controller
 {
     public function create(Request $request) {
-        $store_id = Auth::guard('stores')->user()->id;
+        $store_id = Auth::guard('employees')->user()->id;
         $data = $request->all();
         $rules = [
             'name' => ['required', 'string', 'max:255', Rule::unique('item_categories')->where('store_id', $store_id)],
@@ -37,7 +37,7 @@ class ItemCategoryController extends Controller
     }
 
     public function createBulk(Request $request) {
-        $store_id = Auth::guard('stores')->user()->id;
+        $store_id = Auth::guard('employees')->user()->id;
         $data = $request->all();
         $rules = [
             'item_categories' => ['required', 'array'],
@@ -69,13 +69,17 @@ class ItemCategoryController extends Controller
     }
 
     public function getItemCategories(Request $request) {
-        $store_id = Auth::guard('stores')->user()->id;
-        $item_categories = ItemCategory::where('store_id', $store_id)->get();
+        $store_id = Auth::guard('employees')->user()->id;
+        $search = $request->query('search');
+        $item_categories = ItemCategory::where('store_id', $store_id)
+            ->where('name', 'like', '%' . $search . '%')
+            ->get();
+
         return response()->json($item_categories);
     }
 
     public function update(Request $request, $item_category_id) {
-        $store_id = Auth::guard('stores')->user()->id;
+        $store_id = Auth::guard('employees')->user()->id;
         $data = $request->all();
         $data['id'] = $item_category_id;
         $rules = [
@@ -102,7 +106,7 @@ class ItemCategoryController extends Controller
     }
 
     public function delete(Request $request, $item_category_id) {
-        $store_id = Auth::guard('stores')->user()->id;
+        $store_id = Auth::guard('employees')->user()->id;
         $item_category = ItemCategory::where('store_id', $store_id)->where('id', $item_category_id)->first();
         if (!$item_category) {
             return response()->json([
