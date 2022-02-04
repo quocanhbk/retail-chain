@@ -3,7 +3,6 @@ import { useRouter } from "next/router"
 import Header, { HeaderProps } from "./Header"
 import { AnimatePresence } from "framer-motion"
 import { LoadingScreen, Motion } from "@components/shared"
-import { useTheme } from "@hooks"
 
 const variants = {
 	initial: {
@@ -31,11 +30,10 @@ interface CommonLayoutProps extends HeaderProps {
 
 export const CommonLayout = ({ children, isLoading, maxW = "64rem", ...headerProps }: CommonLayoutProps) => {
 	const router = useRouter()
-	const { backgroundPrimary } = useTheme()
 	return (
 		<Flex direction="column" h="100vh">
 			<LoadingScreen isLoading={isLoading} />
-			<Flex direction="column" h="100vh" backgroundColor={backgroundPrimary}>
+			<Flex direction="column" h="100vh" backgroundColor={"background.primary"}>
 				<Header {...headerProps} />
 				<AnimatePresence exitBeforeEnter initial={false}>
 					<Motion.Flex
@@ -43,7 +41,7 @@ export const CommonLayout = ({ children, isLoading, maxW = "64rem", ...headerPro
 						w="full"
 						justify={"center"}
 						overflow={"auto"}
-						backgroundColor={backgroundPrimary}
+						backgroundColor={"background.primary"}
 						key={router.pathname}
 						variants={variants}
 						initial="initial"

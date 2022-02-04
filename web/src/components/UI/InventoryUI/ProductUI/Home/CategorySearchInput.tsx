@@ -1,4 +1,4 @@
-import { Category, getCategories, getSuppliers, Supplier } from "@api"
+import { Category, getCategories } from "@api"
 import {
 	InputGroup,
 	InputLeftElement,
@@ -13,13 +13,12 @@ import {
 	InputRightElement,
 	IconButton
 } from "@chakra-ui/react"
-import { useClickOutside, useTheme, useThrottle } from "@hooks"
+import { useClickOutside, useThrottle } from "@hooks"
 import { ChangeEvent, useState } from "react"
-import { BsPerson, BsPlus, BsSearch, BsTruck, BsX } from "react-icons/bs"
-import {BiCategoryAlt} from "react-icons/bi"
+import { BsPlus, BsSearch, BsX } from "react-icons/bs"
+import { BiCategoryAlt } from "react-icons/bi"
 import { useQuery } from "react-query"
 import CreateCategoryModal from "./CreateCategory/CreateCaegoryModal"
-
 
 interface CategorySearchInputProps {
 	selectedCategory: Category | null
@@ -27,7 +26,6 @@ interface CategorySearchInputProps {
 }
 
 export const CategorySearchInput = ({ selectedCategory, onSelectCategory }: CategorySearchInputProps) => {
-	const { backgroundSecondary, backgroundPrimary, borderPrimary, backgroundThird } = useTheme()
 	const [isOpen, setIsOpen] = useState(false)
 	const [searchText, setSearchText] = useState("")
 	const thottleSearchText = useThrottle(searchText, 500)
@@ -70,7 +68,7 @@ export const CategorySearchInput = ({ selectedCategory, onSelectCategory }: Cate
 						key={category.id}
 						py={1}
 						px={2}
-						_hover={{ bg: backgroundThird }}
+						_hover={{ bg: "background.third" }}
 						cursor="pointer"
 						rounded="md"
 						onClick={() => handleSelectCategory(category)}
@@ -94,7 +92,7 @@ export const CategorySearchInput = ({ selectedCategory, onSelectCategory }: Cate
 				<Input
 					w="full"
 					value={selectedCategory ? selectedCategory.name : searchText}
-					background={backgroundSecondary}
+					background={"background.secondary"}
 					onChange={handleChange}
 					placeholder="Tìm kiếm danh mục"
 					onFocus={() => !selectedCategory && setIsOpen(true)}
@@ -115,12 +113,12 @@ export const CategorySearchInput = ({ selectedCategory, onSelectCategory }: Cate
 			</InputGroup>
 			<Box pos="absolute" top="100%" left={0} w="full" transform="translateY(0.5rem)" zIndex="dropdown">
 				<ScaleFade in={isOpen && searchText.length > 0} unmountOnExit>
-					<Box p={2} rounded="md" border="1px" background={backgroundPrimary} borderColor={borderPrimary} overflow={"auto"}>
+					<Box p={2} rounded="md" border="1px" background={backgroundPrimary} borderColor={"border.primary"} overflow={"auto"}>
 						{renderItems()}
 					</Box>
 				</ScaleFade>
 			</Box>
-			<CreateCategoryModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSelectCategory={onSelectCategory}/>
+			<CreateCategoryModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSelectCategory={onSelectCategory} />
 		</Box>
 	)
 }

@@ -1,12 +1,9 @@
 import { Box, Flex, Skeleton, Text } from "@chakra-ui/react"
-import { useTheme } from "@hooks"
 
 const SupplierCardSkeleton = () => {
-	const theme = useTheme()
-
 	return (
-		<Box rounded="md" backgroundColor={theme.backgroundSecondary}>
-			<Flex align="center" borderBottom={"1px"} borderColor={theme.borderPrimary} px={4} py={2}>
+		<Box rounded="md" backgroundColor={"background.secondary"}>
+			<Flex align="center" borderBottom={"1px"} borderColor={"border.primary"} px={4} py={2}>
 				<Skeleton>
 					<Text fontWeight={"bold"} fontSize={"lg"}>
 						Supplier name

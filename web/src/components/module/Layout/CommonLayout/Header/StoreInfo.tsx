@@ -1,5 +1,4 @@
 import { Box, Flex, ScaleFade, Text, useColorMode, useOutsideClick } from "@chakra-ui/react"
-import { useTheme } from "@hooks"
 import { useRef, useState } from "react"
 import { BsFillMoonFill, BsFillSunFill, BsPower, BsThreeDots } from "react-icons/bs"
 
@@ -16,9 +15,8 @@ const StoreInfo = ({ name, onLogout }: InfoProps) => {
 	})
 
 	const { colorMode, toggleColorMode } = useColorMode()
-	const { fillPrimary, backgroundSecondary, fillDanger, borderPrimary } = useTheme()
 	return (
-		<Flex align="center" px={4} py={1} bg={fillPrimary} rounded="md" pos="relative" zIndex={"dropdown"}>
+		<Flex align="center" px={4} py={1} bg={"fill.primary"} rounded="md" pos="relative" zIndex={"dropdown"}>
 			<Text fontWeight={"bold"} mr={4} fontSize={"lg"} color="white">
 				{name}
 			</Text>
@@ -29,12 +27,20 @@ const StoreInfo = ({ name, onLogout }: InfoProps) => {
 			</Box>
 			<Box pos="absolute" top="100%" right={0} transform={"translateY(0.5rem)"}>
 				<ScaleFade in={isOpen} unmountOnExit>
-					<Box background={backgroundSecondary} shadow="base" rounded="md" w="10rem" p={2} border="1px" borderColor={borderPrimary}>
+					<Box
+						background={"background.secondary"}
+						shadow="base"
+						rounded="md"
+						w="10rem"
+						p={2}
+						border="1px"
+						borderColor={"border.primary"}
+					>
 						<Flex align="center" w="full" cursor="pointer" onClick={() => toggleColorMode()} px={2} py={1}>
 							{colorMode === "light" ? <BsFillSunFill /> : <BsFillMoonFill />}
 							<Text ml={2}>{colorMode === "light" ? "Theme sáng" : "Theme tối"}</Text>
 						</Flex>
-						<Flex align="center" w="full" cursor="pointer" onClick={onLogout} px={2} py={1} color={fillDanger}>
+						<Flex align="center" w="full" cursor="pointer" onClick={onLogout} px={2} py={1} color={"fill.primary"}>
 							<BsPower />
 							<Text ml={2}>Đăng xuất</Text>
 						</Flex>

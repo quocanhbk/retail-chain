@@ -1,7 +1,6 @@
 import { getGuard } from "@api"
 import { Flex, Box, Button, Text, chakra, Heading } from "@chakra-ui/react"
 import { TextControl } from "@components/shared"
-import { useTheme } from "@hooks"
 import { useRouter } from "next/router"
 import { useState } from "react"
 import { useQuery } from "react-query"
@@ -28,8 +27,6 @@ export const LoginUI = () => {
 		}
 	})
 
-	const { fillPrimary, fillDanger, textSecondary } = useTheme()
-
 	return (
 		<Box>
 			<Flex overflow="hidden" mb={8} pos="relative" shadow="base">
@@ -51,13 +48,13 @@ export const LoginUI = () => {
 					bottom={0}
 					height={"4px"}
 					w="50%"
-					bg={fillPrimary}
+					bg={"fill.primary"}
 					left={currentMode === "employee" ? "0%" : "50%"}
 					transition="all 0.25s ease-in-out"
 				/>
 			</Flex>
 			<chakra.form onSubmit={e => e.preventDefault()}>
-				<Heading fontWeight="semibold" color={fillPrimary} fontSize="xl" mb={4}>
+				<Heading fontWeight="semibold" color={"fill.primary"} fontSize="xl" mb={4}>
 					ĐĂNG NHẬP
 				</Heading>
 				<TextControl label="Email" value={email} onChange={v => setValue("email", v)} error={errors.email} />
@@ -68,14 +65,14 @@ export const LoginUI = () => {
 					error={errors.password}
 					type="password"
 				/>
-				<Text fontSize="sm" w="full" textAlign="center" color={fillDanger} mb={2} h="1.2rem">
+				<Text fontSize="sm" w="full" textAlign="center" color={"fill.danger"} mb={2} h="1.2rem">
 					{generalError}
 				</Text>
 				<Button w="full" onClick={() => handleLogin()} isLoading={isLoading} type="submit" mb={4}>
 					{"Đăng Nhập"}
 				</Button>
-				<Box h="1px" bg={textSecondary} w="full" mb={2} />
-				<Text fontSize="sm" color={fillPrimary} cursor="pointer" onClick={() => router.push("/register")} fontWeight="black">
+				<Box h="1px" bg={"text.secondary"} w="full" mb={2} />
+				<Text fontSize="sm" color={"fill.primary"} cursor="pointer" onClick={() => router.push("/register")} fontWeight="black">
 					Tạo cửa hàng
 				</Text>
 			</chakra.form>

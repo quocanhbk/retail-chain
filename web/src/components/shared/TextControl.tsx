@@ -1,5 +1,4 @@
 import { FormControl, FormLabel, Input, FormControlProps, FormErrorMessage } from "@chakra-ui/react"
-import { useTheme } from "@hooks"
 import { ComponentProps } from "react"
 
 interface TextControlProps extends Omit<FormControlProps, "onChange"> {
@@ -14,20 +13,7 @@ interface TextControlProps extends Omit<FormControlProps, "onChange"> {
 	readOnly?: boolean
 }
 
-export const TextControl = ({
-	label,
-	error,
-	value,
-	onChange,
-	type,
-	name,
-	size,
-	inputRef,
-	readOnly,
-	...rest
-}: TextControlProps) => {
-	const { backgroundSecondary } = useTheme()
-
+export const TextControl = ({ label, error, value, onChange, type, name, size, inputRef, readOnly, ...rest }: TextControlProps) => {
 	return (
 		<FormControl isInvalid={!!error} mb={4} w="full" {...rest}>
 			<FormLabel mb={1}>{label}</FormLabel>
@@ -40,7 +26,7 @@ export const TextControl = ({
 				size={size}
 				w="full"
 				ref={inputRef}
-				backgroundColor={backgroundSecondary}
+				backgroundColor={"background.secondary"}
 				readOnly={readOnly}
 			/>
 			<FormErrorMessage>{error}</FormErrorMessage>

@@ -1,20 +1,16 @@
 import { Box, Flex, Heading, Wrap, WrapItem, Text, Button, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react"
 import { SearchInput } from "@components/shared"
 import Link from "next/link"
-import { useState } from "react"
-import { FaFileImport } from "react-icons/fa"
 import { IoIosArrowDown } from "react-icons/io"
-import { useQuery } from "react-query"
 import AddNewProductModal from "./AddNewProductModal"
 import ProductCard from "./ProductCard/ProductCard"
 import ProductCardSkeleton from "./ProductCard/ProductCardSkeleton"
 import useProductHome from "./useProductHome"
 
-
 const ProductHomeUI = () => {
-	const { allItemQuery, search, setSearch, setIsClose, isClose, searchQueryCurrent} = useProductHome()
-	const { data : items, isLoading : isLoadingItems, isError} = allItemQuery
-	const { data : itemsCurrent, isLoading : isLoadingItemsCurrent , isError: isErrorItemsCurrent } = searchQueryCurrent
+	const { allItemQuery, search, setSearch, setIsClose, isClose, searchQueryCurrent } = useProductHome()
+	const { data: items, isLoading: isLoadingItems, isError } = allItemQuery
+	const { data: itemsCurrent, isLoading: isLoadingItemsCurrent, isError: isErrorItemsCurrent } = searchQueryCurrent
 	// const currentItems = itemsCurrent && search !== ""? itemsCurrent.currentItems : items
 	const isLoading = isLoadingItems
 
@@ -30,7 +26,7 @@ const ProductHomeUI = () => {
 				</Wrap>
 			)
 		}
-		if ( isError || !items ) {
+		if (isError || !items) {
 			return <Text>{"Có lỗi xảy ra, vui lòng thử lại sau"}</Text>
 		}
 		return (
@@ -78,7 +74,7 @@ const ProductHomeUI = () => {
 				/>
 				<Box>{render()}</Box>
 			</Box>
-			<AddNewProductModal  isOpen={isClose !== true} onClose={() => setIsClose(true)} />
+			<AddNewProductModal isOpen={isClose !== true} onClose={() => setIsClose(true)} />
 		</Box>
 	)
 }

@@ -1,8 +1,8 @@
-import { Box, Collapse, Flex, FlexProps, Heading, IconButton, ScaleFade } from "@chakra-ui/react"
+import { Box, Flex, FlexProps, Heading, IconButton, ScaleFade } from "@chakra-ui/react"
 import { ReactNode, useState } from "react"
 import { BsArrowLeftShort, BsThreeDots } from "react-icons/bs"
 import Link from "next/link"
-import { useClickOutside, useTheme } from "@hooks"
+import { useClickOutside } from "@hooks"
 
 interface BackableTitleProps extends FlexProps {
 	backPath: string
@@ -13,7 +13,6 @@ interface BackableTitleProps extends FlexProps {
 export const BackableTitle = ({ backPath, text, children, ...rest }: BackableTitleProps) => {
 	const [isOpen, setIsOpen] = useState(false)
 
-	const { backgroundSecondary, borderPrimary, backgroundFade } = useTheme()
 	const boxRef = useClickOutside<HTMLDivElement>(() => setIsOpen(false))
 
 	return (
@@ -34,11 +33,11 @@ export const BackableTitle = ({ backPath, text, children, ...rest }: BackableTit
 						rounded="full"
 						aria-label="more"
 						colorScheme={"gray"}
-						bg={backgroundFade}
+						bg={"background.fade"}
 					/>
 					<Box pos="absolute" top={"100%"} right={0} transform={"translateY(0.5rem)"}>
 						<ScaleFade in={isOpen}>
-							<Box bg={backgroundSecondary} border="1px" borderColor={borderPrimary} p={2} rounded="md" w="10rem">
+							<Box bg={"background.secondary"} border="1px" borderColor={"border.primary"} p={2} rounded="md" w="10rem">
 								{children}
 							</Box>
 						</ScaleFade>

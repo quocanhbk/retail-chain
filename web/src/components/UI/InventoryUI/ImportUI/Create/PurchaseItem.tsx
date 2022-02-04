@@ -1,7 +1,6 @@
 import { getLastPurchasePrice } from "@api"
 import { Box, Flex, IconButton, Img, NumberInput, NumberInputField, Stack, Text, Tooltip } from "@chakra-ui/react"
 import { currency } from "@helper"
-import { useTheme } from "@hooks"
 import { useState } from "react"
 import { BsX } from "react-icons/bs"
 import { useQuery } from "react-query"
@@ -16,8 +15,6 @@ interface PurchaseItemProps {
 }
 
 const PurchaseItem = ({ data, readOnly = false }: PurchaseItemProps) => {
-	const theme = useTheme()
-
 	const format = (value: number) => {
 		// add comma separator
 		return value ? value.toLocaleString(undefined, { maximumFractionDigits: 0 }) : 0
@@ -40,7 +37,7 @@ const PurchaseItem = ({ data, readOnly = false }: PurchaseItemProps) => {
 				<Img src={data.item.image} boxSize={"2.5rem"} rounded="md" />
 				<Box ml={4} flex={1} overflow="hidden">
 					<Text isTruncated>{data.item.name}</Text>
-					<Text color={theme.textSecondary}>{data.item.barcode}</Text>
+					<Text color={"text.secondary"}>{data.item.barcode}</Text>
 				</Box>
 			</Flex>
 			<QuantityChanger value={data.quantity} onChange={data.onChangeQuantity} readOnly={readOnly} />
@@ -49,13 +46,13 @@ const PurchaseItem = ({ data, readOnly = false }: PurchaseItemProps) => {
 					<Tooltip
 						label={`Giá chênh lệnh lớn so với lần nhập trước: ${currency(oldPrice || 0)}`}
 						aria-label="A tooltip"
-						background={theme.backgroundThird}
-						color={theme.textPrimary}
+						background={"background.third"}
+						color={"text.primary"}
 						fontWeight={400}
 						maxW="10rem"
 						openDelay={500}
 					>
-						<Box color={theme.fillDanger} pos="absolute" left="0.5rem" top="50%" transform="translateY(-50%)" zIndex={2}>
+						<Box color={"fill.danger"} pos="absolute" left="0.5rem" top="50%" transform="translateY(-50%)" zIndex={2}>
 							<IoIosWarning />
 						</Box>
 					</Tooltip>

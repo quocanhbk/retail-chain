@@ -1,21 +1,6 @@
-import {
-	Box,
-	Button,
-	chakra,
-	Checkbox,
-	CheckboxGroup,
-	Flex,
-	HStack,
-	Input,
-	Radio,
-	RadioGroup,
-	Stack,
-	Text,
-	VStack
-} from "@chakra-ui/react"
+import { Box, Button, chakra, Checkbox, CheckboxGroup, HStack, Input, Radio, RadioGroup, Stack, Text, VStack } from "@chakra-ui/react"
 import { BackableTitle, DateInput, FormControl, Select } from "@components/shared"
 import { employeeRoles, genders } from "@constants"
-import { useTheme } from "@hooks"
 import AvatarInput from "./AvatarInput"
 import DeleteEmployeePopup from "./DeleteEmployeePopup"
 import useCreateEmployee from "./useCreateEmployee"
@@ -25,19 +10,8 @@ interface CreateEmployeeUIProps {
 }
 
 const CreateEmployeeUI = ({ id }: CreateEmployeeUIProps) => {
-	const {
-		branches,
-		values,
-		setValue,
-		handleSubmit,
-		isLoading,
-		readOnly,
-		setReadOnly,
-		confirmDelete,
-		setConfirmDelete,
-		employee
-	} = useCreateEmployee(id)
-	const { backgroundThird, fillDanger, borderPrimary } = useTheme()
+	const { branches, values, setValue, handleSubmit, isLoading, readOnly, setReadOnly, confirmDelete, setConfirmDelete, employee } =
+		useCreateEmployee(id)
 
 	return (
 		<Box p={4} w="full" maxW="50rem">
@@ -49,18 +23,18 @@ const CreateEmployeeUI = ({ id }: CreateEmployeeUIProps) => {
 							cursor="pointer"
 							px={2}
 							py={1}
-							_hover={{ bg: backgroundThird }}
+							_hover={{ bg: "background.third" }}
 							rounded="md"
 						>
 							{readOnly ? "Chỉnh sửa" : "Hủy chỉnh sửa"}
 						</Text>
 						<Text
 							onClick={() => setConfirmDelete(true)}
-							color={fillDanger}
+							color={"fill.danger"}
 							cursor="pointer"
 							px={2}
 							py={1}
-							_hover={{ bg: backgroundThird }}
+							_hover={{ bg: "background.third" }}
 							rounded="md"
 						>
 							{"Xóa"}
@@ -74,22 +48,14 @@ const CreateEmployeeUI = ({ id }: CreateEmployeeUIProps) => {
 					<Box w="full" maxW="24rem">
 						<FormControl label="Chi nhánh làm việc" mb={4} isRequired={!readOnly}>
 							<Select
-								selected={
-									branches!
-										.map(b => ({ ...b, value: b.name }))
-										.find(b => b.id === values.branch_id) || null
-								}
+								selected={branches!.map(b => ({ ...b, value: b.name })).find(b => b.id === values.branch_id) || null}
 								selections={branches!.map(b => ({ ...b, value: b.name }))}
 								onChange={newBranch => setValue("branch_id", newBranch ? newBranch.id : null)}
 								readOnly={readOnly}
 							/>
 						</FormControl>
 						<FormControl label="Tên nhân viên" mb={4} isRequired={!readOnly}>
-							<Input
-								value={values.name}
-								onChange={e => setValue("name", e.target.value)}
-								readOnly={readOnly}
-							/>
+							<Input value={values.name} onChange={e => setValue("name", e.target.value)} readOnly={readOnly} />
 						</FormControl>
 
 						<FormControl label="Email" mb={4} isRequired={!readOnly}>
@@ -128,14 +94,7 @@ const CreateEmployeeUI = ({ id }: CreateEmployeeUIProps) => {
 					<Box w="full" maxW="24rem">
 						<FormControl label="Quyền" mb={4} isRequired={!readOnly}>
 							<CheckboxGroup value={values.roles} onChange={value => setValue("roles", value)}>
-								<HStack
-									border="1px"
-									borderColor={borderPrimary}
-									px={4}
-									h="2.5rem"
-									rounded="md"
-									justify="space-between"
-								>
+								<HStack border="1px" borderColor={"border.primary"} px={4} h="2.5rem" rounded="md" justify="space-between">
 									{employeeRoles.map(r => (
 										<Checkbox key={r.id} value={r.id} isReadOnly={readOnly}>
 											{r.value}
@@ -154,22 +113,11 @@ const CreateEmployeeUI = ({ id }: CreateEmployeeUIProps) => {
 							/>
 						</FormControl>
 						<FormControl label="Ngày sinh" mb={4}>
-							<DateInput
-								value={values.birthday}
-								onChange={value => setValue("birthday", value)}
-								readOnly={readOnly}
-							/>
+							<DateInput value={values.birthday} onChange={value => setValue("birthday", value)} readOnly={readOnly} />
 						</FormControl>
 						<FormControl label="Giới tính" mb={4}>
 							<RadioGroup value={values.gender || undefined} onChange={v => setValue("gender", v)}>
-								<HStack
-									border="1px"
-									borderColor={borderPrimary}
-									px={4}
-									h="2.5rem"
-									rounded="md"
-									justify="space-between"
-								>
+								<HStack border="1px" borderColor={"border.primary"} px={4} h="2.5rem" rounded="md" justify="space-between">
 									{genders.map(gender => (
 										<Radio key={gender.id} value={gender.id} isReadOnly={readOnly}>
 											{gender.value}
@@ -178,27 +126,22 @@ const CreateEmployeeUI = ({ id }: CreateEmployeeUIProps) => {
 								</HStack>
 							</RadioGroup>
 						</FormControl>
-						<HStack mt={7}>
-							{!readOnly && (
-								<Button type="submit" isLoading={isLoading}>
-									{"Xác nhận"}
-								</Button>
-							)}
-							{!readOnly && id && (
-								<Button variant="ghost" onClick={() => setReadOnly(true)} w="6rem" c>
-									Hủy
-								</Button>
-							)}
-						</HStack>
 					</Box>
 				</Stack>
+				<HStack mt={4} borderTop={"1px"} borderColor={"border.primary"} pt={4}>
+					{!readOnly && (
+						<Button type="submit" isLoading={isLoading} w="10rem">
+							{"Xác nhận"}
+						</Button>
+					)}
+					{!readOnly && id && (
+						<Button variant="ghost" onClick={() => setReadOnly(true)} w="6rem" c>
+							Hủy
+						</Button>
+					)}
+				</HStack>
 			</chakra.form>
-			<DeleteEmployeePopup
-				isOpen={confirmDelete}
-				onClose={() => setConfirmDelete(false)}
-				employeeId={id}
-				employeeName={employee?.name}
-			/>
+			<DeleteEmployeePopup isOpen={confirmDelete} onClose={() => setConfirmDelete(false)} employeeId={id} employeeName={employee?.name} />
 		</Box>
 	)
 }

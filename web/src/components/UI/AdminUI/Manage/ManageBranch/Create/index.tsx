@@ -53,8 +53,8 @@ const CreateBranchUI = () => {
 						<AddEmployeeButton setIsCreatingEmployee={setIsAddingEmployee} />
 					</Flex>
 					<EmployeesTable employees={values.adding_employees} onRemove={removeEmployee} />
-					<Flex w="full" align="center" justify="flex-end" mt={6}>
-						<Button type="submit" w="6rem">
+					<Flex w="full" align="center" justify="flex-end" mt={4} pt={4} borderTop={"1px"} borderColor={"border.primary"}>
+						<Button type="submit" w="10rem">
 							{"Xác nhận"}
 						</Button>
 					</Flex>

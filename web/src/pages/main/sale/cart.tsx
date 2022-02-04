@@ -1,13 +1,11 @@
 import { Grid, Heading } from "@chakra-ui/react"
 import { EmployeeLayout } from "@components/module"
-import { useTheme } from "@hooks"
 import { ReactElement } from "react"
 
 const CartPage = () => {
-	const theme = useTheme()
 	return (
 		<Grid placeItems={"center"} h="full" pb={24}>
-			<Heading color={theme.textSecondary}>This page is under development</Heading>
+			<Heading color={"text.secondary"}>This page is under development</Heading>
 		</Grid>
 	)
 }

@@ -1,5 +1,4 @@
 import { ChakraProvider, cookieStorageManager, localStorageManager } from "@chakra-ui/react"
-import { UseThemeProvider } from "@hooks"
 import store from "@store"
 import { StoreProvider } from "easy-peasy"
 import { QueryClient, QueryClientProvider } from "react-query"
@@ -26,7 +25,7 @@ export const Provider = ({ cookies, children }: ProviderProps) => {
 		<StoreProvider store={store}>
 			<QueryClientProvider client={queryClient}>
 				<ChakraProvider theme={theme} colorModeManager={colorModeManager}>
-					<UseThemeProvider>{children}</UseThemeProvider>
+					{children}
 				</ChakraProvider>
 			</QueryClientProvider>
 		</StoreProvider>

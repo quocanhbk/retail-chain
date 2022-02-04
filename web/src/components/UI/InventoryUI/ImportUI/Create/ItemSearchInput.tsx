@@ -13,7 +13,7 @@ import {
 	VStack,
 	Button
 } from "@chakra-ui/react"
-import { useClickOutside, useTheme } from "@hooks"
+import { useClickOutside } from "@hooks"
 import { useState } from "react"
 import { BsSearch } from "react-icons/bs"
 import SearchItem from "./SearchItem"
@@ -34,7 +34,6 @@ export const ItemSearchInput = ({
 	onDefaultItemClick,
 	onItemClick
 }: ItemSearchInputProps) => {
-	const { backgroundSecondary, backgroundPrimary, borderPrimary } = useTheme()
 	const [isOpen, setIsOpen] = useState(false)
 	const renderItems = () => {
 		if (isLoading)
@@ -103,7 +102,7 @@ export const ItemSearchInput = ({
 				<Input
 					w="full"
 					value={searchText}
-					background={backgroundSecondary}
+					background={"background.secondary"}
 					onChange={e => setSearchText(e.target.value)}
 					placeholder="Tìm kiếm sản phẩm"
 					onFocus={() => setIsOpen(true)}
@@ -111,7 +110,7 @@ export const ItemSearchInput = ({
 			</InputGroup>
 			<Box pos="absolute" top="100%" left={0} w="full" transform="translateY(0.5rem)" zIndex="dropdown">
 				<ScaleFade in={isOpen && searchText.length > 0} unmountOnExit>
-					<Box p={4} rounded="md" border="1px" background={backgroundPrimary} borderColor={borderPrimary} overflow={"auto"}>
+					<Box p={4} rounded="md" border="1px" background={"background.primary"} borderColor={"border.primary"} overflow={"auto"}>
 						{renderItems()}
 					</Box>
 				</ScaleFade>

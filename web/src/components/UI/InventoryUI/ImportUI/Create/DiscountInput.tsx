@@ -1,6 +1,5 @@
 import { Box, Flex, NumberInput, NumberInputField, NumberInputProps } from "@chakra-ui/react"
 import { currency } from "@helper"
-import { useTheme } from "@hooks"
 
 interface DiscountInputProps extends Omit<NumberInputProps, "value" | "onChange"> {
 	value: number
@@ -12,8 +11,6 @@ interface DiscountInputProps extends Omit<NumberInputProps, "value" | "onChange"
 }
 
 const DiscountInput = ({ value, onChange, discountType, maxCash, onChangeDiscountType, readOnly = false, ...rest }: DiscountInputProps) => {
-	const theme = useTheme()
-
 	// toggle discount type
 	const toggleDiscountType = () => {
 		onChangeDiscountType(discountType === "cash" ? "percent" : "cash")
@@ -40,7 +37,7 @@ const DiscountInput = ({ value, onChange, discountType, maxCash, onChangeDiscoun
 					textAlign={"center"}
 					py={2}
 					borderLeft={"1px"}
-					borderColor={theme.borderPrimary}
+					borderColor={"border.primary"}
 					cursor="pointer"
 					onClick={toggleDiscountType}
 					title={discountType === "cash" ? "Giảm tiền mặt" : "Giảm phần trăm"}

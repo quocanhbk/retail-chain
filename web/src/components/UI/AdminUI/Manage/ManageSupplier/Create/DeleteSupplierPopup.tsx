@@ -1,11 +1,12 @@
 import { deleteSupplier } from "@api"
 import { Text } from "@chakra-ui/react"
 import { SubmitConfirmAlert } from "@components/shared"
+import { useChakraToast } from "@hooks"
 import { useRouter } from "next/router"
 import { useMutation } from "react-query"
 
 interface DeleteSupplierPopupProps {
-	supplierId: number
+	supplierId?: number
 	supplierName?: string
 	isOpen: boolean
 	onClose: () => void
@@ -13,11 +14,23 @@ interface DeleteSupplierPopupProps {
 
 const DeleteSupplierPopup = ({ supplierId, supplierName, isOpen, onClose }: DeleteSupplierPopupProps) => {
 	const router = useRouter()
+	const toast = useChakraToast()
+
 	const { mutate, isLoading } = useMutation(deleteSupplier, {
 		onSuccess: () => {
-			onClose()
 			router.push("/admin/manage/supplier")
+			toast({
+				title: "Xoá nhà cung cấp thành công",
+				status: "success"
+			})
 		},
+		onError: (e: any) => {
+			toast({
+				title: e.response.data.message || "Có lỗi xảy ra",
+				message: e.response.data.error || "Vui lòng thử lại",
+				status: "error"
+			})
+		}
 	})
 
 	const handleDelete = () => {

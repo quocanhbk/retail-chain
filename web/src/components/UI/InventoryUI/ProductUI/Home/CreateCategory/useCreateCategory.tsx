@@ -1,4 +1,4 @@
-import { Category, CategoryInput, createCategory, createSupplier, CreateSupplierInput, Supplier } from "@api"
+import { Category, CategoryInput, createCategory } from "@api"
 import { useChakraToast, useFormCore } from "@hooks"
 import { FormEvent, useEffect } from "react"
 import { useMutation, useQueryClient } from "react-query"
@@ -8,7 +8,7 @@ const useCreateCategory = (isOpen: boolean, onClose: () => void, onSelectCategor
 	const qc = useQueryClient()
 
 	const { values, setValue, initForm } = useFormCore<CategoryInput>({
-		name: "",
+		name: ""
 	})
 
 	const validate = () => {
@@ -51,8 +51,8 @@ const useCreateCategory = (isOpen: boolean, onClose: () => void, onSelectCategor
 	}, [isOpen])
 
 	return {
-        values,
-        setValue,
+		values,
+		setValue,
 		handleSubmit,
 		isLoading
 	}

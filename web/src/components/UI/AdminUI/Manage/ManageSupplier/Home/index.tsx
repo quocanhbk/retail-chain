@@ -6,12 +6,10 @@ import Link from "next/link"
 import { getSuppliers } from "@api"
 import SupplierCardSkeleton from "./SupplierCardSkeleton"
 import SupplierCard from "./SupplierCard"
-import { useTheme } from "@hooks"
 
 const HomeSupplierUI = () => {
 	const { data: suppliers, isLoading, isError } = useQuery("suppliers", () => getSuppliers())
 	const [searchText, setSearchText] = useState("")
-	const theme = useTheme()
 
 	const render = () => {
 		if (isLoading)
@@ -26,7 +24,7 @@ const HomeSupplierUI = () => {
 			)
 		if (isError || !suppliers) return <Box>Error</Box>
 
-		if (suppliers.length === 0) return <Text color={theme.textSecondary}>{"Không có nhà cung cấp nào!"}</Text>
+		if (suppliers.length === 0) return <Text color={"text.secondary"}>{"Không có nhà cung cấp nào!"}</Text>
 
 		return (
 			<SimpleGrid columns={4}>

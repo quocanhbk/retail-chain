@@ -1,6 +1,5 @@
 import { Flex, Heading, HStack } from "@chakra-ui/react"
 import { Motion } from "@components/shared"
-import { useTheme } from "@hooks"
 import NavMenus from "./NavMenus"
 import StoreInfo from "./StoreInfo"
 import SubNavMenus from "./SubNavMenus"
@@ -14,10 +13,8 @@ export interface HeaderProps {
 }
 
 export const Header = ({ title, menus, subNavmenus, name, onLogout }: HeaderProps) => {
-	const { backgroundSecondary } = useTheme()
-
 	return (
-		<Flex direction="column" shadow="xs" bg={backgroundSecondary}>
+		<Flex direction="column" shadow="xs" bg={"background.secondary"}>
 			<Flex align="center" w="full" justify="space-between" px={4} py={2} shadow="xs">
 				<Heading
 					fontSize="2xl"

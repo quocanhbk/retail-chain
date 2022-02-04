@@ -1,17 +1,5 @@
-import {
-	Box,
-	Collapse,
-	Flex,
-	IconButton,
-	Input,
-	InputGroup,
-	InputLeftElement,
-	InputRightElement,
-	Text
-} from "@chakra-ui/react"
-import { Motion } from "@components/shared"
-import { useClickOutside, useTheme } from "@hooks"
-import { AnimatePresence } from "framer-motion"
+import { Box, Collapse, Flex, IconButton, Input, InputGroup, InputLeftElement, InputRightElement, Text } from "@chakra-ui/react"
+import { useClickOutside } from "@hooks"
 import { useState } from "react"
 import { BsChevronDown, BsSearch, BsX } from "react-icons/bs"
 
@@ -30,14 +18,7 @@ interface SelectProps {
 	readOnly?: boolean
 }
 
-export const Select = ({
-	selections,
-	selected,
-	onChange,
-	keyField = "id",
-	valueField = "value",
-	readOnly = false
-}: SelectProps) => {
+export const Select = ({ selections, selected, onChange, keyField = "id", valueField = "value", readOnly = false }: SelectProps) => {
 	const [isOpen, setIsOpen] = useState(false)
 
 	const boxRef = useClickOutside<HTMLDivElement>(() => setIsOpen(false))
@@ -56,16 +37,13 @@ export const Select = ({
 		setIsOpen(!isOpen)
 	}
 
-	const { backgroundSecondary, backgroundPrimary, fillPrimary, textPrimary, borderPrimary, backgroundThird } =
-		useTheme()
-
 	return (
 		<Box pos="relative" ref={boxRef}>
 			<Flex
 				w="full"
 				justify="space-between"
 				border="1px"
-				borderColor={borderPrimary}
+				borderColor={"border.primary"}
 				minH="2.5rem"
 				rounded="md"
 				px={4}
@@ -88,13 +66,7 @@ export const Select = ({
 			</Flex>
 			<Box pos="absolute" top="100%" left={0} w="full" transform="translateY(0.5rem)" zIndex="dropdown">
 				<Collapse in={isOpen}>
-					<Box
-						rounded="md"
-						background={backgroundSecondary}
-						overflow="hidden"
-						border="1px"
-						borderColor={borderPrimary}
-					>
+					<Box rounded="md" background={"background.secondary"} overflow="hidden" border="1px" borderColor={"border.primary"}>
 						<InputGroup>
 							<InputLeftElement>
 								<BsSearch />
@@ -129,10 +101,10 @@ export const Select = ({
 									onClick={() => handleChange(item)}
 									px={4}
 									py={2}
-									_even={{ backgroundColor: backgroundPrimary }}
-									_notLast={{ borderBottom: "1px", borderColor: borderPrimary }}
-									_hover={{ bg: backgroundThird }}
-									color={isItemSelected(item) ? fillPrimary : textPrimary}
+									_even={{ backgroundColor: "background.primary" }}
+									_notLast={{ borderBottom: "1px", borderColor: "border.primary" }}
+									_hover={{ bg: "background.third" }}
+									color={isItemSelected(item) ? "fill.primary" : "text.primary"}
 								>
 									<Text>{item[valueField]}</Text>
 								</Box>

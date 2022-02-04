@@ -13,7 +13,7 @@ import {
 	InputRightElement,
 	IconButton
 } from "@chakra-ui/react"
-import { useClickOutside, useTheme, useThrottle } from "@hooks"
+import { useClickOutside, useThrottle } from "@hooks"
 import { ChangeEvent, useState } from "react"
 import { BsPlus, BsSearch, BsTruck, BsX } from "react-icons/bs"
 import { useQuery } from "react-query"
@@ -26,8 +26,6 @@ interface SupplierSearchInputProps {
 }
 
 export const SupplierSearchInput = ({ selectedSupplier, onSelectSupplier, readOnly }: SupplierSearchInputProps) => {
-	const { backgroundSecondary, backgroundPrimary, borderPrimary, backgroundThird } = useTheme()
-
 	const [isOpen, setIsOpen] = useState(false)
 
 	const [searchText, setSearchText] = useState("")
@@ -73,7 +71,7 @@ export const SupplierSearchInput = ({ selectedSupplier, onSelectSupplier, readOn
 						key={supplier.id}
 						py={1}
 						px={2}
-						_hover={{ bg: backgroundThird }}
+						_hover={{ bg: "background.third" }}
 						cursor="pointer"
 						rounded="md"
 						onClick={() => handleSelectSupplier(supplier)}
@@ -97,7 +95,7 @@ export const SupplierSearchInput = ({ selectedSupplier, onSelectSupplier, readOn
 				<Input
 					w="full"
 					value={selectedSupplier ? `${selectedSupplier.name} - ${selectedSupplier.code}` : searchText}
-					background={backgroundSecondary}
+					background={"background.secondary"}
 					onChange={handleChange}
 					placeholder="Tìm kiếm nhà cung cấp"
 					onFocus={() => !selectedSupplier && setIsOpen(true)}
@@ -120,7 +118,7 @@ export const SupplierSearchInput = ({ selectedSupplier, onSelectSupplier, readOn
 			</InputGroup>
 			<Box pos="absolute" top="100%" left={0} w="full" transform="translateY(0.5rem)" zIndex="dropdown">
 				<ScaleFade in={isOpen && searchText.length > 0} unmountOnExit>
-					<Box p={2} rounded="md" border="1px" background={backgroundPrimary} borderColor={borderPrimary} overflow={"auto"}>
+					<Box p={2} rounded="md" border="1px" background={"background.primary"} borderColor={"border.primary"} overflow={"auto"}>
 						{renderItems()}
 					</Box>
 				</ScaleFade>

@@ -1,20 +1,9 @@
 import { CreateProductInput, Item } from "@api"
-import {
-	InputGroup,
-	Input,
-	Box,
-	ScaleFade,
-	Spinner,
-	Flex,
-	Text,
-	VStack,
-	Button
-} from "@chakra-ui/react"
-import { useClickOutside, useTheme } from "@hooks"
-import { useEffect, useState } from "react"
+import { InputGroup, Input, Box, ScaleFade, Spinner, Flex, Text, VStack } from "@chakra-ui/react"
+import { useClickOutside } from "@hooks"
+import { useState } from "react"
 import SearchItem from "./SearchItem"
 import useProductHome from "./useProductHome"
-
 
 interface ItemSearchInputProps {
 	type: string
@@ -35,7 +24,6 @@ export const ItemSearchInput = ({
 	onDefaultItemClick,
 	onItemClick
 }: ItemSearchInputProps) => {
-	const { backgroundSecondary, backgroundPrimary, borderPrimary } = useTheme()
 	const [isOpen, setIsOpen] = useState(false)
 
 	const renderItems = () => {
@@ -55,7 +43,7 @@ export const ItemSearchInput = ({
 					<Text>{"Không tìm thấy sản phẩm"}</Text>
 				</Flex>
 			)
-		
+
 		return (
 			<VStack align="stretch" maxH="15rem">
 				{data.currentItems.map(item => (
@@ -97,15 +85,15 @@ export const ItemSearchInput = ({
 				<Input
 					w="full"
 					value={searchText}
-					background={backgroundSecondary}
-					onChange={e => setSearchText(type === "name" ? "name" : "barcode",e.target.value)}
+					background={"background.secondary"}
+					onChange={e => setSearchText(type === "name" ? "name" : "barcode", e.target.value)}
 					onFocus={() => setIsOpen(true)}
-					isRequired = {true}
+					isRequired={true}
 				/>
 			</InputGroup>
 			<Box pos="absolute" top="100%" left={0} w="full" transform="translateY(0.5rem)" zIndex="dropdown">
 				<ScaleFade in={isOpen && searchText.length > 0} unmountOnExit>
-					<Box p={4} rounded="md" border="1px" background={backgroundPrimary} borderColor={borderPrimary} overflow={"auto"}>
+					<Box p={4} rounded="md" border="1px" background={"background.primary"} borderColor={"border.primary"} overflow={"auto"}>
 						{renderItems()}
 					</Box>
 				</ScaleFade>

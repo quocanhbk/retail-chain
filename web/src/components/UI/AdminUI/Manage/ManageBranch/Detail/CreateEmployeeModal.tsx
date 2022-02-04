@@ -2,7 +2,7 @@ import { createEmployee, CreateEmployeeInput, getEmployees } from "@api"
 import { Box, Button, chakra, Checkbox, CheckboxGroup, HStack, Input, Radio, RadioGroup, Stack } from "@chakra-ui/react"
 import { ChakraModal, DateInput, FormControl } from "@components/shared"
 import { employeeRoles, genders } from "@constants"
-import { useChakraToast, useFormCore, useTheme } from "@hooks"
+import { useChakraToast, useFormCore } from "@hooks"
 import { useEffect, useRef } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import AvatarInput from "../../ManageEmployee/Create/AvatarInput"
@@ -116,8 +116,6 @@ const CreateEmployeeModal = ({ isOpen, onClose, branch_id }: CreateEmployeeModal
 		mutate()
 	}
 
-	const { borderPrimary } = useTheme()
-
 	useEffect(() => {
 		if (isOpen) initForm()
 	}, [isOpen])
@@ -163,7 +161,7 @@ const CreateEmployeeModal = ({ isOpen, onClose, branch_id }: CreateEmployeeModal
 					<Box w="full" maxW="24rem">
 						<FormControl label="Quyền" mb={4} isRequired={true}>
 							<CheckboxGroup value={values.roles} onChange={value => setValue("roles", value)}>
-								<HStack border="1px" borderColor={borderPrimary} px={4} h="2.5rem" rounded="md" justify="space-between">
+								<HStack border="1px" borderColor={"border.primary"} px={4} h="2.5rem" rounded="md" justify="space-between">
 									{employeeRoles.map(r => (
 										<Checkbox key={r.id} value={r.id}>
 											{r.value}
@@ -185,7 +183,7 @@ const CreateEmployeeModal = ({ isOpen, onClose, branch_id }: CreateEmployeeModal
 						</FormControl>
 						<FormControl label="Giới tính" mb={4}>
 							<RadioGroup value={values.gender || undefined} onChange={v => setValue("gender", v)}>
-								<HStack border="1px" borderColor={borderPrimary} px={4} h="2.5rem" rounded="md" justify="space-between">
+								<HStack border="1px" borderColor={"border.primary"} px={4} h="2.5rem" rounded="md" justify="space-between">
 									{genders.map(gender => (
 										<Radio key={gender.id} value={gender.id}>
 											{gender.value}

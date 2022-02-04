@@ -1,5 +1,4 @@
-import { Avatar, Box, Image, Input } from "@chakra-ui/react"
-import { useTheme } from "@hooks"
+import { Box, Image, Input } from "@chakra-ui/react"
 import { ChangeEvent, useMemo } from "react"
 import { BsCamera } from "react-icons/bs"
 
@@ -20,19 +19,9 @@ const ImageProductInput = ({ file, onSubmit, readOnly = false }: ImageProductInp
 		return ""
 	}, [file])
 
-	const { borderPrimary, backgroundSecondary } = useTheme()
-
 	return (
-		<Box
-            w="8rem"
-            h="7rem"
-			border="1px"
-			borderColor={borderPrimary}
-			mb={4}
-			backgroundColor={backgroundSecondary}
-			pos="relative"
-		>
-			<Image src={imagePath} alt="image" w="8rem" h="7rem" fallbackSrc='https://via.placeholder.com/120x100' />
+		<Box w="8rem" h="7rem" border="1px" borderColor={"border.primary"} mb={4} backgroundColor={"background.secondary"} pos="relative">
+			<Image src={imagePath} alt="image" w="8rem" h="7rem" fallbackSrc="https://via.placeholder.com/120x100" />
 			{!readOnly && (
 				<Box
 					pos="absolute"
@@ -41,8 +30,8 @@ const ImageProductInput = ({ file, onSubmit, readOnly = false }: ImageProductInp
 					cursor="pointer"
 					p={2}
 					border="1px"
-					borderColor={borderPrimary}
-					backgroundColor={backgroundSecondary}
+					borderColor={"border.primary"}
+					backgroundColor={"background.secondary"}
 				>
 					<Input
 						pos="absolute"

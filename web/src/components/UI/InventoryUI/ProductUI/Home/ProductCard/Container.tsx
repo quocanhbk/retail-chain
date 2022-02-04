@@ -1,5 +1,4 @@
 import { Motion } from "@components/shared"
-import { useTheme } from "@hooks"
 import { ComponentProps } from "react"
 
 interface ContainerProps extends ComponentProps<typeof Motion["Flex"]> {
@@ -20,8 +19,6 @@ const Container = ({ custom, children, ...rest }: ContainerProps) => {
 		hidden: { opacity: 0 }
 	}
 
-	const { backgroundSecondary, textPrimary } = useTheme()
-
 	return (
 		<Motion.Flex
 			direction="column"
@@ -30,8 +27,8 @@ const Container = ({ custom, children, ...rest }: ContainerProps) => {
 			h="16rem"
 			rounded="md"
 			overflow={"hidden"}
-			backgroundColor={backgroundSecondary}
-			color={textPrimary}
+			backgroundColor={"background.secondary"}
+			color={"text.primary"}
 			cursor={"pointer"}
 			variants={variants}
 			custom={custom}

@@ -1,6 +1,5 @@
 import { PurchaseSheetDetail } from "@api"
 import { chakra } from "@chakra-ui/react"
-import { useTheme } from "@hooks"
 import { format } from "date-fns"
 import { currency } from "@helper"
 import { useRouter } from "next/router"
@@ -10,13 +9,12 @@ interface PurchaseSheetCardProps {
 
 const PurchaseSheetCard = ({ data: ps }: PurchaseSheetCardProps) => {
 	const router = useRouter()
-	const theme = useTheme()
 	return (
 		<chakra.tr
 			onClick={() => router.push(`/main/inventory/import/${ps.id}`)}
 			cursor="pointer"
 			_hover={{
-				bg: theme.backgroundThird
+				bg: "background.third"
 			}}
 		>
 			<chakra.td p={2}>{ps.code}</chakra.td>
@@ -32,7 +30,7 @@ const PurchaseSheetCard = ({ data: ps }: PurchaseSheetCardProps) => {
 			<chakra.td
 				p={2}
 				textAlign={"right"}
-				color={ps.total - ps.paid_amount > 0 ? theme.fillDanger : theme.textPrimary}
+				color={ps.total - ps.paid_amount > 0 ? "fill.danger" : "text.primary"}
 				fontWeight={ps.total - ps.paid_amount > 0 ? "bold" : "normal"}
 			>
 				{currency(ps.total - ps.paid_amount)}

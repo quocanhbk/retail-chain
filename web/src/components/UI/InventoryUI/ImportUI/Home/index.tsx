@@ -4,12 +4,10 @@ import useImportHome from "./useImportHome"
 import PurchaseSheetCard from "./PurchaseSheetCard"
 import PurchaseSheetCardSkeleton from "./PurchaseSheetCardSkeleton"
 import { SearchInput } from "@components/shared"
-import { useTheme } from "@hooks"
 
 const ImportHomeUI = () => {
 	const { purchaseSheetsQuery, search, setSearch } = useImportHome()
 	const { data, isLoading, isError } = purchaseSheetsQuery
-	const theme = useTheme()
 
 	const render = () => {
 		if (isLoading) {
@@ -20,7 +18,7 @@ const ImportHomeUI = () => {
 			return (
 				<chakra.tr>
 					<chakra.td colSpan={5} textAlign={"center"}>
-						<Text py={4} color={theme.textSecondary}>
+						<Text py={4} color={"text.secondary"}>
 							{"Có lỗi xảy ra, vui lòng thử lại sau"}
 						</Text>
 					</chakra.td>
@@ -42,10 +40,10 @@ const ImportHomeUI = () => {
 				</Link>
 			</Flex>
 			<SearchInput value={search} onChange={e => setSearch(e.target.value)} mb={4} />
-			<Box p={4} rounded="md" background={theme.backgroundSecondary} flex={1}>
+			<Box p={4} rounded="md" background={"background.secondary"} flex={1}>
 				<chakra.table w="full">
 					<chakra.thead>
-						<chakra.tr borderBottom={"1px"} borderColor={theme.borderPrimary}>
+						<chakra.tr borderBottom={"1px"} borderColor={"border.primary"}>
 							<chakra.th textAlign={"left"} p={2}>
 								Mã phiếu
 							</chakra.th>

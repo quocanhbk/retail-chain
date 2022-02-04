@@ -1,5 +1,4 @@
 import { Avatar, Box, Input } from "@chakra-ui/react"
-import { useTheme } from "@hooks"
 import { ChangeEvent, useMemo } from "react"
 import { BsCamera } from "react-icons/bs"
 
@@ -20,16 +19,14 @@ const AvatarInput = ({ file, onSubmit, readOnly = false }: AvatarInputProps) => 
 		return ""
 	}, [file])
 
-	const { borderPrimary, backgroundSecondary } = useTheme()
-
 	return (
 		<Box
 			boxSize="8rem"
 			rounded="full"
 			border="1px"
-			borderColor={borderPrimary}
+			borderColor={"border.primary"}
 			mb={4}
-			backgroundColor={backgroundSecondary}
+			backgroundColor={"background.secondary"}
 			pos="relative"
 		>
 			<Avatar src={imagePath} alt="avatar" boxSize={"8rem"} />
@@ -42,8 +39,8 @@ const AvatarInput = ({ file, onSubmit, readOnly = false }: AvatarInputProps) => 
 					p={2}
 					rounded={"full"}
 					border="1px"
-					borderColor={borderPrimary}
-					backgroundColor={backgroundSecondary}
+					borderColor={"border.primary"}
+					backgroundColor={"background.secondary"}
 				>
 					<Input
 						pos="absolute"

@@ -16,7 +16,6 @@ import {
 } from "@chakra-ui/react"
 import { BackableTitle, LoadingOverlay, SubmitConfirmAlert } from "@components/shared"
 import { currency } from "@helper"
-import { useTheme } from "@hooks"
 import { BsThreeDots } from "react-icons/bs"
 import DiscountInput from "./DiscountInput"
 import ItemSearchInput from "./ItemSearchInput"
@@ -31,7 +30,6 @@ interface ImportCreateUIProps {
 }
 
 const ImportCreateUI = ({ id }: ImportCreateUIProps) => {
-	const { backgroundSecondary, fillPrimary, textSecondary } = useTheme()
 	const {
 		handleClickDefaultItem,
 		handleClickItem,
@@ -60,7 +58,7 @@ const ImportCreateUI = ({ id }: ImportCreateUIProps) => {
 			<LoadingOverlay isLoading={isLoadingData} />
 			<BackableTitle text={id ? "Xem phiếu nhập hàng" : "Tạo phiếu nhập hàng"} backPath="/main/inventory/import" />
 			<Stack direction="row" flex={1} spacing={4} overflow="hidden">
-				<VStack align="stretch" bg={backgroundSecondary} p={4} rounded="md" flex={5} flexShrink={0} overflow="hidden" spacing={4}>
+				<VStack align="stretch" bg={"background.secondary"} p={4} rounded="md" flex={5} flexShrink={0} overflow="hidden" spacing={4}>
 					<ItemSearchInput
 						searchText={searchText}
 						setSearchText={setSearchText}
@@ -93,7 +91,7 @@ const ImportCreateUI = ({ id }: ImportCreateUIProps) => {
 							))}
 						</VStack>
 					) : (
-						<Text textAlign="center" color={textSecondary}>
+						<Text textAlign="center" color={"text.secondary"}>
 							Chưa có sản phẩm nào
 						</Text>
 					)}
@@ -134,7 +132,7 @@ const ImportCreateUI = ({ id }: ImportCreateUIProps) => {
 							</Flex>
 							<Flex align="center">
 								<Text flex={1}>Tiền cần trả</Text>
-								<Text ml={2} fontSize={"lg"} color={fillPrimary} fontWeight={"bold"}>
+								<Text ml={2} fontSize={"lg"} color={"fill.primary"} fontWeight={"bold"}>
 									{currency(needToPay)}
 								</Text>
 							</Flex>

@@ -2,7 +2,6 @@ import { Branch, getBranchImage } from "@api"
 import { Text, Img, Flex } from "@chakra-ui/react"
 import Container from "./Container"
 import Link from "next/link"
-import { useTheme } from "@hooks"
 
 interface BranchCardProps {
 	data: Branch
@@ -11,7 +10,6 @@ interface BranchCardProps {
 
 const BranchCard = ({ data, index }: BranchCardProps) => {
 	const { name, address } = data
-	const { textSecondary } = useTheme()
 	return (
 		<Link href={`/admin/manage/branch/${data.id}`}>
 			<Container custom={index} pos="relative">
@@ -23,7 +21,7 @@ const BranchCard = ({ data, index }: BranchCardProps) => {
 						{name}
 					</Text>
 					<Text
-						color={textSecondary}
+						color={"text.secondary"}
 						w="full"
 						sx={{
 							display: "-webkit-box",

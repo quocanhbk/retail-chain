@@ -9,6 +9,54 @@ const theme = extendTheme({
 		heading: "Roboto",
 		body: "Roboto"
 	},
+	semanticTokens: {
+		colors: {
+			"text.primary": {
+				default: "blackAlpha.900",
+				_dark: "whiteAlpha.900"
+			},
+			"text.secondary": {
+				default: "gray.600",
+				_dark: "gray.500"
+			},
+			"background.primary": {
+				default: "gray.50",
+				_dark: "gray.800"
+			},
+			"background.secondary": {
+				default: "white",
+				_dark: "gray.900"
+			},
+			"background.third": {
+				default: "gray.100",
+				_dark: "gray.700"
+			},
+			"background.fade": {
+				default: "blackAlpha.200",
+				_dark: "whiteAlpha.200"
+			},
+			"fill.primary": {
+				default: "telegram.600",
+				_dark: "telegram.400"
+			},
+			"fill.danger": {
+				default: "red.600",
+				_dark: "red.400"
+			},
+			"fill.success": {
+				default: "green.600",
+				_dark: "green.400"
+			},
+			"fill.warning": {
+				default: "yellow.600",
+				_dark: "yellow.400"
+			},
+			"border.primary": {
+				default: "gray.200",
+				_dark: "whiteAlpha.300"
+			}
+		}
+	},
 	styles: {
 		global: props => ({
 			html: {
@@ -24,6 +72,11 @@ const theme = extendTheme({
 		Button: {
 			defaultProps: {
 				colorScheme: "telegram"
+			},
+			variants: {
+				ghost: props => ({
+					backgroundColor: props.colorMode === "light" ? "blackAlpha.100" : "whiteAlpha.100"
+				})
 			}
 		},
 		// color="telegram.500" size="sm" thickness="3px"

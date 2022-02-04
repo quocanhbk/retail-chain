@@ -2,7 +2,6 @@ import { Employee } from "@api"
 import { Box, VStack, HStack, Text, IconButton, Stack } from "@chakra-ui/react"
 import { RoleTag } from "@components/shared"
 import { employeeRoles } from "@constants"
-import { useTheme } from "@hooks"
 import { BsChevronRight } from "react-icons/bs"
 import Link from "next/link"
 
@@ -11,10 +10,8 @@ interface EmployeesTableProps {
 }
 
 const EmployeesTable = ({ employees }: EmployeesTableProps) => {
-	const { backgroundSecondary, textSecondary, borderPrimary } = useTheme()
-
 	return (
-		<Box border="1px" borderColor={borderPrimary} h="18rem" rounded="md">
+		<Box border="1px" borderColor={"border.primary"} h="18rem" rounded="md">
 			<VStack p={2} spacing={0}>
 				{employees.map(e => (
 					<Stack
@@ -24,16 +21,16 @@ const EmployeesTable = ({ employees }: EmployeesTableProps) => {
 						align="center"
 						w="full"
 						cursor="pointer"
-						_hover={{ bg: backgroundSecondary }}
+						_hover={{ bg: "background.secondary" }}
 						p={2}
 					>
 						<Text isTruncated w="12rem" flexShrink={0}>
 							{e.name}
 						</Text>
-						<Text fontSize={"sm"} color={textSecondary} isTruncated w="12rem" flexShrink={0}>
+						<Text fontSize={"sm"} color={"text.secondary"} isTruncated w="12rem" flexShrink={0}>
 							{e.email}
 						</Text>
-						<Text fontSize={"sm"} color={textSecondary} isTruncated w="8rem" flexShrink={0}>
+						<Text fontSize={"sm"} color={"text.secondary"} isTruncated w="8rem" flexShrink={0}>
 							{e.phone}
 						</Text>
 						<HStack justify="flex-end" flex={1}>

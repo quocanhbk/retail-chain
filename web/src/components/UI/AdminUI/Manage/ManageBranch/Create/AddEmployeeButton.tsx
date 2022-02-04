@@ -1,7 +1,6 @@
-import { Box, IconButton, Collapse, VStack, Text, Button } from "@chakra-ui/react"
-import { useClickOutside, useTheme } from "@hooks"
+import { Box, Collapse, VStack, Text, Button } from "@chakra-ui/react"
+import { useClickOutside } from "@hooks"
 import { useState } from "react"
-import { BsPlus } from "react-icons/bs"
 
 interface AddEmployeeButtonProps {
 	setIsCreatingEmployee: (isCreatingEmployee: "create" | "transfer" | null) => void
@@ -9,7 +8,6 @@ interface AddEmployeeButtonProps {
 
 const AddEmployeeButton = ({ setIsCreatingEmployee }: AddEmployeeButtonProps) => {
 	const [isOpen, setIsOpen] = useState(false)
-	const { borderPrimary, backgroundSecondary, backgroundThird } = useTheme()
 	const ref = useClickOutside<HTMLButtonElement>(() => setIsOpen(false))
 
 	return (
@@ -24,8 +22,8 @@ const AddEmployeeButton = ({ setIsCreatingEmployee }: AddEmployeeButtonProps) =>
 						py={2}
 						px={2}
 						border="1px"
-						borderColor={borderPrimary}
-						backgroundColor={backgroundSecondary}
+						borderColor={"border.primary"}
+						backgroundColor={"background.secondary"}
 						align="stretch"
 						rounded="md"
 					>
@@ -33,7 +31,7 @@ const AddEmployeeButton = ({ setIsCreatingEmployee }: AddEmployeeButtonProps) =>
 							w="full"
 							px={2}
 							py={1}
-							_hover={{ bg: backgroundThird }}
+							_hover={{ bg: "background.third" }}
 							rounded="md"
 							cursor={"pointer"}
 							onClick={() => setIsCreatingEmployee("create")}
@@ -44,7 +42,7 @@ const AddEmployeeButton = ({ setIsCreatingEmployee }: AddEmployeeButtonProps) =>
 							w="full"
 							px={2}
 							py={1}
-							_hover={{ bg: backgroundThird }}
+							_hover={{ bg: "background.third" }}
 							rounded="md"
 							cursor={"pointer"}
 							onClick={() => setIsCreatingEmployee("transfer")}

@@ -1,5 +1,4 @@
 import { Flex, Input } from "@chakra-ui/react"
-import { useTheme } from "@hooks"
 
 export interface DateInput {
 	day: number | null
@@ -37,10 +36,8 @@ export const DateInput = ({ value, onChange, readOnly = false }: DateInputProps)
 		}
 	}
 
-	const { borderPrimary } = useTheme()
-
 	return (
-		<Flex h="2.5rem" border="1px" borderColor={borderPrimary} rounded="md" overflow={"hidden"}>
+		<Flex h="2.5rem" border="1px" borderColor={"border.primary"} rounded="md" overflow={"hidden"}>
 			<Input
 				variant="unstyled"
 				rounded="none"
@@ -51,7 +48,7 @@ export const DateInput = ({ value, onChange, readOnly = false }: DateInputProps)
 				value={value?.day || ""}
 				onChange={handleChange("day")}
 				borderRight={"1px"}
-				borderColor={borderPrimary}
+				borderColor={"border.primary"}
 				readOnly={readOnly}
 			/>
 
@@ -65,7 +62,7 @@ export const DateInput = ({ value, onChange, readOnly = false }: DateInputProps)
 				value={value?.month || ""}
 				onChange={handleChange("month")}
 				borderRight={"1px"}
-				borderColor={borderPrimary}
+				borderColor={"border.primary"}
 				readOnly={readOnly}
 			/>
 
@@ -78,7 +75,7 @@ export const DateInput = ({ value, onChange, readOnly = false }: DateInputProps)
 				type={"number"}
 				value={value?.year || ""}
 				onChange={handleChange("year")}
-				borderColor={borderPrimary}
+				borderColor={"border.primary"}
 				readOnly={readOnly}
 			/>
 		</Flex>

@@ -40,6 +40,7 @@ export const ModeInput = ({ isLoading, flexProps, onSave, ...rest }: ModeInputPr
 				top="50%"
 				transform="translateY(-50%)"
 				variant={"ghost"}
+				colorScheme={"gray"}
 			/>
 		</Flex>
 	)

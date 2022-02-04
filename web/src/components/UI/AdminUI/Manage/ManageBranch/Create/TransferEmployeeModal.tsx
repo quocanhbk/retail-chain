@@ -2,7 +2,6 @@ import { CreateEmployeeInput, Employee, getBranches, getEmployees } from "@api"
 import { Box, Button, Checkbox, HStack, Stack, Text, VStack } from "@chakra-ui/react"
 import { ChakraModal, SearchInput } from "@components/shared"
 import { employeeRoles } from "@constants"
-import { useTheme } from "@hooks"
 import { useEffect, useState } from "react"
 import { useQuery } from "react-query"
 
@@ -42,8 +41,6 @@ const TransferEmployeeModal = ({ isOpen, onClose, onSubmit, selectedEmployeeIds 
 	const isLoading = isLoadingEmployees || isLoadingBranches
 
 	const [searchText, setSearchText] = useState("")
-
-	const { textSecondary } = useTheme()
 
 	const handleSelect = (employeeId: number) => {
 		const employee = employeesData.find(e => e.id === employeeId)
@@ -94,10 +91,10 @@ const TransferEmployeeModal = ({ isOpen, onClose, onSubmit, selectedEmployeeIds 
 													{employee.name}
 												</Text>
 											</Checkbox>
-											<Text color={textSecondary} w="12rem" flexShrink={0} isTruncated>
+											<Text color={"text.secondary"} w="12rem" flexShrink={0} isTruncated>
 												{employee.email}
 											</Text>
-											<Text color={textSecondary} w="8rem" flexShrink={0} isTruncated>
+											<Text color={"text.secondary"} w="8rem" flexShrink={0} isTruncated>
 												{employee.phone}
 											</Text>
 											<HStack flex={1} justify="flex-end">

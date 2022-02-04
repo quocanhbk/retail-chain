@@ -1,4 +1,4 @@
-import { createBranch, CreateBranchInput, CreateEmployeeInput, getEmployees } from "@api"
+import { createBranch, CreateBranchInput, CreateEmployeeInput, getEmployees, updateBranchImage } from "@api"
 import { useChakraToast, useFormCore } from "@hooks"
 import { useRouter } from "next/router"
 import { FormEvent, useState } from "react"
@@ -67,8 +67,6 @@ const useCreateBranch = () => {
 			router.push("/admin/manage/branch")
 		},
 		onError: (err: any) => {
-			console.log(err.response.data.message)
-			console.log(err.response.data?.errors)
 			setConfirmCreate(false)
 			toast({
 				title: err.response.data.message,

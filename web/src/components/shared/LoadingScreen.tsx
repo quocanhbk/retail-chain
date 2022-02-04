@@ -1,5 +1,4 @@
 import { Flex, Grid, Heading, Spinner, Text } from "@chakra-ui/react"
-import { useTheme } from "@hooks"
 import { AnimatePresence } from "framer-motion"
 import { Motion } from "."
 
@@ -9,8 +8,6 @@ interface LoadingScreenProps {
 }
 
 export const LoadingScreen = ({ isLoading, isAdmin }: LoadingScreenProps) => {
-	const { backgroundSecondary } = useTheme()
-
 	return (
 		<AnimatePresence exitBeforeEnter initial={false}>
 			{isLoading && (
@@ -23,7 +20,7 @@ export const LoadingScreen = ({ isLoading, isAdmin }: LoadingScreenProps) => {
 					w="full"
 					pos="fixed"
 					zIndex={"overlay"}
-					bg={backgroundSecondary}
+					bg={"background.secondary"}
 				>
 					<Grid w="full" h="full" placeItems={"center"} pb={24}>
 						<Flex direction="column" align="center">
@@ -38,7 +35,7 @@ export const LoadingScreen = ({ isLoading, isAdmin }: LoadingScreenProps) => {
 								fontFamily={"Brandon"}
 								mb={4}
 							>
-								BKRM{isAdmin&& "ADMIN"} 
+								BKRM{isAdmin && "ADMIN"}
 							</Heading>
 							<Flex align="center">
 								<Spinner color="telegram.500" size="sm" thickness="3px" />
