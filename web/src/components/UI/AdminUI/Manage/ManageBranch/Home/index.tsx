@@ -1,21 +1,23 @@
 import { getBranches } from "@api"
-import { Box, Button, Flex, Heading, SimpleGrid, Text, Wrap, WrapItem } from "@chakra-ui/react"
+import { Box, Button, Flex, Heading, SimpleGrid, Text } from "@chakra-ui/react"
 import { useQuery } from "react-query"
 import BranchCard from "./BranchCard/BranchCard"
 import BranchCardSkeleton from "./BranchCard/BranchCardSkeleton"
 import Link from "next/link"
 import { useState } from "react"
 import { useThrottle } from "@hooks"
-import { SearchInput } from "@components/shared"
-import Sorter from "./Sorter"
+import { SearchInput, Sorter } from "@components/shared"
+import { branchSorts, SortField } from "@constants"
 
 const HomeBranchUI = () => {
 	const [searchText, setSearchText] = useState("")
-	const [currentSort, setCurrentSort] = useState({ key: "name", order: "asc" })
+	const [currentSort, setCurrentSort] = useState<SortField>(branchSorts[0])
 	const throttledSearchText = useThrottle(searchText, 500)
+
 	const { data, isLoading, isError } = useQuery(["branches", throttledSearchText, currentSort.key, currentSort.order], () =>
 		getBranches({ search: throttledSearchText, sort_key: currentSort.key, sort_order: currentSort.order })
 	)
+
 	const render = () => {
 		if (isLoading) {
 			return (
@@ -63,7 +65,7 @@ const HomeBranchUI = () => {
 					placeholder="Tìm kiếm chi nhánh"
 					onClear={() => setSearchText("")}
 				/>
-				<Sorter currentSort={currentSort} onChange={setCurrentSort} />
+				<Sorter currentSort={currentSort} onChange={setCurrentSort} data={branchSorts} />
 			</Flex>
 			{render()}
 		</Box>

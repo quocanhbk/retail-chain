@@ -1,44 +1,47 @@
-import { Box, Button, Flex, Heading, Text, SimpleGrid } from "@chakra-ui/react"
-import { SearchInput } from "@components/shared"
+import { Box, Button, Flex, Heading, Text, SimpleGrid, chakra, HStack, IconButton } from "@chakra-ui/react"
+import { SearchInput, Table } from "@components/shared"
 import { useQuery } from "react-query"
 import { useState } from "react"
 import Link from "next/link"
 import { getSuppliers } from "@api"
 import SupplierCardSkeleton from "./SupplierCardSkeleton"
 import SupplierCard from "./SupplierCard"
+import { useThrottle } from "@hooks"
 
 const HomeSupplierUI = () => {
-	const { data: suppliers, isLoading, isError } = useQuery("suppliers", () => getSuppliers())
 	const [searchText, setSearchText] = useState("")
+	const throttledSearchText = useThrottle(searchText, 500)
+	const { data: suppliers, isLoading, isError } = useQuery(["suppliers", throttledSearchText], () => getSuppliers(throttledSearchText))
 
 	const render = () => {
 		if (isLoading)
+			return Array(8)
+				.fill(null)
+				.map((_, index) => <SupplierCardSkeleton key={index} />)
+
+		if (isError || !suppliers)
 			return (
-				<SimpleGrid columns={4} spacing={4}>
-					{Array(8)
-						.fill(null)
-						.map((_, index) => (
-							<SupplierCardSkeleton key={index} />
-						))}
-				</SimpleGrid>
+				<chakra.tr>
+					<chakra.td colSpan={4} textAlign={"center"}>
+						<Text color="text.secondary">Error</Text>
+					</chakra.td>
+				</chakra.tr>
 			)
-		if (isError || !suppliers) return <Box>Error</Box>
 
-		if (suppliers.length === 0) return <Text color={"text.secondary"}>{"Không có nhà cung cấp nào!"}</Text>
+		if (suppliers.length === 0)
+			return (
+				<chakra.tr>
+					<chakra.td colSpan={4} textAlign={"center"}>
+						<Text color="text.secondary">No data</Text>
+					</chakra.td>
+				</chakra.tr>
+			)
 
-		return (
-			<SimpleGrid columns={4}>
-				{suppliers
-					.filter(supplier => `${supplier.name.toLowerCase()} , ${supplier.phone} , ${supplier.email}`.indexOf(searchText) !== -1)
-					.map((supplier, index) => (
-						<SupplierCard key={index} data={supplier} />
-					))}
-			</SimpleGrid>
-		)
+		return suppliers.map(supplier => <SupplierCard key={supplier.id} data={supplier} />)
 	}
 
 	return (
-		<Box p={4}>
+		<Flex direction="column" p={4} h="full">
 			<Flex w="full" align="center" justify="space-between">
 				<Heading mb={4} fontSize={"2xl"}>
 					{"Quản lý nhà cung cấp"}
@@ -57,8 +60,27 @@ const HomeSupplierUI = () => {
 				mb={4}
 				onClear={() => setSearchText("")}
 			/>
-			{render()}
-		</Box>
+			<Table
+				header={
+					<>
+						<chakra.th w="8rem">
+							<Text fontWeight={"bold"}>{"Mã"}</Text>
+						</chakra.th>
+						<chakra.th>
+							<Text fontWeight={"bold"}>{"Tên"}</Text>
+						</chakra.th>
+						<chakra.th>
+							<Text fontWeight={"bold"}>{"Số diện thoại"}</Text>
+						</chakra.th>
+						<chakra.th>
+							<Text fontWeight={"bold"}>{"Email"}</Text>
+						</chakra.th>
+					</>
+				}
+			>
+				{render()}
+			</Table>
+		</Flex>
 	)
 }
 

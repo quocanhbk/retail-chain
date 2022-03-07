@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "react-query"
-import { Category, createItem, CreateProductInput, getItems, getItemsBySearch, Item } from "@api"
+import { Category, createItem, CreateItemInput, getItems, getItemsBySearch, Item } from "@api"
 import { useChakraToast, useFormCore, useThrottle } from "@hooks"
 import { useState } from "react"
 
@@ -20,7 +20,7 @@ const useProductHome = () => {
 	)
 
 	const [isClose, setIsClose] = useState(true)
-	const { values, setValue, initForm } = useFormCore<CreateProductInput>({
+	const { values, setValue, initForm } = useFormCore<CreateItemInput>({
 		code: "",
 		name: "",
 		barcode: "",

@@ -1,4 +1,4 @@
-import { CreateProductInput, Item } from "@api"
+import { CreateItemInput, Item } from "@api"
 import { InputGroup, Input, Box, ScaleFade, Spinner, Flex, Text, VStack } from "@chakra-ui/react"
 import { useClickOutside } from "@hooks"
 import { useState } from "react"
@@ -9,7 +9,7 @@ interface ItemSearchInputProps {
 	type: string
 
 	searchText: string
-	setSearchText: (field: keyof CreateProductInput, text: string) => void
+	setSearchText: (field: keyof CreateItemInput, text: string) => void
 	searchQuery: ReturnType<typeof useProductHome>["searchQuery"]
 	onDefaultItemClick: (item: Item) => void
 	onItemClick: (item: Item) => void

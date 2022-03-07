@@ -1,7 +1,7 @@
-import { Box, Checkbox, CheckboxGroup, Heading, Stack, StackDivider, VStack } from "@chakra-ui/react"
+import { Box, Checkbox, CheckboxGroup, Heading, StackDivider, VStack } from "@chakra-ui/react"
 
 const Filter = () => {
-    return (
+	return (
 		<Box w="full" boxShadow="xs" p={4} rounded="md" bg="white">
 			<Heading as="h5" size="sm" mb={4}>
 				{"Nhà cung cấp"}

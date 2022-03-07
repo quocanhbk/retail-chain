@@ -1,4 +1,4 @@
-import { createBranch, CreateBranchInput, CreateEmployeeInput, getEmployees, updateBranchImage } from "@api"
+import { createBranch, CreateBranchInput, CreateEmployeeInput, getEmployees } from "@api"
 import { useChakraToast, useFormCore } from "@hooks"
 import { useRouter } from "next/router"
 import { FormEvent, useState } from "react"

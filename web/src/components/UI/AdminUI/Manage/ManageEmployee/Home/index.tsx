@@ -6,7 +6,6 @@ import BranchAccordionSkeleton from "./BranchAccordionSkeleton"
 import Link from "next/link"
 import { SearchInput } from "@components/shared"
 import { useState } from "react"
-import { useThrottle } from "@hooks"
 
 const HomeEmployeeUI = () => {
 	const { data: branches, isLoading: isLoadingBranches } = useQuery("branches", () => getBranches())
@@ -18,9 +17,9 @@ const HomeEmployeeUI = () => {
 
 	const getBranchName = branchId => (branches ? branches.find(branch => branch.id === branchId)?.name : "")
 	const getEmployeeSeachValue = (employee: Employee) =>
-		`${employee.name} ${employee.phone} ${employee.email} ${employee.employment.roles
-			.map(r => r.role)
-			.join(" ")} ${getBranchName(employee.employment.branch_id)}`.toLowerCase()
+		`${employee.name} ${employee.phone} ${employee.email} ${employee.employment.roles.map(r => r.role).join(" ")} ${getBranchName(
+			employee.employment.branch_id
+		)}`.toLowerCase()
 
 	const render = () => {
 		if (isLoading)

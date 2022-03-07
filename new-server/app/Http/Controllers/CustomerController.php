@@ -43,13 +43,17 @@ class CustomerController extends Controller
 
     public function getCustomers(Request $request) {
         $store_id = Auth::user()->store_id;
-        $search = $request->query('search');
+
+        [$search, $from, $to, $order_by, $order_type] = $this->getQuery($request);
 
         $customers = Customer::where('store_id', $store_id)
             ->where('name', 'like', '%'. $search . '%')
             ->orWhere('phone', 'like', '%' . $search . '%')
             ->orWhere('email', 'like', '%' . $search . '%')
-            ->get();
+            ->orWhere('code', 'like', '%' . $search . '%')
+            ->orderBy($order_by, $order_type)
+            ->offset($from)
+            ->limit($to - $from);
 
         return response()->json($customers);
     }

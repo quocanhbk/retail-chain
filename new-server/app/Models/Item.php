@@ -35,5 +35,8 @@ class Item extends Model
         return $this->belongsTo(ItemCategory::class);
     }
 
-
+    public function itemProperties()
+    {
+        return $this->hasMany(ItemProperty::class);
+    }
 }

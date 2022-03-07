@@ -1,14 +1,12 @@
-import { createSupplier, CreateSupplierInput, deleteSupplier, editSupplier, getSupplier } from "@api"
+import { createSupplier, CreateSupplierInput, editSupplier, getSupplier } from "@api"
 import { isEmail } from "@helper"
 import { useChakraToast, useFormCore } from "@hooks"
-import { useRouter } from "next/router"
 import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 
 const useCreateSupplier = (id?: number) => {
 	const toast = useChakraToast()
 	const qc = useQueryClient()
-	const router = useRouter()
 
 	const [readOnly, setReadOnly] = useState(!!id)
 	const [currentId, setCurrentId] = useState(id)
@@ -182,7 +180,8 @@ const useCreateSupplier = (id?: number) => {
 		setReadOnly,
 		data,
 		confirmDelete,
-		setConfirmDelete
+		setConfirmDelete,
+		currentId
 	}
 }
 

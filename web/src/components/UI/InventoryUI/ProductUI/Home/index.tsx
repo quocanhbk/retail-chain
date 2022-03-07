@@ -1,6 +1,7 @@
 import { Box, Flex, Heading, Wrap, WrapItem, Text, Button, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react"
 import { SearchInput } from "@components/shared"
 import Link from "next/link"
+import { FaFileImport } from "react-icons/fa"
 import { IoIosArrowDown } from "react-icons/io"
 import AddNewProductModal from "./AddNewProductModal"
 import ProductCard from "./ProductCard/ProductCard"

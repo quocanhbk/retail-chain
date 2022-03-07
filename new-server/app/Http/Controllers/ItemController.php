@@ -8,6 +8,7 @@ use App\Models\ItemCategory;
 use App\Models\ItemPriceHistory;
 use App\Models\ItemProperty;
 use App\Models\ItemQuantity;
+use App\Models\PurchaseSheet;
 use App\Models\PurchaseSheetItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,11 +24,11 @@ class ItemController extends Controller
         // ensure code is unique
         while (Item::where('code', $code)->where('store_id', $store_id)->exists()) {
             $count++;
-            $code = "SP" . str_pad($count, 6, '0', STR_PAD_LEFT);
+            $code = "IT" . str_pad($count, 6, '0', STR_PAD_LEFT);
         }
         return $code;
     }
-    // Purchaser will create new item, in the case he didn't find it from default items
+
     // * Create item for the store, initial quantity, base price, sell price for the purchaser's branch
     public function create(Request $request) {
         $store_id = Auth::user()->store_id;
@@ -198,12 +199,39 @@ class ItemController extends Controller
 
     }
 
+    public function getSellingItems(Request $request) {
+        $store_id = Auth::user()->store_id;
+        $branch_id = Auth::user()->employment->branch_id;
+
+        $search = $request->query('search') ?? '';
+        $from = $request->query('from') ?? 0;
+        $to = $request->query('to') ?? 10;
+
+        $items = Item::with('category', 'itemProperties')->where('store_id', $store_id)
+            ->whereHas('itemProperties', function ($query) use ($branch_id) {
+                $query->where('branch_id', $branch_id);
+            })->where('name', 'like', '%' . $search . '%')
+            ->orWhere('barcode', 'like', '%' . $search . '%')
+            ->orWhereHas('category', function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%');
+            })
+            ->skip($from)->take($to)->get();
+
+        return response()->json($items);
+    }
+
     // move item from default to current
     public function moveItem(Request $request) {
-        $store_id = $request->get('store_id');
-        $data = $request->all();
+        $store_id = Auth::user()->store_id;
+        $branch_id = Auth::user()->employment->branch_id;
+        $barcode = $request->input('barcode');
+        if (!$barcode) {
+            return response()->json([
+                'message' => 'Barcode is required'
+            ], 400);
+        }
 
-        $default_item = DefaultItem::where('bar_code', $data['barcode'])->first();
+        $default_item = DefaultItem::where('bar_code', $barcode)->first();
         if (!$default_item) {
             return response()->json([
                 'message' => 'Item not found'
@@ -211,7 +239,7 @@ class ItemController extends Controller
         }
 
         // if item is already in the store, return error
-        $item = Item::where('store_id', $store_id)->where('barcode', $data['barcode'])->first();
+        $item = Item::where('store_id', $store_id)->where('barcode', $barcode)->first();
         if ($item) {
             return response()->json([
                 'message' => 'Item already in the store'
@@ -222,14 +250,23 @@ class ItemController extends Controller
         $category = ItemCategory::where('store_id', $store_id)->where('name', 'like', '%' . $default_item->category->name . '%')->first();
 
         $code = $this->genItemCode($store_id);
-        $item = new Item();
-        $item->store_id = $store_id;
-        $item->barcode = $default_item->bar_code;
-        $item->code = $code;
-        $item->name = $default_item->product_name;
-        $item->category_id = $category->id;
-        $item->image = "https://149.28.148.73/merged-db/" . $default_item->image_url;
-        $item->save();
+
+        $item = Item::create([
+            'store_id' => $store_id,
+            'barcode' => $default_item->bar_code,
+            'code' => $code,
+            'name' => $default_item->product_name,
+            'category_id' => $category->id,
+            'image' => "https://149.28.148.73/merged-db/" . $default_item->image_url
+        ]);
+
+        ItemProperty::create([
+            'item_id' => $item->id,
+            'branch_id' => $branch_id,
+            'quantity' => 0,
+            'sell_price' => 0,
+            'base_price' => 0,
+        ]);
 
         return response()->json($item);
     }
@@ -278,19 +315,44 @@ class ItemController extends Controller
 
         return response()->json($item);
     }
-        // get last purchase price of an item
-        public function getLastPurchasePrice(Request $request, $item_id) {
-            $branch_id = Auth::user()->employment->branch_id;
 
-            // get last purchase sheet item of an item
-            $purchase_sheet_item = PurchaseSheetItem::where('item_id', $item_id)->whereHas('purchaseSheet', function ($query) use ($branch_id) {
-                $query->where('branch_id', $branch_id);
-            })->orderBy('id', 'desc')->first();
+    // get last purchase price of an item
+    public function getLastPurchasePrice(Request $request, $item_id) {
+        $branch_id = Auth::user()->employment->branch_id;
 
-            if (!$purchase_sheet_item) {
-                return response()->json(0);
-            }
+        // get last purchase sheet item of an item
+        $purchase_sheet_item = PurchaseSheetItem::where('item_id', $item_id)->whereHas('purchaseSheet', function ($query) use ($branch_id) {
+            $query->where('branch_id', $branch_id);
+        })->orderBy('id', 'desc')->first();
 
-            return response()->json($purchase_sheet_item->price);
+        if (!$purchase_sheet_item) {
+            return response()->json(0);
         }
+
+        return response()->json($purchase_sheet_item->price);
+    }
+
+    // get items from a purchase sheet
+    public function getItemsFromPurchaseSheet(Request $request, $purchase_sheet_id) {
+        $branch_id = Auth::user()->employment->branch_id;
+
+        $search = $request->query('search') ?? '';
+
+        $purchase_sheet_items = PurchaseSheetItem::with('item')->where('purchase_sheet_id', $purchase_sheet_id)
+            ->where('branch_id', $branch_id)
+            ->whereHas('item', function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%');
+            })
+            ->orWhereHas('item', function ($query) use ($search) {
+                $query->where('barcode', 'like', '%' . $search . '%');
+            })
+            ->get();
+
+        foreach ($purchase_sheet_items as &$purchase_sheet_item) {
+            $property = ItemProperty::where('item_id', $purchase_sheet_id->item_id)->where('branch_id', $branch_id)->first();
+            $purchase_sheet_item['property'] = $property;
+        }
+
+        return response()->json($purchase_sheet_items);
+    }
 }

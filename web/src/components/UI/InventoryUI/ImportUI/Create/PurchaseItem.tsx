@@ -26,8 +26,9 @@ const PurchaseItem = ({ data, readOnly = false }: PurchaseItemProps) => {
 
 	const { data: oldPrice } = useQuery(["getLastPurchasePrice", data.item.id], () => getLastPurchasePrice(data.item_id), {
 		enabled: isBlur,
+		initialData: 0,
 		onSuccess: oldPrice => {
-			setInvalid(oldPrice > 0 && Math.abs(oldPrice - data.price) > oldPrice / 2)
+			setInvalid(oldPrice > 0 && data.price > 0 && Math.abs(oldPrice - data.price) > oldPrice / 2)
 		}
 	})
 
@@ -44,15 +45,19 @@ const PurchaseItem = ({ data, readOnly = false }: PurchaseItemProps) => {
 			<Box pos="relative">
 				{invalid && (
 					<Tooltip
-						label={`Giá chênh lệnh lớn so với lần nhập trước: ${currency(oldPrice || 0)}`}
-						aria-label="A tooltip"
+						label={
+							<Box>
+								<Text>{`Chênh lệch ${currency(Math.abs(oldPrice! - data.price))} so với lần nhập trước`}</Text>
+								<Text>{`Giá nhập lần trước: ${currency(oldPrice!)}`}</Text>
+							</Box>
+						}
 						background={"background.third"}
 						color={"text.primary"}
 						fontWeight={400}
-						maxW="10rem"
+						maxW="20rem"
 						openDelay={500}
 					>
-						<Box color={"fill.danger"} pos="absolute" left="0.5rem" top="50%" transform="translateY(-50%)" zIndex={2}>
+						<Box color={"fill.warning"} pos="absolute" left="0.5rem" top="50%" transform="translateY(-50%)" zIndex={2}>
 							<IoIosWarning />
 						</Box>
 					</Tooltip>
@@ -67,7 +72,6 @@ const PurchaseItem = ({ data, readOnly = false }: PurchaseItemProps) => {
 					isReadOnly={readOnly}
 					onFocus={() => setIsBlur(false)}
 					onBlur={() => setIsBlur(true)}
-					isInvalid={invalid}
 				>
 					<NumberInputField textAlign={"right"} w="full" pr={4} />
 				</NumberInput>

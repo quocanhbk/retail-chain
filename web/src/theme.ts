@@ -32,8 +32,8 @@ const theme = extendTheme({
 				_dark: "gray.700"
 			},
 			"background.fade": {
-				default: "blackAlpha.200",
-				_dark: "whiteAlpha.200"
+				default: "blackAlpha.50",
+				_dark: "whiteAlpha.50"
 			},
 			"fill.primary": {
 				default: "telegram.600",
@@ -69,16 +69,6 @@ const theme = extendTheme({
 		})
 	},
 	components: {
-		Button: {
-			defaultProps: {
-				colorScheme: "telegram"
-			},
-			variants: {
-				ghost: props => ({
-					backgroundColor: props.colorMode === "light" ? "blackAlpha.100" : "whiteAlpha.100"
-				})
-			}
-		},
 		// color="telegram.500" size="sm" thickness="3px"
 		Spinner: {
 			defaultProps: {

@@ -1,6 +1,7 @@
 import { Box, Button, chakra, Checkbox, CheckboxGroup, HStack, Input, Radio, RadioGroup, Stack, Text, VStack } from "@chakra-ui/react"
 import { BackableTitle, DateInput, FormControl, Select } from "@components/shared"
 import { employeeRoles, genders } from "@constants"
+import { IoMdCheckmarkCircle, IoMdSettings } from "react-icons/io"
 import AvatarInput from "./AvatarInput"
 import DeleteEmployeePopup from "./DeleteEmployeePopup"
 import useCreateEmployee from "./useCreateEmployee"
@@ -68,28 +69,26 @@ const CreateEmployeeUI = ({ id }: CreateEmployeeUIProps) => {
 							/>
 						</FormControl>
 
-						{!id && (
-							<>
-								<FormControl label="Mật khẩu" mb={4} isRequired={!readOnly}>
-									<Input
-										value={values.password}
-										onChange={e => setValue("password", e.target.value)}
-										readOnly={readOnly}
-										type="password"
-										autoComplete="new-password"
-									/>
-								</FormControl>
-								<FormControl label="Xác nhận mật khẩu" mb={4} isRequired={!readOnly}>
-									<Input
-										value={values.password_confirmation}
-										onChange={e => setValue("password_confirmation", e.target.value)}
-										readOnly={readOnly}
-										type="password"
-										autoComplete="new-password"
-									/>
-								</FormControl>
-							</>
-						)}
+						<FormControl label="Mật khẩu" mb={4} isRequired={!readOnly}>
+							<Input
+								value={id ? "********" : values.password}
+								onChange={e => setValue("password", e.target.value)}
+								readOnly={readOnly}
+								type="password"
+								autoComplete="new-password"
+								isDisabled={!!id}
+							/>
+						</FormControl>
+						<FormControl label="Xác nhận mật khẩu" mb={4} isRequired={!readOnly}>
+							<Input
+								value={id ? "********" : values.password_confirmation}
+								onChange={e => setValue("password_confirmation", e.target.value)}
+								readOnly={readOnly}
+								type="password"
+								autoComplete="new-password"
+								isDisabled={!!id}
+							/>
+						</FormControl>
 					</Box>
 					<Box w="full" maxW="24rem">
 						<FormControl label="Quyền" mb={4} isRequired={!readOnly}>
@@ -128,17 +127,22 @@ const CreateEmployeeUI = ({ id }: CreateEmployeeUIProps) => {
 						</FormControl>
 					</Box>
 				</Stack>
-				<HStack mt={4} borderTop={"1px"} borderColor={"border.primary"} pt={4}>
-					{!readOnly && (
-						<Button type="submit" isLoading={isLoading} w="10rem">
-							{"Xác nhận"}
-						</Button>
-					)}
+				<HStack borderTop={"1px"} borderColor={"border.primary"} pt={4}>
+					<Button
+						type="submit"
+						isLoading={isLoading}
+						w="8rem"
+						colorScheme={readOnly ? "yellow" : "telegram"}
+						leftIcon={readOnly ? <IoMdSettings /> : <IoMdCheckmarkCircle />}
+					>
+						{readOnly ? "Chỉnh sửa" : "Xác nhận"}
+					</Button>
 					{!readOnly && id && (
-						<Button variant="ghost" onClick={() => setReadOnly(true)} w="6rem" c>
+						<Button variant="ghost" onClick={() => setReadOnly(true)} w="8rem" colorScheme={"red"}>
 							Hủy
 						</Button>
 					)}
+					{}
 				</HStack>
 			</chakra.form>
 			<DeleteEmployeePopup isOpen={confirmDelete} onClose={() => setConfirmDelete(false)} employeeId={id} employeeName={employee?.name} />

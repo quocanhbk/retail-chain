@@ -15,6 +15,7 @@ class ItemProperty extends Model
         'quantity',
         'sell_price',
         'base_price',
+        'last_purchase_price',
     ];
 
     protected $hidden = [
@@ -32,4 +33,5 @@ class ItemProperty extends Model
     {
         return $this->belongsTo(Branch::class);
     }
+
 }

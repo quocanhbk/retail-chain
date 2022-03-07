@@ -77,6 +77,8 @@ Route::prefix('/employee')->group(function () {
         Route::post('/transfer', [EmployeeController::class, 'transfer']);
         // POST /employee/transfer/many - transfer many employees to another branch
         Route::post('/transfer/many', [EmployeeController::class, 'transferMany']);
+        // PATCH /employee/{employee_id} - update an employee by id
+        Route::patch('/{employee_id}', [EmployeeController::class, 'update']);
         // DELETE /employee/{employee_id} - delete an employee by id
         Route::delete('/{employee_id}', [EmployeeController::class, 'delete']);
     });
@@ -144,11 +146,13 @@ Route::prefix('/item')->group(function () {
         // DELETE /item/{item_id} - delete an item by id
         Route::delete('/{item_id}', [ItemController::class, 'delete']);
     });
-    Route::middleware([AdminOrSaleOrPurchaser::class])->group(function () {
+    Route::middleware([OnlyEmployee::class])->group(function () {
         // POST /item/move/{bar_code} - move an item from default to current
         Route::post('/move', [ItemController::class, 'moveItem']);
         // GET /item/search - search items
         Route::get('/search', [ItemController::class, 'getItemsBySearch']);
+        // GET /item/sell - get all items that can be sold
+        Route::get('/sell', [ItemController::class, 'getSellingItems']);
         // GET /item/bar_code/{bar_code} - get an item by bar code
         Route::get('/bar_code/{bar_code}', [ItemController::class, 'getItemByBarCode']);
         // GET /item - get all items
@@ -157,6 +161,8 @@ Route::prefix('/item')->group(function () {
         Route::get('/{item_id}/price_history', [ItemController::class, 'getPriceHistory']);
         // GET /item/{item_id} - get an item by id
         Route::get('/{item_id}', [ItemController::class, 'getItem']);
+        // GET /item/purchase-sheet/{purchase_sheet_id} - get items from a purchase sheet
+        Route::get('/purchase-sheet/{purchase_sheet_id}', [ItemController::class, 'getItemsFromPurchaseSheet']);
     });
 
     Route::get('/{item_id}/stock', [ItemController::class, 'getStock'])->middleware([OnlyEmployee::class]);
@@ -175,6 +181,23 @@ Route::prefix('/purchase-sheet')->middleware([OnlyEmployee::class, HavePurchaseR
     Route::patch('/{purchase_sheet_id}/note', [PurchaseSheetController::class, 'updateNote']);
     // DELETE /purchase-sheet/{purchase_sheet_id} - delete a purchase sheet by id
     Route::delete('/{purchase_sheet_id}', [PurchaseSheetController::class, 'delete']);
+});
+
+Route::prefix('/return-purchase-sheet')->middleware([OnlyEmployee::class, HavePurchaseRole::class])->group(function () {
+    // POST /return-purchase-sheet - create a new return purchase sheet
+    Route::post('/', [ReturnPurchaseSheetController::class, 'create']);
+    // GET /return-purchase-sheet - get all return purchase sheets
+    Route::get('/', [ReturnPurchaseSheetController::class, 'getReturnPurchaseSheets']);
+    // GET /return-purchase-sheet/returnable/{purchase_sheet_id} - get a returnable purchase sheet by id
+    Route::get('/returnable/{purchase_sheet_id}', [ReturnPurchaseSheetController::class, 'getReturnableItems']);
+    // GET /return-purchase-sheet/{return_purchase_sheet_id} - get a return purchase sheet by id
+    Route::get('/{return_purchase_sheet_id}', [ReturnPurchaseSheetController::class, 'getReturnPurchaseSheet']);
+    // PATCH /return-purchase-sheet/{return_purchase_sheet_id} - update a return purchase sheet by id
+    Route::patch('/{return_purchase_sheet_id}', [ReturnPurchaseSheetController::class, 'update']);
+    // PATCH /return-purchase-sheet/{return_purchase_sheet_id}/note - update a return purchase sheet note by id
+    Route::patch('/{return_purchase_sheet_id}/note', [ReturnPurchaseSheetController::class, 'updateNote']);
+    // DELETE /return-purchase-sheet/{return_purchase_sheet_id} - delete a return purchase sheet by id
+    Route::delete('/{return_purchase_sheet_id}', [ReturnPurchaseSheetController::class, 'delete']);
 });
 
 Route::prefix('/customer')->middleware([OnlyEmployee::class, HaveSaleRole::class])->group(function () {

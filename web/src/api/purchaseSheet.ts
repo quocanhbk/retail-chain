@@ -1,3 +1,5 @@
+import { ListQueryOptions } from "@@types"
+import { toQueryString } from "@helper"
 import { Branch } from "./branch"
 import { Employee } from "./employee"
 import fetcher from "./fetcher"
@@ -54,8 +56,10 @@ export const updatePurchaseSheet = async (id: number, input: CreatePurchaseSheet
 	return data
 }
 
-export const getPurchaseSheets = async (): Promise<Omit<PurchaseSheetDetail, "purchaseSheetItems" | "branch">[]> => {
-	const { data } = await fetcher.get("/purchase-sheet")
+export const getPurchaseSheets = async (
+	options: ListQueryOptions = {}
+): Promise<Omit<PurchaseSheetDetail, "purchaseSheetItems" | "branch">[]> => {
+	const { data } = await fetcher.get(`/purchase-sheet?${toQueryString(options)}`)
 	return data
 }
 

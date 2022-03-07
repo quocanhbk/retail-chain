@@ -7,3 +7,11 @@ export interface DateInput {
 }
 
 export type Role = typeof employeeRoles[number]
+
+export interface ListQueryOptions {
+	sort_by?: string
+	sort_type?: "asc" | "desc"
+	search?: string
+	from?: number
+	to?: number
+}

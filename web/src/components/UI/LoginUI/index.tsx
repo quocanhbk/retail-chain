@@ -29,7 +29,7 @@ export const LoginUI = () => {
 
 	return (
 		<Box>
-			<Flex overflow="hidden" mb={8} pos="relative" shadow="base">
+			<Flex overflow="hidden" mb={8} pos="relative" shadow="base" background="background.primary">
 				{loginMode.map(mode => (
 					<Box
 						key={mode.id}
@@ -68,10 +68,10 @@ export const LoginUI = () => {
 				<Text fontSize="sm" w="full" textAlign="center" color={"fill.danger"} mb={2} h="1.2rem">
 					{generalError}
 				</Text>
-				<Button w="full" onClick={() => handleLogin()} isLoading={isLoading} type="submit" mb={4}>
+				<Button w="full" onClick={() => handleLogin()} isLoading={isLoading} type="submit" mb={4} colorScheme="gray" variant="outline">
 					{"Đăng Nhập"}
 				</Button>
-				<Box h="1px" bg={"text.secondary"} w="full" mb={2} />
+				<Box h="1px" bg={"border.primary"} w="full" mb={2} />
 				<Text fontSize="sm" color={"fill.primary"} cursor="pointer" onClick={() => router.push("/register")} fontWeight="black">
 					Tạo cửa hàng
 				</Text>

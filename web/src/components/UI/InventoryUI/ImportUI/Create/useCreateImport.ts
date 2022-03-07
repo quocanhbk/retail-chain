@@ -2,7 +2,6 @@ import {
 	createPurchaseSheet,
 	CreatePurchaseSheetInput,
 	deletePurchaseSheet,
-	getLastPurchasePrice,
 	getPurchaseSheet,
 	Item,
 	moveItem,
@@ -162,6 +161,13 @@ const useCreateImport = (id?: number) => {
 					status: "success"
 				})
 				router.push("/main/inventory/import")
+			},
+			onError: (error: any) => {
+				toast({
+					status: "error",
+					title: error.response.data.message,
+					message: error.response.data.error
+				})
 			}
 		}
 	)

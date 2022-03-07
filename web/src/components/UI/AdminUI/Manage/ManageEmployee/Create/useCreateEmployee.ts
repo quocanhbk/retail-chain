@@ -102,6 +102,11 @@ const useCreateEmployee = (id: number | undefined) => {
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
+		if (readOnly) {
+			setReadOnly(false)
+			return
+		}
+
 		if (!validate()) {
 			return
 		}

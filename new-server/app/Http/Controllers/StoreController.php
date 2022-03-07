@@ -19,7 +19,7 @@ class StoreController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:stores'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
-            'remember' => ['boolean', 'nullable'],
+            'remember' => ['nullable', 'boolean'],
         ];
 
         $validator = Validator::make($data, $rules);
@@ -53,7 +53,7 @@ class StoreController extends Controller
             ['name' => 'VỆ SINH NHÀ CỬA'],
             ['name' => 'ĐỒ DÙNG GIA ĐÌNH'],
             ['name' => 'VĂN PHÒNG PHẨM'],
-            ['name' => 'THUỐC VÀ THỰC PHẨM CHỨC NĂNG'],
+            ['name' => 'THUỐC VÀ THỰC PHẨM CHỨC NĂNG']
         ]);
 
         return response()->json($store);

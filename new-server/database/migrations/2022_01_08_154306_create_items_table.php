@@ -22,7 +22,7 @@ class CreateItemsTable extends Migration
             $table->string('name');
             $table->string('image')->nullable();
             $table->unsignedBigInteger('store_id');
-            $table->unsignedBigInteger('category_id');
+            $table->unsignedBigInteger('category_id')->nullable();
             $table->foreign('store_id')->references('id')->on('stores');
             $table->foreign('category_id')->references('id')->on('item_categories');
         });

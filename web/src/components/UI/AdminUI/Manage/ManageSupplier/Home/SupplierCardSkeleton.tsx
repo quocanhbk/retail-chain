@@ -1,32 +1,29 @@
-import { Box, Flex, Skeleton, Text } from "@chakra-ui/react"
+import { chakra, Skeleton, Text } from "@chakra-ui/react"
 
 const SupplierCardSkeleton = () => {
 	return (
-		<Box rounded="md" backgroundColor={"background.secondary"}>
-			<Flex align="center" borderBottom={"1px"} borderColor={"border.primary"} px={4} py={2}>
+		<chakra.tr>
+			<chakra.td textAlign={"center"}>
 				<Skeleton>
-					<Text fontWeight={"bold"} fontSize={"lg"}>
-						Supplier name
-					</Text>
+					<Text>CODE</Text>
 				</Skeleton>
-			</Flex>
-			<Box p={4}>
-				<Flex align="center" w="full" mb={2}>
-					<Skeleton>
-						<Text flex={1} isTruncated>
-							Supplier phone
-						</Text>
-					</Skeleton>
-				</Flex>
-				<Flex align="center" w="full">
-					<Skeleton>
-						<Text flex={1} isTruncated>
-							Supplier email
-						</Text>
-					</Skeleton>
-				</Flex>
-			</Box>
-		</Box>
+			</chakra.td>
+			<chakra.td textAlign={"center"}>
+				<Skeleton>
+					<Text>NAME</Text>
+				</Skeleton>
+			</chakra.td>
+			<chakra.td textAlign={"center"}>
+				<Skeleton>
+					<Text>PHONE</Text>
+				</Skeleton>
+			</chakra.td>
+			<chakra.td textAlign={"center"}>
+				<Skeleton>
+					<Text>EMAIL</Text>
+				</Skeleton>
+			</chakra.td>
+		</chakra.tr>
 	)
 }
 

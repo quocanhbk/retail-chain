@@ -22,3 +22,10 @@ export const dateToDateInput = (date: string | null): DateInput | null => {
 export const currency = (value: number) => {
 	return value ? value.toLocaleString(undefined, { maximumFractionDigits: 0 }) : 0
 }
+
+export const toQueryString = (obj: any) => {
+	return Object.keys(obj)
+		.filter(key => !!obj[key])
+		.map(key => `${key}=${obj[key]}`)
+		.join("&")
+}

@@ -1,22 +1,9 @@
-import {
-	Box,
-	Button,
-	Flex,
-	Grid,
-	HStack,
-	Input,
-	NumberInput,
-	NumberInputField,
-	Spinner,
-	Stack,
-	Text,
-	Textarea,
-	theme,
-	VStack
-} from "@chakra-ui/react"
+import { Box, Button, Flex, HStack, Input, NumberInput, NumberInputField, Stack, Text, Textarea, VStack } from "@chakra-ui/react"
 import { BackableTitle, LoadingOverlay, SubmitConfirmAlert } from "@components/shared"
 import { currency } from "@helper"
+import { useRouter } from "next/router"
 import { BsThreeDots } from "react-icons/bs"
+import { IoMdCheckmarkCircle, IoMdReturnLeft, IoMdSettings, IoMdTrash } from "react-icons/io"
 import DiscountInput from "./DiscountInput"
 import ItemSearchInput from "./ItemSearchInput"
 import PurchaseItem from "./PurchaseItem"
@@ -30,6 +17,8 @@ interface ImportCreateUIProps {
 }
 
 const ImportCreateUI = ({ id }: ImportCreateUIProps) => {
+	const router = useRouter()
+
 	const {
 		handleClickDefaultItem,
 		handleClickItem,
@@ -163,19 +152,37 @@ const ImportCreateUI = ({ id }: ImportCreateUIProps) => {
 							</Box>
 						</VStack>
 					</Sidebar>
-					<Button
-						onClick={handleConfirmButtonClick}
-						isLoading={isLoading}
-						isDisabled={mappedItems.length === 0}
-						colorScheme={readOnly ? "yellow" : "telegram"}
-					>
-						{id && readOnly ? "Chỉnh sửa" : "Xác nhận"}
-					</Button>
-					{id && (
-						<Button onClick={() => setConfirmDelete(true)} variant={"ghost"} colorScheme={"red"}>
-							{"Xóa"}
+					<VStack align="stretch" pt={4} borderTop="1px" borderColor={"border.primary"} spacing={4}>
+						<Button
+							onClick={handleConfirmButtonClick}
+							isLoading={isLoading}
+							isDisabled={mappedItems.length === 0}
+							leftIcon={readOnly ? <IoMdSettings /> : <IoMdCheckmarkCircle />}
+						>
+							{id && readOnly ? "Chỉnh sửa" : "Xác nhận"}
 						</Button>
-					)}
+						{readOnly && (
+							<>
+								<Button
+									leftIcon={<IoMdReturnLeft />}
+									variant="outline"
+									onClick={() => router.push(`/main/inventory/return-import/create?return-purchase-sheet=${id}`)}
+								>
+									{"Trả hàng nhập"}
+								</Button>
+								{id && (
+									<Button
+										colorScheme={"red"}
+										onClick={() => setConfirmDelete(true)}
+										variant={"outline"}
+										leftIcon={<IoMdTrash />}
+									>
+										{"Xóa"}
+									</Button>
+								)}
+							</>
+						)}
+					</VStack>
 				</VStack>
 			</Stack>
 			<SubmitConfirmAlert

@@ -1,5 +1,5 @@
 import { CreateEmployeeInput, Employee, getBranches, getEmployees, transferManyEmployees } from "@api"
-import { Box, Button, Checkbox, HStack, Stack, Text, toast, VStack } from "@chakra-ui/react"
+import { Box, Button, Checkbox, HStack, Stack, Text, VStack } from "@chakra-ui/react"
 import { ChakraModal, SearchInput } from "@components/shared"
 import { employeeRoles } from "@constants"
 import { useChakraToast } from "@hooks"

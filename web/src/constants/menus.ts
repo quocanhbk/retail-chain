@@ -25,7 +25,8 @@ export const employeeNavMenus = [
 		path: "/main/inventory/import",
 		subMenus: [
 			{ id: "import", text: "Nhập hàng", path: "/main/inventory/import" },
-			{ id: "product", text: "Hàng hóa", path: "/main/inventory/product" }
+			{ id: "product", text: "Hàng hóa", path: "/main/inventory/product" },
+			{ id: "return-import", text: "Trả hàng", path: "/main/inventory/return-import" }
 		]
 	}
 ]

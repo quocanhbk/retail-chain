@@ -1,4 +1,4 @@
-import { Box, Button, chakra, Flex, Stack, Text } from "@chakra-ui/react"
+import { Box, chakra, Flex, Stack, Text } from "@chakra-ui/react"
 import { BackableTitle, FormControl, ModeInput } from "@components/shared"
 import ImageInput from "./ImageInput"
 import useBranchDetail from "./useBranchDetail"

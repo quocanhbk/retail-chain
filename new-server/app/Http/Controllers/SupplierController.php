@@ -36,7 +36,7 @@ class SupplierController extends Controller
             ], 400);
         }
         // create code if not provided
-        if (!$data['code']) {
+        if (!isset($data['code'])) {
             $supplier_count = Supplier::where('store_id', $store_id)->count();
             $data['code'] = 'SUP' . str_pad($supplier_count + 1, 6, '0', STR_PAD_LEFT);
         }
@@ -45,9 +45,9 @@ class SupplierController extends Controller
             'store_id' => $store_id,
             'name' => $data['name'],
             'code' => $data['code'],
-            'address' => $data['address'],
-            'phone' => $data['phone'] ?? null,
-            'email' => $data['email'],
+            'address' => $data['address'] ?? null,
+            'phone' => $data['phone'] ,
+            'email' => $data['email'] ?? null,
             'tax' => $data['tax'] ?? null,
             'note' => $data['note'] ?? null,
         ]);
@@ -87,9 +87,10 @@ class SupplierController extends Controller
         $data['supplier_id'] = $supplier_id;
         $rules = [
             'supplier_id' => ['required', 'integer', Rule::exists('suppliers', 'id')->where('store_id', $store_id)],
+            'code' => ['nullable', 'string', 'max:255', Rule::unique('suppliers')->where('store_id', $store_id)->ignore($supplier_id)],
             'name' => ['nullable', 'string', 'max:255'],
             'address' => ['nullable', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:255', Rule::unique('suppliers')->where('store_id', $store_id)->ignore($supplier_id)],
             'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique('suppliers')->where('store_id', $store_id)->ignore($supplier_id)],
             'tax' => ['nullable', 'string', 'max:255'],
             'note' => ['nullable', 'string', 'max:255']

@@ -1,15 +1,16 @@
 import { Box, chakra, Flex, ScaleFade, Text, VStack } from "@chakra-ui/react"
 import { useClickOutside } from "@hooks"
-import { branchSorts } from "@constants"
+import { SortField } from "@constants"
 import { BsFillTriangleFill } from "react-icons/bs"
 import { useState } from "react"
 
 interface SorterProps {
-	currentSort: { key: string; order: string }
-	onChange: (sort: { key: string; order: string }) => void
+	currentSort: SortField
+	data: SortField[]
+	onChange: (sort: SortField) => void
 }
 
-const Sorter = ({ currentSort, onChange }: SorterProps) => {
+export const Sorter = ({ currentSort, onChange, data }: SorterProps) => {
 	const [isOpen, setIsOpen] = useState(false)
 	const ref = useClickOutside<HTMLDivElement>(() => setIsOpen(false))
 	return (
@@ -24,10 +25,13 @@ const Sorter = ({ currentSort, onChange }: SorterProps) => {
 			ml={4}
 			align="center"
 			pos="relative"
+			onClick={() => setIsOpen(!isOpen)}
 		>
-			<Flex w="full" align="center" justify="space-between" cursor={"pointer"} onClick={() => setIsOpen(!isOpen)} ref={ref}>
+			<Flex w="full" align="center" justify="space-between" cursor={"pointer"} ref={ref}>
 				<Text>
-					<chakra.span>{branchSorts.find(b => b.key === currentSort.key && b.order === currentSort.order)?.text}</chakra.span>
+					<chakra.span>
+						{data.find(sortField => sortField.key === currentSort.key && sortField.order === currentSort.order)?.text}
+					</chakra.span>
 				</Text>
 				<Box transform="auto" rotate={isOpen ? 0 : 180}>
 					<BsFillTriangleFill size="0.5rem" />
@@ -37,17 +41,21 @@ const Sorter = ({ currentSort, onChange }: SorterProps) => {
 				<ScaleFade in={isOpen}>
 					<Box border="1px" borderColor={"border.primary"} w="full" backgroundColor={"background.secondary"} rounded="md">
 						<VStack align="stretch" spacing={0}>
-							{branchSorts.map(b => (
+							{data.map(sortField => (
 								<Text
-									key={`${b.key}-${b.order}`}
-									onClick={() => onChange({ key: b.key, order: b.order })}
+									key={`${sortField.key}-${sortField.order}`}
+									onClick={() => onChange(sortField)}
 									cursor="pointer"
 									px={4}
 									py={2}
-									color={b.key === currentSort.key && b.order === currentSort.order ? "fill.primary" : "text.secondary"}
+									color={
+										sortField.key === currentSort.key && sortField.order === currentSort.order
+											? "fill.primary"
+											: "text.secondary"
+									}
 									_hover={{ backgroundColor: "background.third" }}
 								>
-									{b.text}
+									{sortField.text}
 								</Text>
 							))}
 						</VStack>
@@ -57,5 +65,3 @@ const Sorter = ({ currentSort, onChange }: SorterProps) => {
 		</Flex>
 	)
 }
-
-export default Sorter

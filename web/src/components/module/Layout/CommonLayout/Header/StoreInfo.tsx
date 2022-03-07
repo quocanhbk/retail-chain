@@ -16,11 +16,19 @@ const StoreInfo = ({ name, onLogout }: InfoProps) => {
 
 	const { colorMode, toggleColorMode } = useColorMode()
 	return (
-		<Flex align="center" px={4} py={1} bg={"fill.primary"} rounded="md" pos="relative" zIndex={"dropdown"}>
+		<Flex align="center" px={4} py={1} rounded="md" pos="relative" zIndex={"dropdown"} border="1px" borderColor={"border.primary"}>
 			<Text fontWeight={"bold"} mr={4} fontSize={"lg"} color="white">
 				{name}
 			</Text>
-			<Box rounded="full" cursor={"pointer"} onClick={() => setIsOpen(isOpen => !isOpen)} ref={boxRef}>
+			<Box
+				rounded="full"
+				cursor={"pointer"}
+				onClick={() => setIsOpen(isOpen => !isOpen)}
+				border="1px"
+				p={1}
+				borderColor="border.primary"
+				ref={boxRef}
+			>
 				<Box color="white">
 					<BsThreeDots size="1.2rem" />
 				</Box>
@@ -40,7 +48,7 @@ const StoreInfo = ({ name, onLogout }: InfoProps) => {
 							{colorMode === "light" ? <BsFillSunFill /> : <BsFillMoonFill />}
 							<Text ml={2}>{colorMode === "light" ? "Theme sáng" : "Theme tối"}</Text>
 						</Flex>
-						<Flex align="center" w="full" cursor="pointer" onClick={onLogout} px={2} py={1} color={"fill.primary"}>
+						<Flex align="center" w="full" cursor="pointer" onClick={onLogout} px={2} py={1} color={"fill.danger"}>
 							<BsPower />
 							<Text ml={2}>Đăng xuất</Text>
 						</Flex>
