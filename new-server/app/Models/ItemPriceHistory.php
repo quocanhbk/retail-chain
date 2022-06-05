@@ -11,12 +11,7 @@ class ItemPriceHistory extends Model
 
     public $timestamps = false;
 
-    protected $fillable = [
-        'item_id',
-        'price',
-        'start_date',
-        'end_date',
-    ];
+    protected $fillable = ["item_id", "price", "start_date", "end_date"];
 
     public function item()
     {

@@ -9,19 +9,9 @@ class Shift extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'start_time',
-        'end_time',
-        'is_active',
-        'branch_id'
-    ];
+    protected $fillable = ["name", "start_time", "end_time", "is_active", "branch_id"];
 
-    protected $hidden = [
-        'created_at',
-        'updated_at',
-        'deleted_at'
-    ];
+    protected $hidden = ["created_at", "updated_at", "deleted_at"];
 
     public function branch()
     {

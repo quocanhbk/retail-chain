@@ -10,21 +10,18 @@ class PurchaseSheet extends Model
     use HasFactory;
 
     protected $fillable = [
-        'code',
-        'employee_id',
-        'branch_id',
-        'supplier_id',
-        'discount',
-        'discount_type',
-        'total',
-        'paid_amount',
-        'note'
+        "code",
+        "employee_id",
+        "branch_id",
+        "supplier_id",
+        "discount",
+        "discount_type",
+        "total",
+        "paid_amount",
+        "note",
     ];
 
-    protected $hidden = [
-        'updated_at',
-        'deleted_at'
-    ];
+    protected $hidden = ["updated_at", "deleted_at"];
 
     public function employee()
     {

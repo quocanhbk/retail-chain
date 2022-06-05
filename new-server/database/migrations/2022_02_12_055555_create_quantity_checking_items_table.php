@@ -13,16 +13,24 @@ class CreateQuantityCheckingItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('quantity_checking_items', function (Blueprint $table) {
+        Schema::create("quantity_checking_items", function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger('quantity_checking_sheet_id');
-            $table->unsignedBigInteger('item_id');
-            $table->unsignedInteger('expected');
-            $table->unsignedInteger('actual');
-            $table->unsignedInteger('total');
-            $table->foreign('quantity_checking_sheet_id')->references('id')->on('quantity_checking_sheets')->onDelete('cascade');
-            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
+            $table->unsignedBigInteger("quantity_checking_sheet_id");
+            $table->unsignedBigInteger("item_id");
+            $table->unsignedInteger("expected");
+            $table->unsignedInteger("actual");
+            $table->unsignedInteger("total");
+            $table
+                ->foreign("quantity_checking_sheet_id")
+                ->references("id")
+                ->on("quantity_checking_sheets")
+                ->onDelete("cascade");
+            $table
+                ->foreign("item_id")
+                ->references("id")
+                ->on("items")
+                ->onDelete("cascade");
         });
     }
 
@@ -33,6 +41,6 @@ class CreateQuantityCheckingItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('quantity_checking_items');
+        Schema::dropIfExists("quantity_checking_items");
     }
 }

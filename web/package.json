@@ -15,6 +15,7 @@
 		"@chakra-ui/styled-system": "^1.16.0",
 		"@emotion/react": "^11",
 		"@emotion/styled": "^11",
+		"@hookform/resolvers": "^2.8.8",
 		"axios": "0.21.4",
 		"date-fns": "^2.25.0",
 		"easy-peasy": "^5.0.4",
@@ -22,8 +23,10 @@
 		"next": "11.1.2",
 		"react": "17.0.2",
 		"react-dom": "17.0.2",
+		"react-hook-form": "^7.30.0",
 		"react-icons": "^4.3.1",
-		"react-query": "3.23.2"
+		"react-query": "3.23.2",
+		"yup": "^0.32.11"
 	},
 	"devDependencies": {
 		"@chakra-ui/cli": "^1.7.0",

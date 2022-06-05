@@ -6,7 +6,6 @@ import { ReactElement } from "react"
 const ImportDetailPage = () => {
 	const router = useRouter()
 	const id = parseInt(router.query.id as string) || undefined
-
 	return <ReturnImportCreateUI id={id} />
 }
 

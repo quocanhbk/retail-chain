@@ -11,19 +11,9 @@ class Item extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = [
-        'store_id',
-        'barcode',
-        'name',
-        'image',
-        'category_id',
-    ];
+    protected $fillable = ["store_id", "barcode", "name", "image", "item_category_id"];
 
-    protected $hidden = [
-        'created_at',
-        'updated_at',
-        'deleted_at'
-    ];
+    protected $hidden = ["created_at", "updated_at", "deleted_at"];
 
     public function store()
     {

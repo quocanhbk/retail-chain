@@ -10,11 +10,16 @@ class HaveSaleRole
 {
     public function handle(Request $request, Closure $next)
     {
-        $have_sale_role = Auth::user()->employment->roles->where('role', 'sale')->first();
+        $have_sale_role = Auth::user()
+            ->employment->roles->where("role", "sale")
+            ->first();
         if (!$have_sale_role) {
-            return response()->json([
-                'message' => 'Unauthorized.',
-            ], 403);
+            return response()->json(
+                [
+                    "message" => "Unauthorized.",
+                ],
+                403
+            );
         }
         return $next($request);
     }

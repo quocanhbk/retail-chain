@@ -13,15 +13,18 @@ class CreateInvoiceItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('invoice_items', function (Blueprint $table) {
+        Schema::create("invoice_items", function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger('invoice_id');
-            $table->string('barcode');
-            $table->string('name');
-            $table->unsignedBigInteger('price');
-            $table->unsignedBigInteger('quantity');
-            $table->foreign('invoice_id')->references('id')->on('invoices');
+            $table->unsignedBigInteger("invoice_id");
+            $table->string("barcode");
+            $table->string("name");
+            $table->unsignedBigInteger("price");
+            $table->unsignedBigInteger("quantity");
+            $table
+                ->foreign("invoice_id")
+                ->references("id")
+                ->on("invoices");
         });
     }
 
@@ -32,6 +35,6 @@ class CreateInvoiceItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('invoice_items');
+        Schema::dropIfExists("invoice_items");
     }
 }

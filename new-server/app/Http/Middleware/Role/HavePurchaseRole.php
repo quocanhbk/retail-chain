@@ -10,11 +10,16 @@ class HavePurchaseRole
 {
     public function handle(Request $request, Closure $next)
     {
-        $have_purchase_role = Auth::user()->employment->roles->where('role', 'purchase')->first();
+        $have_purchase_role = Auth::user()
+            ->employment->roles->where("role", "purchase")
+            ->first();
         if (!$have_purchase_role) {
-            return response()->json([
-                'message' => 'Unauthorized.',
-            ], 403);
+            return response()->json(
+                [
+                    "message" => "Unauthorized.",
+                ],
+                403
+            );
         }
         return $next($request);
     }

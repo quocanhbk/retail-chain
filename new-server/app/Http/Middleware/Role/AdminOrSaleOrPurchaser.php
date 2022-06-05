@@ -11,30 +11,36 @@ class AdminOrSaleOrPurchaser
 {
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::guard('stores')->check()) {
-            $store_id = Auth::guard('stores')->user()->id;
+        if (Auth::guard("stores")->check()) {
+            $store_id = Auth::guard("stores")->user()->id;
             $request->attributes->add([
-                'store_id' => $store_id,
+                "store_id" => $store_id,
             ]);
             return $next($request);
         }
-        if (Auth::guard('employees')->check()) {
-            $have_role = Auth::user()->employment->roles
-                ->whereIn('role', array('sale', 'purchase'))
+        if (Auth::guard("employees")->check()) {
+            $have_role = Auth::user()
+                ->employment->roles->whereIn("role", ["sale", "purchase"])
                 ->first();
             if (!$have_role) {
-                return response()->json([
-                    'message' => 'Unauthorized.',
-                ], 403);
+                return response()->json(
+                    [
+                        "message" => "Unauthorized.",
+                    ],
+                    403
+                );
             }
             $store_id = Auth::user()->store_id;
             $request->attributes->add([
-                'store_id' => $store_id,
+                "store_id" => $store_id,
             ]);
             return $next($request);
         }
-        return response()->json([
-            'message' => 'Unauthenticated.',
-        ], 401);
+        return response()->json(
+            [
+                "message" => "Unauthenticated.",
+            ],
+            401
+        );
     }
 }

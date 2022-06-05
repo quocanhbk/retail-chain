@@ -13,15 +13,23 @@ class CreateQuantityCheckingSheetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('quantity_checking_sheets', function (Blueprint $table) {
+        Schema::create("quantity_checking_sheets", function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('code');
-            $table->unsignedBigInteger('employee_id');
-            $table->unsignedBigInteger('branch_id');
-            $table->string('note')->nullable();
-            $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');
-            $table->foreign('branch_id')->references('id')->on('branches')->onDelete('cascade');
+            $table->string("code");
+            $table->unsignedBigInteger("employee_id");
+            $table->unsignedBigInteger("branch_id");
+            $table->string("note")->nullable();
+            $table
+                ->foreign("employee_id")
+                ->references("id")
+                ->on("employees")
+                ->onDelete("cascade");
+            $table
+                ->foreign("branch_id")
+                ->references("id")
+                ->on("branches")
+                ->onDelete("cascade");
         });
     }
 
@@ -32,6 +40,6 @@ class CreateQuantityCheckingSheetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('quantity_checking_sheets');
+        Schema::dropIfExists("quantity_checking_sheets");
     }
 }

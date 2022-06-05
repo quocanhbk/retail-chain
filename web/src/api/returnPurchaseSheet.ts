@@ -11,6 +11,7 @@ export interface ReturnPurchaseItem {
 	return_purchase_sheet_id: number
 	item_id: number
 	quantity: number
+	price: number
 	return_price: number
 	return_price_type: "cash" | "percent"
 	total: number
@@ -44,7 +45,7 @@ export interface ReturnPurchaseSheetDetail extends ReturnPurchaseSheet {
 
 export interface CreateReturnPurchaseSheetInput
 	extends Pick<ReturnPurchaseSheet, "code" | "supplier_id" | "discount" | "discount_type" | "note" | "paid_amount" | "purchase_sheet_id"> {
-	items: (Pick<ReturnPurchaseItem, "item_id" | "quantity" | "return_price" | "return_price_type"> & { item: Item })[]
+	items: (Pick<ReturnPurchaseItem, "item_id" | "quantity" | "price" | "return_price" | "return_price_type"> & { item: Item })[]
 }
 
 export const createReturnPurchaseSheet = async (input: CreateReturnPurchaseSheetInput) => {

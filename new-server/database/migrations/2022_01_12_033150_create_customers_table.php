@@ -13,17 +13,21 @@ class CreateCustomersTable extends Migration
      */
     public function up()
     {
-        Schema::create('customers', function (Blueprint $table) {
+        Schema::create("customers", function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->softDeletes();
-            $table->string('name');
-            $table->string('phone');
-            $table->string('code');
-            $table->string('email')->nullable();
-            $table->integer('point')->default(0);
-            $table->unsignedBigInteger('store_id');
-            $table->foreign('store_id')->references('id')->on('stores')->onDelete('cascade');
+            $table->string("name");
+            $table->string("phone");
+            $table->string("code");
+            $table->string("email")->nullable();
+            $table->integer("point")->default(0);
+            $table->unsignedBigInteger("store_id");
+            $table
+                ->foreign("store_id")
+                ->references("id")
+                ->on("stores")
+                ->onDelete("cascade");
         });
     }
 
@@ -34,6 +38,6 @@ class CreateCustomersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('customers');
+        Schema::dropIfExists("customers");
     }
 }

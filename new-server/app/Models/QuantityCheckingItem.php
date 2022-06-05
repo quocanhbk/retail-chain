@@ -9,19 +9,9 @@ class QuantityCheckingItem extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'quantity_checking_sheet_id',
-        'item_id',
-        'expected',
-        'actual',
-        'total'
-    ];
+    protected $fillable = ["quantity_checking_sheet_id", "item_id", "expected", "actual", "total"];
 
-    protected $hidden = [
-        'created_at',
-        'updated_at',
-        'deleted_at'
-    ];
+    protected $hidden = ["created_at", "updated_at", "deleted_at"];
 
     public function quantityCheckingSheet()
     {

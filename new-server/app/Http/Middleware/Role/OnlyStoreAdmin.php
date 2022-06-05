@@ -10,11 +10,13 @@ class OnlyStoreAdmin
 {
     public function handle(Request $request, Closure $next)
     {
-        error_log("OnlyStoreAdmin");
-        if (!Auth::guard('stores')->check()) {
-            return response()->json([
-                'message' => 'Unauthenticated.',
-            ], 401);
+        if (!Auth::guard("stores")->check()) {
+            return response()->json(
+                [
+                    "message" => "Unauthenticated.",
+                ],
+                401
+            );
         }
         return $next($request);
     }

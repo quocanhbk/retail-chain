@@ -9,18 +9,9 @@ class Employment extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'employee_id',
-        'branch_id',
-        'from',
-        'to'
-    ];
+    protected $fillable = ["employee_id", "branch_id", "from", "to"];
 
-    protected $hidden = [
-        'created_at',
-        'updated_at',
-        'deleted_at'
-    ];
+    protected $hidden = ["deleted_at"];
 
     public function employee()
     {
@@ -34,6 +25,6 @@ class Employment extends Model
 
     public function roles()
     {
-        return $this->hasMany(EmploymentRoles::class);
+        return $this->hasMany(EmploymentRole::class);
     }
 }

@@ -13,18 +13,27 @@ class CreateRefundSheetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('refund_sheets', function (Blueprint $table) {
+        Schema::create("refund_sheets", function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('code');
-            $table->unsignedBigInteger('branch_id');
-            $table->unsignedBigInteger('employee_id');
-            $table->unsignedBigInteger('invoice_id');
-            $table->unsignedBigInteger('total');
-            $table->string('reason');
-            $table->foreign('branch_id')->references('id')->on('branches');
-            $table->foreign('employee_id')->references('id')->on('employees');
-            $table->foreign('invoice_id')->references('id')->on('invoices');
+            $table->string("code");
+            $table->unsignedBigInteger("branch_id");
+            $table->unsignedBigInteger("employee_id");
+            $table->unsignedBigInteger("invoice_id");
+            $table->unsignedBigInteger("total");
+            $table->string("reason");
+            $table
+                ->foreign("branch_id")
+                ->references("id")
+                ->on("branches");
+            $table
+                ->foreign("employee_id")
+                ->references("id")
+                ->on("employees");
+            $table
+                ->foreign("invoice_id")
+                ->references("id")
+                ->on("invoices");
         });
     }
 
@@ -35,6 +44,6 @@ class CreateRefundSheetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('refund_sheets');
+        Schema::dropIfExists("refund_sheets");
     }
 }

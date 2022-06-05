@@ -13,21 +13,33 @@ class CreatePurchaseSheetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('purchase_sheets', function (Blueprint $table) {
+        Schema::create("purchase_sheets", function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('code');
-            $table->unsignedBigInteger('employee_id');
-            $table->unsignedBigInteger('branch_id');
-            $table->unsignedBigInteger('supplier_id');
-            $table->unsignedBigInteger('discount');
-            $table->unsignedBigInteger('paid_amount');
-            $table->string('discount_type');
-            $table->unsignedBigInteger('total');
-            $table->string('note')->nullable();
-            $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');
-            $table->foreign('branch_id')->references('id')->on('branches')->onDelete('cascade');
-            $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
+            $table->string("code");
+            $table->unsignedBigInteger("employee_id");
+            $table->unsignedBigInteger("branch_id");
+            $table->unsignedBigInteger("supplier_id");
+            $table->unsignedBigInteger("discount");
+            $table->unsignedBigInteger("paid_amount");
+            $table->string("discount_type");
+            $table->unsignedBigInteger("total");
+            $table->string("note")->nullable();
+            $table
+                ->foreign("employee_id")
+                ->references("id")
+                ->on("employees")
+                ->onDelete("cascade");
+            $table
+                ->foreign("branch_id")
+                ->references("id")
+                ->on("branches")
+                ->onDelete("cascade");
+            $table
+                ->foreign("supplier_id")
+                ->references("id")
+                ->on("suppliers")
+                ->onDelete("cascade");
         });
     }
 
@@ -38,6 +50,6 @@ class CreatePurchaseSheetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('purchase_sheets');
+        Schema::dropIfExists("purchase_sheets");
     }
 }

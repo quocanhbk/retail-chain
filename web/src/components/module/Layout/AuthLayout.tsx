@@ -24,7 +24,7 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
 						BKRM RETAIL MANAGEMENT SYSTEM
 					</Text>
 				</Grid>
-				<Flex direction="column" justify="center" w="24rem" p={8} h="full" backgroundColor={"background.secondary"}>
+				<Flex direction="column" justify="center" w="24rem" p={8} h="full" bg="whiteAlpha.900">
 					{children}
 				</Flex>
 			</Flex>

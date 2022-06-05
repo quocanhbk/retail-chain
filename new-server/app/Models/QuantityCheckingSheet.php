@@ -9,17 +9,9 @@ class QuantityCheckingSheet extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'code',
-        'employee_id',
-        'branch_id',
-        'note'
-    ];
+    protected $fillable = ["code", "employee_id", "branch_id", "note"];
 
-    protected $hidden = [
-        'updated_at',
-        'deleted_at'
-    ];
+    protected $hidden = ["updated_at", "deleted_at"];
 
     public function employee()
     {

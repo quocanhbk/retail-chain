@@ -1,4 +1,5 @@
 import fetcher from "../fetcher"
+import { LoginInput } from "./employee"
 
 export interface RegisterStoreInput {
 	name: string
@@ -15,8 +16,7 @@ export const registerStore = async (input: RegisterStoreInput): Promise<Register
 	return data
 }
 
-type LoginStoreInput = Pick<RegisterStoreInput, "email" | "password" | "remember">
-export const loginStore = async (input: LoginStoreInput): Promise<RegisterStoreOutput> => {
+export const loginStore = async (input: LoginInput): Promise<RegisterStoreOutput> => {
 	const { data } = await fetcher.post("/store/login", input)
 	return data
 }

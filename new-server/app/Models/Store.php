@@ -4,26 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-class Store extends User
+class Store extends User implements MustVerifyEmail
 {
     use HasFactory;
 
-    protected $guard = 'stores';
+    protected $guard = "stores";
 
-    protected $fillable = [
-        'name', 'email', 'password'
-    ];
+    protected $fillable = ["name", "email", "password"];
 
-    protected $hidden = [
-        'password',
-        'remember_token',
-        'created_at',
-        'updated_at'
-    ];
+    protected $hidden = ["password", "remember_token", "email_verified_at"];
 
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        "email_verified_at" => "datetime",
     ];
 
     public function branches()

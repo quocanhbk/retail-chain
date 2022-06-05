@@ -13,19 +13,22 @@ class CreateBranchesTable extends Migration
      */
     public function up()
     {
-        Schema::create('branches', function (Blueprint $table) {
+        Schema::create("branches", function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('address');
-            $table->unsignedBigInteger('store_id');
-            $table->string('image')->nullable();
-            $table->string('image_key')->nullable();
+            $table->string("name");
+            $table->string("address");
+            $table->unsignedBigInteger("store_id");
+            $table->string("image")->nullable();
+            $table->string("image_key")->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
 
-        Schema::table('branches', function (Blueprint $table) {
-            $table->foreign('store_id')->references('id')->on('stores');
+        Schema::table("branches", function (Blueprint $table) {
+            $table
+                ->foreign("store_id")
+                ->references("id")
+                ->on("stores");
         });
     }
 
@@ -36,6 +39,6 @@ class CreateBranchesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('branches');
+        Schema::dropIfExists("branches");
     }
 }

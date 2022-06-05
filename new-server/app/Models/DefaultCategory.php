@@ -9,9 +9,9 @@ class DefaultCategory extends Model
 {
     use HasFactory;
 
-    protected $connection = 'default_items';
+    protected $connection = "default_items";
 
-    protected $table = 'categories';
+    protected $table = "categories";
 
     public function items()
     {

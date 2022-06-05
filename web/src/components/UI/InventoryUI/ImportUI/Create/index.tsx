@@ -32,10 +32,6 @@ const ImportCreateUI = ({ id }: ImportCreateUIProps) => {
 		isLoading,
 		readOnly,
 		handleConfirmButtonClick,
-		mutateDeletePurchaseSheet,
-		isDeletingPurchaseSheet,
-		confirmDelete,
-		setConfirmDelete,
 		data,
 		isLoadingData
 	} = useCreateImport(id)
@@ -166,35 +162,15 @@ const ImportCreateUI = ({ id }: ImportCreateUIProps) => {
 								<Button
 									leftIcon={<IoMdReturnLeft />}
 									variant="outline"
-									onClick={() => router.push(`/main/inventory/return-import/create?return-purchase-sheet=${id}`)}
+									onClick={() => router.push(`/main/inventory/return-import/create?purchase-sheet=${id}`)}
 								>
 									{"Trả hàng nhập"}
 								</Button>
-								{id && (
-									<Button
-										colorScheme={"red"}
-										onClick={() => setConfirmDelete(true)}
-										variant={"outline"}
-										leftIcon={<IoMdTrash />}
-									>
-										{"Xóa"}
-									</Button>
-								)}
 							</>
 						)}
 					</VStack>
 				</VStack>
 			</Stack>
-			<SubmitConfirmAlert
-				isOpen={confirmDelete}
-				onClose={() => setConfirmDelete(false)}
-				onConfirm={mutateDeletePurchaseSheet}
-				title="Xác nhận xóa phiếu nhập"
-				isLoading={isDeletingPurchaseSheet}
-				color="red"
-			>
-				<Text>{`Bạn có chắc muốn xóa phiếu nhập hàng ${data?.code}`}</Text>
-			</SubmitConfirmAlert>
 		</Flex>
 	)
 }

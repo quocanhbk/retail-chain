@@ -13,8 +13,11 @@ class AlterItemPropertySellPriceDefaultValue extends Migration
      */
     public function up()
     {
-        Schema::table('item_properties', function (Blueprint $table) {
-            $table->decimal('sell_price', 13, 0)->default(0)->change();
+        Schema::table("item_properties", function (Blueprint $table) {
+            $table
+                ->decimal("sell_price", 13, 0)
+                ->default(0)
+                ->change();
         });
     }
 

@@ -13,13 +13,13 @@ class CreateRefundItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('refund_items', function (Blueprint $table) {
+        Schema::create("refund_items", function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger('refund_sheet_id');
-            $table->unsignedBigInteger('item_id');
-            $table->unsignedBigInteger('quantity');
-            $table->boolean('resellable');
+            $table->unsignedBigInteger("refund_sheet_id");
+            $table->unsignedBigInteger("item_id");
+            $table->unsignedBigInteger("quantity");
+            $table->boolean("resellable");
         });
     }
 
@@ -30,6 +30,6 @@ class CreateRefundItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('refund_items');
+        Schema::dropIfExists("refund_items");
     }
 }

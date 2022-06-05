@@ -13,8 +13,11 @@ class AlterItemPropertiesLastPurchasePriceDefaultValue extends Migration
      */
     public function up()
     {
-        Schema::table('item_properties', function (Blueprint $table) {
-            $table->unsignedBigInteger('last_purchase_price')->default(0)->change();
+        Schema::table("item_properties", function (Blueprint $table) {
+            $table
+                ->unsignedBigInteger("last_purchase_price")
+                ->default(0)
+                ->change();
         });
     }
 
@@ -25,8 +28,11 @@ class AlterItemPropertiesLastPurchasePriceDefaultValue extends Migration
      */
     public function down()
     {
-        Schema::table('item_properties', function (Blueprint $table) {
-            $table->unsignedBigInteger('last_purchase_price')->default(null)->change();
+        Schema::table("item_properties", function (Blueprint $table) {
+            $table
+                ->unsignedBigInteger("last_purchase_price")
+                ->default(null)
+                ->change();
         });
     }
 }

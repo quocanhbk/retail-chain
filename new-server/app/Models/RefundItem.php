@@ -9,12 +9,7 @@ class RefundItem extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'refund_sheet_id',
-        'return_item_id',
-        'quantity',
-        'resellable',
-    ];
+    protected $fillable = ["refund_sheet_id", "return_item_id", "quantity", "resellable"];
 
     public function refundSheet()
     {

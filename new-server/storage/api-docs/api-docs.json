@@ -1,0 +1,1453 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "BKRM Retail Chain Management",
+        "description": "L5 Swagger API for BKRM Retail Chain Management",
+        "version": "0.0.1"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api"
+        }
+    ],
+    "paths": {
+        "/branch": {
+            "get": {
+                "tags": [
+                    "Branch"
+                ],
+                "summary": "Get branches",
+                "operationId": "getBranches",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_by",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Branches retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Branch"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Branch"
+                ],
+                "summary": "Create a new branch",
+                "operationId": "createBranch",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateBranchInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Branch"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/branch/image/{image_key}": {
+            "get": {
+                "tags": [
+                    "Branch"
+                ],
+                "summary": "Get branch image",
+                "operationId": "getBranchImage",
+                "parameters": [
+                    {
+                        "name": "image_key",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Image retrieved successfully",
+                        "content": {
+                            "image/*": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/branch/{branch_id}/image": {
+            "put": {
+                "tags": [
+                    "Branch"
+                ],
+                "summary": "Update branch image",
+                "operationId": "updateBranchImage",
+                "parameters": [
+                    {
+                        "name": "branch_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "image": {
+                                        "type": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Image updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "image": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/branch/{branch_id}": {
+            "get": {
+                "tags": [
+                    "Branch"
+                ],
+                "summary": "Get branch",
+                "operationId": "getBranch",
+                "parameters": [
+                    {
+                        "name": "branch_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Branch retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BranchDetail"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Branch"
+                ],
+                "summary": "Update branch",
+                "operationId": "updateBranch",
+                "parameters": [
+                    {
+                        "name": "branch_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateBranchInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Branch updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Branch"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Branch"
+                ],
+                "summary": "Delete branch",
+                "operationId": "deleteBranch",
+                "parameters": [
+                    {
+                        "name": "branch_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Branch deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Branch"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/employee": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Get employees",
+                "operationId": "getEmployees",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_by",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employees retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/EmployeeWithEmployment"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Create a new employee",
+                "operationId": "createEmployee",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateEmployeeInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Employee"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/many": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Create many new employees",
+                "operationId": "createManyEmployees",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateManyEmployeesInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/{employee_id}/avatar": {
+            "put": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Update employee avatar",
+                "operationId": "updateEmployeeAvatar",
+                "parameters": [
+                    {
+                        "name": "employee_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "avatar": {
+                                        "type": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/{employee_id}": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Get employee",
+                "operationId": "getEmployee",
+                "parameters": [
+                    {
+                        "name": "employee_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employee retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmployeeWithEmployment"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Update employee",
+                "operationId": "updateEmployee",
+                "parameters": [
+                    {
+                        "name": "employee_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateEmployeeInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Employee"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Delete employee",
+                "operationId": "deleteEmployee",
+                "parameters": [
+                    {
+                        "name": "employee_id",
+                        "in": "path",
+                        "description": "Employee ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employee deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Employee deleted successfully",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/avatar/{avatar_key}": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Get employee avatar",
+                "operationId": "getEmployeeAvatar",
+                "parameters": [
+                    {
+                        "name": "avatar_key",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Image retrieved successfully",
+                        "content": {
+                            "image/*": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/branch/{branch_id}": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Get employees by branch",
+                "operationId": "getEmployeesByBranch",
+                "parameters": [
+                    {
+                        "name": "branch_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employees retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/EmployeeWithEmployment"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/login": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Login as employee",
+                "operationId": "loginEmployee",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EmployeeLoginInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Employee logged in successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmployeeWithEmployment"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/logout": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Logout as employee",
+                "operationId": "logoutEmployee",
+                "responses": {
+                    "200": {
+                        "description": "Employee logged out successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Logout successfully",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/me": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Get employee information",
+                "operationId": "getCurrentEmployee",
+                "responses": {
+                    "200": {
+                        "description": "Employee retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmployeeWithEmployment"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/transfer": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Transfer employee",
+                "operationId": "transferEmployee",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TransferEmployeeInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Employee transferred successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Employee transferred successfully",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/transfer/many": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Transfer many employees",
+                "operationId": "transferManyEmployees",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TransferManyEmployeesInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Employees transferred successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Employees transferred successfully",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/store/register": {
+            "post": {
+                "tags": [
+                    "Store"
+                ],
+                "summary": "Register a new store",
+                "operationId": "registerStore",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterStoreInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Store"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/store/login": {
+            "post": {
+                "tags": [
+                    "Store"
+                ],
+                "summary": "Login as store owner",
+                "operationId": "loginStore",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginStoreInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Store"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/store/logout": {
+            "post": {
+                "tags": [
+                    "Store"
+                ],
+                "summary": "Logout as store owner",
+                "operationId": "logoutStore",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/store/me": {
+            "get": {
+                "tags": [
+                    "Store"
+                ],
+                "summary": "Get store information",
+                "operationId": "getStore",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Store"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/guard": {
+            "get": {
+                "tags": [
+                    "Guard"
+                ],
+                "summary": "Get guard",
+                "operationId": "getGuard",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "guard": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Branch": {
+                "required": [
+                    "id",
+                    "name",
+                    "address",
+                    "created_at",
+                    "updated_at"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpsertTime"
+                    }
+                ]
+            },
+            "BranchDetail": {
+                "required": [
+                    "employments"
+                ],
+                "properties": {
+                    "employments": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/EmploymentDetail"
+                        }
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/Branch"
+                    }
+                ]
+            },
+            "CreateBranchInput": {
+                "required": [
+                    "name",
+                    "address"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    },
+                    "transfered_employees": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TransferredEmployeeInput"
+                        }
+                    },
+                    "new_employees": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/NewEmployeeInput"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateBranchInput": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    },
+                    "image": {
+                        "type": "string",
+                        "format": "binary"
+                    }
+                },
+                "type": "object"
+            },
+            "TransferredEmployeeInput": {
+                "required": [
+                    "id",
+                    "roles"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "NewEmployeeInput": {
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "roles"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "birthday": {
+                        "type": "string"
+                    },
+                    "gender": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Employee": {
+                "required": [
+                    "id",
+                    "name",
+                    "email",
+                    "store_id",
+                    "created_at",
+                    "updated_at"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "store_id": {
+                        "type": "integer"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "avatar_key": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "birthday": {
+                        "type": "string"
+                    },
+                    "gender": {
+                        "type": "string"
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpsertTime"
+                    }
+                ]
+            },
+            "EmployeeWithEmployment": {
+                "required": [
+                    "employment"
+                ],
+                "properties": {
+                    "employment": {
+                        "$ref": "#/components/schemas/EmploymentWithRoles"
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/Employee"
+                    }
+                ]
+            },
+            "CreateEmployeeInput": {
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "password_confirmation",
+                    "branch_id",
+                    "roles"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "format": "password"
+                    },
+                    "branch_id": {
+                        "type": "integer"
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "birthday": {
+                        "type": "string"
+                    },
+                    "gender": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "EmployeeAvatar": {
+                "properties": {
+                    "avatar": {
+                        "type": "string",
+                        "format": "binary"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateSingleEmployeeInput": {
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/CreateEmployeeInput"
+                    },
+                    {
+                        "$ref": "#/components/schemas/EmployeeAvatar"
+                    }
+                ]
+            },
+            "CreateManyEmployeesInput": {
+                "properties": {
+                    "employees": {
+                        "required": [
+                            "employees"
+                        ],
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CreateSingleEmployeeInput"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateEmployeeInput": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "birthday": {
+                        "type": "string"
+                    },
+                    "gender": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "EmployeeLoginInput": {
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password"
+                    },
+                    "remember": {
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
+            "TransferEmployeeInput": {
+                "required": [
+                    "employee_id",
+                    "branch_id",
+                    "roles"
+                ],
+                "properties": {
+                    "employee_id": {
+                        "type": "integer"
+                    },
+                    "branch_id": {
+                        "type": "integer"
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "TransferManyEmployeesInput": {
+                "required": [
+                    "branch_id",
+                    "employees"
+                ],
+                "properties": {
+                    "branch_id": {
+                        "type": "integer"
+                    },
+                    "employees": {
+                        "type": "array",
+                        "items": {}
+                    }
+                },
+                "type": "object"
+            },
+            "Employment": {
+                "required": [
+                    "id",
+                    "employee_id",
+                    "branch_id",
+                    "from",
+                    "to"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "employee_id": {
+                        "type": "integer"
+                    },
+                    "branch_id": {
+                        "type": "integer"
+                    },
+                    "from": {
+                        "type": "string"
+                    },
+                    "to": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpsertTime"
+                    }
+                ]
+            },
+            "EmploymentWithRoles": {
+                "required": [
+                    "roles"
+                ],
+                "properties": {
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/EmploymentRole"
+                        }
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/Employment"
+                    }
+                ]
+            },
+            "EmploymentRole": {
+                "required": [
+                    "id",
+                    "employment_id",
+                    "role"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "employment_id": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "EmploymentDetail": {
+                "required": [
+                    "employee"
+                ],
+                "properties": {
+                    "employee": {
+                        "$ref": "#/components/schemas/Employee"
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/Employment"
+                    }
+                ]
+            },
+            "UpsertTime": {
+                "required": [
+                    "created_at",
+                    "updated_at"
+                ],
+                "properties": {
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Store": {
+                "required": [
+                    "id",
+                    "name",
+                    "email"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpsertTime"
+                    }
+                ]
+            },
+            "RegisterStoreInput": {
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "format": "password"
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/LoginStoreInput"
+                    }
+                ]
+            },
+            "LoginStoreInput": {
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password"
+                    },
+                    "remember": {
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Branch"
+        }
+    ]
+}

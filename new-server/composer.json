@@ -2,10 +2,14 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "darkaonline/l5-swagger": "^8.3",
         "doctrine/dbal": "^3.2",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
@@ -48,6 +52,13 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "prettify": [
+            "prettier --write \"{app,database,routes,tests}/**/*.php\" --print-width 120"
+        ],
+        "generate-swagger": [
+            "@php artisan l5-swagger:generate",
+            "npx swagger-typescript-api -p ./storage/api-docs/api-docs.json -o ../web/src/api -n api.ts --axios"
         ]
     },
     "extra": {

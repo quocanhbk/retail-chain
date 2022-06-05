@@ -182,25 +182,6 @@ const useCreateImport = (id?: number) => {
 		}
 	})
 
-	const { mutate: mutateDeletePurchaseSheet, isLoading: isDeletingPurchaseSheet } = useMutation(() => deletePurchaseSheet(id!), {
-		onSuccess: () => {
-			toast({
-				title: "Xóa phiếu nhập thành công",
-				status: "success"
-			})
-			router.push("/main/inventory/import")
-		},
-		onError: () => {
-			toast({
-				title: "Xóa phiếu nhập thất bại",
-				message: "Vui lòng thử lại sau",
-				status: "error"
-			})
-		}
-	})
-
-	const [confirmDelete, setConfirmDelete] = useState(false)
-
 	const isLoading = isCreatingPurchaseSheet || isUpdatingPurchaseSheet
 
 	return {
@@ -217,10 +198,6 @@ const useCreateImport = (id?: number) => {
 		isLoading,
 		readOnly,
 		setReadOnly,
-		mutateDeletePurchaseSheet,
-		isDeletingPurchaseSheet,
-		confirmDelete,
-		setConfirmDelete,
 		data,
 		isLoadingData
 	}

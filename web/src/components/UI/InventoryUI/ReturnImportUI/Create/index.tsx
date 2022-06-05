@@ -22,7 +22,6 @@ import NotFound from "./NotFound"
 import ReturnPurchaseItem from "./ReturnPurchaseItem"
 import Sidebar from "./Sidebar"
 import useCreateReturnImport from "./useCreateReturnImport"
-import useDeleteReturnPurchaseSheet from "./useDeleteReturnPurchaseSheet"
 
 interface ReturnImportCreateUIProps {
 	id?: number
@@ -43,8 +42,6 @@ const ReturnImportCreateUI = ({ id }: ReturnImportCreateUIProps) => {
 		isLoading,
 		notFound
 	} = useCreateReturnImport(id)
-
-	const { confirmDelete, setConfirmDelete, isDeleting, mutateDelete } = useDeleteReturnPurchaseSheet(id)
 
 	return (
 		<Flex direction="column" p={4} h="full" pos="relative">
@@ -165,33 +162,19 @@ const ReturnImportCreateUI = ({ id }: ReturnImportCreateUIProps) => {
 						</VStack>
 					</Sidebar>
 					<VStack align="stretch" pt={4} borderTop="1px" borderColor={"border.primary"} spacing={4}>
-						<Button
-							onClick={handleConfirmButtonClick}
-							isLoading={isLoading}
-							isDisabled={mappedItems.length === 0}
-							colorScheme={readOnly ? "yellow" : "telegram"}
-							leftIcon={readOnly ? <IoMdSettings /> : <IoMdCheckmarkCircle />}
-						>
-							{id && readOnly ? "Chỉnh sửa" : "Xác nhận"}
-						</Button>
-						{id && (
-							<Button onClick={() => setConfirmDelete(true)} variant={"ghost"} colorScheme={"red"} leftIcon={<IoMdTrash />}>
-								{"Xóa"}
+						{!id && (
+							<Button
+								onClick={handleConfirmButtonClick}
+								isLoading={isLoading}
+								isDisabled={mappedItems.length === 0}
+								leftIcon={<IoMdCheckmarkCircle />}
+							>
+								{"Xác nhận"}
 							</Button>
 						)}
 					</VStack>
 				</VStack>
 			</Stack>
-			<SubmitConfirmAlert
-				isOpen={confirmDelete}
-				onClose={() => setConfirmDelete(false)}
-				onConfirm={mutateDelete}
-				title="Xác nhận xóa phiếu nhập"
-				isLoading={isDeleting}
-				color="red"
-			>
-				<Text>{`Bạn có chắc muốn xóa phiếu nhập hàng ${data?.code}`}</Text>
-			</SubmitConfirmAlert>
 		</Flex>
 	)
 }

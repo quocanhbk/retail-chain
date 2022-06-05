@@ -13,17 +13,25 @@ class CreateReturnPurchaseSheetItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('return_purchase_sheet_items', function (Blueprint $table) {
+        Schema::create("return_purchase_sheet_items", function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger('return_purchase_sheet_id');
-            $table->unsignedBigInteger('item_id');
-            $table->integer('quantity');
-            $table->unsignedBigInteger('return_price');
-            $table->string('return_price_type');
-            $table->unsignedBigInteger('total');
-            $table->foreign('return_purchase_sheet_id')->references('id')->on('return_purchase_sheets')->onDelete('cascade');
-            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
+            $table->unsignedBigInteger("return_purchase_sheet_id");
+            $table->unsignedBigInteger("item_id");
+            $table->integer("quantity");
+            $table->unsignedBigInteger("return_price");
+            $table->string("return_price_type");
+            $table->unsignedBigInteger("total");
+            $table
+                ->foreign("return_purchase_sheet_id")
+                ->references("id")
+                ->on("return_purchase_sheets")
+                ->onDelete("cascade");
+            $table
+                ->foreign("item_id")
+                ->references("id")
+                ->on("items")
+                ->onDelete("cascade");
         });
     }
 
@@ -34,6 +42,6 @@ class CreateReturnPurchaseSheetItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('return_purchase_sheet_items');
+        Schema::dropIfExists("return_purchase_sheet_items");
     }
 }

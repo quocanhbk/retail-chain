@@ -13,18 +13,24 @@ class CreateEmploymentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('employments', function (Blueprint $table) {
+        Schema::create("employments", function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger('employee_id');
-            $table->unsignedBigInteger('branch_id');
-            $table->date('from');
-            $table->date('to')->nullable();
+            $table->unsignedBigInteger("employee_id");
+            $table->unsignedBigInteger("branch_id");
+            $table->date("from");
+            $table->date("to")->nullable();
         });
 
-        Schema::table('employments', function (Blueprint $table) {
-            $table->foreign('employee_id')->references('id')->on('employees');
-            $table->foreign('branch_id')->references('id')->on('branches');
+        Schema::table("employments", function (Blueprint $table) {
+            $table
+                ->foreign("employee_id")
+                ->references("id")
+                ->on("employees");
+            $table
+                ->foreign("branch_id")
+                ->references("id")
+                ->on("branches");
         });
     }
 
@@ -35,6 +41,6 @@ class CreateEmploymentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('employments');
+        Schema::dropIfExists("employments");
     }
 }

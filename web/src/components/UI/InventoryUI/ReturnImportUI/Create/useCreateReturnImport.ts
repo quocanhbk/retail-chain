@@ -2,7 +2,6 @@ import {
 	createReturnPurchaseSheet,
 	CreateReturnPurchaseSheetInput,
 	getPurchaseSheet,
-	getReturnableItems,
 	getReturnPurchaseSheet,
 	updateReturnPurchaseSheet
 } from "@api"
@@ -14,46 +13,35 @@ import { useMutation, useQuery } from "react-query"
 const useCreateReturnImport = (id?: number) => {
 	const toast = useChakraToast()
 	const router = useRouter()
-
-	const [readOnly, setReadOnly] = useState(!!id)
-
-	const purchaseSheetId = parseInt(router.query["return-purchase-sheet"] as string) || null
-	const [notFound, setNotFound] = useState(!!purchaseSheetId)
-
+	const [readOnly, setReadOnly] = useState(false)
 	useEffect(() => {
-		if (router.isReady) {
-			const purchaseSheetId = parseInt(router.query["return-purchase-sheet"] as string) || null
-			setNotFound(!!purchaseSheetId)
-		}
+		if (router.isReady) setReadOnly(!!id)
 	}, [router.isReady])
 
-	// refetch data when readonly set to true
-	useEffect(() => {
-		if (readOnly) {
-			refetch()
-		}
-	}, [readOnly])
+	const purchaseSheetId = parseInt(router.query["purchase-sheet"] as string) || null
+	const [notFound, setNotFound] = useState(false)
 
 	const purchaseSheetQuery = useQuery(["purchase_sheet", purchaseSheetId], () => getPurchaseSheet(purchaseSheetId!), {
 		enabled: !!purchaseSheetId,
-		onError: () => setNotFound(true)
-	})
-
-	const [fetched, setFetched] = useState(false)
-	const {data: returnableItems}  = useQuery(["returnable-items", purchaseSheetId], () => getReturnableItems(purchaseSheetId!), {
-		enabled: !!purchaseSheetId && !fetched,
+		onError: () => setNotFound(true),
 		onSuccess: data => {
-			setValue(
-				"items",
-				data.map(returnableItem => ({
-					item_id: returnableItem.id,
+			initForm({
+				supplier_id: data.supplier_id,
+				code: "",
+				discount: 0,
+				discount_type: "cash",
+				note: "",
+				paid_amount: 0,
+				items: data.purchase_sheet_items.map(item => ({
+					item_id: item.item_id,
 					quantity: 0,
-					return_price: 0,
+					price: item.price,
+					return_price: item.price,
 					return_price_type: "cash",
-					item: returnableItem
-				}))
-			)
-			setFetched(true)
+					item: item.item
+				})),
+				purchase_sheet_id: purchaseSheetId!
+			})
 		}
 	})
 
@@ -64,6 +52,7 @@ const useCreateReturnImport = (id?: number) => {
 	} = useQuery(["return-purchase-sheet", id], () => getReturnPurchaseSheet(id!), {
 		enabled: false,
 		onSuccess: data => {
+			console.log(data)
 			initForm({
 				supplier_id: data.supplier_id,
 				code: data.code,
@@ -74,6 +63,7 @@ const useCreateReturnImport = (id?: number) => {
 				items: data.return_purchase_sheet_items.map(item => ({
 					item_id: item.item_id,
 					quantity: item.quantity,
+					price: item.price,
 					return_price: item.return_price,
 					return_price_type: item.return_price_type,
 					item: item.item
@@ -90,6 +80,15 @@ const useCreateReturnImport = (id?: number) => {
 		}
 	})
 
+	// refetch data when readonly set to true
+	useEffect(() => {
+		console.log(readOnly)
+		if (readOnly) {
+			console.log("fetch")
+			refetch()
+		}
+	}, [readOnly])
+
 	const { values, setValue, initForm } = useFormCore<CreateReturnPurchaseSheetInput>({
 		supplier_id: null,
 		code: "",
@@ -102,21 +101,12 @@ const useCreateReturnImport = (id?: number) => {
 	})
 
 	const handleConfirmButtonClick = () => {
-		if (readOnly) {
-			setReadOnly(false)
-			return
-		}
-
-		if (!id) mutateCreate()
-		else mutateUpdate()
+		mutateCreate()
 	}
-
-	const getPurchasePrice = (itemId: number) => returnableItems?.find(item => item.id === itemId)?.base_price || 0
 
 	const mappedItems = values.items.map(item => ({
 		...item,
-		// returnPrice: item.return_price_type === "cash" ? item.return_price : (item.return_price / 100) * item.price,
-		total: (getPurchasePrice(item.item_id) - (item.return_price_type === "cash" ? item.return_price : (item.return_price / 100) * item.price)) * item.quantity,
+		total: (item.price - (item.return_price_type === "cash" ? item.return_price : (item.return_price / 100) * item.price)) * item.quantity,
 		onChangeQuantity: (quantity: number) => {
 			setValue(
 				"items",

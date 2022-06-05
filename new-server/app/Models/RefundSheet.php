@@ -9,14 +9,7 @@ class RefundSheet extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'code',
-        'branch_id',
-        'employee_id',
-        'invoice_id',
-        'total',
-        'reason'
-    ];
+    protected $fillable = ["code", "branch_id", "employee_id", "invoice_id", "total", "reason"];
 
     public function branch()
     {

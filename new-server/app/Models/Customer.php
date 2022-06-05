@@ -11,20 +11,9 @@ class Customer extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = [
-        'store_id',
-        'name',
-        'phone',
-        'email',
-        'point',
-        'code'
-    ];
+    protected $fillable = ["store_id", "name", "phone", "email", "point", "code"];
 
-    protected $hidden = [
-        'created_at',
-        'updated_at',
-        'deleted_at'
-    ];
+    protected $hidden = ["created_at", "updated_at", "deleted_at"];
 
     public function store()
     {

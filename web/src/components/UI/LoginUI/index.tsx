@@ -3,22 +3,18 @@ import { Flex, Box, Button, Text, chakra, Heading } from "@chakra-ui/react"
 import { TextControl } from "@components/shared"
 import { useRouter } from "next/router"
 import { useState } from "react"
+import { BsFillPersonFill } from "react-icons/bs"
+import { FaStore } from "react-icons/fa"
 import { useQuery } from "react-query"
+import LoginModeSelector, { LoginMode } from "./LoginModeSelector"
 import useLogin from "./useLogin"
-const loginMode = [
-	{ id: "employee", text: "Nhân viên" },
-	{ id: "owner", text: "Chủ cửa hàng" }
-] as const
-
-type LoginMode = typeof loginMode[number]["id"]
 
 export const LoginUI = () => {
 	const router = useRouter()
+
 	const [currentMode, setCurrentMode] = useState<LoginMode>("employee")
 
-	const { values, setValue, errors, isLoading, handleLogin, generalError } = useLogin(currentMode === "owner")
-
-	const { email, password } = values
+	const { isLoading, errors, handleSubmit, register, generalError } = useLogin(currentMode === "owner")
 
 	useQuery("get-guard", () => getGuard(), {
 		onSuccess: role => {
@@ -29,53 +25,24 @@ export const LoginUI = () => {
 
 	return (
 		<Box>
-			<Flex overflow="hidden" mb={8} pos="relative" shadow="base" background="background.primary">
-				{loginMode.map(mode => (
-					<Box
-						key={mode.id}
-						flex={1}
-						p={2}
-						textAlign="center"
-						cursor="pointer"
-						fontWeight={currentMode === mode.id ? "bold" : "normal"}
-						onClick={() => setCurrentMode(mode.id)}
-					>
-						{mode.text}
-					</Box>
-				))}
-				<Box
-					pos="absolute"
-					bottom={0}
-					height={"4px"}
-					w="50%"
-					bg={"fill.primary"}
-					left={currentMode === "employee" ? "0%" : "50%"}
-					transition="all 0.25s ease-in-out"
-				/>
-			</Flex>
-			<chakra.form onSubmit={e => e.preventDefault()}>
+			<LoginModeSelector currentMode={currentMode} setCurrentMode={setCurrentMode} />
+			<chakra.form onSubmit={handleSubmit}>
 				<Heading fontWeight="semibold" color={"fill.primary"} fontSize="xl" mb={4}>
 					ĐĂNG NHẬP
 				</Heading>
-				<TextControl label="Email" value={email} onChange={v => setValue("email", v)} error={errors.email} />
-				<TextControl
-					label="Mật khẩu"
-					value={password}
-					onChange={v => setValue("password", v)}
-					error={errors.password}
-					type="password"
-				/>
-				<Text fontSize="sm" w="full" textAlign="center" color={"fill.danger"} mb={2} h="1.2rem">
+				<TextControl label="Email" {...register("email")} error={errors?.email?.message} />
+				<TextControl label="Mật khẩu" {...register("password")} error={errors?.password?.message} type="password" />
+				<Text fontSize="sm" w="full" textAlign="center" color={"fill.danger"} mb={4}>
 					{generalError}
 				</Text>
-				<Button w="full" onClick={() => handleLogin()} isLoading={isLoading} type="submit" mb={4} colorScheme="gray" variant="outline">
+				<Button w="full" type="submit" isLoading={isLoading} mb={4} colorScheme="blue">
 					{"Đăng Nhập"}
 				</Button>
-				<Box h="1px" bg={"border.primary"} w="full" mb={2} />
-				<Text fontSize="sm" color={"fill.primary"} cursor="pointer" onClick={() => router.push("/register")} fontWeight="black">
-					Tạo cửa hàng
-				</Text>
 			</chakra.form>
+			<Box h="1px" bg={"border.primary"} w="full" mb={2} />
+			<Text fontSize="sm" color={"fill.primary"} cursor="pointer" onClick={() => router.push("/register")} fontWeight="black">
+				Tạo cửa hàng
+			</Text>
 		</Box>
 	)
 }
