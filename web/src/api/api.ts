@@ -960,6 +960,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         format: "json",
         ...params,
       }),
+  };
+  workSchedule = {
+    /**
+     * No description
+     *
+     * @tags Work Schedule
+     * @name GetWorkSchedules
+     * @summary Get work schedules
+     * @request GET:/work-schedule
+     */
+    getWorkSchedules: (query?: { date?: string }, params: RequestParams = {}) =>
+      this.request<WorkSchedule[], any>({
+        path: `/work-schedule`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
 
     /**
      * No description
@@ -967,14 +985,53 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Work Schedule
      * @name CreateWorkSchedule
      * @summary Create a work schedule
-     * @request POST:/api/work-schedule
+     * @request POST:/work-schedule
      */
     createWorkSchedule: (data: CreateWorkScheduleInput, params: RequestParams = {}) =>
       this.request<{ message: string }, any>({
-        path: `/api/work-schedule`,
+        path: `/work-schedule`,
         method: "POST",
         body: data,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Work Schedule
+     * @name UpdateWorkSchedule
+     * @summary Update a work schedule
+     * @request PUT:/work-schedule/{id}
+     */
+    updateWorkSchedule: (
+      workScheduleId: number,
+      id: string,
+      data: UpdateWorkScheduleInput,
+      params: RequestParams = {},
+    ) =>
+      this.request<WorkSchedule, any>({
+        path: `/work-schedule/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Work Schedule
+     * @name DeleteWorkSchedule
+     * @summary Delete a work schedule
+     * @request DELETE:/work-schedule/{id}
+     */
+    deleteWorkSchedule: (workScheduleId: number, id: string, params: RequestParams = {}) =>
+      this.request<WorkSchedule, any>({
+        path: `/work-schedule/${id}`,
+        method: "DELETE",
         format: "json",
         ...params,
       }),

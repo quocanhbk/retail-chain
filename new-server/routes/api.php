@@ -127,7 +127,7 @@ Route::prefix("/work-schedule")
         // GET /work-schedule - get all work schedules
         Route::get("/", [WorkScheduleController::class, "getWorkSchedules"]);
         // GET /work-schedule/{date} - get all work schedules in a day
-        Route::get("/{date}", [WorkScheduleController::class, "getWorkSchedulesByDate"]);
+        Route::get("/date/{date}", [WorkScheduleController::class, "getWorkSchedulesByDate"]);
         // PATCH /work-schedule/{work_schedule_id} - update a work schedule by id
         Route::put("/{work_schedule_id}", [WorkScheduleController::class, "update"]);
         // DELETE /work-schedule/{work_schedule_id} - delete a work schedule by id

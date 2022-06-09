@@ -1288,7 +1288,39 @@
                 }
             }
         },
-        "/api/work-schedule": {
+        "/work-schedule": {
+            "get": {
+                "tags": [
+                    "Work Schedule"
+                ],
+                "summary": "Get work schedules",
+                "operationId": "getWorkSchedules",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "Filter by date",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/WorkSchedule"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "Work Schedule"
@@ -1320,6 +1352,76 @@
                                         }
                                     },
                                     "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/work-schedule/{id}": {
+            "put": {
+                "tags": [
+                    "Work Schedule"
+                ],
+                "summary": "Update a work schedule",
+                "operationId": "updateWorkSchedule",
+                "parameters": [
+                    {
+                        "name": "work_schedule_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateWorkScheduleInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkSchedule"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Work Schedule"
+                ],
+                "summary": "Delete a work schedule",
+                "operationId": "deleteWorkSchedule",
+                "parameters": [
+                    {
+                        "name": "work_schedule_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WorkSchedule"
                                 }
                             }
                         }

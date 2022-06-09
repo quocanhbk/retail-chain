@@ -69,37 +69,32 @@ class WorkScheduleTest extends TestCase
     {
         $employee = Employee::first();
 
+        $work_schedules_count = WorkSchedule::count();
+
         $response = $this->actingAs($employee)->get("/api/work-schedule");
 
         $response->assertStatus(200);
 
         $response->assertJsonStructure([["id", "shift_id", "employee_id", "date"]]);
+
+        $response->assertJsonCount($work_schedules_count);
     }
 
-    public function test_get_work_schedules_by_date_unauthorized()
-    {
-        $response = $this->get("/api/work-schedule/2020-06-01");
-
-        $response->assertStatus(401);
-    }
-
-    public function test_get_work_schedules_by_date_successfully()
+    public function test_get_work_schedules_filter_by_date_successfully()
     {
         $employee = Employee::first();
 
-        $date = strtotime(WorkSchedule::first()->date);
+        $date = date("Y-m-d", strtotime(WorkSchedule::first()->date));
 
-        $response = $this->actingAs($employee)->get(
-            "/api/work-schedule/" . date("Y-m-d", $date)
-        );
+        $response = $this->actingAs($employee)->get("/api/work-schedule?date=" . $date);
 
         $response->assertStatus(200);
 
         $response->assertJsonStructure([["id", "shift_id", "employee_id", "date"]]);
 
-        $response->assertJson([[
-            "date" => date("Y-m-d", $date)
-        ]]);
+        $response->assertJsonFragment([
+            "date" => $date,
+        ]);
     }
 
     public function test_update_work_schedule_unauthorized()

@@ -13,7 +13,7 @@ class WorkScheduleController extends Controller
 {
     /**
      * @OA\Post(
-     *   path="/api/work-schedule",
+     *   path="/work-schedule",
      *   tags={"Work Schedule"},
      *   summary="Create a work schedule",
      *   operationId="createWorkSchedule",
@@ -76,9 +76,48 @@ class WorkScheduleController extends Controller
         ]);
     }
 
-    public function getWorkSchedules()
+    /**
+     * @OA\Get(
+     *   path="/work-schedule",
+     *   tags={"Work Schedule"},
+     *   summary="Get work schedules",
+     *   operationId="getWorkSchedules",
+     *   @OA\Parameter(
+     *     name="date",
+     *     in="query",
+     *     description="Filter by date",
+     *     @OA\Schema(type="string")
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @OA\JsonContent(
+     *       type="array",
+     *       @OA\Items(ref="#/components/schemas/WorkSchedule")
+     *     )
+     *   )
+     * )
+     */
+    public function getWorkSchedules(Request $request)
     {
         $branch_id = Auth::user()->employment->branch_id;
+
+        $date = $request->query("date") ?? null;
+
+        if ($date) {
+            $validator = Validator::make(["date" => $date], [
+                "date" => ["required", "date_format:Y-m-d"],
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(
+                    [
+                        "message" => $this->formatValidationError($validator->errors()),
+                    ],
+                    400
+                );
+            }
+        }
 
         // get all work schedules by branch_id
         $work_schedules = WorkSchedule::whereIn("shift_id", function ($query) use ($branch_id) {
@@ -86,46 +125,36 @@ class WorkScheduleController extends Controller
                 ->select("id")
                 ->from("shifts")
                 ->where("branch_id", $branch_id);
-        })->get();
-
-        return response()->json($work_schedules);
-    }
-
-    public function getWorkSchedulesByDate($date)
-    {
-        $branch_id = Auth::user()->employment->branch_id;
-
-        $data = [
-            "date" => $date,
-        ];
-
-        $rules = [
-            "date" => ["required", "date_format:Y-m-d"],
-        ];
-
-        $validator = Validator::make($data, $rules);
-
-        if ($validator->fails()) {
-            return response()->json(
-                [
-                    "message" => $this->formatValidationError($validator->errors()),
-                ],
-                400
-            );
-        }
-
-        $work_schedules = WorkSchedule::whereIn("shift_id", function ($query) use ($branch_id) {
-            $query
-                ->select("id")
-                ->from("shifts")
-                ->where("branch_id", $branch_id);
         })
-            ->where("date", $date)
-            ->get();
+        ->where("date", !$date ? ">=" : "=", !$date ? date("Y-m-d", strtotime("1970-01-01") ) : $date)
+        ->get();
 
         return response()->json($work_schedules);
     }
 
+    /**
+     * @OA\Put(
+     *   path="/work-schedule/{id}",
+     *   tags={"Work Schedule"},
+     *   summary="Update a work schedule",
+     *   operationId="updateWorkSchedule",
+     *   @OA\Parameter(
+     *     name="work_schedule_id",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(type="integer")
+     *   ),
+     *   @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(ref="#/components/schemas/UpdateWorkScheduleInput")
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @OA\JsonContent(ref="#/components/schemas/WorkSchedule")
+     *   ),
+     * )
+     */
     public function update(Request $request, $work_schedule_id)
     {
         $branch_id = Auth::user()->employment->branch_id;
@@ -160,6 +189,25 @@ class WorkScheduleController extends Controller
         return response()->json($work_schedule);
     }
 
+    /**
+     * @OA\Delete(
+     *   path="/work-schedule/{id}",
+     *   tags={"Work Schedule"},
+     *   summary="Delete a work schedule",
+     *   operationId="deleteWorkSchedule",
+     *   @OA\Parameter(
+     *     name="work_schedule_id",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(type="integer")
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @OA\JsonContent(ref="#/components/schemas/WorkSchedule")
+     *   )
+     * )
+     */
     public function delete($work_schedule_id)
     {
         $branch_id = Auth::user()->employment->branch_id;
