@@ -22,7 +22,7 @@ class CreateSuppliersTable extends Migration
             $table->string("address")->nullable();
             $table->string("phone")->nullable();
             $table->string("email")->nullable();
-            $table->string("tax")->nullable();
+            $table->string("tax_number")->nullable();
             $table->string("note")->nullable();
             $table->unsignedBigInteger("store_id");
             $table

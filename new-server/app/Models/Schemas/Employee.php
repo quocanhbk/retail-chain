@@ -5,7 +5,7 @@ namespace App\Models\Schemas;
 /**
  * @OA\Schema(
  *   oneOf={@OA\Schema(ref="#/components/schemas/UpsertTime")},
- *   required={"id", "name", "email", "store_id", "created_at", "updated_at"},
+ *   required={"id", "name", "email", "store_id"},
  * )
  */
 class Employee
@@ -63,6 +63,12 @@ class Employee
      * @var string
      */
     public $gender;
+
+    /**
+     * @OA\Property()
+     * @var string
+     */
+    public $email_verified_at;
 }
 
 /**

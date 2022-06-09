@@ -18,13 +18,12 @@ class CreateWorkSchedulesTable extends Migration
             $table->timestamps();
             $table->unsignedBigInteger("shift_id");
             $table->unsignedBigInteger("employee_id");
-            $table->unsignedBigInteger("branch_id");
             $table->date("date");
-            $table->string("note")->nullable();
-            $table->boolean("is_absent")->default(false);
-        });
-
-        Schema::table("work_schedules", function (Blueprint $table) {
+            $table->string("note")->default("");
+            $table
+                ->boolean("is_absent")
+                ->nullable()
+                ->default(null);
             $table
                 ->foreign("shift_id")
                 ->references("id")

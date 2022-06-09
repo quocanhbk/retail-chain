@@ -1,3 +1,3 @@
-# Let's GO!
+# Retail Chain Management System (RCMS)
 
-// branch will have multiple images, with one primary image
+RCMS is a system built specically for retail chain, with a promise to make everything

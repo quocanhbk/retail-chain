@@ -9,8 +9,10 @@ use App\Models\EmploymentRole;
 use App\Models\Item;
 use App\Models\ItemCategory;
 use App\Models\ItemProperty;
+use App\Models\Shift;
 use App\Models\Store;
 use App\Models\Supplier;
+use App\Models\WorkSchedule;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -32,6 +34,8 @@ class DatabaseSeeder extends Seeder
         Supplier::truncate();
         Item::truncate();
         ItemProperty::truncate();
+        Shift::truncate();
+        WorkSchedule::truncate();
 
         $store = Store::factory()->create([
             "name" => "My Store",
@@ -62,22 +66,29 @@ class DatabaseSeeder extends Seeder
             )
             ->create();
 
-        $employments = Employment::factory()
+        $employee = Employee::factory()
+            ->for($store)
+            ->create([
+                "avatar" => "test/avatar.jpeg",
+            ]);
+
+        Employment::factory()
             ->count(1)
             ->for($branch)
-            ->for(
-                Employee::factory()
-                    ->for($store)
-                    ->create([
-                        "avatar" => "test/avatar.jpeg",
-                    ])
-            )
+            ->for($employee)
             ->hasRoles(1, ["role" => "purchase"])
             ->hasRoles(1, ["role" => "sale"])
             ->hasRoles(1, ["role" => "manage"])
             ->create();
 
-        $suppliers = Supplier::factory()
+        Shift::factory()
+            ->count(3)
+            ->for($branch)
+            ->hasWorkSchedules(1, ["date" => date("Y-m-d", strtotime("+1 day"))])
+            ->hasWorkSchedules(1, ["date" => date("Y-m-d", strtotime("-1 days"))])
+            ->create();
+
+        Supplier::factory()
             ->count(5)
             ->for($store)
             ->create();

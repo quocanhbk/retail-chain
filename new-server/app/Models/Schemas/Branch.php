@@ -149,10 +149,16 @@ class NewEmployeeInput
     public $email;
 
     /**
-     * @OA\Property()
+     * @OA\Property(format="password")
      * @var string
      */
     public $password;
+
+    /**
+     * @OA\Property(format="password")
+     * @var string
+     */
+    public $password_confirmation;
 
     /**
      * @OA\Property()

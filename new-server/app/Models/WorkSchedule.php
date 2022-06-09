@@ -9,9 +9,9 @@ class WorkSchedule extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["shift_id", "employee_id", "branch_id", "date", "note", "is_absent"];
+    protected $fillable = ["shift_id", "employee_id", "date", "note", "is_absent"];
 
-    protected $hidden = ["created_at", "updated_at", "deleted_at"];
+    protected $hidden = ["deleted_at"];
 
     public function shift()
     {

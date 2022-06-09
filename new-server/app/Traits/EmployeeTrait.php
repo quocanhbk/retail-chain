@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Models\Employee;
 use App\Models\Employment;
 use App\Models\EmploymentRole;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -41,6 +42,8 @@ trait EmployeeTrait
                 "role" => $role,
             ]);
         }
+
+        event(new Registered($employee));
 
         return $employee;
     }

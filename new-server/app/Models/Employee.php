@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Notifications\Notifiable;
 
-class Employee extends User
+class Employee extends User implements MustVerifyEmail
 {
+    use Notifiable;
     use HasFactory;
     use SoftDeletes;
 
@@ -25,7 +28,7 @@ class Employee extends User
         "gender",
     ];
 
-    protected $hidden = ["password", "remember_token", "email_verified_at", "deleted_at"];
+    protected $hidden = ["password", "remember_token", "deleted_at"];
 
     protected $casts = [
         "email_verified_at" => "datetime",

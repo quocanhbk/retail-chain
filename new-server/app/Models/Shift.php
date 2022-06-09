@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Shift extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
-    protected $fillable = ["name", "start_time", "end_time", "is_active", "branch_id"];
+    protected $fillable = ["name", "start_time", "end_time", "branch_id"];
 
     protected $hidden = ["created_at", "updated_at", "deleted_at"];
 

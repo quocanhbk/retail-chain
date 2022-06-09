@@ -20,10 +20,7 @@ class CreateShiftTable extends Migration
             $table->string("name");
             $table->time("start_time");
             $table->time("end_time");
-            $table->boolean("is_active")->default(true);
-        });
-
-        Schema::table("shifts", function (Blueprint $table) {
+            $table->softDeletes();
             $table
                 ->foreign("branch_id")
                 ->references("id")

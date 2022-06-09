@@ -5,9 +5,7 @@ namespace App\Models\Schemas;
 /**
  * @OA\Schema(
  *   oneOf={
- *     @OA\Schema(
- *       ref="#/components/schemas/UpsertTime"
- *     )
+ *     @OA\Schema(ref="#/components/schemas/UpsertTime")
  *   },
  *   required={"id", "name", "email"},
  * )
@@ -31,6 +29,12 @@ class Store
      * @var string
      */
     public $email;
+
+    /**
+     * @OA\Property()
+     * @var string
+     */
+    public $email_verified_at;
 }
 
 /**

@@ -21,7 +21,7 @@ class SupplierFactory extends Factory
             "code" => $this->faker->word(),
             "phone" => $this->faker->phoneNumber(),
             "email" => $this->faker->unique()->safeEmail(),
-            "tax" => $this->faker->word(),
+            "tax_number" => $this->faker->word(),
             "note" => $this->faker->sentence(),
         ];
     }

@@ -87,6 +87,7 @@ class EmployeeController extends Controller
      *     response=200,
      *     description="Successful operation",
      *     @OA\JsonContent(
+     *       required={"message"},
      *       @OA\Property(property="message", type="string"),
      *     )
      *   )
@@ -164,6 +165,7 @@ class EmployeeController extends Controller
      *     response=200,
      *     description="Successful operation",
      *     @OA\JsonContent(
+     *       required={"message"},
      *       @OA\Property(property="message", type="string"),
      *     )
      *   )
@@ -569,7 +571,8 @@ class EmployeeController extends Controller
      *     response=200,
      *     description="Employee logged out successfully",
      *     @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", description="Logout successfully")
+     *       required={"message"},
+     *       @OA\Property(property="message", type="string")
      *     )
      *   )
      * )
@@ -597,8 +600,9 @@ class EmployeeController extends Controller
      *   )
      * )
      */
-    public function me()
+    public function me(Request $request)
     {
+        error_log(json_encode($request->user()));
         $id = Auth::guard("employees")->user()->id;
         $employee = Employee::with("employment.roles")
             ->where("id", $id)
@@ -620,7 +624,8 @@ class EmployeeController extends Controller
      *     response=200,
      *     description="Employee transferred successfully",
      *     @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", description="Employee transferred successfully")
+     *       required={"message"},
+     *       @OA\Property(property="message", type="string")
      *     )
      *   )
      * )
@@ -665,7 +670,8 @@ class EmployeeController extends Controller
      *     response=200,
      *     description="Employees transferred successfully",
      *     @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", description="Employees transferred successfully")
+     *       required={"message"},
+     *       @OA\Property(property="message", type="string")
      *     )
      *   )
      * )
@@ -718,7 +724,8 @@ class EmployeeController extends Controller
      *     response=200,
      *     description="Employee deleted successfully",
      *     @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", description="Employee deleted successfully")
+     *       required={"message"},
+     *       @OA\Property(property="message", type="string")
      *     )
      *   )
      * )

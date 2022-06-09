@@ -12,7 +12,21 @@ use App\Http\Middleware\Role\NotEmployee;
 use App\Http\Middleware\Role\NotStoreAdmin;
 use App\Http\Middleware\Role\OnlyEmployee;
 use App\Http\Middleware\Role\OnlyStoreAdmin;
+use App\Request\StoreEmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
+
+Route::get("/email/verify/{id}/{hash}", function (StoreEmailVerificationRequest $request) {
+    $request->fulfill();
+
+    return response()->json(
+        [
+            "message" => "Email verified successfully",
+        ],
+        200
+    );
+})
+    ->middleware(["signed", Authenticated::class])
+    ->name("verification.verify");
 
 Route::prefix("/store")->group(function () {
     Route::middleware([NotStoreAdmin::class])->group(function () {
@@ -99,8 +113,10 @@ Route::prefix("/shift")
         Route::get("/", [ShiftController::class, "getShifts"]);
         // GET /shift/{shift_id} - get a shift by id
         Route::get("/{shift_id}", [ShiftController::class, "getShift"]);
-        // POST /shift/deactivate/{shift_id} - deactivate a shift by id
-        Route::post("/deactivate/{shift_id}", [ShiftController::class, "deactivate"]);
+        // PUT /shift/{shift_id} - update a shift by id
+        Route::put("/{shift_id}", [ShiftController::class, "update"]);
+        // DELETE /shift/deactivate/{shift_id} - deactivate a shift by id
+        Route::delete("/{shift_id}", [ShiftController::class, "delete"]);
     });
 
 Route::prefix("/work-schedule")
@@ -113,7 +129,7 @@ Route::prefix("/work-schedule")
         // GET /work-schedule/{date} - get all work schedules in a day
         Route::get("/{date}", [WorkScheduleController::class, "getWorkSchedulesByDate"]);
         // PATCH /work-schedule/{work_schedule_id} - update a work schedule by id
-        Route::patch("/{work_schedule_id}", [WorkScheduleController::class, "update"]);
+        Route::put("/{work_schedule_id}", [WorkScheduleController::class, "update"]);
         // DELETE /work-schedule/{work_schedule_id} - delete a work schedule by id
         Route::delete("/{work_schedule_id}", [WorkScheduleController::class, "delete"]);
     });
@@ -127,8 +143,8 @@ Route::prefix("/supplier")
         Route::get("/", [SupplierController::class, "getSuppliers"]);
         // GET /supplier/{supplier_id} - get a supplier by id
         Route::get("/{supplier_id}", [SupplierController::class, "getSupplier"]);
-        // PATCH /supplier/{supplier_id} - update a supplier by id
-        Route::patch("/{supplier_id}", [SupplierController::class, "update"]);
+        // PUT /supplier/{supplier_id} - update a supplier by id
+        Route::put("/{supplier_id}", [SupplierController::class, "update"]);
         // DELETE /supplier/{supplier_id} - delete a supplier by id
         Route::delete("/{supplier_id}", [SupplierController::class, "delete"]);
     });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Store;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -24,7 +25,10 @@ class StoreController extends Controller
      *   @OA\Response(
      *     response=200,
      *     description="Successful operation",
-     *     @OA\JsonContent(ref="#/components/schemas/Store")
+     *     @OA\JsonContent(
+     *       required={"message"},
+     *       @OA\Property(property="message", type="string"),
+     *     )
      *   ),
      * )
      */
@@ -60,6 +64,8 @@ class StoreController extends Controller
         $remember = $data["remember"] ?? false;
         Auth::guard("stores")->login($store, $remember);
 
+        event(new Registered($store));
+
         // create default item categories
         $store
             ->categories()
@@ -79,7 +85,9 @@ class StoreController extends Controller
                 ["name" => "THUỐC VÀ THỰC PHẨM CHỨC NĂNG"],
             ]);
 
-        return response()->json($store);
+        return response()->json([
+            "message" => "Please check email to verify your account.",
+        ]);
     }
 
     /**
@@ -149,6 +157,7 @@ class StoreController extends Controller
      *     response=200,
      *     description="Successful operation",
      *     @OA\JsonContent(
+     *       required={"message"},
      *       @OA\Property(property="message", type="string")
      *     )
      *   ),
@@ -177,8 +186,9 @@ class StoreController extends Controller
      *   ),
      * )
      */
-    public function getStore()
+    public function getStore(Request $request)
     {
+        error_log(json_encode($request->user("stores")));
         return response()->json(Auth::guard("stores")->user());
     }
 
@@ -192,6 +202,7 @@ class StoreController extends Controller
      *     response=200,
      *     description="Successful operation",
      *     @OA\JsonContent(
+     *       required={"message"},
      *       @OA\Property(property="guard", type="string")
      *     )
      *   )

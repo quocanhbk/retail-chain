@@ -36,7 +36,12 @@ export interface TransferredEmployeeInput {
 export interface NewEmployeeInput {
   name: string;
   email: string;
+
+  /** @format password */
   password: string;
+
+  /** @format password */
+  password_confirmation?: string;
   roles: string[];
   phone?: string;
   birthday?: string;
@@ -53,6 +58,7 @@ export type Employee = UpsertTime & {
   phone?: string;
   birthday?: string;
   gender?: string;
+  email_verified_at?: string;
 };
 
 export type EmployeeWithEmployment = Employee & { employment: EmploymentWithRoles };
@@ -135,7 +141,17 @@ export interface UpsertTime {
   updated_at: string;
 }
 
-export type Store = UpsertTime & { id: number; name: string; email: string };
+export type Shift = UpsertTime & { id: number; branch_id?: number; name: string; start_time: string; end_time: string };
+
+export interface UpsertShiftInput {
+  name?: string;
+  start_time?: string;
+  end_time?: string;
+}
+
+export type CreateShiftInput = UpsertShiftInput;
+
+export type Store = UpsertTime & { id: number; name: string; email: string; email_verified_at?: string };
 
 export type RegisterStoreInput = LoginStoreInput & { name: string; password_confirmation: string };
 
@@ -145,6 +161,50 @@ export interface LoginStoreInput {
   /** @format password */
   password: string;
   remember?: boolean;
+}
+
+export type Supplier = UpsertTime & {
+  id: number;
+  name: string;
+  address?: string;
+  code: string;
+  phone?: string;
+  email?: string;
+  tax_number?: string;
+  note?: string;
+  creator_id?: number;
+};
+
+export type CreateSupplierInput = UpdateSupplierInput;
+
+export interface UpdateSupplierInput {
+  name?: string;
+  address?: string;
+  code?: string;
+  phone?: string;
+  email?: string;
+  tax_number?: string;
+  note?: string;
+}
+
+export type WorkSchedule = UpsertTime & {
+  id: number;
+  shift_id: number;
+  employee_id: number;
+  date: string;
+  note: string;
+  is_absent: boolean | null;
+};
+
+export type CreateWorkScheduleInput = UpdateWorkScheduleInput & {
+  shift_id: number;
+  employee_ids: number[];
+  date: string;
+};
+
+export interface UpdateWorkScheduleInput {
+  note?: string;
+  is_absent?: boolean;
 }
 
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, ResponseType } from "axios";
@@ -446,7 +506,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/employee/many
      */
     createManyEmployees: (data: CreateManyEmployeesInput, params: RequestParams = {}) =>
-      this.request<{ message?: string }, any>({
+      this.request<{ message: string }, any>({
         path: `/employee/many`,
         method: "POST",
         body: data,
@@ -464,7 +524,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request PUT:/employee/{employee_id}/avatar
      */
     updateEmployeeAvatar: (employeeId: any, data: { avatar?: File }, params: RequestParams = {}) =>
-      this.request<{ message?: string }, any>({
+      this.request<{ message: string }, any>({
         path: `/employee/${employeeId}/avatar`,
         method: "PUT",
         body: data,
@@ -516,7 +576,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request DELETE:/employee/{employee_id}
      */
     deleteEmployee: (employeeId: number, params: RequestParams = {}) =>
-      this.request<{ message?: string }, any>({
+      this.request<{ message: string }, any>({
         path: `/employee/${employeeId}`,
         method: "DELETE",
         format: "json",
@@ -582,7 +642,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/employee/logout
      */
     logoutEmployee: (params: RequestParams = {}) =>
-      this.request<{ message?: string }, any>({
+      this.request<{ message: string }, any>({
         path: `/employee/logout`,
         method: "POST",
         format: "json",
@@ -614,7 +674,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/employee/transfer
      */
     transferEmployee: (data: TransferEmployeeInput, params: RequestParams = {}) =>
-      this.request<{ message?: string }, any>({
+      this.request<{ message: string }, any>({
         path: `/employee/transfer`,
         method: "POST",
         body: data,
@@ -632,11 +692,96 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/employee/transfer/many
      */
     transferManyEmployees: (data: TransferManyEmployeesInput, params: RequestParams = {}) =>
-      this.request<{ message?: string }, any>({
+      this.request<{ message: string }, any>({
         path: `/employee/transfer/many`,
         method: "POST",
         body: data,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  shift = {
+    /**
+     * No description
+     *
+     * @tags Shift
+     * @name GetAllShifts
+     * @summary Get all shifts
+     * @request GET:/shift
+     */
+    getAllShifts: (params: RequestParams = {}) =>
+      this.request<Shift[], any>({
+        path: `/shift`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Shift
+     * @name CreateShift
+     * @summary Create a new shift
+     * @request POST:/shift
+     */
+    createShift: (data: CreateShiftInput, params: RequestParams = {}) =>
+      this.request<Shift, any>({
+        path: `/shift`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Shift
+     * @name GetShift
+     * @summary Get a shift
+     * @request GET:/shift/{shift_id}
+     */
+    getShift: (shiftId: number, params: RequestParams = {}) =>
+      this.request<Shift, any>({
+        path: `/shift/${shiftId}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Shift
+     * @name UpdateShift
+     * @summary Update a shift
+     * @request PUT:/shift/{shift_id}
+     */
+    updateShift: (shiftId: number, data: UpsertShiftInput, params: RequestParams = {}) =>
+      this.request<Shift, any>({
+        path: `/shift/${shiftId}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Shift
+     * @name DeleteShift
+     * @summary Delete a shift
+     * @request DELETE:/shift/{shift_id}
+     */
+    deleteShift: (shiftId: number, params: RequestParams = {}) =>
+      this.request<Shift, any>({
+        path: `/shift/${shiftId}`,
+        method: "DELETE",
         format: "json",
         ...params,
       }),
@@ -651,7 +796,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/store/register
      */
     registerStore: (data: RegisterStoreInput, params: RequestParams = {}) =>
-      this.request<Store, any>({
+      this.request<{ message: string }, any>({
         path: `/store/register`,
         method: "POST",
         body: data,
@@ -687,7 +832,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/store/logout
      */
     logoutStore: (params: RequestParams = {}) =>
-      this.request<{ message?: string }, any>({
+      this.request<{ message: string }, any>({
         path: `/store/logout`,
         method: "POST",
         format: "json",
@@ -723,6 +868,113 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<{ guard?: string }, any>({
         path: `/guard`,
         method: "GET",
+        format: "json",
+        ...params,
+      }),
+  };
+  api = {
+    /**
+     * No description
+     *
+     * @tags Supplier
+     * @name GetSuppliers
+     * @summary Get all suppliers
+     * @request GET:/api/supplier
+     */
+    getSuppliers: (
+      query?: { search?: string; order_by?: string; order_type?: "asc" | "desc"; from?: number; to?: number },
+      params: RequestParams = {},
+    ) =>
+      this.request<Supplier[], any>({
+        path: `/api/supplier`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Supplier
+     * @name CreateSupplier
+     * @summary Create a new supplier
+     * @request POST:/api/supplier
+     */
+    createSupplier: (data: CreateSupplierInput, params: RequestParams = {}) =>
+      this.request<Supplier, any>({
+        path: `/api/supplier`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Supplier
+     * @name GetSupplier
+     * @summary Get a supplier
+     * @request GET:/api/supplier/{supplier_id}
+     */
+    getSupplier: (supplierId: number, params: RequestParams = {}) =>
+      this.request<Supplier, any>({
+        path: `/api/supplier/${supplierId}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Supplier
+     * @name UpdateSupplier
+     * @summary Update a supplier
+     * @request PUT:/api/supplier/{supplier_id}
+     */
+    updateSupplier: (supplierId: number, data: UpdateSupplierInput, params: RequestParams = {}) =>
+      this.request<Supplier, any>({
+        path: `/api/supplier/${supplierId}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Supplier
+     * @name DeleteSupplier
+     * @summary Delete a supplier
+     * @request DELETE:/api/supplier/{supplier_id}
+     */
+    deleteSupplier: (supplierId: number, params: RequestParams = {}) =>
+      this.request<Supplier, any>({
+        path: `/api/supplier/${supplierId}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Work Schedule
+     * @name CreateWorkSchedule
+     * @summary Create a work schedule
+     * @request POST:/api/work-schedule
+     */
+    createWorkSchedule: (data: CreateWorkScheduleInput, params: RequestParams = {}) =>
+      this.request<{ message: string }, any>({
+        path: `/api/work-schedule`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),

@@ -396,6 +396,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
                                     "properties": {
                                         "message": {
                                             "type": "string"
@@ -444,6 +447,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
                                     "properties": {
                                         "message": {
                                             "type": "string"
@@ -546,9 +552,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
                                     "properties": {
                                         "message": {
-                                            "description": "Employee deleted successfully",
                                             "type": "string"
                                         }
                                     },
@@ -665,9 +673,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
                                     "properties": {
                                         "message": {
-                                            "description": "Logout successfully",
                                             "type": "string"
                                         }
                                     },
@@ -723,9 +733,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
                                     "properties": {
                                         "message": {
-                                            "description": "Employee transferred successfully",
                                             "type": "string"
                                         }
                                     },
@@ -760,13 +772,170 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
                                     "properties": {
                                         "message": {
-                                            "description": "Employees transferred successfully",
                                             "type": "string"
                                         }
                                     },
                                     "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/shift": {
+            "get": {
+                "tags": [
+                    "Shift"
+                ],
+                "summary": "Get all shifts",
+                "operationId": "getAllShifts",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Shift"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Shift"
+                ],
+                "summary": "Create a new shift",
+                "operationId": "createShift",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateShiftInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Shift"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/shift/{shift_id}": {
+            "get": {
+                "tags": [
+                    "Shift"
+                ],
+                "summary": "Get a shift",
+                "operationId": "getShift",
+                "parameters": [
+                    {
+                        "name": "shift_id",
+                        "in": "path",
+                        "description": "Shift ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Shift"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Shift"
+                ],
+                "summary": "Update a shift",
+                "operationId": "updateShift",
+                "parameters": [
+                    {
+                        "name": "shift_id",
+                        "in": "path",
+                        "description": "Shift ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpsertShiftInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Shift"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Shift"
+                ],
+                "summary": "Delete a shift",
+                "operationId": "deleteShift",
+                "parameters": [
+                    {
+                        "name": "shift_id",
+                        "in": "path",
+                        "description": "Shift ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Shift"
                                 }
                             }
                         }
@@ -797,7 +966,15 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Store"
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -849,6 +1026,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
                                     "properties": {
                                         "message": {
                                             "type": "string"
@@ -896,8 +1076,246 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
                                     "properties": {
                                         "guard": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/supplier": {
+            "get": {
+                "tags": [
+                    "Supplier"
+                ],
+                "summary": "Get all suppliers",
+                "operationId": "getSuppliers",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_by",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Supplier"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Supplier"
+                ],
+                "summary": "Create a new supplier",
+                "operationId": "createSupplier",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateSupplierInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Supplier"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/supplier/{supplier_id}": {
+            "get": {
+                "tags": [
+                    "Supplier"
+                ],
+                "summary": "Get a supplier",
+                "operationId": "getSupplier",
+                "parameters": [
+                    {
+                        "name": "supplier_id",
+                        "in": "path",
+                        "description": "Supplier ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Supplier"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Supplier"
+                ],
+                "summary": "Update a supplier",
+                "operationId": "updateSupplier",
+                "parameters": [
+                    {
+                        "name": "supplier_id",
+                        "in": "path",
+                        "description": "Supplier ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateSupplierInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Supplier"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Supplier"
+                ],
+                "summary": "Delete a supplier",
+                "operationId": "deleteSupplier",
+                "parameters": [
+                    {
+                        "name": "supplier_id",
+                        "in": "path",
+                        "description": "Supplier ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Supplier"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/work-schedule": {
+            "post": {
+                "tags": [
+                    "Work Schedule"
+                ],
+                "summary": "Create a work schedule",
+                "operationId": "createWorkSchedule",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateWorkScheduleInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     },
@@ -1032,7 +1450,12 @@
                         "type": "string"
                     },
                     "password": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "password"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "format": "password"
                     },
                     "roles": {
                         "type": "array",
@@ -1057,9 +1480,7 @@
                     "id",
                     "name",
                     "email",
-                    "store_id",
-                    "created_at",
-                    "updated_at"
+                    "store_id"
                 ],
                 "properties": {
                     "id": {
@@ -1087,6 +1508,9 @@
                         "type": "string"
                     },
                     "gender": {
+                        "type": "string"
+                    },
+                    "email_verified_at": {
                         "type": "string"
                     }
                 },
@@ -1377,6 +1801,64 @@
                 },
                 "type": "object"
             },
+            "Shift": {
+                "required": [
+                    "id",
+                    "name",
+                    "start_time",
+                    "end_time"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "branch_id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "start_time": {
+                        "type": "string"
+                    },
+                    "end_time": {
+                        "type": "string"
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpsertTime"
+                    }
+                ]
+            },
+            "UpsertShiftInput": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "start_time": {
+                        "type": "string"
+                    },
+                    "end_time": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateShiftInput": {
+                "required": [
+                    "name",
+                    "start_time",
+                    "end_time"
+                ],
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpsertShiftInput"
+                    }
+                ]
+            },
             "Store": {
                 "required": [
                     "id",
@@ -1391,6 +1873,9 @@
                         "type": "string"
                     },
                     "email": {
+                        "type": "string"
+                    },
+                    "email_verified_at": {
                         "type": "string"
                     }
                 },
@@ -1438,6 +1923,161 @@
                         "format": "password"
                     },
                     "remember": {
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
+            "Supplier": {
+                "required": [
+                    "id",
+                    "name",
+                    "code"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "tax_number": {
+                        "type": "string"
+                    },
+                    "note": {
+                        "type": "string"
+                    },
+                    "creator_id": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpsertTime"
+                    }
+                ]
+            },
+            "CreateSupplierInput": {
+                "required": [
+                    "name",
+                    "phone"
+                ],
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpdateSupplierInput"
+                    }
+                ]
+            },
+            "UpdateSupplierInput": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "tax_number": {
+                        "type": "string"
+                    },
+                    "note": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "WorkSchedule": {
+                "required": [
+                    "id",
+                    "shift_id",
+                    "employee_id",
+                    "date",
+                    "is_absent",
+                    "note"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "shift_id": {
+                        "type": "integer"
+                    },
+                    "employee_id": {
+                        "type": "integer"
+                    },
+                    "date": {
+                        "type": "string"
+                    },
+                    "note": {
+                        "type": "string"
+                    },
+                    "is_absent": {
+                        "type": "boolean",
+                        "nullable": true
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpsertTime"
+                    }
+                ]
+            },
+            "CreateWorkScheduleInput": {
+                "required": [
+                    "shift_id",
+                    "employee_ids",
+                    "date"
+                ],
+                "properties": {
+                    "shift_id": {
+                        "type": "integer"
+                    },
+                    "employee_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "date": {
+                        "type": "string"
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpdateWorkScheduleInput"
+                    }
+                ]
+            },
+            "UpdateWorkScheduleInput": {
+                "properties": {
+                    "note": {
+                        "type": "string"
+                    },
+                    "is_absent": {
                         "type": "boolean"
                     }
                 },
