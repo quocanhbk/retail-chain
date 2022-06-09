@@ -1,80 +1,65 @@
-import { loginEmployee, LoginEmployeeInput, loginStore } from "@api"
-import { useFormCore } from "@hooks"
+import { loginEmployee, LoginInput, loginStore } from "@api"
 import { useStoreActions } from "@store"
 import { useRouter } from "next/router"
-import { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
 import { useMutation } from "react-query"
+import * as Yup from "yup"
+import { yupResolver } from "@hookform/resolvers/yup"
+import { useState } from "react"
+
+const validationSchema = Yup.object().shape({
+	email: Yup.string().required("Email bắt buộc").email("Email không hợp lệ"),
+	password: Yup.string().required("Mật khẩu bắt buộc").min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+	remember: Yup.boolean()
+})
 
 const useLogin = (admin: boolean) => {
-	const setInfo = useStoreActions(s => s.setInfo)
-
-	const router = useRouter()
+	const setStoreInfo = useStoreActions(s => s.setStoreInfo)
+	const setEmployeeInfo = useStoreActions(s => s.setEmployeeInfo)
 
 	const [generalError, setGeneralError] = useState("")
 
-	const { values, setValue, errors, setError } = useFormCore<LoginEmployeeInput>({
-		email: "",
-		password: "",
-		remember: false,
+	const {
+		register,
+		handleSubmit: handleSubmitForm,
+		formState: { errors },
+		watch
+	} = useForm<LoginInput>({ resolver: yupResolver(validationSchema) })
+
+	watch(() => setGeneralError(""))
+
+	const router = useRouter()
+
+	const { mutate: mutateLoginEmployee, isLoading: isLoadingLoginEmployee } = useMutation(loginEmployee, {
+		onSuccess: data => {
+			setEmployeeInfo(data)
+			router.push("/")
+		},
+		onError: (err: Error) => {
+			setGeneralError(err.message)
+		}
 	})
 
-	useEffect(() => {
-		setGeneralError("")
-	}, [values])
-
-	const validate = () => {
-		let isSubmittable = true
-
-		// Check required fields
-		const valuesKeys = Object.keys(values) as Array<keyof LoginEmployeeInput>
-		valuesKeys.forEach(key => {
-			if (values[key] === "") {
-				setError(key, `Required`)
-				isSubmittable = false
-			}
-		})
-		return isSubmittable
-	}
-
-	const { mutate: mutateLoginEmployee, isLoading: isLoadingLoginEmployee } = useMutation(
-		() => loginEmployee(values),
-		{
-			onSuccess: data => {
-				setInfo(data)
-				router.push("/")
-			},
-			onError: (err: any) => {
-				console.log(err)
-			},
-		}
-	)
-
-	const { mutate: mutateLoginStore, isLoading: isLoadingLoginStore } = useMutation(() => loginStore(values), {
+	const { mutate: mutateLoginStore, isLoading: isLoadingLoginStore } = useMutation(loginStore, {
 		onSuccess: data => {
-			setInfo(data)
+			setStoreInfo(data)
 			router.push("/admin")
 		},
-		onError: (err: any) => {
-			console.log(err)
-		},
-	})
-
-	const handleLogin = () => {
-		if (validate()) {
-			admin ? mutateLoginStore() : mutateLoginEmployee()
+		onError: (err: Error) => {
+			setGeneralError(err.message)
 		}
-	}
+	})
 
 	const isLoading = admin ? isLoadingLoginStore : isLoadingLoginEmployee
 
+	const handleSubmit = handleSubmitForm(values => (admin ? mutateLoginStore(values) : mutateLoginEmployee(values)))
+
 	return {
 		isLoading,
-		handleLogin,
-		values,
-		setValue,
 		errors,
-		validate,
-		generalError,
+		register,
+		handleSubmit,
+		generalError
 	}
 }
 export default useLogin

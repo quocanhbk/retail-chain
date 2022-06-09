@@ -1,7 +1,11 @@
-import { Box } from "@chakra-ui/react"
+import { Grid, Heading } from "@chakra-ui/react"
 
 const StoreDashboardUI = () => {
-	return <Box>StoreDashboardUI</Box>
+	return (
+		<Grid h="full" placeItems={"center"}>
+			<Heading color={"text.secondary"}>This page is under development</Heading>
+		</Grid>
+	)
 }
 
 export default StoreDashboardUI

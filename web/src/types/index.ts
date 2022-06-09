@@ -1,37 +1,17 @@
-export interface Store {
-	id: number
-	name: string
+import { employeeRoles } from "@constants"
+
+export interface DateInput {
+	day: number | null
+	month: number | null
+	year: number | null
 }
 
-export interface Branch {
-	id: number
-	name: string
-	address: string
-	store_id: number
-	created_date: string
-	deleted: boolean
+export type Role = typeof employeeRoles[number]
+
+export interface ListQueryOptions {
+	sort_by?: string
+	sort_type?: "asc" | "desc"
+	search?: string
+	from?: number
+	to?: number
 }
-
-export interface User {
-	id: number
-	name: string
-	avatar_url: string | null
-	email: string
-	phone: string | null
-	birthday: string | null
-	gender: "male" | "female" | null
-	status: "enabled" | "disabled"
-	store_id: number
-	is_owner: boolean
-}
-
-export interface Info {
-	user: User
-	store: Store | undefined
-	branch: Branch | null | undefined
-	roles: Role[] | null | undefined
-}
-
-export type Role = string
-
-export type AuthState = "success" | "fail"

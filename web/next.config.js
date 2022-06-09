@@ -4,13 +4,23 @@ module.exports = {
 	async redirects() {
 		return [
 			{
-				source: "/",
-				destination: "/login",
-				permanent: true,
+				source: "/admin/manage",
+				destination: "/admin/manage/branch",
+				permanent: true
 			},
+			{
+				source: "/",
+				destination: "/main/sale/cart",
+				permanent: true
+			},
+			{
+				source: "/main",
+				destination: "/main/sale/cart",
+				permanent: true
+			}
 		]
 	},
 	images: {
-		domains: ["http://localhost"],
-	},
+		domains: ["http://localhost", "149.28.148.73"]
+	}
 }

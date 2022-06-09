@@ -17,10 +17,16 @@ class EnsureEmailIsVerified
      */
     public function handle($request, Closure $next, $redirectToRoute = null)
     {
-        if (! $request->user() ||
-            ($request->user() instanceof MustVerifyEmail &&
-            ! $request->user()->hasVerifiedEmail())) {
-            return response()->json(['message' => 'Your email address is not verified.'], 409);
+        if (
+            !$request->user() ||
+            ($request->user() instanceof MustVerifyEmail && !$request->user()->hasVerifiedEmail())
+        ) {
+            return response()->json(
+                [
+                    "message" => "Your email address is not verified.",
+                ],
+                409
+            );
         }
 
         return $next($request);

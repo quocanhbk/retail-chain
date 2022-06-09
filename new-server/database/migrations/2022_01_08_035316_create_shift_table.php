@@ -13,20 +13,19 @@ class CreateShiftTable extends Migration
      */
     public function up()
     {
-        Schema::create('shifts', function (Blueprint $table) {
+        Schema::create("shifts", function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger('branch_id');
-            $table->string('name');
-            $table->time('start_time');
-            $table->time('end_time');
-            $table->boolean('is_active')->default(true);
+            $table->unsignedBigInteger("branch_id");
+            $table->string("name");
+            $table->time("start_time");
+            $table->time("end_time");
+            $table->softDeletes();
+            $table
+                ->foreign("branch_id")
+                ->references("id")
+                ->on("branches");
         });
-
-        Schema::table('shifts', function (Blueprint $table) {
-            $table->foreign('branch_id')->references('id')->on('branches');
-        });
-
     }
 
     /**
@@ -36,6 +35,6 @@ class CreateShiftTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('shifts');
+        Schema::dropIfExists("shifts");
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Middleware\Employee;
+namespace App\Http\Middleware\Role;
 
 use Closure;
 use Illuminate\Http\Request;
@@ -10,10 +10,13 @@ class OnlyEmployee
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::guard('employees')->check()) {
-            return response()->json([
-                'message' => 'Unauthorized.',
-            ], 403);
+        if (!Auth::guard("employees")->check()) {
+            return response()->json(
+                [
+                    "message" => "Unauthenticated.",
+                ],
+                401
+            );
         }
         return $next($request);
     }

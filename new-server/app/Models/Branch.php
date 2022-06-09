@@ -11,18 +11,9 @@ class Branch extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = [
-        'name',
-        'address',
-        'store_id',
-        'image'
-    ];
+    protected $fillable = ["name", "address", "store_id", "image", "image_key"];
 
-    protected $hidden = [
-        'created_at',
-        'updated_at',
-        'deleted_at'
-    ];
+    protected $hidden = ["deleted_at"];
 
     public function store()
     {

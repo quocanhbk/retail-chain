@@ -1,0 +1,38 @@
+version: '3'
+services:
+  db:
+    image: mariadb:10.3.32
+    container_name: db
+    restart: always
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_DATABASE: 'laravel'
+      MYSQL_ROOT_PASSWORD: 123456
+    networks:
+      - retail-chain
+  app:
+    build:
+      context: ./new-server
+      dockerfile: .docker/Dockerfile
+    container_name: app
+    image: 'laravelapp'
+    ports:
+      - "8000:80"
+    volumes:
+      - ./new-server:/app/server
+    networks:
+      - retail-chain
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./web:/app/web
+    networks:
+      - retail-chain
+networks:
+  retail-chain:
+    driver: bridge

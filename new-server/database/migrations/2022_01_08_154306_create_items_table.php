@@ -13,19 +13,24 @@ class CreateItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('items', function (Blueprint $table) {
+        Schema::create("items", function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->softDeletes();
-            $table->string('code');
-            $table->string('barcode');
-            $table->string('name');
-            $table->string('image')->nullable();
-            $table->decimal('price', 13, 0);
-            $table->unsignedBigInteger('store_id');
-            $table->foreign('store_id')->references('id')->on('stores');
-            $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('categories');
+            $table->string("barcode");
+            $table->string("code")->nullable();
+            $table->string("name");
+            $table->string("image")->nullable();
+            $table->unsignedBigInteger("store_id");
+            $table->unsignedBigInteger("item_category_id")->nullable();
+            $table
+                ->foreign("store_id")
+                ->references("id")
+                ->on("stores");
+            $table
+                ->foreign("item_category_id")
+                ->references("id")
+                ->on("item_categories");
         });
     }
 
@@ -36,6 +41,6 @@ class CreateItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('items');
+        Schema::dropIfExists("items");
     }
 }

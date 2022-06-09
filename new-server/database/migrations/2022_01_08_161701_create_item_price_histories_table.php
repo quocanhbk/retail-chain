@@ -13,13 +13,16 @@ class CreateItemPriceHistoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('item_price_histories', function (Blueprint $table) {
+        Schema::create("item_price_histories", function (Blueprint $table) {
             $table->id();
-            $table->decimal('price', 13, 0);
-            $table->date('start_date');
-            $table->date('end_date')->nullable();
-            $table->unsignedBigInteger('item_id');
-            $table->foreign('item_id')->references('id')->on('items');
+            $table->decimal("price", 13, 0);
+            $table->date("start_date");
+            $table->date("end_date")->nullable();
+            $table->unsignedBigInteger("item_id");
+            $table
+                ->foreign("item_id")
+                ->references("id")
+                ->on("items");
         });
     }
 
@@ -30,6 +33,6 @@ class CreateItemPriceHistoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('item_price_histories');
+        Schema::dropIfExists("item_price_histories");
     }
 }

@@ -9,7 +9,7 @@ import {
 	AlertDialogFooter,
 	Button,
 	AlertDialogCloseButton,
-	chakra,
+	chakra
 } from "@chakra-ui/react"
 import { RefObject, useRef } from "react"
 
@@ -26,17 +26,17 @@ interface SubmitConfirmAlertProps {
 	children: React.ReactNode
 }
 
-const SubmitConfirmAlert = ({
+export const SubmitConfirmAlert = ({
 	isOpen,
 	onClose,
 	onConfirm,
 	title,
 	children,
-	cancelText = "Cancel",
-	confirmText = "Confirm",
+	cancelText = "Hủy",
+	confirmText = "Xác nhận",
 	color,
 	leastDestructiveRef,
-	isLoading,
+	isLoading
 }: SubmitConfirmAlertProps) => {
 	const cancelRef = useRef<HTMLButtonElement>(null)
 	return (

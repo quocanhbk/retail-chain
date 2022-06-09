@@ -13,15 +13,18 @@ class CreateEmploymentRoles extends Migration
      */
     public function up()
     {
-        Schema::create('employment_roles', function (Blueprint $table) {
+        Schema::create("employment_roles", function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger('employment_id');
-            $table->string('role');
+            $table->unsignedBigInteger("employment_id");
+            $table->string("role");
         });
 
-        Schema::table('employment_roles', function (Blueprint $table) {
-            $table->foreign('employment_id')->references('id')->on('employments');
+        Schema::table("employment_roles", function (Blueprint $table) {
+            $table
+                ->foreign("employment_id")
+                ->references("id")
+                ->on("employments");
         });
     }
 
@@ -32,6 +35,6 @@ class CreateEmploymentRoles extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('employment_roles');
+        Schema::dropIfExists("employment_roles");
     }
 }

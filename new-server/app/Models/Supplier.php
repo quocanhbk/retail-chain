@@ -11,19 +11,9 @@ class Supplier extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = [
-        'store_id',
-        'name',
-        'address',
-        'phone',
-        'email'
-    ];
+    protected $fillable = ["store_id", "name", "address", "code", "phone", "email", "tax_number", "note"];
 
-    protected $hidden = [
-        'created_at',
-        'updated_at',
-        'deleted_at'
-    ];
+    protected $hidden = ["deleted_at"];
 
     public function store()
     {

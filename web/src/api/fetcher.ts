@@ -5,4 +5,11 @@ export const baseURL = "http://localhost:8000/api"
 
 export const fetcher = axios.create({ baseURL: baseURL, withCredentials: true })
 
+fetcher.interceptors.response.use(
+	res => res,
+	err => {
+		throw new Error(err.response.data.message)
+	}
+)
+
 export default fetcher

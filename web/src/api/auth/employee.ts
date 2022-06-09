@@ -1,6 +1,6 @@
 import fetcher from "../fetcher"
 
-export interface LoginEmployeeInput {
+export interface LoginInput {
 	email: string
 	password: string
 	remember: boolean
@@ -15,7 +15,7 @@ export interface LoginEmployeeOutput {
 	gender: string | null
 }
 
-export const loginEmployee = async (input: LoginEmployeeInput): Promise<LoginEmployeeOutput> => {
+export const loginEmployee = async (input: LoginInput): Promise<LoginEmployeeOutput> => {
 	const { data } = await fetcher.post("/employee/login", input)
 	return data
 }

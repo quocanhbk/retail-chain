@@ -22,9 +22,12 @@ class RedirectIfAuthenticated
         $guards = empty($guards) ? [null] : $guards;
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return response()->json([
-                    'message' => 'You are already logged in.',
-                ], 401);
+                return response()->json(
+                    [
+                        "message" => "You are already logged in.",
+                    ],
+                    401
+                );
             }
         }
 
