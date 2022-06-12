@@ -11,16 +11,39 @@ use Illuminate\Support\Str;
 
 class CustomerController extends Controller
 {
-    // only for saler
+    /**
+     * @OA\Post(
+     *   path="/customer",
+     *   summary="Create a new customer",
+     *   tags={"Customer"},
+     *   operationId="createCustomer",
+     *   @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(ref="#/components/schemas/CreateCustomerInput")
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @OA\JsonContent(ref="#/components/schemas/Customer")
+     *   ),
+     * )
+     */
     public function create(Request $request)
     {
-        $store_id = Auth::user()->store_id;
+        $store_id = $request->get("store_id");
+
         $data = $request->all();
+
         $rules = [
             "name" => ["required", "string", "max:255"],
-            "phone" => ["required", "string", "max:255", Rule::unique("customers")->where("store_id", $store_id)],
+            "phone" => [
+                "required_without:email",
+                "string",
+                "max:255",
+                Rule::unique("customers")->where("store_id", $store_id),
+            ],
             "email" => [
-                "nullable",
+                "required_without:phone",
                 "string",
                 "email",
                 "max:255",
@@ -33,8 +56,7 @@ class CustomerController extends Controller
         if ($validator->fails()) {
             return response()->json(
                 [
-                    "message" => "Validation failed.",
-                    "errors" => $validator->errors(),
+                    "message" => $this->formatValidationError($validator->errors()),
                 ],
                 400
             );
@@ -44,16 +66,37 @@ class CustomerController extends Controller
             "store_id" => $store_id,
             "code" => Str::uuid(),
             "name" => $data["name"],
-            "phone" => $data["phone"],
-            "email" => $data["email"],
+            "phone" => $data["phone"] ?? null,
+            "email" => $data["email"] ?? null,
         ]);
 
         return response()->json($customer);
     }
 
+    /**
+     * @OA\Get(
+     *   path="/customer",
+     *   summary="Get all customers",
+     *   tags={"Customer"},
+     *   operationId="getCustomers",
+     *   @OA\Parameter(name="search", in="query", @OA\Schema(type="string")),
+     *   @OA\Parameter(name="order_by", in="query", @OA\Schema(type="string")),
+     *   @OA\Parameter(name="order_type", in="query", @OA\Schema(type="string", enum={"asc", "desc"})),
+     *   @OA\Parameter(name="from", in="query", @OA\Schema(type="integer")),
+     *   @OA\Parameter(name="to", in="query", @OA\Schema(type="integer")),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @OA\JsonContent(
+     *       type="array",
+     *       @OA\Items(ref="#/components/schemas/Customer")
+     *     ),
+     *   ),
+     * )
+     */
     public function getCustomers(Request $request)
     {
-        $store_id = Auth::user()->store_id;
+        $store_id = $request->get("store_id");
 
         [$search, $from, $to, $order_by, $order_type] = $this->getQuery($request);
 
@@ -64,17 +107,34 @@ class CustomerController extends Controller
             ->orWhere("code", "iLike", "%" . $search . "%")
             ->orderBy($order_by, $order_type)
             ->offset($from)
-            ->limit($to - $from);
+            ->limit($to - $from)
+            ->get();
 
         return response()->json($customers);
     }
 
-    public function getCustomer(Request $request, $id)
+    /**
+     * @OA\Get(
+     *   path="/customer/{customer_id}",
+     *   summary="Get a customer",
+     *   tags={"Customer"},
+     *   operationId="getCustomer",
+     *   @OA\Parameter(name="customer_id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @OA\JsonContent(ref="#/components/schemas/Customer")
+     *   ),
+     * )
+     */
+    public function getCustomer(Request $request, $customer_id)
     {
-        $store_id = Auth::user()->store_id;
+        $store_id = $request->get("store_id");
+
         $customer = Customer::where("store_id", $store_id)
-            ->where("id", $id)
+            ->where("id", $customer_id)
             ->first();
+
         if (!$customer) {
             return response()->json(
                 [
@@ -87,12 +147,28 @@ class CustomerController extends Controller
         return response()->json($customer);
     }
 
+    /**
+     * @OA\Get(
+     *   path="/customer/code/{code}",
+     *   summary="Get a customer by code",
+     *   tags={"Customer"},
+     *   operationId="getCustomerByCode",
+     *   @OA\Parameter(name="code", in="path", @OA\Schema(type="string"), required=true),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @OA\JsonContent(ref="#/components/schemas/Customer")
+     *   ),
+     * )
+     */
     public function getCustomerByCode(Request $request, $code)
     {
-        $store_id = Auth::user()->store_id;
+        $store_id = $request->get("store_id");
+
         $customer = Customer::where("store_id", $store_id)
             ->where("code", $code)
             ->first();
+
         if (!$customer) {
             return response()->json(
                 [
@@ -105,13 +181,47 @@ class CustomerController extends Controller
         return response()->json($customer);
     }
 
-    public function update(Request $request, $id)
+    /**
+     * @OA\Put(
+     *   path="/customer/{customer_id}",
+     *   summary="Update a customer",
+     *   tags={"Customer"},
+     *   operationId="updateCustomer",
+     *   @OA\Parameter(name="customer_id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(ref="#/components/schemas/UpsertCustomerInput")
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @OA\JsonContent(
+     *       required={"message"},
+     *       @OA\Property(property="message", type="string", description="Success message"),
+     *     )
+     *   ),
+     * )
+     */
+    public function update(Request $request, $customer_id)
     {
-        $store_id = Auth::user()->store_id;
+        $store_id = $request->get("store_id");
+
         $data = $request->all();
-        $data["id"] = $id;
+
+        $customer = Customer::where("store_id", $store_id)
+            ->where("id", $customer_id)
+            ->first();
+
+        if (!$customer) {
+            return response()->json(
+                [
+                    "message" => "Customer not found.",
+                ],
+                404
+            );
+        }
+
         $rules = [
-            "id" => ["required", "integer", Rule::exists("customer", "id")->where("store_id", $store_id)],
             "name" => ["nullable", "string", "max:255"],
             "phone" => [
                 "nullable",
@@ -119,7 +229,7 @@ class CustomerController extends Controller
                 "max:255",
                 Rule::unique("customers")
                     ->where("store_id", $store_id)
-                    ->ignore($id),
+                    ->ignore($customer_id),
             ],
             "email" => [
                 "nullable",
@@ -128,7 +238,7 @@ class CustomerController extends Controller
                 "max:255",
                 Rule::unique("customers")
                     ->where("store_id", $store_id)
-                    ->ignore($id),
+                    ->ignore($customer_id),
             ],
         ];
 
@@ -137,31 +247,67 @@ class CustomerController extends Controller
         if ($validator->fails()) {
             return response()->json(
                 [
-                    "message" => "Validation failed.",
-                    "errors" => $validator->errors(),
+                    "message" => $this->formatValidationError($validator->errors()),
                 ],
                 400
             );
         }
 
-        $customer = Customer::where("store_id", $store_id)
-            ->where("id", $id)
-            ->first();
         $customer->name = $data["name"] ?? $customer->name;
         $customer->phone = $data["phone"] ?? $customer->phone;
         $customer->email = $data["email"] ?? $customer->email;
+
         $customer->save();
 
-        return response()->json($customer);
+        return response()->json([
+            "message" => "Customer updated.",
+        ]);
     }
 
-    public function addPoint(Request $request, $id)
+    /**
+     * @OA\Post(
+     *   path="/customer/add-point/{customer_id}",
+     *   summary="Create a customer",
+     *   tags={"Customer"},
+     *   operationId="addCustomerPoint",
+     *   @OA\Parameter(name="customer_id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(
+     *       required={"point"},
+     *       @OA\Property(property="point", type="integer", description="Point"),
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @OA\JsonContent(
+     *       required={"message"},
+     *       @OA\Property(property="message", type="string", description="Success message"),
+     *     )
+     *   )
+     * )
+     */
+    public function addPoint(Request $request, $customer_id)
     {
-        $store_id = Auth::user()->store_id;
+        $store_id = $request->get("store_id");
+
         $data = $request->all();
-        $data["id"] = $id;
+
+        $customer = Customer::where("store_id", $store_id)
+            ->where("id", $customer_id)
+            ->first();
+
+        if (!$customer) {
+            return response()->json(
+                [
+                    "message" => "Customer not found.",
+                ],
+                404
+            );
+        }
+
         $rules = [
-            "id" => ["required", "integer", Rule::exists("customer", "id")->where("store_id", $store_id)],
             "point" => ["required", "integer", "min:1"],
         ];
 
@@ -170,29 +316,65 @@ class CustomerController extends Controller
         if ($validator->fails()) {
             return response()->json(
                 [
-                    "message" => "Validation failed.",
-                    "errors" => $validator->errors(),
+                    "message" => $this->formatValidationError($validator->errors()),
                 ],
                 400
             );
         }
 
-        $customer = Customer::where("store_id", $store_id)
-            ->where("id", $id)
-            ->first();
         $customer->point += $data["point"];
+
         $customer->save();
 
-        return response()->json($customer);
+        return response()->json([
+            "message" => "Added point successfully.",
+        ]);
     }
 
-    public function usePoint(Request $request, $id)
+    /**
+     * @OA\Post(
+     *   path="/customer/use-point/{customer_id}",
+     *   summary="Use point",
+     *   tags={"Customer"},
+     *   operationId="useCustomerPoint",
+     *   @OA\Parameter(name="customer_id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(
+     *       required={"point"},
+     *       @OA\Property(property="point", type="integer", description="Point to use"),
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @OA\JsonContent(
+     *       required={"message"},
+     *       @OA\Property(property="message", type="string", description="Success message"),
+     *     )
+     *   )
+     * )
+     */
+    public function usePoint(Request $request, $customer_id)
     {
-        $store_id = Auth::user()->store_id;
+        $store_id = $request->get("store_id");
+
         $data = $request->all();
-        $data["id"] = $id;
+
+        $customer = Customer::where("store_id", $store_id)
+            ->where("id", $customer_id)
+            ->first();
+
+        if (!$customer) {
+            return response()->json(
+                [
+                    "message" => "Customer not found.",
+                ],
+                404
+            );
+        }
+
         $rules = [
-            "id" => ["required", "integer", Rule::exists("customer", "id")->where("store_id", $store_id)],
             "point" => ["required", "integer", "min:1"],
         ];
 
@@ -201,16 +383,12 @@ class CustomerController extends Controller
         if ($validator->fails()) {
             return response()->json(
                 [
-                    "message" => "Validation failed.",
-                    "errors" => $validator->errors(),
+                    "message" => $this->formatValidationError($validator->errors()),
                 ],
                 400
             );
         }
 
-        $customer = Customer::where("store_id", $store_id)
-            ->where("id", $id)
-            ->first();
         if ($customer->point < $data["point"]) {
             return response()->json(
                 [
@@ -219,9 +397,13 @@ class CustomerController extends Controller
                 400
             );
         }
+
         $customer->point -= $data["point"];
+
         $customer->save();
 
-        return response()->json($customer);
+        return response()->json([
+            "message" => "Used point successfully.",
+        ]);
     }
 }

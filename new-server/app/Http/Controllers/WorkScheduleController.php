@@ -72,7 +72,7 @@ class WorkScheduleController extends Controller
         WorkSchedule::insert($work_schedules);
 
         return response()->json([
-            "message" => "Work schedule created successfully"
+            "message" => "Work schedule created successfully",
         ]);
     }
 
@@ -105,9 +105,12 @@ class WorkScheduleController extends Controller
         $date = $request->query("date") ?? null;
 
         if ($date) {
-            $validator = Validator::make(["date" => $date], [
-                "date" => ["required", "date_format:Y-m-d"],
-            ]);
+            $validator = Validator::make(
+                ["date" => $date],
+                [
+                    "date" => ["required", "date_format:Y-m-d"],
+                ]
+            );
 
             if ($validator->fails()) {
                 return response()->json(
@@ -126,8 +129,8 @@ class WorkScheduleController extends Controller
                 ->from("shifts")
                 ->where("branch_id", $branch_id);
         })
-        ->where("date", !$date ? ">=" : "=", !$date ? date("Y-m-d", strtotime("1970-01-01") ) : $date)
-        ->get();
+            ->where("date", !$date ? ">=" : "=", !$date ? date("Y-m-d", strtotime("1970-01-01")) : $date)
+            ->get();
 
         return response()->json($work_schedules);
     }
@@ -164,7 +167,15 @@ class WorkScheduleController extends Controller
         $data["work_schedule_id"] = $work_schedule_id;
 
         $rules = [
-            "work_schedule_id" => ["required", Rule::exists("work_schedules", "id")->whereIn("shift_id", Shift::where("branch_id", $branch_id)->pluck("id")->toArray())],
+            "work_schedule_id" => [
+                "required",
+                Rule::exists("work_schedules", "id")->whereIn(
+                    "shift_id",
+                    Shift::where("branch_id", $branch_id)
+                        ->pluck("id")
+                        ->toArray()
+                ),
+            ],
             "note" => ["nullable", "string", "max:255"],
             "is_absent" => ["nullable", "boolean"],
         ];
@@ -217,7 +228,9 @@ class WorkScheduleController extends Controller
                 ->select("id")
                 ->from("shifts")
                 ->where("branch_id", $branch_id);
-        })->where("id", $work_schedule_id)->first();
+        })
+            ->where("id", $work_schedule_id)
+            ->first();
 
         if (!$work_schedule) {
             return response()->json(

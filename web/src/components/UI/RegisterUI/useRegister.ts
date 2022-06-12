@@ -1,74 +1,62 @@
-import { registerStore, RegisterStoreInput } from "@api"
-import { isEmail } from "@helper"
-import { useFormCore } from "@hooks"
+import { client, RegisterStoreInput, Store } from "@api"
 import { useStoreActions } from "@store"
 import { useRouter } from "next/router"
 import { useMutation } from "react-query"
+import { useForm } from "react-hook-form"
+import * as Yup from "yup"
+import { yupResolver } from "@hookform/resolvers/yup"
+import { useEffect, useState } from "react"
+
+const validationSchema = Yup.object().shape({
+	name: Yup.string().required("Name is required"),
+	email: Yup.string().email("Email is invalid").required("Email is required"),
+	password: Yup.string().required("Password is required"),
+	password_confirmation: Yup.string().required("Password confirmation is required"),
+	remember: Yup.boolean()
+})
 
 const useRegister = () => {
 	const router = useRouter()
+
 	const setInfo = useStoreActions(s => s.setStoreInfo)
 
-	const { values, setValue, errors, setError, initError } = useFormCore<RegisterStoreInput>({
-		name: "",
-		email: "",
-		password: "",
-		password_confirmation: "",
-		remember: false
+	const [generalError, setGeneralError] = useState("")
+
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+		watch
+	} = useForm<RegisterStoreInput>({
+		resolver: yupResolver(validationSchema)
 	})
 
-	const validate = () => {
-		let isSubmittable = true
+	useEffect(() => {
+		const sub = watch(() => setGeneralError(""))
+		return () => sub.unsubscribe()
+	}, [watch])
 
-		// Check required fields
-		const valuesKeys = Object.keys(values) as Array<keyof RegisterStoreInput>
-		valuesKeys.forEach(key => {
-			if (values[key] === "") {
-				setError(key, `Required`)
-				isSubmittable = false
+	const { mutate: mutateRegisterStore, isLoading: isRegistering } = useMutation<Store, Error, RegisterStoreInput>(
+		input => client.store.registerStore(input).then(res => res.data),
+		{
+			onSuccess: data => {
+				setInfo(data)
+				router.push("/admin")
+			},
+			onError: error => {
+				setGeneralError(error.message)
 			}
-		})
-
-		// Check if email is valid
-		if (values.email && !isEmail(values.email)) {
-			setError("email", "Email is invalid")
 		}
+	)
 
-		// Check if password is confirmed correctly
-		if (values.password && values.password_confirmation && values.password !== values.password_confirmation) {
-			setError("password_confirmation", "Password is not match")
-			isSubmittable = false
-		}
-
-		return isSubmittable
-	}
-
-	const { mutate, isLoading } = useMutation(() => registerStore(values), {
-		onSuccess: data => {
-			setInfo(data)
-			router.push("/admin")
-		},
-		onError: (err: any) => {
-			console.log(err)
-			// initError({
-			// 	...errors,
-			// 	...Object.fromEntries(Object.keys(err.errors).map(errorKey => [errorKey, err.errors[errorKey][0]])),
-			// })
-		}
-	})
-
-	const mutateRegister = () => {
-		if (validate()) {
-			mutate()
-		}
-	}
+	const handleRegister = handleSubmit(input => mutateRegisterStore(input))
 
 	return {
-		isLoading,
-		values,
-		setValue,
+		handleRegister,
 		errors,
-		mutateRegister
+		generalError,
+		register,
+		isRegistering
 	}
 }
 export default useRegister

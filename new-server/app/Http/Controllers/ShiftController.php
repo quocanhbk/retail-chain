@@ -147,7 +147,7 @@ class ShiftController extends Controller
      *   )
      * )
      */
-    public function updateShift(Request $request, $shift_id)
+    public function update(Request $request, $shift_id)
     {
         $branch_id = Auth::user()->employment->branch_id;
 

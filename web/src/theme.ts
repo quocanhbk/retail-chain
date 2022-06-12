@@ -6,13 +6,13 @@ const theme = extendTheme({
 		useSystemColorMode: false
 	},
 	fonts: {
-		heading: "Roboto",
-		body: "Roboto"
+		heading: "Open Sans",
+		body: "Open Sans"
 	},
 	semanticTokens: {
 		colors: {
 			"text.primary": {
-				default: "blackAlpha.900",
+				default: "blackAlpha.800",
 				_dark: "whiteAlpha.900"
 			},
 			"text.secondary": {
@@ -58,13 +58,13 @@ const theme = extendTheme({
 		}
 	},
 	styles: {
-		global: props => ({
+		global: () => ({
 			html: {
 				fontSize: ["14px", "15px", "15px", "15px", "16px"]
 			},
 			body: {
-				bg: props.colorMode === "light" ? "background.primary.light" : "background.primary.dark",
-				color: props.colorMode === "light" ? "text.primary.light" : "text.primary.dark"
+				bg: "background.primary",
+				color: "text.primary"
 			}
 		})
 	},

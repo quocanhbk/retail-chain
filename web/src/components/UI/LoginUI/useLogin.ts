@@ -1,11 +1,11 @@
-import { loginEmployee, LoginInput, loginStore } from "@api"
+import { Store, client, RegisterStoreInput, LoginStoreInput, Employee, EmployeeLoginInput } from "@api"
 import { useStoreActions } from "@store"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 import { useMutation } from "react-query"
 import * as Yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 const validationSchema = Yup.object().shape({
 	email: Yup.string().required("Email bắt buộc").email("Email không hợp lệ"),
@@ -15,6 +15,7 @@ const validationSchema = Yup.object().shape({
 
 const useLogin = (admin: boolean) => {
 	const setStoreInfo = useStoreActions(s => s.setStoreInfo)
+
 	const setEmployeeInfo = useStoreActions(s => s.setEmployeeInfo)
 
 	const [generalError, setGeneralError] = useState("")
@@ -24,31 +25,40 @@ const useLogin = (admin: boolean) => {
 		handleSubmit: handleSubmitForm,
 		formState: { errors },
 		watch
-	} = useForm<LoginInput>({ resolver: yupResolver(validationSchema) })
+	} = useForm<LoginStoreInput | EmployeeLoginInput>({ resolver: yupResolver(validationSchema) })
 
-	watch(() => setGeneralError(""))
+	useEffect(() => {
+		const sub = watch(() => setGeneralError(""))
+		return () => sub.unsubscribe()
+	}, [watch])
 
 	const router = useRouter()
 
-	const { mutate: mutateLoginEmployee, isLoading: isLoadingLoginEmployee } = useMutation(loginEmployee, {
-		onSuccess: data => {
-			setEmployeeInfo(data)
-			router.push("/")
-		},
-		onError: (err: Error) => {
-			setGeneralError(err.message)
+	const { mutate: mutateLoginEmployee, isLoading: isLoadingLoginEmployee } = useMutation<Employee, Error, EmployeeLoginInput>(
+		input => client.employee.loginEmployee(input).then(res => res.data),
+		{
+			onSuccess: data => {
+				setEmployeeInfo(data)
+				router.push("/")
+			},
+			onError: error => {
+				setGeneralError(error.message)
+			}
 		}
-	})
+	)
 
-	const { mutate: mutateLoginStore, isLoading: isLoadingLoginStore } = useMutation(loginStore, {
-		onSuccess: data => {
-			setStoreInfo(data)
-			router.push("/admin")
-		},
-		onError: (err: Error) => {
-			setGeneralError(err.message)
+	const { mutate: mutateLoginStore, isLoading: isLoadingLoginStore } = useMutation<Store, Error, LoginStoreInput>(
+		input => client.store.loginStore(input).then(res => res.data),
+		{
+			onSuccess: data => {
+				setStoreInfo(data)
+				router.push("/admin")
+			},
+			onError: err => {
+				setGeneralError(err.message)
+			}
 		}
-	})
+	)
 
 	const isLoading = admin ? isLoadingLoginStore : isLoadingLoginEmployee
 

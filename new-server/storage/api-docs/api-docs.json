@@ -279,6 +279,328 @@
                 }
             }
         },
+        "/customer": {
+            "get": {
+                "tags": [
+                    "Customer"
+                ],
+                "summary": "Get all customers",
+                "operationId": "getCustomers",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_by",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Customer"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Customer"
+                ],
+                "summary": "Create a new customer",
+                "operationId": "createCustomer",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateCustomerInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Customer"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/customer/{customer_id}": {
+            "get": {
+                "tags": [
+                    "Customer"
+                ],
+                "summary": "Get a customer",
+                "operationId": "getCustomer",
+                "parameters": [
+                    {
+                        "name": "customer_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Customer"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Customer"
+                ],
+                "summary": "Update a customer",
+                "operationId": "updateCustomer",
+                "parameters": [
+                    {
+                        "name": "customer_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpsertCustomerInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "description": "Success message",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/customer/code/{code}": {
+            "get": {
+                "tags": [
+                    "Customer"
+                ],
+                "summary": "Get a customer by code",
+                "operationId": "getCustomerByCode",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Customer"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/customer/add-point/{customer_id}": {
+            "post": {
+                "tags": [
+                    "Customer"
+                ],
+                "summary": "Create a customer",
+                "operationId": "addCustomerPoint",
+                "parameters": [
+                    {
+                        "name": "customer_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "point"
+                                ],
+                                "properties": {
+                                    "point": {
+                                        "description": "Point",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "description": "Success message",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/customer/use-point/{customer_id}": {
+            "post": {
+                "tags": [
+                    "Customer"
+                ],
+                "summary": "Use point",
+                "operationId": "useCustomerPoint",
+                "parameters": [
+                    {
+                        "name": "customer_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "point"
+                                ],
+                                "properties": {
+                                    "point": {
+                                        "description": "Point to use",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "description": "Success message",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/employee": {
             "get": {
                 "tags": [
@@ -788,6 +1110,233 @@
                 }
             }
         },
+        "/item-category": {
+            "get": {
+                "tags": [
+                    "ItemCategory"
+                ],
+                "summary": "Get all item categories",
+                "operationId": "getAllItemCategories",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_by",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ItemCategory"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "ItemCategory"
+                ],
+                "summary": "Create a new item category",
+                "operationId": "createItemCategory",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateItemCategoryInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ItemCategory"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/item-category/many": {
+            "post": {
+                "tags": [
+                    "ItemCategory"
+                ],
+                "summary": "Create many item categories",
+                "operationId": "createManyItemCategories",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "item_categories": {
+                                        "type": "array",
+                                        "items": {
+                                            "$ref": "#/components/schemas/CreateItemCategoryInput"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/item-category/{item_category_id}": {
+            "put": {
+                "tags": [
+                    "ItemCategory"
+                ],
+                "summary": "Update an item category",
+                "operationId": "updateItemCategory",
+                "parameters": [
+                    {
+                        "name": "item_category_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpsertItemCategoryInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "ItemCategory"
+                ],
+                "summary": "Delete an item category",
+                "operationId": "deleteItemCategory",
+                "parameters": [
+                    {
+                        "name": "item_category_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/shift": {
             "get": {
                 "tags": [
@@ -966,15 +1515,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Store"
                                 }
                             }
                         }
@@ -1092,7 +1633,7 @@
                 }
             }
         },
-        "/api/supplier": {
+        "/supplier": {
             "get": {
                 "tags": [
                     "Supplier"
@@ -1186,7 +1727,7 @@
                 }
             }
         },
-        "/api/supplier/{supplier_id}": {
+        "/supplier/{supplier_id}": {
             "get": {
                 "tags": [
                     "Supplier"
@@ -1577,6 +2118,65 @@
                 },
                 "type": "object"
             },
+            "Customer": {
+                "required": [
+                    "id",
+                    "name",
+                    "name",
+                    "phone",
+                    "email"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "email": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpsertTime"
+                    }
+                ]
+            },
+            "CreateCustomerInput": {
+                "required": [
+                    "name"
+                ],
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpsertCustomerInput"
+                    }
+                ]
+            },
+            "UpsertCustomerInput": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "Employee": {
                 "required": [
                     "id",
@@ -1885,6 +2485,56 @@
                 "oneOf": [
                     {
                         "$ref": "#/components/schemas/Employment"
+                    }
+                ]
+            },
+            "ItemCategory": {
+                "required": [
+                    "id",
+                    "name",
+                    "description"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "store_id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpsertTime"
+                    }
+                ]
+            },
+            "UpsertItemCategoryInput": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateItemCategoryInput": {
+                "required": [
+                    "name"
+                ],
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpsertItemCategoryInput"
                     }
                 ]
             },

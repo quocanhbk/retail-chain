@@ -101,7 +101,7 @@ class WorkScheduleTest extends TestCase
     {
         $response = $this->put("/api/work-schedule/1", [
             "shift_id" => 1,
-            "note" => "Something happens"
+            "note" => "Something happens",
         ]);
 
         $response->assertStatus(401);
@@ -113,7 +113,7 @@ class WorkScheduleTest extends TestCase
 
         $response = $this->actingAs($employee)->put("/api/work-schedule/99", [
             "shift_id" => 1,
-            "note" => "Something happens"
+            "note" => "Something happens",
         ]);
 
         $response->assertStatus(400);
@@ -126,14 +126,14 @@ class WorkScheduleTest extends TestCase
         $workSchedule = WorkSchedule::first();
 
         $response = $this->actingAs($employee)->put("/api/work-schedule/{$workSchedule->id}", [
-            "note" => "Something happens"
+            "note" => "Something happens",
         ]);
 
         $response->assertStatus(200);
 
         $this->assertDatabaseHas("work_schedules", [
             "id" => $workSchedule->id,
-            "note" => "Something happens"
+            "note" => "Something happens",
         ]);
 
         $response->assertJsonStructure(["id", "shift_id", "employee_id", "date", "note"]);

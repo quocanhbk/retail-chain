@@ -13,7 +13,7 @@ class Customer extends Model
 
     protected $fillable = ["store_id", "name", "phone", "email", "point", "code"];
 
-    protected $hidden = ["created_at", "updated_at", "deleted_at"];
+    protected $hidden = ["deleted_at"];
 
     public function store()
     {

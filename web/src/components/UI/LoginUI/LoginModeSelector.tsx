@@ -16,7 +16,7 @@ interface LoginModeSelectorProps {
 
 const LoginModeSelector = ({ currentMode, setCurrentMode }: LoginModeSelectorProps) => {
 	return (
-		<Flex overflow="hidden" mb={8} pos="relative">
+		<Flex mb={8} boxShadow={"md"} rounded="full" bg="background.primary">
 			{loginMode.map(mode => (
 				<Flex
 					key={mode.id}
@@ -28,10 +28,10 @@ const LoginModeSelector = ({ currentMode, setCurrentMode }: LoginModeSelectorPro
 					onClick={() => setCurrentMode(mode.id)}
 					align="center"
 					justify="center"
-					border="1px"
-					borderColor={currentMode === mode.id ? "border.primary" : "transparent"}
+					boxShadow={currentMode === mode.id ? "lg" : "none"}
 					rounded="full"
 					color={currentMode === mode.id ? "fill.primary" : "text.secondary"}
+					backgroundColor={currentMode === mode.id ? "background.secondary" : "transparent"}
 				>
 					<Box mr={2}>{mode.icon}</Box>
 					<Text>{mode.text}</Text>

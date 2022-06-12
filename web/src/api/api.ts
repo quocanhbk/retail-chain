@@ -48,6 +48,22 @@ export interface NewEmployeeInput {
   gender?: string;
 }
 
+export type Customer = UpsertTime & {
+  id: number;
+  code?: string;
+  name: string;
+  phone: string | null;
+  email: string | null;
+};
+
+export type CreateCustomerInput = UpsertCustomerInput;
+
+export interface UpsertCustomerInput {
+  name?: string;
+  phone?: string;
+  email?: string;
+}
+
 export type Employee = UpsertTime & {
   id: number;
   name: string;
@@ -135,6 +151,15 @@ export interface EmploymentRole {
 }
 
 export type EmploymentDetail = Employment & { employee: Employee };
+
+export type ItemCategory = UpsertTime & { id: number; store_id?: number; name: string; description: string | null };
+
+export interface UpsertItemCategoryInput {
+  name?: string;
+  description?: string;
+}
+
+export type CreateItemCategoryInput = UpsertItemCategoryInput;
 
 export interface UpsertTime {
   created_at: string;
@@ -458,6 +483,131 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
   };
+  customer = {
+    /**
+     * No description
+     *
+     * @tags Customer
+     * @name GetCustomers
+     * @summary Get all customers
+     * @request GET:/customer
+     */
+    getCustomers: (
+      query?: { search?: string; order_by?: string; order_type?: "asc" | "desc"; from?: number; to?: number },
+      params: RequestParams = {},
+    ) =>
+      this.request<Customer[], any>({
+        path: `/customer`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Customer
+     * @name CreateCustomer
+     * @summary Create a new customer
+     * @request POST:/customer
+     */
+    createCustomer: (data: CreateCustomerInput, params: RequestParams = {}) =>
+      this.request<Customer, any>({
+        path: `/customer`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Customer
+     * @name GetCustomer
+     * @summary Get a customer
+     * @request GET:/customer/{customer_id}
+     */
+    getCustomer: (customerId: number, params: RequestParams = {}) =>
+      this.request<Customer, any>({
+        path: `/customer/${customerId}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Customer
+     * @name UpdateCustomer
+     * @summary Update a customer
+     * @request PUT:/customer/{customer_id}
+     */
+    updateCustomer: (customerId: number, data: UpsertCustomerInput, params: RequestParams = {}) =>
+      this.request<{ message: string }, any>({
+        path: `/customer/${customerId}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Customer
+     * @name GetCustomerByCode
+     * @summary Get a customer by code
+     * @request GET:/customer/code/{code}
+     */
+    getCustomerByCode: (code: string, params: RequestParams = {}) =>
+      this.request<Customer, any>({
+        path: `/customer/code/${code}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Customer
+     * @name AddCustomerPoint
+     * @summary Create a customer
+     * @request POST:/customer/add-point/{customer_id}
+     */
+    addCustomerPoint: (customerId: number, data: { point: number }, params: RequestParams = {}) =>
+      this.request<{ message: string }, any>({
+        path: `/customer/add-point/${customerId}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Customer
+     * @name UseCustomerPoint
+     * @summary Use point
+     * @request POST:/customer/use-point/{customer_id}
+     */
+    useCustomerPoint: (customerId: number, data: { point: number }, params: RequestParams = {}) =>
+      this.request<{ message: string }, any>({
+        path: `/customer/use-point/${customerId}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
   employee = {
     /**
      * No description
@@ -701,6 +851,97 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
   };
+  itemCategory = {
+    /**
+     * No description
+     *
+     * @tags ItemCategory
+     * @name GetAllItemCategories
+     * @summary Get all item categories
+     * @request GET:/item-category
+     */
+    getAllItemCategories: (
+      query?: { search?: string; order_by?: string; order_type?: "asc" | "desc"; from?: number; to?: number },
+      params: RequestParams = {},
+    ) =>
+      this.request<ItemCategory[], any>({
+        path: `/item-category`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ItemCategory
+     * @name CreateItemCategory
+     * @summary Create a new item category
+     * @request POST:/item-category
+     */
+    createItemCategory: (data: CreateItemCategoryInput, params: RequestParams = {}) =>
+      this.request<ItemCategory, any>({
+        path: `/item-category`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ItemCategory
+     * @name CreateManyItemCategories
+     * @summary Create many item categories
+     * @request POST:/item-category/many
+     */
+    createManyItemCategories: (data: { item_categories?: CreateItemCategoryInput[] }, params: RequestParams = {}) =>
+      this.request<{ message: string }, any>({
+        path: `/item-category/many`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ItemCategory
+     * @name UpdateItemCategory
+     * @summary Update an item category
+     * @request PUT:/item-category/{item_category_id}
+     */
+    updateItemCategory: (itemCategoryId: number, data: UpsertItemCategoryInput, params: RequestParams = {}) =>
+      this.request<{ message: string }, any>({
+        path: `/item-category/${itemCategoryId}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ItemCategory
+     * @name DeleteItemCategory
+     * @summary Delete an item category
+     * @request DELETE:/item-category/{item_category_id}
+     */
+    deleteItemCategory: (itemCategoryId: number, params: RequestParams = {}) =>
+      this.request<{ message: string }, any>({
+        path: `/item-category/${itemCategoryId}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+  };
   shift = {
     /**
      * No description
@@ -796,7 +1037,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/store/register
      */
     registerStore: (data: RegisterStoreInput, params: RequestParams = {}) =>
-      this.request<{ message: string }, any>({
+      this.request<Store, any>({
         path: `/store/register`,
         method: "POST",
         body: data,
@@ -872,21 +1113,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
   };
-  api = {
+  supplier = {
     /**
      * No description
      *
      * @tags Supplier
      * @name GetSuppliers
      * @summary Get all suppliers
-     * @request GET:/api/supplier
+     * @request GET:/supplier
      */
     getSuppliers: (
       query?: { search?: string; order_by?: string; order_type?: "asc" | "desc"; from?: number; to?: number },
       params: RequestParams = {},
     ) =>
       this.request<Supplier[], any>({
-        path: `/api/supplier`,
+        path: `/supplier`,
         method: "GET",
         query: query,
         format: "json",
@@ -899,11 +1140,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Supplier
      * @name CreateSupplier
      * @summary Create a new supplier
-     * @request POST:/api/supplier
+     * @request POST:/supplier
      */
     createSupplier: (data: CreateSupplierInput, params: RequestParams = {}) =>
       this.request<Supplier, any>({
-        path: `/api/supplier`,
+        path: `/supplier`,
         method: "POST",
         body: data,
         type: ContentType.Json,
@@ -917,11 +1158,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Supplier
      * @name GetSupplier
      * @summary Get a supplier
-     * @request GET:/api/supplier/{supplier_id}
+     * @request GET:/supplier/{supplier_id}
      */
     getSupplier: (supplierId: number, params: RequestParams = {}) =>
       this.request<Supplier, any>({
-        path: `/api/supplier/${supplierId}`,
+        path: `/supplier/${supplierId}`,
         method: "GET",
         format: "json",
         ...params,
@@ -933,11 +1174,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Supplier
      * @name UpdateSupplier
      * @summary Update a supplier
-     * @request PUT:/api/supplier/{supplier_id}
+     * @request PUT:/supplier/{supplier_id}
      */
     updateSupplier: (supplierId: number, data: UpdateSupplierInput, params: RequestParams = {}) =>
       this.request<Supplier, any>({
-        path: `/api/supplier/${supplierId}`,
+        path: `/supplier/${supplierId}`,
         method: "PUT",
         body: data,
         type: ContentType.Json,
@@ -951,11 +1192,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Supplier
      * @name DeleteSupplier
      * @summary Delete a supplier
-     * @request DELETE:/api/supplier/{supplier_id}
+     * @request DELETE:/supplier/{supplier_id}
      */
     deleteSupplier: (supplierId: number, params: RequestParams = {}) =>
       this.request<Supplier, any>({
-        path: `/api/supplier/${supplierId}`,
+        path: `/supplier/${supplierId}`,
         method: "DELETE",
         format: "json",
         ...params,

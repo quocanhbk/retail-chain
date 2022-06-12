@@ -1,13 +1,11 @@
-import { getGuard } from "@api"
-import { Flex, Box, Button, Text, chakra, Heading } from "@chakra-ui/react"
+import { Box, Button, Text, chakra, Heading } from "@chakra-ui/react"
 import { TextControl } from "@components/shared"
 import { useRouter } from "next/router"
 import { useState } from "react"
-import { BsFillPersonFill } from "react-icons/bs"
-import { FaStore } from "react-icons/fa"
 import { useQuery } from "react-query"
 import LoginModeSelector, { LoginMode } from "./LoginModeSelector"
 import useLogin from "./useLogin"
+import { client } from "@api"
 
 export const LoginUI = () => {
 	const router = useRouter()
@@ -16,7 +14,7 @@ export const LoginUI = () => {
 
 	const { isLoading, errors, handleSubmit, register, generalError } = useLogin(currentMode === "owner")
 
-	useQuery("get-guard", () => getGuard(), {
+	useQuery("get-guard", () => client.guard.getGuard().then(res => res.data), {
 		onSuccess: role => {
 			if (role === "store") router.push("/admin")
 			else if (role === "employee") router.push("/main")
@@ -27,14 +25,16 @@ export const LoginUI = () => {
 		<Box>
 			<LoginModeSelector currentMode={currentMode} setCurrentMode={setCurrentMode} />
 			<chakra.form onSubmit={handleSubmit}>
-				<Heading fontWeight="semibold" color={"fill.primary"} fontSize="xl" mb={4}>
+				<Heading fontWeight="700" color={"fill.primary"} fontSize="xl" mb={4} borderBottom="1px" borderColor={"border.primary"} pb={2}>
 					ĐĂNG NHẬP
 				</Heading>
 				<TextControl label="Email" {...register("email")} error={errors?.email?.message} />
 				<TextControl label="Mật khẩu" {...register("password")} error={errors?.password?.message} type="password" />
-				<Text fontSize="sm" w="full" textAlign="center" color={"fill.danger"} mb={4}>
-					{generalError}
-				</Text>
+				{generalError && (
+					<Text fontSize="sm" w="full" textAlign="center" color={"fill.danger"} mb={4} bg="red.50" py={1} rounded="md">
+						{generalError}
+					</Text>
+				)}
 				<Button w="full" type="submit" isLoading={isLoading} mb={4} colorScheme="blue">
 					{"Đăng Nhập"}
 				</Button>

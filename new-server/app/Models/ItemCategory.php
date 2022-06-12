@@ -11,7 +11,7 @@ class ItemCategory extends Model
 
     protected $fillable = ["store_id", "name", "description"];
 
-    protected $hidden = ["created_at", "updated_at", "deleted_at"];
+    protected $hidden = ["deleted_at"];
 
     public function store()
     {

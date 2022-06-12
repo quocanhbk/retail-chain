@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Models\Supplier;
@@ -12,7 +11,7 @@ class SupplierController extends Controller
 {
     /**
      * @OA\Post(
-     *   path="/api/supplier",
+     *   path="/supplier",
      *   summary="Create a new supplier",
      *   tags={"Supplier"},
      *   operationId="createSupplier",
@@ -87,7 +86,7 @@ class SupplierController extends Controller
 
     /**
      * @OA\Get(
-     *   path="/api/supplier",
+     *   path="/supplier",
      *   summary="Get all suppliers",
      *   tags={"Supplier"},
      *   operationId="getSuppliers",
@@ -127,7 +126,7 @@ class SupplierController extends Controller
 
     /**
      * @OA\Get(
-     *   path="/api/supplier/{supplier_id}",
+     *   path="/supplier/{supplier_id}",
      *   summary="Get a supplier",
      *   tags={"Supplier"},
      *   operationId="getSupplier",
@@ -165,7 +164,7 @@ class SupplierController extends Controller
 
     /**
      * @OA\Put(
-     *   path="/api/supplier/{supplier_id}",
+     *   path="/supplier/{supplier_id}",
      *   summary="Update a supplier",
      *   tags={"Supplier"},
      *   operationId="updateSupplier",
@@ -250,7 +249,7 @@ class SupplierController extends Controller
 
     /**
      * @OA\Delete(
-     *   path="/api/supplier/{supplier_id}",
+     *   path="/supplier/{supplier_id}",
      *   summary="Delete a supplier",
      *   tags={"Supplier"},
      *   operationId="deleteSupplier",

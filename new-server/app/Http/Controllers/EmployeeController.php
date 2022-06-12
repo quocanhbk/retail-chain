@@ -602,7 +602,6 @@ class EmployeeController extends Controller
      */
     public function me(Request $request)
     {
-        error_log(json_encode($request->user()));
         $id = Auth::guard("employees")->user()->id;
         $employee = Employee::with("employment.roles")
             ->where("id", $id)

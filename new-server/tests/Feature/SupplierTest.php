@@ -229,8 +229,6 @@ class SupplierTest extends TestCase
     {
         $store = Store::first();
 
-        $supplier = $store->suppliers->first();
-
         $response = $this->actingAs($store, "stores")->put("/api/supplier/99", [
             "name" => "My supplier updated",
         ]);

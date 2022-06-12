@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Middleware\Role\AdminOrPurchaser;
+use App\Http\Middleware\Role\AdminOrSale;
 use App\Http\Middleware\Role\AdminOrSaleOrPurchaser;
 use App\Http\Middleware\Role\Authenticated;
 use App\Http\Middleware\Role\HaveManageRole;
@@ -155,11 +156,11 @@ Route::prefix("/item-category")
         // POST /item-category - create a new item category
         Route::post("/", [ItemCategoryController::class, "create"]);
         // POST /item-category/bulk - create multiple item categories
-        Route::post("/bulk", [ItemCategoryController::class, "createBulk"]);
+        Route::post("/many", [ItemCategoryController::class, "createMany"]);
         // GET /item-category - get all item categories
         Route::get("/", [ItemCategoryController::class, "getItemCategories"]);
-        // PATCH /item-category/{item_category_id} - update an item category by id
-        Route::patch("/{item_category_id}", [ItemCategoryController::class, "update"]);
+        // PUT /item-category/{item_category_id} - update an item category by id
+        Route::put("/{item_category_id}", [ItemCategoryController::class, "update"]);
         // DELETE /item-category/{item_category_id} - delete an item category by id
         Route::delete("/{item_category_id}", [ItemCategoryController::class, "delete"]);
     });
@@ -236,7 +237,7 @@ Route::prefix("/return-purchase-sheet")
     });
 
 Route::prefix("/customer")
-    ->middleware([OnlyEmployee::class, HaveSaleRole::class])
+    ->middleware([AdminOrSale::class])
     ->group(function () {
         // POST /customer - create a new customer
         Route::post("/", [CustomerController::class, "create"]);
@@ -247,7 +248,7 @@ Route::prefix("/customer")
         // GET /customer/code/{code} - get a customer by code
         Route::get("/code/{code}", [CustomerController::class, "getCustomerByCode"]);
         // PATCH /customer/{customer_id} - update a customer by id
-        Route::patch("/{customer_id}", [CustomerController::class, "update"]);
+        Route::put("/{customer_id}", [CustomerController::class, "update"]);
         // POST /customer/add-point/{customer_id} - add point to a customer by id
         Route::post("/add-point/{customer_id}", [CustomerController::class, "addPoint"]);
         // POST /customer/use-point/{customer_id} - use point from a customer by id

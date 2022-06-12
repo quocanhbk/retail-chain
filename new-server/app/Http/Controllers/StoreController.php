@@ -25,10 +25,7 @@ class StoreController extends Controller
      *   @OA\Response(
      *     response=200,
      *     description="Successful operation",
-     *     @OA\JsonContent(
-     *       required={"message"},
-     *       @OA\Property(property="message", type="string"),
-     *     )
+     *     @OA\JsonContent(ref="#/components/schemas/Store")
      *   ),
      * )
      */
@@ -85,9 +82,7 @@ class StoreController extends Controller
                 ["name" => "THUỐC VÀ THỰC PHẨM CHỨC NĂNG"],
             ]);
 
-        return response()->json([
-            "message" => "Please check email to verify your account.",
-        ]);
+        return response()->json($store);
     }
 
     /**
@@ -188,7 +183,6 @@ class StoreController extends Controller
      */
     public function getStore(Request $request)
     {
-        error_log(json_encode($request->user("stores")));
         return response()->json(Auth::guard("stores")->user());
     }
 

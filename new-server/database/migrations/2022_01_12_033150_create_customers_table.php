@@ -18,7 +18,7 @@ class CreateCustomersTable extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->string("name");
-            $table->string("phone");
+            $table->string("phone")->nullable();
             $table->string("code");
             $table->string("email")->nullable();
             $table->integer("point")->default(0);

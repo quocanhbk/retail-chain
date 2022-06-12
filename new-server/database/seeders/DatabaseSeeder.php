@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Branch;
+use App\Models\Customer;
 use App\Models\Employee;
 use App\Models\Employment;
 use App\Models\EmploymentRole;
@@ -43,20 +44,26 @@ class DatabaseSeeder extends Seeder
             "password" => Hash::make("hexagon"),
         ]);
 
+        $other_store = Store::factory()->create([
+            "name" => "Other Store",
+            "email" => "other@gmail.com",
+            "password" => Hash::make("other"),
+        ]);
+
         $branch = Branch::factory()
             ->for($store)
             ->create([
                 "image" => "test/branch.jpeg",
             ]);
 
-        $abandoned_branch = Branch::factory()
+        Branch::factory()
             ->for($store)
             ->create([
                 "image" => "test/branch.jpeg",
                 "name" => "Abandoned Branch",
             ]);
 
-        $categories = ItemCategory::factory()
+        ItemCategory::factory()
             ->count(5)
             ->for($store)
             ->has(
@@ -65,6 +72,12 @@ class DatabaseSeeder extends Seeder
                     ->count(5)
             )
             ->create();
+
+        ItemCategory::factory()->for($store)->create();
+
+        ItemCategory::factory()
+            ->count(5)
+            ->for($other_store)->create();
 
         $employee = Employee::factory()
             ->for($store)
@@ -91,6 +104,16 @@ class DatabaseSeeder extends Seeder
         Supplier::factory()
             ->count(5)
             ->for($store)
+            ->create();
+
+        Customer::factory()
+            ->count(5)
+            ->for($store)
+            ->create();
+
+        Customer::factory()
+            ->count(5)
+            ->for($other_store)
             ->create();
 
         // $store

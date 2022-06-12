@@ -1,11 +1,10 @@
-import { LoginEmployeeOutput, RegisterStoreOutput } from "./api/auth"
 import { createStore, action, Action, createTypedHooks } from "easy-peasy"
-
+import { Store, Employee } from "@api"
 interface StoreModel {
-	storeInfo: RegisterStoreOutput | null
-	setStoreInfo: Action<StoreModel, RegisterStoreOutput | null>
-	employeeInfo: LoginEmployeeOutput | null
-	setEmployeeInfo: Action<StoreModel, LoginEmployeeOutput | null>
+	storeInfo: Store | null
+	setStoreInfo: Action<StoreModel, Store | null>
+	employeeInfo: Employee | null
+	setEmployeeInfo: Action<StoreModel, Employee | null>
 }
 
 const store = createStore<StoreModel>({
