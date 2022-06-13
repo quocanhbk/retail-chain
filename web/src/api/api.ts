@@ -64,6 +64,30 @@ export interface UpsertCustomerInput {
   email?: string;
 }
 
+export interface DefaultItem {
+  id: number;
+  product_name: string;
+  bar_code: string;
+  qr_code: string | null;
+  image_url: string | null;
+  brand?: string | null;
+  made_in: string | null;
+  unit: string | null;
+  mfg_date: string | null;
+  exp_date: string | null;
+  description: string | null;
+  source_url: string;
+  date: string;
+  is_duplicate: number;
+}
+
+export type DefaultItemWithCategory = DefaultItem & { category?: DefaultCategory };
+
+export interface DefaultCategory {
+  id: number;
+  name: string;
+}
+
 export type Employee = UpsertTime & {
   id: number;
   name: string;
@@ -232,7 +256,7 @@ export interface UpdateWorkScheduleInput {
   is_absent?: boolean;
 }
 
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, ResponseType } from "axios";
+import axios, { AxiosInstance, AxiosRequestConfig, ResponseType } from "axios";
 
 export type QueryParamsType = Record<string | number, any>;
 
@@ -321,7 +345,7 @@ export class HttpClient<SecurityDataType = unknown> {
     format,
     body,
     ...params
-  }: FullRequestParams): Promise<AxiosResponse<T>> => {
+  }: FullRequestParams): Promise<T> => {
     const secureParams =
       ((typeof secure === "boolean" ? secure : this.secure) &&
         this.securityWorker &&
@@ -338,17 +362,19 @@ export class HttpClient<SecurityDataType = unknown> {
       body = this.createFormData(body as Record<string, unknown>);
     }
 
-    return this.instance.request({
-      ...requestParams,
-      headers: {
-        ...(type && type !== ContentType.FormData ? { "Content-Type": type } : {}),
-        ...(requestParams.headers || {}),
-      },
-      params: query,
-      responseType: responseFormat,
-      data: body,
-      url: path,
-    });
+    return this.instance
+      .request({
+        ...requestParams,
+        headers: {
+          ...(type && type !== ContentType.FormData ? { "Content-Type": type } : {}),
+          ...(requestParams.headers || {}),
+        },
+        params: query,
+        responseType: responseFormat,
+        data: body,
+        url: path,
+      })
+      .then((response) => response.data);
   };
 }
 
@@ -604,6 +630,59 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: "POST",
         body: data,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  defaultItem = {
+    /**
+     * No description
+     *
+     * @tags DefaultItem
+     * @name GetDefaultItems
+     * @summary Get all default items
+     * @request GET:/default-item
+     */
+    getDefaultItems: (
+      query?: { search?: string; order_by?: string; order_type?: "asc" | "desc"; from?: number; to?: number },
+      params: RequestParams = {},
+    ) =>
+      this.request<DefaultItemWithCategory[], any>({
+        path: `/default-item`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags DefaultItem
+     * @name GetDefaultItemByBarcode
+     * @summary Get default item by barcode
+     * @request GET:/default-item/barcode/{barcode}
+     */
+    getDefaultItemByBarcode: (barcode?: string, params: RequestParams = {}) =>
+      this.request<DefaultItemWithCategory, any>({
+        path: `/default-item/barcode/${barcode}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags DefaultItem
+     * @name GetDefaultItemsByCategory
+     * @summary Get default items by category
+     * @request GET:/default-item/category/{category_id}
+     */
+    getDefaultItemsByCategory: (categoryId?: number, params: RequestParams = {}) =>
+      this.request<DefaultItemWithCategory[], any>({
+        path: `/default-item/category/${categoryId}`,
+        method: "GET",
         format: "json",
         ...params,
       }),

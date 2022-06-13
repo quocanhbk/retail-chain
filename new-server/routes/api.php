@@ -261,5 +261,5 @@ Route::prefix("/default-item")->group(function () {
     // GET /default-item/barcode/{barcode} - get a default item by barcode
     Route::get("/barcode/{barcode}", [DefaultItemController::class, "getItemByBarcode"]);
     // GET /default-item/category/{category_id} - get default items by category id
-    Route::get("/category/{category_id}", [DefaultItemController::class, "getItemsByCategoryId"]);
+    Route::get("/category/{category_id}", [DefaultItemController::class, "getItemsByCategory"]);
 });

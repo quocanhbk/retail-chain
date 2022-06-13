@@ -601,6 +601,134 @@
                 }
             }
         },
+        "/default-item": {
+            "get": {
+                "tags": [
+                    "DefaultItem"
+                ],
+                "summary": "Get all default items",
+                "operationId": "getDefaultItems",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_by",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list with default items",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/DefaultItemWithCategory"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/default-item/barcode/{barcode}": {
+            "get": {
+                "tags": [
+                    "DefaultItem"
+                ],
+                "summary": "Get default item by barcode",
+                "operationId": "getDefaultItemByBarcode",
+                "parameters": [
+                    {
+                        "name": "barcode",
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A default item",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DefaultItemWithCategory"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/default-item/category/{category_id}": {
+            "get": {
+                "tags": [
+                    "DefaultItem"
+                ],
+                "summary": "Get default items by category",
+                "operationId": "getDefaultItemsByCategory",
+                "parameters": [
+                    {
+                        "name": "category_id",
+                        "in": "path",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list with default items",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/DefaultItemWithCategory"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/employee": {
             "get": {
                 "tags": [
@@ -2172,6 +2300,106 @@
                         "type": "string"
                     },
                     "email": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "DefaultItem": {
+                "required": [
+                    "id",
+                    "category_id",
+                    "product_name",
+                    "bar_code",
+                    "qr_code",
+                    "image_url",
+                    "branch",
+                    "made_in",
+                    "unit",
+                    "mfg_date",
+                    "exp_date",
+                    "description",
+                    "source_url",
+                    "date",
+                    "is_duplicate"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "product_name": {
+                        "type": "string"
+                    },
+                    "bar_code": {
+                        "type": "string"
+                    },
+                    "qr_code": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "image_url": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "brand": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "made_in": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "unit": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "mfg_date": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "exp_date": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "source_url": {
+                        "type": "string"
+                    },
+                    "date": {
+                        "type": "string"
+                    },
+                    "is_duplicate": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "DefaultItemWithCategory": {
+                "properties": {
+                    "category": {
+                        "$ref": "#/components/schemas/DefaultCategory"
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/DefaultItem"
+                    }
+                ]
+            },
+            "DefaultCategory": {
+                "required": [
+                    "id",
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
                         "type": "string"
                     }
                 },

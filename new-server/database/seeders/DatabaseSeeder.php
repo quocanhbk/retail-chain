@@ -73,11 +73,14 @@ class DatabaseSeeder extends Seeder
             )
             ->create();
 
-        ItemCategory::factory()->for($store)->create();
+        ItemCategory::factory()
+            ->for($store)
+            ->create();
 
         ItemCategory::factory()
             ->count(5)
-            ->for($other_store)->create();
+            ->for($other_store)
+            ->create();
 
         $employee = Employee::factory()
             ->for($store)

@@ -297,9 +297,7 @@ class ItemCategoryTest extends TestCase
             "description" => "Test Description Updated",
         ]);
 
-        $response->assertJsonStructure([
-            "message"
-        ]);
+        $response->assertJsonStructure(["message"]);
     }
 
     public function test_update_item_category_by_employee_successfully()
@@ -321,9 +319,7 @@ class ItemCategoryTest extends TestCase
             "description" => "Test Description Updated",
         ]);
 
-        $response->assertJsonStructure([
-            "message"
-        ]);
+        $response->assertJsonStructure(["message"]);
     }
 
     public function test_update_item_category_unauthorized()
@@ -337,9 +333,7 @@ class ItemCategoryTest extends TestCase
 
         $response->assertStatus(401);
 
-        $response->assertJsonStructure([
-            "message"
-        ]);
+        $response->assertJsonStructure(["message"]);
     }
 
     public function test_update_item_category_not_found()
@@ -353,9 +347,7 @@ class ItemCategoryTest extends TestCase
 
         $response->assertStatus(404);
 
-        $response->assertJsonStructure([
-            "message"
-        ]);
+        $response->assertJsonStructure(["message"]);
     }
 
     public function test_update_item_category_of_other_store()
@@ -371,39 +363,39 @@ class ItemCategoryTest extends TestCase
 
         $response->assertStatus(404);
 
-        $response->assertJsonStructure([
-            "message"
-        ]);
+        $response->assertJsonStructure(["message"]);
     }
 
     public function test_delete_item_category_with_existing_items()
     {
         $store = Store::first();
 
-        $item_category = ItemCategory::withCount("items")->get()->where("items_count", ">", 0)->first();
+        $item_category = ItemCategory::withCount("items")
+            ->get()
+            ->where("items_count", ">", 0)
+            ->first();
 
         $response = $this->actingAs($store, "stores")->delete("/api/item-category/{$item_category->id}");
 
         $response->assertStatus(400);
 
-        $response->assertJsonStructure([
-            "message"
-        ]);
+        $response->assertJsonStructure(["message"]);
     }
 
     public function test_delete_item_category_with_no_existing_items()
     {
         $store = Store::first();
 
-        $item_category = ItemCategory::withCount("items")->get()->where("items_count", "=", 0)->first();
+        $item_category = ItemCategory::withCount("items")
+            ->get()
+            ->where("items_count", "=", 0)
+            ->first();
 
         $response = $this->actingAs($store, "stores")->delete("/api/item-category/{$item_category->id}");
 
         $response->assertStatus(200);
 
-        $response->assertJsonStructure([
-            "message"
-        ]);
+        $response->assertJsonStructure(["message"]);
 
         $this->assertDatabaseMissing("item_categories", [
             "id" => $item_category->id,
@@ -418,9 +410,7 @@ class ItemCategoryTest extends TestCase
 
         $response->assertStatus(404);
 
-        $response->assertJsonStructure([
-            "message"
-        ]);
+        $response->assertJsonStructure(["message"]);
     }
 
     public function test_delete_item_category_unauthorized()
@@ -431,8 +421,6 @@ class ItemCategoryTest extends TestCase
 
         $response->assertStatus(401);
 
-        $response->assertJsonStructure([
-            "message"
-        ]);
+        $response->assertJsonStructure(["message"]);
     }
 }

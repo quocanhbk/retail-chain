@@ -58,7 +58,10 @@
         ],
         "generate-swagger": [
             "@php artisan l5-swagger:generate",
-            "npx swagger-typescript-api -p ./storage/api-docs/api-docs.json -o ../web/src/api -n api.ts --axios"
+            "npx swagger-typescript-api -p ./storage/api-docs/api-docs.json -o ../web/src/api -n api.ts --axios --unwrap-response-data"
+        ],
+        "seed-default-items": [
+            "psql retail_default_items < default_items.sql --port 15432"
         ]
     },
     "extra": {
