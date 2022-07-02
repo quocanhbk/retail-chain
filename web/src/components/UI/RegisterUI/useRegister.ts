@@ -8,55 +8,55 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import { useEffect, useState } from "react"
 
 const validationSchema = Yup.object().shape({
-	name: Yup.string().required("Name is required"),
-	email: Yup.string().email("Email is invalid").required("Email is required"),
-	password: Yup.string().required("Password is required"),
-	password_confirmation: Yup.string().required("Password confirmation is required"),
-	remember: Yup.boolean()
+  name: Yup.string().required("Name is required"),
+  email: Yup.string().email("Email is invalid").required("Email is required"),
+  password: Yup.string().required("Password is required"),
+  password_confirmation: Yup.string().required("Password confirmation is required"),
+  remember: Yup.boolean()
 })
 
 const useRegister = () => {
-	const router = useRouter()
+  const router = useRouter()
 
-	const setInfo = useStoreActions(s => s.setStoreInfo)
+  const setInfo = useStoreActions(s => s.setStoreInfo)
 
-	const [generalError, setGeneralError] = useState("")
+  const [generalError, setGeneralError] = useState("")
 
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-		watch
-	} = useForm<RegisterStoreInput>({
-		resolver: yupResolver(validationSchema)
-	})
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch
+  } = useForm<RegisterStoreInput>({
+    resolver: yupResolver(validationSchema)
+  })
 
-	useEffect(() => {
-		const sub = watch(() => setGeneralError(""))
-		return () => sub.unsubscribe()
-	}, [watch])
+  useEffect(() => {
+    const sub = watch(() => setGeneralError(""))
+    return () => sub.unsubscribe()
+  }, [watch])
 
-	const { mutate: mutateRegisterStore, isLoading: isRegistering } = useMutation<Store, Error, RegisterStoreInput>(
-		input => client.store.registerStore(input).then(res => res.data),
-		{
-			onSuccess: data => {
-				setInfo(data)
-				router.push("/admin")
-			},
-			onError: error => {
-				setGeneralError(error.message)
-			}
-		}
-	)
+  const { mutate: mutateRegisterStore, isLoading: isRegistering } = useMutation<Store, Error, RegisterStoreInput>(
+    input => client.store.registerStore(input),
+    {
+      onSuccess: data => {
+        setInfo(data)
+        router.push("/admin")
+      },
+      onError: error => {
+        setGeneralError(error.message)
+      }
+    }
+  )
 
-	const handleRegister = handleSubmit(input => mutateRegisterStore(input))
+  const handleRegister = handleSubmit(input => mutateRegisterStore(input))
 
-	return {
-		handleRegister,
-		errors,
-		generalError,
-		register,
-		isRegistering
-	}
+  return {
+    handleRegister,
+    errors,
+    generalError,
+    register,
+    isRegistering
+  }
 }
 export default useRegister

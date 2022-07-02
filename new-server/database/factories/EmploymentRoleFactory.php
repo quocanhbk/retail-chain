@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Employment;
+use App\Models\Role;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EmploymentRoleFactory extends Factory
@@ -16,7 +17,7 @@ class EmploymentRoleFactory extends Factory
     {
         return [
             "employment_id" => Employment::factory(),
-            "role" => $this->faker->randomElement(["purchase", "sale", "manage"]),
+            "role_id" => Role::factory(),
         ];
     }
 }

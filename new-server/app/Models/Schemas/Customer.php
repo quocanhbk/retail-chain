@@ -5,7 +5,7 @@ namespace App\Models\Schemas;
 /**
  * @OA\Schema(
  *   oneOf={@OA\Schema(ref="#/components/schemas/UpsertTime")},
- *   required={"id", "name", "name", "phone", "email"}
+ *   required={"id", "code", "name", "phone", "email"}
  * )
  */
 class Customer

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Branch;
 use App\Models\Shift;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,7 @@ class ShiftController extends Controller
     /**
      * @OA\Post(
      *   path="/shift",
+     *   description="Create a shift (by admin or manager)",
      *   summary="Create a new shift",
      *   tags={"Shift"},
      *   operationId="createShift",
@@ -29,10 +31,29 @@ class ShiftController extends Controller
      */
     public function create(Request $request)
     {
-        $branch_id = Auth::user()->employment->branch_id;
+        $store_id = $request->get("store_id");
+
+        $as = $request->get("as");
+
         $data = $request->all();
+
         $rules = [
-            "name" => ["required", "string", "max:255", Rule::unique("shifts")->where("branch_id", $branch_id)],
+            "branch_id" => [
+                Rule::requiredIf($as == "admin"),
+                Rule::exists("branches", "id")->where("store_id", $store_id),
+            ],
+            "name" => [
+                "required",
+                "string",
+                "max:255",
+                Rule::unique("shifts")
+                    ->when($as == "employee", function ($query) {
+                        $query->where("branch_id", Auth::user()->employment->branch_id);
+                    })
+                    ->when($as == "admin", function ($query) use ($request) {
+                        $query->where("branch_id", $request->get("branch_id"));
+                    }),
+            ],
             "start_time" => ["required", "date_format:H:i"],
             "end_time" => ["required", "date_format:H:i"],
         ];
@@ -40,19 +61,14 @@ class ShiftController extends Controller
         $validator = Validator::make($data, $rules);
 
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    "message" => $this->formatValidationError($validator->errors()),
-                ],
-                400
-            );
+            return response()->json(["message" => $this->formatValidationError($validator->errors())], 400);
         }
 
         $shift = Shift::create([
             "name" => $data["name"],
             "start_time" => $data["start_time"],
             "end_time" => $data["end_time"],
-            "branch_id" => $branch_id,
+            "branch_id" => $as == "admin" ? $data["branch_id"] : Auth::user()->employment->branch_id,
         ]);
 
         return response()->json($shift);
@@ -63,7 +79,8 @@ class ShiftController extends Controller
      *   path="/shift",
      *   summary="Get all shifts",
      *   tags={"Shift"},
-     *   operationId="getAllShifts",
+     *   operationId="getShifts",
+     *   @OA\Parameter(name="branch_id", in="query", @OA\Schema(type="integer")),
      *   @OA\Response(
      *     response=200,
      *     description="Successful operation",
@@ -74,11 +91,29 @@ class ShiftController extends Controller
      *   )
      * )
      */
-    public function getShifts()
+    public function getShifts(Request $request)
     {
-        $branch_id = Auth::user()->employment->branch_id;
+        $store_id = $request->get("store_id");
 
-        $shifts = Shift::where("branch_id", $branch_id)->get();
+        $as = $request->get("as");
+
+        if ($as == "admin" && !$request->query("branch_id")) {
+            return response()->json(["message" => "Missing branch_id"], 400);
+        }
+
+        $branch_id = $as == "admin" ? $request->query("branch_id") : Auth::user()->employment->branch_id;
+
+        [$search, $from, $to, $order_by, $order_type] = $this->getQuery($request);
+
+        $shifts = Shift::where("branch_id", $branch_id)
+            ->whereHas("branch", function ($query) use ($store_id) {
+                $query->where("store_id", $store_id);
+            })
+            ->where("name", "iLike", "%" . $search . "%")
+            ->orderBy($order_by, $order_type)
+            ->offset($from)
+            ->limit($to - $from)
+            ->get();
 
         return response()->json($shifts);
     }
@@ -103,21 +138,25 @@ class ShiftController extends Controller
      *   )
      * )
      */
-    public function getShift($shift_id)
+    public function getShift(Request $request, $shift_id)
     {
-        $branch_id = Auth::user()->employment->branch_id;
+        $store_id = $request->get("store_id");
+
+        $as = $request->get("as");
 
         $shift = Shift::with("workSchedules.employee")
-            ->where("branch_id", $branch_id)
+            ->when($as == "employee", function ($query) {
+                $query->where("branch_id", Auth::user()->employment->branch_id);
+            })
+            ->when($as == "admin", function ($query) use ($store_id) {
+                $query->whereHas("branch", function ($query) use ($store_id) {
+                    $query->where("store_id", $store_id);
+                });
+            })
             ->find($shift_id);
 
         if (!$shift) {
-            return response()->json(
-                [
-                    "message" => "Shift not found.",
-                ],
-                404
-            );
+            return response()->json(["message" => "Shift not found."], 404);
         }
 
         return response()->json($shift);
@@ -149,17 +188,22 @@ class ShiftController extends Controller
      */
     public function update(Request $request, $shift_id)
     {
-        $branch_id = Auth::user()->employment->branch_id;
+        $store_id = $request->get("store_id");
 
-        $shift = Shift::where("branch_id", $branch_id)->find($shift_id);
+        $as = $request->get("as");
+
+        $shift = Shift::when($as == "employee", function ($query) {
+            $query->where("branch_id", Auth::user()->employment->branch_id);
+        })
+            ->when($as == "admin", function ($query) use ($store_id) {
+                $query->whereHas("branch", function ($query) use ($store_id) {
+                    $query->where("store_id", $store_id);
+                });
+            })
+            ->find($shift_id);
 
         if (!$shift) {
-            return response()->json(
-                [
-                    "message" => "Shift not found.",
-                ],
-                404
-            );
+            return response()->json(["message" => "Shift not found."], 404);
         }
 
         $data = $request->all();
@@ -169,7 +213,7 @@ class ShiftController extends Controller
                 "string",
                 "max:255",
                 Rule::unique("shifts")
-                    ->where("branch_id", $branch_id)
+                    ->where("branch_id", $shift->branch_id)
                     ->ignore($shift_id),
             ],
             "start_time" => ["nullable", "date_format:H:i"],
@@ -179,12 +223,7 @@ class ShiftController extends Controller
         $validator = Validator::make($data, $rules);
 
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    "message" => $this->formatValidationError($validator->errors()),
-                ],
-                400
-            );
+            return response()->json(["message" => $this->formatValidationError($validator->errors())], 400);
         }
 
         $shift->name = $data["name"] ?? $shift->name;
@@ -211,27 +250,37 @@ class ShiftController extends Controller
      *   @OA\Response(
      *     response=200,
      *     description="Successful operation",
-     *     @OA\JsonContent(ref="#/components/schemas/Shift")
+     *     @OA\JsonContent(
+     *       required={"message"},
+     *       @OA\Property(property="message", type="string", description="Success message")
+     *     )
      *   )
      * )
      */
-    public function delete($shift_id)
+    public function delete(Request $request, $shift_id)
     {
-        $branch_id = Auth::user()->employment->branch_id;
+        $store_id = $request->get("store_id");
 
-        $shift = Shift::where("branch_id", $branch_id)->find($shift_id);
+        $as = $request->get("as");
+
+        $shift = Shift::when($as == "employee", function ($query) {
+            $query->where("branch_id", Auth::user()->employment->branch_id);
+        })
+            ->when($as == "admin", function ($query) use ($store_id) {
+                $query->whereHas("branch", function ($query) use ($store_id) {
+                    $query->where("store_id", $store_id);
+                });
+            })
+            ->find($shift_id);
 
         if (!$shift) {
-            return response()->json(
-                [
-                    "message" => "Shift not found.",
-                ],
-                404
-            );
+            return response()->json(["message" => "Shift not found."], 404);
         }
 
         $shift->delete();
 
-        return response()->json($shift);
+        return response()->json([
+            "message" => "Shift deleted.",
+        ]);
     }
 }

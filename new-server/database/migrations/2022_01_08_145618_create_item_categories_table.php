@@ -17,13 +17,12 @@ class CreateItemCategoriesTable extends Migration
             $table->id();
             $table->timestamps();
             $table->softDeletes();
-            $table->unsignedBigInteger("store_id");
+            $table
+                ->foreignId("store_id")
+                ->constrained()
+                ->onDelete("cascade");
             $table->string("name");
             $table->string("description")->nullable();
-            $table
-                ->foreign("store_id")
-                ->references("id")
-                ->on("stores");
         });
     }
 

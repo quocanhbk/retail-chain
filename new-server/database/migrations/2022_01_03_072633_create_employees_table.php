@@ -22,19 +22,14 @@ class CreateEmployeesTable extends Migration
             $table->string("phone")->nullable();
             $table->date("birthday")->nullable();
             $table->string("gender")->nullable();
-            $table->unsignedBigInteger("store_id");
-            $table->timestamp("email_verified_at")->nullable();
             $table->string("password");
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
-        });
-
-        Schema::table("employees", function (Blueprint $table) {
             $table
-                ->foreign("store_id")
-                ->references("id")
-                ->on("stores");
+                ->foreignId("store_id")
+                ->constrained()
+                ->onDelete("cascade");
         });
     }
 

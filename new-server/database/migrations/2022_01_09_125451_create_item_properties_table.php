@@ -17,20 +17,16 @@ class CreateItemPropertiesTable extends Migration
             $table->id();
             $table->timestamps();
             $table->integer("quantity");
-            $table->decimal("sell_price", 13, 0, true);
-            $table->decimal("base_price", 13, 0, true);
-            $table->decimal("last_purchase_price", 13, 0, true);
-            $table->unsignedBigInteger("item_id");
-            $table->unsignedBigInteger("branch_id");
+            $table->unsignedBigInteger("sell_price")->default(0);
+            $table->unsignedBigInteger("base_price")->default(0);
+            $table->unsignedBigInteger("last_purchase_price")->nullable();
             $table
-                ->foreign("item_id")
-                ->references("id")
-                ->on("items")
+                ->foreignId("item_id")
+                ->constrained()
                 ->onDelete("cascade");
             $table
-                ->foreign("branch_id")
-                ->references("id")
-                ->on("branches")
+                ->foreignId("branch_id")
+                ->constrained()
                 ->onDelete("cascade");
         });
     }

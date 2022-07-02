@@ -11,8 +11,6 @@ class QuantityCheckingItem extends Model
 
     protected $fillable = ["quantity_checking_sheet_id", "item_id", "expected", "actual", "total"];
 
-    protected $hidden = ["created_at", "updated_at", "deleted_at"];
-
     public function quantityCheckingSheet()
     {
         return $this->belongsTo(QuantityCheckingSheet::class);

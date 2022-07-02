@@ -43,12 +43,7 @@ class StoreController extends Controller
         $validator = Validator::make($data, $rules);
 
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    "message" => $this->formatValidationError($validator->errors()),
-                ],
-                400
-            );
+            return response()->json(["message" => $this->formatValidationError($validator->errors())], 400);
         }
 
         // create store and login
@@ -62,25 +57,6 @@ class StoreController extends Controller
         Auth::guard("stores")->login($store, $remember);
 
         event(new Registered($store));
-
-        // create default item categories
-        $store
-            ->categories()
-            ->createMany([
-                ["name" => "ĐỒ UỐNG CÁC LOẠI"],
-                ["name" => "SỮA UỐNG CÁC LOẠI"],
-                ["name" => "BÁNH KẸO CÁC LOẠI"],
-                ["name" => "MÌ, CHÁO, PHỞ, BÚN"],
-                ["name" => "DẦU ĂN, GIA VỊ"],
-                ["name" => "GẠO, BỘT, ĐỒ KHÔ"],
-                ["name" => "ĐỒ MÁT, ĐÔNG LẠNH"],
-                ["name" => "TÃ, ĐỒ CHO BÉ"],
-                ["name" => "CHĂM SÓC CÁ NHÂN"],
-                ["name" => "VỆ SINH NHÀ CỬA"],
-                ["name" => "ĐỒ DÙNG GIA ĐÌNH"],
-                ["name" => "VĂN PHÒNG PHẨM"],
-                ["name" => "THUỐC VÀ THỰC PHẨM CHỨC NĂNG"],
-            ]);
 
         return response()->json($store);
     }
@@ -112,12 +88,7 @@ class StoreController extends Controller
         ];
         $validator = Validator::make($data, $rules);
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    "message" => $this->formatValidationError($validator->errors()),
-                ],
-                400
-            );
+            return response()->json(["message" => $this->formatValidationError($validator->errors())], 400);
         }
 
         $remember = $data["remember"] ?? false;
@@ -131,12 +102,7 @@ class StoreController extends Controller
         );
 
         if (!$check) {
-            return response()->json(
-                [
-                    "message" => "Tài khoản hoặc mật khẩu không hợp lệ",
-                ],
-                401
-            );
+            return response()->json(["message" => "Tài khoản hoặc mật khẩu không hợp lệ"], 401);
         }
 
         return response()->json(Auth::guard("stores")->user());
@@ -196,8 +162,8 @@ class StoreController extends Controller
      *     response=200,
      *     description="Successful operation",
      *     @OA\JsonContent(
-     *       required={"message"},
-     *       @OA\Property(property="guard", type="string")
+     *       required={"guard"},
+     *       @OA\Property(property="guard", type="string", enum={"store", "employee", "guest"})
      *     )
      *   )
      * )

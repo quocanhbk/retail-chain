@@ -5,7 +5,7 @@ namespace App\Models\Schemas;
 /**
  * @OA\Schema(
  *   oneOf={@OA\Schema(ref="#/components/schemas/UpsertTime")},
- *   required={"id", "name", "email", "store_id"},
+ *   required={"id", "name", "email", "store_id", "avatar", "avatar_key", "phone", "birthday", "gender", "email_verified_at"},
  * )
  */
 class Employee
@@ -35,37 +35,37 @@ class Employee
     public $store_id;
 
     /**
-     * @OA\Property()
+     * @OA\Property(nullable=true)
      * @var string
      */
     public $avatar;
 
     /**
-     * @OA\Property()
+     * @OA\Property(nullable=true)
      * @var string
      */
     public $avatar_key;
 
     /**
-     * @OA\Property()
+     * @OA\Property(nullable=true)
      * @var string
      */
     public $phone;
 
     /**
-     * @OA\Property()
+     * @OA\Property(nullable=true)
      * @var string
      */
     public $birthday;
 
     /**
-     * @OA\Property()
+     * @OA\Property(nullable=true)
      * @var string
      */
     public $gender;
 
     /**
-     * @OA\Property()
+     * @OA\Property(nullable=true)
      * @var string
      */
     public $email_verified_at;
@@ -88,7 +88,7 @@ class EmployeeWithEmployment
 
 /**
  * @OA\Schema(
- *   required={"name", "email", "password", "password_confirmation", "branch_id", "roles"}
+ *   required={"name", "email", "password", "password_confirmation", "branch_id", "role_ids"}
  * )
  */
 class CreateEmployeeInput
@@ -126,13 +126,11 @@ class CreateEmployeeInput
     /**
      * @OA\Property(
      *   type="array",
-     *   @OA\Items(
-     *     type="string"
-     *   )
+     *   @OA\Items(type="integer")
      * )
      * @var array
      */
-    public $roles;
+    public $role_ids;
 
     /**
      * @OA\Property()
@@ -151,6 +149,12 @@ class CreateEmployeeInput
      * @var string
      */
     public $gender;
+
+    /**
+     * @OA\Property(format="binary")
+     * @var string
+     */
+    public $avatar;
 }
 
 /**
@@ -213,11 +217,11 @@ class UpdateEmployeeInput
     /**
      * @OA\Property(
      *   type="array",
-     *   @OA\Items(type="string")
+     *   @OA\Items(type="integer")
      * )
      * @var array
      */
-    public $roles;
+    public $role_ids;
 
     /**
      * @OA\Property()
@@ -236,6 +240,12 @@ class UpdateEmployeeInput
      * @var string
      */
     public $gender;
+
+    /**
+     * @OA\Property(format="binary"),
+     * @var string
+     */
+    public $avatar;
 }
 
 /**
@@ -266,39 +276,10 @@ class EmployeeLoginInput
 
 /**
  * @OA\Schema(
- *   required={"employee_id", "branch_id", "roles"}
- * )
- */
-class TransferEmployeeInput
-{
-    /**
-     * @OA\Property()
-     * @var integer
-     */
-    public $employee_id;
-
-    /**
-     * @OA\Property()
-     * @var integer
-     */
-    public $branch_id;
-
-    /**
-     * @OA\Property(
-     *   type="array",
-     *   @OA\Items(type="string")
-     * )
-     * @var array
-     */
-    public $roles;
-}
-
-/**
- * @OA\Schema(
  *   required={"branch_id", "employees"}
  * )
  */
-class TransferManyEmployeesInput
+class TransferEmployeeInput
 {
     /**
      * @OA\Property()
@@ -310,11 +291,9 @@ class TransferManyEmployeesInput
      * @OA\Property(
      *   type="array",
      *   @OA\Items(
-     *     @OA\Schema(
-     *       required={"employee_id", "roles"},
-     *       @OA\Property(property="id", type="integer"),
-     *       @OA\Property(property="roles", type="array", @OA\Items(type="string"))
-     *     )
+     *     required={"id", "role_ids"},
+     *     @OA\Property(property="id", type="integer"),
+     *     @OA\Property(property="role_ids", type="array", @OA\Items(type="integer"))
      *   )
      * )
      * @var array

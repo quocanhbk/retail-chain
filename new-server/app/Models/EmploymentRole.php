@@ -9,12 +9,15 @@ class EmploymentRole extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["employment_id", "role"];
-
-    protected $hidden = ["created_at", "updated_at", "deleted_at"];
+    protected $fillable = ["employment_id", "role_id"];
 
     public function employment()
     {
         return $this->belongsTo(Employment::class);
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
     }
 }

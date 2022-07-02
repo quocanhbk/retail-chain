@@ -17,19 +17,16 @@ class CreateQuantityCheckingSheetsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string("code");
-            $table->unsignedBigInteger("employee_id");
-            $table->unsignedBigInteger("branch_id");
-            $table->string("note")->nullable();
             $table
-                ->foreign("employee_id")
-                ->references("id")
-                ->on("employees")
-                ->onDelete("cascade");
+                ->foreignId("employee_id")
+                ->nullable()
+                ->constrained()
+                ->onDelete("set null");
             $table
-                ->foreign("branch_id")
-                ->references("id")
-                ->on("branches")
+                ->foreignId("branch_id")
+                ->constrained()
                 ->onDelete("cascade");
+            $table->string("note")->default("");
         });
     }
 

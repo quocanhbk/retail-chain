@@ -16,8 +16,14 @@ class CreateRefundItemsTable extends Migration
         Schema::create("refund_items", function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger("refund_sheet_id");
-            $table->unsignedBigInteger("item_id");
+            $table
+                ->foreignId("refund_sheet_id")
+                ->constrained()
+                ->onDelete("cascade");
+            $table
+                ->foreignId("item_id")
+                ->constrained()
+                ->onDelete("cascade");
             $table->unsignedBigInteger("quantity");
             $table->boolean("resellable");
         });

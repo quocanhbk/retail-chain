@@ -18,19 +18,19 @@ class CreateItemsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->string("barcode");
-            $table->string("code")->nullable();
+            $table->string("code");
             $table->string("name");
             $table->string("image")->nullable();
-            $table->unsignedBigInteger("store_id");
-            $table->unsignedBigInteger("item_category_id")->nullable();
+            $table->string("image_key")->nullable();
             $table
-                ->foreign("store_id")
-                ->references("id")
-                ->on("stores");
+                ->foreignId("store_id")
+                ->constrained()
+                ->onDelete("cascade");
             $table
-                ->foreign("item_category_id")
-                ->references("id")
-                ->on("item_categories");
+                ->foreignId("item_category_id")
+                ->nullable()
+                ->constrained()
+                ->onDelete("set null");
         });
     }
 

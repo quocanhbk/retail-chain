@@ -16,15 +16,14 @@ class CreateEmploymentRoles extends Migration
         Schema::create("employment_roles", function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger("employment_id");
-            $table->string("role");
-        });
-
-        Schema::table("employment_roles", function (Blueprint $table) {
             $table
-                ->foreign("employment_id")
-                ->references("id")
-                ->on("employments");
+                ->foreignId("employment_id")
+                ->constrained()
+                ->onDelete("cascade");
+            $table
+                ->foreignId("role_id")
+                ->constrained()
+                ->onDelete("cascade");
         });
     }
 

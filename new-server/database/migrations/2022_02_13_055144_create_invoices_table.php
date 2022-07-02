@@ -16,25 +16,24 @@ class CreateInvoicesTable extends Migration
         Schema::create("invoices", function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger("branch_id");
-            $table->unsignedBigInteger("employee_id");
-            $table->unsignedBigInteger("customer_id")->nullable();
+            $table
+                ->foreignId("branch_id")
+                ->constrained()
+                ->onDelete("cascade");
+            $table
+                ->foreignId("employee_id")
+                ->nullable()
+                ->constrained()
+                ->onDelete("set null");
+            $table
+                ->foreignId("customer_id")
+                ->nullable()
+                ->constrained()
+                ->onDelete("set null");
             $table->string("code");
             $table->unsignedBigInteger("total");
             $table->unsignedBigInteger("point_used")->default(0);
             $table->unsignedBigInteger("point_added")->default(0);
-            $table
-                ->foreign("branch_id")
-                ->references("id")
-                ->on("branches");
-            $table
-                ->foreign("employee_id")
-                ->references("id")
-                ->on("employees");
-            $table
-                ->foreign("customer_id")
-                ->references("id")
-                ->on("customers");
         });
     }
 

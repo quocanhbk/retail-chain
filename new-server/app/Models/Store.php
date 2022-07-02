@@ -46,4 +46,14 @@ class Store extends User implements MustVerifyEmail
     {
         return $this->hasMany(Customer::class);
     }
+
+    public function items()
+    {
+        return $this->hasMany(Item::class);
+    }
+
+    public function roles()
+    {
+        return $this->hasMany(Role::class);
+    }
 }

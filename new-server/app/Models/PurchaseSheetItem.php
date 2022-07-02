@@ -11,8 +11,6 @@ class PurchaseSheetItem extends Model
 
     protected $fillable = ["purchase_sheet_id", "item_id", "quantity", "price", "discount", "discount_type", "total"];
 
-    protected $hidden = ["created_at", "updated_at", "deleted_at"];
-
     public function purchaseSheet()
     {
         return $this->belongsTo(PurchaseSheet::class);

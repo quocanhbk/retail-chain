@@ -22,11 +22,9 @@ class CreateCustomersTable extends Migration
             $table->string("code");
             $table->string("email")->nullable();
             $table->integer("point")->default(0);
-            $table->unsignedBigInteger("store_id");
             $table
-                ->foreign("store_id")
-                ->references("id")
-                ->on("stores")
+                ->foreignId("store_id")
+                ->constrained()
                 ->onDelete("cascade");
         });
     }

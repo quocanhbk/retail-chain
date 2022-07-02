@@ -19,8 +19,6 @@ class ReturnPurchaseSheetItem extends Model
         "total",
     ];
 
-    protected $hidden = ["created_at", "updated_at", "deleted_at"];
-
     public function returnPurchaseSheet()
     {
         return $this->belongsTo(ReturnPurchaseSheet::class);

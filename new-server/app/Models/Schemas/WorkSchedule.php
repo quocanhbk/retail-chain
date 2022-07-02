@@ -94,3 +94,33 @@ class UpdateWorkScheduleInput
      */
     public $is_absent;
 }
+
+/**
+ * @OA\Schema(
+ *   required={"employee"},
+ *   oneOf={@OA\Schema(ref="#/components/schemas/WorkSchedule")}
+ * )
+ */
+class WorkScheduleWithEmployee
+{
+    /**
+     * @OA\Property(ref="#/components/schemas/Employee")
+     * @var object
+     */
+    public $employee;
+}
+
+/**
+ * @OA\Schema(
+ *   required={"shift"},
+ *   oneOf={@OA\Schema(ref="#/components/schemas/WorkScheduleWithEmployee")}
+ * )
+ */
+class WorkScheduleWithShiftAndEmployee
+{
+    /**
+     * @OA\Property(ref="#/components/schemas/Shift")
+     * @var object
+     */
+    public $shift;
+}

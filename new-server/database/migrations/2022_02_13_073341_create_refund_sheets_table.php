@@ -17,23 +17,22 @@ class CreateRefundSheetsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string("code");
-            $table->unsignedBigInteger("branch_id");
-            $table->unsignedBigInteger("employee_id");
-            $table->unsignedBigInteger("invoice_id");
+            $table
+                ->foreignId("branch_id")
+                ->constrained()
+                ->onDelete("cascade");
+            $table
+                ->foreignId("employee_id")
+                ->nullable()
+                ->constrained()
+                ->onDelete("set null");
+            $table
+                ->foreignId("invoice_id")
+                ->nullable()
+                ->constrained()
+                ->onDelete("set null");
             $table->unsignedBigInteger("total");
-            $table->string("reason");
-            $table
-                ->foreign("branch_id")
-                ->references("id")
-                ->on("branches");
-            $table
-                ->foreign("employee_id")
-                ->references("id")
-                ->on("employees");
-            $table
-                ->foreign("invoice_id")
-                ->references("id")
-                ->on("invoices");
+            $table->string("reason")->default("");
         });
     }
 

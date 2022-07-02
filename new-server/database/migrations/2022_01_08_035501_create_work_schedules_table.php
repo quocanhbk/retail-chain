@@ -16,22 +16,20 @@ class CreateWorkSchedulesTable extends Migration
         Schema::create("work_schedules", function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger("shift_id");
-            $table->unsignedBigInteger("employee_id");
+            $table
+                ->foreignId("shift_id")
+                ->constrained()
+                ->onDelete("cascade");
+            $table
+                ->foreignId("employee_id")
+                ->constrained()
+                ->onDelete("cascade");
             $table->date("date");
             $table->string("note")->default("");
             $table
                 ->boolean("is_absent")
                 ->nullable()
                 ->default(null);
-            $table
-                ->foreign("shift_id")
-                ->references("id")
-                ->on("shifts");
-            $table
-                ->foreign("employee_id")
-                ->references("id")
-                ->on("employees");
         });
     }
 

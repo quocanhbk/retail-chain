@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PermissionRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Models\Supplier;
+use Illuminate\Support\Facades\Auth;
 
 class SupplierController extends Controller
 {
@@ -29,7 +31,11 @@ class SupplierController extends Controller
     public function create(Request $request)
     {
         $store_id = $request->get("store_id");
+
+        $as = $request->get("as");
+
         $data = $request->all();
+
         $rules = [
             "name" => ["required", "string", "max:255"],
             "tax_number" => ["nullable", "string", "max:255"],
@@ -51,19 +57,12 @@ class SupplierController extends Controller
             ],
         ];
 
-        $validator = Validator::make($data, $rules, [
-            "code.unique" => "Mã nhà cung cấp đã tồn tại",
-            "phone.unique" => "Số điện thoại đã được sử dụng",
-        ]);
+        $validator = Validator::make($data, $rules);
 
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    "message" => $this->formatValidationError($validator->errors()),
-                ],
-                400
-            );
+            return response()->json(["message" => $this->formatValidationError($validator->errors())], 400);
         }
+
         // create code if not provided
         if (!isset($data["code"])) {
             $supplier_count = Supplier::where("store_id", $store_id)->count();
@@ -105,17 +104,20 @@ class SupplierController extends Controller
      *   ),
      * )
      */
-    public function getSuppliers(Request $request)
+    public function getMany(Request $request)
     {
         $store_id = $request->get("store_id");
 
         [$search, $from, $to, $order_by, $order_type] = $this->getQuery($request);
         // search for suppliers by name, phone, email, code
         $suppliers = Supplier::where("store_id", $store_id)
-            ->where("name", "iLike", "%" . $search . "%")
-            ->orWhere("phone", "iLike", "%" . $search . "%")
-            ->orWhere("email", "iLike", "%" . $search . "%")
-            ->orWhere("code", "iLike", "%" . $search . "%")
+            ->where(function ($query) use ($search) {
+                $query
+                    ->where("name", "iLike", "%" . $search . "%")
+                    ->orWhere("phone", "iLike", "%" . $search . "%")
+                    ->orWhere("email", "iLike", "%" . $search . "%")
+                    ->orWhere("code", "iLike", "%" . $search . "%");
+            })
             ->orderBy($order_by, $order_type)
             ->offset($from)
             ->limit($to - $from)
@@ -144,19 +146,13 @@ class SupplierController extends Controller
      *   ),
      * )
      */
-    public function getSupplier(Request $request, $supplier_id)
+    public function getOne(Request $request, $supplier_id)
     {
         $store_id = $request->get("store_id");
-        $supplier = Supplier::where("store_id", $store_id)
-            ->where("id", $supplier_id)
-            ->first();
+        $supplier = Supplier::where(["store_id" => $store_id, "id" => $supplier_id])->first();
+
         if (!$supplier) {
-            return response()->json(
-                [
-                    "message" => "Supplier not found.",
-                ],
-                404
-            );
+            return response()->json(["message" => "Supplier not found."], 404);
         }
 
         return response()->json($supplier);
@@ -189,10 +185,16 @@ class SupplierController extends Controller
     public function update(Request $request, $supplier_id)
     {
         $store_id = $request->get("store_id");
+
         $data = $request->all();
-        $data["supplier_id"] = $supplier_id;
+
+        $supplier = Supplier::where(["store_id" => $store_id, "id" => $supplier_id])->first();
+
+        if (!$supplier) {
+            return response()->json(["message" => "Supplier not found."], 404);
+        }
+
         $rules = [
-            "supplier_id" => ["required", "integer", Rule::exists("suppliers", "id")->where("store_id", $store_id)],
             "code" => [
                 "nullable",
                 "string",
@@ -225,25 +227,20 @@ class SupplierController extends Controller
         ];
 
         $validator = Validator::make($data, $rules);
+
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    "message" => "Validation failed.",
-                    "errors" => $validator->errors(),
-                ],
-                400
-            );
+            return response()->json(["message" => $this->formatValidationError($validator->errors())], 400);
         }
-        $supplier = Supplier::where("store_id", $store_id)
-            ->where("id", $supplier_id)
-            ->first();
+
         $supplier->name = $data["name"] ?? $supplier->name;
         $supplier->address = $data["address"] ?? $supplier->address;
         $supplier->phone = $data["phone"] ?? $supplier->phone;
         $supplier->email = $data["email"] ?? $supplier->email;
         $supplier->tax_number = $data["tax_number"] ?? $supplier->tax_number;
         $supplier->note = $data["note"] ?? $supplier->note;
+
         $supplier->save();
+
         return response()->json($supplier);
     }
 
@@ -260,30 +257,180 @@ class SupplierController extends Controller
      *     required=true,
      *     @OA\Schema(type="integer")
      *   ),
+     *   @OA\Parameter(
+     *     name="force",
+     *     in="query",
+     *     description="Force delete",
+     *     @OA\Schema(type="boolean")
+     *   ),
      *   @OA\Response(
      *     response=200,
      *     description="Successful operation",
-     *     @OA\JsonContent(ref="#/components/schemas/Supplier")
+     *     @OA\JsonContent(
+     *       required={"message"},
+     *       @OA\Property(property="message", type="string", description="Success message")
+     *     )
      *   ),
      * )
      */
     public function delete(Request $request, $supplier_id)
     {
         $store_id = $request->get("store_id");
-        $supplier = Supplier::where("store_id", $store_id)
-            ->where("id", $supplier_id)
-            ->first();
+
+        $as = $request->get("as");
+
+        $isForce = $request->query("force") ?? false;
+
+        $supplier = Supplier::where(["store_id" => $store_id, "id" => $supplier_id])->first();
+
         if (!$supplier) {
-            return response()->json(
-                [
-                    "message" => "Supplier not found.",
-                ],
-                404
-            );
+            return response()->json(["message" => "Supplier not found."], 404);
         }
 
-        $supplier->delete();
+        if ($as == "employee" && $isForce) {
+            return response()->json(["message" => "Unauthorized to force delete."], 403);
+        }
 
-        return response()->json($supplier);
+        $supplier
+            ->when($isForce, function () use ($supplier) {
+                $supplier->forceDelete();
+            })
+            ->when(!$isForce, function () use ($supplier) {
+                $supplier->delete();
+            });
+
+        return response()->json([
+            "message" => "Supplier deleted.",
+        ]);
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/supplier/deleted",
+     *   summary="Get all soft deleted suppliers",
+     *   tags={"Supplier"},
+     *   operationId="getDeletedSuppliers",
+     *   @OA\Parameter(name="search", in="query", @OA\Schema(type="string")),
+     *   @OA\Parameter(name="order_by", in="query", @OA\Schema(type="string")),
+     *   @OA\Parameter(name="order_type", in="query", @OA\Schema(type="string", enum={"asc", "desc"})),
+     *   @OA\Parameter(name="from", in="query", @OA\Schema(type="integer")),
+     *   @OA\Parameter(name="to", in="query", @OA\Schema(type="integer")),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @OA\JsonContent(
+     *       type="array",
+     *       @OA\Items(ref="#/components/schemas/Supplier")
+     *     )
+     *   ),
+     * )
+     */
+    public function getDeleted(Request $request)
+    {
+        $store_id = $request->get("store_id");
+
+        [$search, $from, $to, $order_by, $order_type] = $this->getQuery($request);
+
+        $suppliers = Supplier::onlyTrashed()
+            ->where("store_id", $store_id)
+            ->where(function ($query) use ($search) {
+                $query
+                    ->where("name", "iLike", "%" . $search . "%")
+                    ->orWhere("phone", "iLike", "%" . $search . "%")
+                    ->orWhere("email", "iLike", "%" . $search . "%")
+                    ->orWhere("code", "iLike", "%" . $search . "%");
+            })
+            ->orderBy($order_by, $order_type)
+            ->skip($from)
+            ->take($to - $from)
+            ->get();
+
+        return response()->json($suppliers);
+    }
+
+    /**
+     * @OA\Post(
+     *   path="/supplier/{supplier_id}/restore",
+     *   summary="Restore a supplier",
+     *   tags={"Supplier"},
+     *   operationId="restoreSupplier",
+     *   @OA\Parameter(
+     *     name="supplier_id",
+     *     in="path",
+     *     description="Supplier ID",
+     *     required=true,
+     *     @OA\Schema(type="integer")
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @OA\JsonContent(
+     *       required={"message"},
+     *       @OA\Property(property="message", type="string", description="Success message")
+     *     )
+     *   ),
+     * )
+     */
+    public function restore(Request $request, $supplier_id)
+    {
+        $store_id = $request->get("store_id");
+
+        $supplier = Supplier::onlyTrashed()
+            ->where("store_id", $store_id)
+            ->where("id", $supplier_id)
+            ->first();
+
+        if (!$supplier) {
+            return response()->json(["message" => "Supplier not found."], 404);
+        }
+
+        $supplier->restore();
+
+        return response()->json([
+            "message" => "Supplier restored.",
+        ]);
+    }
+
+    /**
+     * @OA\Delete(
+     *   path="/supplier/{supplier_id}/force",
+     *   summary="Force delete a supplier",
+     *   tags={"Supplier"},
+     *   operationId="forceDeleteSupplier",
+     *   @OA\Parameter(
+     *     name="supplier_id",
+     *     in="path",
+     *     description="Supplier ID",
+     *     required=true,
+     *     @OA\Schema(type="integer")
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @OA\JsonContent(
+     *       required={"message"},
+     *       @OA\Property(property="message", type="string", description="Success message")
+     *     )
+     *   ),
+     * )
+     */
+    public function forceDelete(Request $request, $supplier_id)
+    {
+        $store_id = $request->get("store_id");
+
+        $supplier = Supplier::withTrashed()
+            ->where("store_id", $store_id)
+            ->where("id", $supplier_id)
+            ->first();
+
+        if (!$supplier) {
+            return response()->json(["message" => "Supplier not found."], 404);
+        }
+
+        $supplier->forceDelete();
+
+        return response()->json([
+            "message" => "Supplier deleted.",
+        ]);
     }
 }

@@ -34,13 +34,14 @@ class WorkScheduleController extends Controller
     public function create(Request $request)
     {
         $branch_id = Auth::user()->employment->branch_id;
+
         $data = $request->all();
+
         $rules = [
             "shift_id" => ["required", Rule::exists("shifts", "id")->where("branch_id", $branch_id)],
-            "employee_ids" => [
-                "required",
-                "array",
-                "min:1",
+            "employee_ids" => ["required", "array", "min:1"],
+            "employee_ids.*" => [
+                "distinct",
                 Rule::exists("employments", "employee_id")
                     ->where("branch_id", $branch_id)
                     ->where("to", null),
@@ -51,17 +52,24 @@ class WorkScheduleController extends Controller
         $validator = Validator::make($data, $rules);
 
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    "message" => $this->formatValidationError($validator->errors()),
-                ],
-                400
-            );
+            return response()->json(["message" => $this->formatValidationError($validator->errors())], 400);
         }
 
         // map data into work schedules
         $work_schedules = [];
         foreach ($data["employee_ids"] as $employee_id) {
+            $is_work_schedule_existed = WorkSchedule::where("employee_id", $employee_id)
+                ->where("date", $data["date"])
+                ->where("shift_id", $data["shift_id"])
+                ->exists();
+
+            if ($is_work_schedule_existed) {
+                return response()->json(
+                    ["message" => "Work schedule already exists for this employee on this date."],
+                    400
+                );
+            }
+
             $work_schedules[] = [
                 "shift_id" => $data["shift_id"],
                 "employee_id" => $employee_id,
@@ -93,43 +101,44 @@ class WorkScheduleController extends Controller
      *     description="Successful operation",
      *     @OA\JsonContent(
      *       type="array",
-     *       @OA\Items(ref="#/components/schemas/WorkSchedule")
+     *       @OA\Items(ref="#/components/schemas/WorkScheduleWithShiftAndEmployee")
      *     )
      *   )
      * )
      */
-    public function getWorkSchedules(Request $request)
+    public function getMany(Request $request)
     {
         $branch_id = Auth::user()->employment->branch_id;
 
         $date = $request->query("date") ?? null;
 
         if ($date) {
-            $validator = Validator::make(
-                ["date" => $date],
-                [
-                    "date" => ["required", "date_format:Y-m-d"],
-                ]
-            );
+            $validator = Validator::make(["date" => $date], ["date" => ["nullable", "date_format:Y-m-d"]]);
 
             if ($validator->fails()) {
-                return response()->json(
-                    [
-                        "message" => $this->formatValidationError($validator->errors()),
-                    ],
-                    400
-                );
+                return response()->json(["message" => $this->formatValidationError($validator->errors())], 400);
             }
         }
 
+        [$search, $from, $to, $order_by, $order_type] = $this->getQuery($request);
+
         // get all work schedules by branch_id
-        $work_schedules = WorkSchedule::whereIn("shift_id", function ($query) use ($branch_id) {
-            $query
-                ->select("id")
-                ->from("shifts")
-                ->where("branch_id", $branch_id);
-        })
-            ->where("date", !$date ? ">=" : "=", !$date ? date("Y-m-d", strtotime("1970-01-01")) : $date)
+        $work_schedules = WorkSchedule::with(["shift", "employee"])
+            ->whereHas("shift", function ($query) use ($search, $branch_id) {
+                $query->where("branch_id", $branch_id)->where("name", "iLike", "%$search%");
+            })
+            ->when($date, function ($query) use ($date) {
+                return $query->where("date", $date);
+            })
+            ->whereHas("employee", function ($query) use ($search) {
+                return $query
+                    ->where("name", "iLike", "%$search%")
+                    ->orWhere("email", "iLike", "%$search%")
+                    ->orWhere("phone", "iLike", "%$search%");
+            })
+            ->orderBy($order_by, $order_type)
+            ->offset($from)
+            ->limit($to - $from)
             ->get();
 
         return response()->json($work_schedules);
@@ -164,18 +173,15 @@ class WorkScheduleController extends Controller
 
         $data = $request->all();
 
-        $data["work_schedule_id"] = $work_schedule_id;
+        $work_schedule = WorkSchedule::whereHas("shift", function ($query) use ($branch_id) {
+            return $query->where("branch_id", $branch_id);
+        })->find($work_schedule_id);
+
+        if (!$work_schedule) {
+            return response()->json(["message" => "Work schedule not found."], 404);
+        }
 
         $rules = [
-            "work_schedule_id" => [
-                "required",
-                Rule::exists("work_schedules", "id")->whereIn(
-                    "shift_id",
-                    Shift::where("branch_id", $branch_id)
-                        ->pluck("id")
-                        ->toArray()
-                ),
-            ],
             "note" => ["nullable", "string", "max:255"],
             "is_absent" => ["nullable", "boolean"],
         ];
@@ -183,15 +189,8 @@ class WorkScheduleController extends Controller
         $validator = Validator::make($data, $rules);
 
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    "message" => $this->formatValidationError($validator->errors()),
-                ],
-                400
-            );
+            return response()->json(["message" => $this->formatValidationError($validator->errors())], 400);
         }
-
-        $work_schedule = WorkSchedule::find($data["work_schedule_id"]);
 
         $work_schedule->note = $data["note"] ?? $work_schedule->note;
         $work_schedule->is_absent = $data["is_absent"] ?? $work_schedule->is_absent;
@@ -215,7 +214,10 @@ class WorkScheduleController extends Controller
      *   @OA\Response(
      *     response=200,
      *     description="Successful operation",
-     *     @OA\JsonContent(ref="#/components/schemas/WorkSchedule")
+     *     @OA\JsonContent(
+     *       required={"message"},
+     *       @OA\Property(property="message", type="string", description="Success message")
+     *     )
      *   )
      * )
      */
@@ -223,36 +225,18 @@ class WorkScheduleController extends Controller
     {
         $branch_id = Auth::user()->employment->branch_id;
 
-        $work_schedule = WorkSchedule::whereIn("shift_id", function ($query) use ($branch_id) {
-            $query
-                ->select("id")
-                ->from("shifts")
-                ->where("branch_id", $branch_id);
+        $work_schedule = WorkSchedule::whereHas("shift", function ($query) use ($branch_id) {
+            $query->where("branch_id", $branch_id);
         })
             ->where("id", $work_schedule_id)
             ->first();
 
         if (!$work_schedule) {
-            return response()->json(
-                [
-                    "message" => "Work schedule not found.",
-                ],
-                404
-            );
-        }
-
-        // ensure work schedule date is in the future
-        if (strtotime($work_schedule->date) < strtotime(date("Y-m-d"))) {
-            return response()->json(
-                [
-                    "message" => "Work Schedule date must be in the future.",
-                ],
-                400
-            );
+            return response()->json(["message" => "Work schedule not found."], 404);
         }
 
         $work_schedule->delete();
 
-        return response()->json($work_schedule);
+        return response()->json(["message" => "Work schedule deleted successfully"]);
     }
 }

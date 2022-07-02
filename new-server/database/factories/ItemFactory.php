@@ -18,6 +18,7 @@ class ItemFactory extends Factory
         return [
             "store_id" => Store::factory(),
             "barcode" => $this->faker->ean8(),
+            "code" => $this->faker->unique()->word(),
             "name" => $this->faker->word(),
             "image" => $this->faker->imageUrl(),
             "item_category_id" => ItemCategory::factory(),

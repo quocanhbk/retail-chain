@@ -4,7 +4,7 @@ namespace App\Models\Schemas;
 
 /**
  * @OA\Schema(
- *   required={"id", "name", "address", "created_at", "updated_at"},
+ *   required={"id", "name", "address"},
  *   oneOf={@OA\Schema(ref="#/components/schemas/UpsertTime")}
  * )
  */
@@ -103,15 +103,15 @@ class UpdateBranchInput
     public $address;
 
     /**
-     * @var string
      * @OA\Property(format="binary")
+     * @var string
      */
     public $image;
 }
 
 /**
  * @OA\Schema(
- *   required={"id", "roles"}
+ *   required={"id", "role_ids"}
  * )
  */
 class TransferredEmployeeInput
@@ -123,15 +123,18 @@ class TransferredEmployeeInput
     public $id;
 
     /**
-     * @OA\Property()
-     * @var string[]
+     * @OA\Property(
+     *   type="array",
+     *   @OA\Items(type="integer")
+     * )
+     * @var array
      */
-    public $roles;
+    public $role_ids;
 }
 
 /**
  * @OA\Schema(
- *   required={"name", "email", "password", "roles"}
+ *   required={"name", "email", "password", "role_ids"}
  * )
  */
 class NewEmployeeInput
@@ -161,10 +164,13 @@ class NewEmployeeInput
     public $password_confirmation;
 
     /**
-     * @OA\Property()
+     * @OA\Property(
+     *   type="array",
+     *   @OA\Items(type="integer")
+     * )
      * @var string[]
      */
-    public $roles;
+    public $role_ids;
 
     /**
      * @OA\Property()

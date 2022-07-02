@@ -6,7 +6,7 @@ use App\Models\Branch;
 use App\Models\DefaultItem;
 use App\Models\Employee;
 use App\Models\Employment;
-use App\Models\EmploymentRoles;
+use App\Models\EmploymentRole;
 use App\Models\Item;
 use App\Models\ItemCategory;
 use App\Models\ItemProperty;
@@ -81,7 +81,7 @@ class DatabaseSeeder extends Seeder
 
         // create employment roles
         foreach (['sale', 'purchase', 'manage'] as $role) {
-            EmploymentRoles::create([
+            EmploymentRole::create([
                 'employment_id' => $employment->id,
                 'role' => $role
             ]);

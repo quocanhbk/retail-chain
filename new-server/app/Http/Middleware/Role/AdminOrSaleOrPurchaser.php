@@ -13,11 +13,14 @@ class AdminOrSaleOrPurchaser
     {
         if (Auth::guard("stores")->check()) {
             $store_id = Auth::guard("stores")->user()->id;
+
             $request->attributes->add([
                 "store_id" => $store_id,
             ]);
+
             return $next($request);
         }
+
         if (Auth::guard("employees")->check()) {
             $have_role = Auth::user()
                 ->employment->roles->whereIn("role", ["sale", "purchase"])
@@ -31,11 +34,14 @@ class AdminOrSaleOrPurchaser
                 );
             }
             $store_id = Auth::user()->store_id;
+
             $request->attributes->add([
                 "store_id" => $store_id,
             ]);
+
             return $next($request);
         }
+
         return response()->json(
             [
                 "message" => "Unauthenticated.",

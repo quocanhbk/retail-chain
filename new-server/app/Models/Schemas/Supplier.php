@@ -7,7 +7,7 @@ namespace App\Models\Schemas;
  *   oneOf={
  *     @OA\Schema(ref="#/components/schemas/UpsertTime")
  *   },
- *   required={"id", "name", "code"}
+ *   required={"id", "name", "code", "address", "phone", "email", "tax_number", "note", "store_id"},
  * )
  */
 class Supplier
@@ -20,6 +20,12 @@ class Supplier
 
     /**
      * @OA\Property()
+     * @var integer
+     */
+    public $store_id;
+
+    /**
+     * @OA\Property()
      * @var string
      */
     public $name;
@@ -28,43 +34,37 @@ class Supplier
      * @OA\Property()
      * @var string
      */
-    public $address;
-
-    /**
-     * @OA\Property()
-     * @var string
-     */
     public $code;
 
     /**
-     * @OA\Property()
+     * @OA\Property(nullable=true)
+     * @var string
+     */
+    public $address;
+
+    /**
+     * @OA\Property(nullable=true)
      * @var string
      */
     public $phone;
 
     /**
-     * @OA\Property()
+     * @OA\Property(nullable=true)
      * @var string
      */
     public $email;
 
     /**
-     * @OA\Property()
+     * @OA\Property(nullable=true)
      * @var string
      */
     public $tax_number;
 
     /**
-     * @OA\Property()
+     * @OA\Property(nullable=true)
      * @var string
      */
     public $note;
-
-    /**
-     * @OA\Property()
-     * @var integer
-     */
-    public $creator_id;
 }
 
 /**

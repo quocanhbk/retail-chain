@@ -5,7 +5,7 @@ namespace App\Models\Schemas;
 /**
  * @OA\Schema(
  *   oneOf={@OA\Schema(ref="#/components/schemas/UpsertTime")},
- *   required={"id", "name", "description"}
+ *   required={"id", "store_id", "name", "description"}
  * )
  */
 class ItemCategory
@@ -61,4 +61,21 @@ class UpsertItemCategoryInput
  */
 class CreateItemCategoryInput
 {
+}
+
+/**
+ * @OA\Schema(
+ *   oneOf={@OA\Schema(ref="#/components/schemas/ItemCategory")},
+ * )
+ */
+class ItemCategoryWithItems
+{
+    /**
+     * @OA\Property(
+     *   type="array",
+     *   @OA\Items(ref="#/components/schemas/Item")
+     * )
+     * @var object
+     */
+    public $items;
 }

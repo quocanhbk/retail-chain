@@ -7,13 +7,14 @@ use App\Models\Item;
 use App\Models\ItemCategory;
 use App\Models\ItemPriceHistory;
 use App\Models\ItemProperty;
-use App\Models\ItemQuantity;
-use App\Models\PurchaseSheet;
 use App\Models\PurchaseSheetItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+
+// https://149.28.148.73/merged-db
 
 class ItemController extends Controller
 {
@@ -29,44 +30,65 @@ class ItemController extends Controller
                 ->exists()
         ) {
             $count++;
-            $code = "IT" . str_pad($count, 6, "0", STR_PAD_LEFT);
+            $code = "SP" . str_pad($count, 6, "0", STR_PAD_LEFT);
         }
         return $code;
     }
 
-    // * Create item for the store, initial quantity, base price, sell price for the purchaser's branch
+    /**
+     * @OA\Post(
+     *   path="/item",
+     *   tags={"Item"},
+     *   summary="Create new item",
+     *   operationId="createItem",
+     *   @OA\RequestBody(
+     *     required=true,
+     *     @OA\MediaType(
+     *       mediaType="multipart/form-data",
+     *       @OA\Schema(ref="#/components/schemas/CreateItemInput")
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *     @OA\JsonContent(ref="#/components/schemas/Item")
+     *   )
+     * )
+     */
     public function create(Request $request)
     {
-        $store_id = Auth::user()->store_id;
-        $branch_id = Auth::user()->employment->branch_id;
+        $store_id = $request->get("store_id");
+
         $data = $request->all();
+
         $rules = [
             "category_id" => [
-                "required",
+                "nullable",
                 "integer",
                 Rule::exists("item_categories", "id")->where("store_id", $store_id),
             ],
             "code" => ["nullable", "string", "max:255", Rule::unique("items")->where("store_id", $store_id)],
             "barcode" => ["required", "string", "max:255", Rule::unique("items")->where("store_id", $store_id)],
             "name" => ["required", "string", "max:255"],
-            "quantity" => ["nullable", "numberic", "min:0"],
-            "base_price" => ["nullable", "numeric", "min:0"],
-            "sell_price" => ["nullable", "numeric", "min:0"],
-            "image" => ["nullable", "string", "max:2048"],
+            "image" => ["nullable", "image", "max:2048"],
         ];
 
         $validator = Validator::make($data, $rules);
+
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    "message" => "Validation failed",
-                    "errors" => $validator->errors(),
-                ],
-                400
-            );
+            return response()->json(["message" => $this->formatValidationError($validator->errors())], 400);
         }
 
         $code = $this->genItemCode($store_id);
+
+        $image_path = $request->hasFile("image")
+            ? $request
+                ->file("image")
+                ->storeAs(
+                    "images/{$store_id}/items",
+                    $store_id . Str::uuid() . "." . $request->file("image")->getClientOriginalExtension()
+                )
+            : null;
 
         $item = Item::create([
             "category_id" => $data["category_id"],
@@ -74,163 +96,90 @@ class ItemController extends Controller
             "barcode" => $data["barcode"],
             "name" => $data["name"],
             "store_id" => $store_id,
-            "image" => $data["image"],
-        ]);
-
-        ItemProperty::create([
-            "item_id" => $item->id,
-            "branch_id" => $branch_id,
-            "quantity" => $data["quantity"] ?? 0,
-            "sell_price" => $data["sell_price"] ?? 0,
-            "base_price" => $data["base_price"] ?? 0,
+            "image" => $image_path,
+            "image_key" => $request->hasFile("image") ? Str::uuid() : null,
         ]);
 
         return response()->json($item);
     }
 
-    public function updateImage(Request $request)
-    {
-        $store_id = Auth::user()->store_id;
-        $rules = [
-            "id" => ["required", "integer", Rule::exists("items", "id")->where("store_id", $store_id)],
-            "image" => ["nullable", "image", "mimes:jpeg,png,jpg", "max:2048"],
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
-            return response()->json(
-                [
-                    "message" => "Validation failed",
-                    "errors" => $validator->errors(),
-                ],
-                400
-            );
-        }
-
-        $item = Item::find($request->id);
-        $path = $request
-            ->file("image")
-            ->storeAs(
-                "items",
-                $store_id . $item->barcode . "." . $request->file("image")->getClientOriginalExtension()
-            );
-        $item->image = $path;
-        $item->save();
-
-        return response()->json([
-            "message" => "Image updated",
-        ]);
-    }
-
-    // * Only used for item that is already added to the database
-    public function getItem(Request $request, $item_id)
+    /**
+     * @OA\Get(
+     *   path="/item/one",
+     *   tags={"Item"},
+     *   summary="Get item by id",
+     *   operationId="getItemById",
+     *   @OA\Parameter(name="id", in="query", @OA\Schema(type="integer")),
+     *   @OA\Parameter(name="barcode", in="query", @OA\Schema(type="integer")),
+     *   @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *     @OA\JsonContent(ref="#/components/schemas/ItemWithCategory")
+     *   )
+     * )
+     */
+    public function getOne(Request $request)
     {
         $store_id = $request->get("store_id");
-        $item = Item::where("id", $item_id)
+
+        $item_id = $request->query("id");
+
+        $barcode = $request->query("barcode");
+
+        if (!$item_id && !$barcode) {
+            return response()->json(["message" => "id or barcode is required"], 400);
+        }
+
+        $item = Item::with("category")
             ->where("store_id", $store_id)
+            ->when(isset($item_id), function ($query) use ($item_id) {
+                $query->where("id", $item_id);
+            })
+            ->when(isset($barcode) && !isset($item_id), function ($query) use ($barcode) {
+                $query->where("barcode", $barcode);
+            })
             ->first();
+
+        if (!$item) {
+            return response()->json(["message" => "Item not found"], 404);
+        }
+
         return response()->json($item);
     }
 
-    // * Used for both item from the database and item from the default database
-    public function getItemByBarCode(Request $request, $barcode)
+    /**
+     * @OA\Get(
+     *   path="/item",
+     *   tags={"Item"},
+     *   summary="Get all items",
+     *   operationId="getAllItems",
+     *   @OA\Parameter(name="search", in="query", @OA\Schema(type="string")),
+     *   @OA\Parameter(name="from", in="query", @OA\Schema(type="integer")),
+     *   @OA\Parameter(name="to", in="query", @OA\Schema(type="integer")),
+     *   @OA\Parameter(name="order_by", in="query", @OA\Schema(type="string")),
+     *   @OA\Parameter(name="order_type", in="query", @OA\Schema(type="string", enum={"asc", "desc"})),
+     *   @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *     @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Item"))
+     *   )
+     * )
+     */
+    public function getMany(Request $request)
     {
         $store_id = $request->get("store_id");
-        $item = Item::where("store_id", $store_id)
-            ->where("barcode", $barcode)
-            ->first();
-
-        if ($item) {
-            $item["type"] = "current";
-            return response()->json($item);
-        }
-
-        // else, search in the default items
-        $item = DefaultItem::with("category")
-            ->where("bar_code", $barcode)
-            ->first();
-
-        if ($item) {
-            return response()->json([
-                "id" => $item->id,
-                "store_id" => $store_id,
-                "barcode" => $item->bar_code,
-                "name" => $item->product_name,
-                "image" => "https://149.28.148.73/merged-db/" . $item->image_url,
-                "category" => $item->category,
-                "type" => "default",
-            ]);
-        }
-
-        return response()->json(
-            [
-                "message" => "Item not found",
-            ],
-            404
-        );
-    }
-
-    public function getItemsBySearch(Request $request)
-    {
-        $store_id = $request->get("store_id");
-        $search = $request->query("search") ?? "";
-        $count = $request->query("count") ?? 10;
-
-        $current_items = Item::where("store_id", $store_id)
-            ->where("code", "iLike", "%" . $search . "%")
-            ->orWhere("barcode", "iLike", "%" . $search . "%")
-            ->orWhere("name", "iLike", "%" . $search . "%")
-            ->orWhereHas("category", function ($query) use ($search) {
-                $query->where("name", "iLike", "%" . $search . "%");
-            })
-            ->take($count)
-            ->get();
-
-        $default_items = DefaultItem::with("category")
-            ->where("product_name", "iLike", "%" . $search . "%")
-            ->orWhere("bar_code", "iLike", "%" . $search . "%")
-            ->orWhereHas("category", function ($query) use ($search) {
-                $query->where("name", "iLike", "%" . $search . "%");
-            })
-            ->take($count)
-            ->get(["id", "product_name AS name", "bar_code AS barcode", "image_url AS image", "category_id"]);
-
-        foreach ($default_items as $item) {
-            $item["image"] = "https://149.28.148.73/merged-db/" . $item["image"];
-        }
-
-        // remove default items that have barcode that is already in the current items
-        foreach ($current_items as $item) {
-            $default_items = $default_items->filter(function ($value, $key) use ($item) {
-                return $value["barcode"] != $item["barcode"];
-            });
-        }
-
-        $items = [
-            "current" => $current_items,
-            // using flatten to turn an object into an array
-            "default" => $default_items->flatten(),
-        ];
-
-        return response()->json($items);
-    }
-
-    public function getSellingItems(Request $request)
-    {
-        $store_id = Auth::user()->store_id;
-        $branch_id = Auth::user()->employment->branch_id;
 
         [$search, $from, $to, $order_by, $order_type] = $this->getQuery($request);
 
-        $items = Item::with("category", "itemProperties")
-            ->where("store_id", $store_id)
-            ->whereHas("itemProperties", function ($query) use ($branch_id) {
-                $query->where("branch_id", $branch_id);
-            })
-            ->where("name", "iLike", "%" . $search . "%")
-            ->orWhere("barcode", "iLike", "%" . $search . "%")
-            ->orWhereHas("category", function ($query) use ($search) {
-                $query->where("name", "iLike", "%" . $search . "%");
+        $items = Item::where("store_id", $store_id)
+            ->where(function ($query) use ($search) {
+                $query
+                    ->where("code", "iLike", "%" . $search . "%")
+                    ->orWhere("barcode", "iLike", "%" . $search . "%")
+                    ->orWhere("name", "iLike", "%" . $search . "%")
+                    ->orWhereHas("category", function ($query) use ($search) {
+                        $query->where("name", "iLike", "%" . $search . "%");
+                    });
             })
             ->orderBy($order_by, $order_type)
             ->skip($from)
@@ -240,42 +189,98 @@ class ItemController extends Controller
         return response()->json($items);
     }
 
-    // move item from default to current
+    /**
+     * @OA\Get(
+     *   path="/item/selling",
+     *   tags={"Item"},
+     *   summary="Get all selling items",
+     *   operationId="getAllSellingItems",
+     *   @OA\Parameter(name="search", in="query", @OA\Schema(type="string")),
+     *   @OA\Parameter(name="from", in="query", @OA\Schema(type="integer")),
+     *   @OA\Parameter(name="to", in="query", @OA\Schema(type="integer")),
+     *   @OA\Parameter(name="order_by", in="query", @OA\Schema(type="string")),
+     *   @OA\Parameter(name="order_type", in="query", @OA\Schema(type="string", enum={"asc", "desc"})),
+     *   @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *     @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/ItemWithProperties"))
+     *   )
+     * )
+     */
+    public function getSellingItems(Request $request)
+    {
+        $store_id = Auth::user()->store_id;
+
+        $branch_id = Auth::user()->employment->branch_id;
+
+        [$search, $from, $to, $order_by, $order_type] = $this->getQuery($request);
+
+        $items = Item::with("category", "properties")
+            ->where("store_id", $store_id)
+            ->whereHas("properties", function ($query) use ($branch_id) {
+                $query->where("branch_id", $branch_id);
+            })
+            ->where(function ($query) use ($search) {
+                $query
+                    ->where("code", "iLike", "%" . $search . "%")
+                    ->orWhere("barcode", "iLike", "%" . $search . "%")
+                    ->orWhere("name", "iLike", "%" . $search . "%")
+                    ->orWhereHas("category", function ($query) use ($search) {
+                        $query->where("name", "iLike", "%" . $search . "%");
+                    });
+            })
+            ->orderBy($order_by, $order_type)
+            ->skip($from)
+            ->take($to - $from)
+            ->get();
+
+        return response()->json($items);
+    }
+
+    /**
+     * @OA\Post(
+     *   path="/item/move",
+     *   tags={"Item"},
+     *   summary="Move item",
+     *   description="Move item from default to current",
+     *   operationId="moveItem",
+     *   @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(
+     *       required={"barcode"},
+     *       @OA\Property(property="barcode", type="string")
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *     @OA\JsonContent(ref="#/components/schemas/Item")
+     *   )
+     * )
+     */
     public function moveItem(Request $request)
     {
         $store_id = Auth::user()->store_id;
-        $branch_id = Auth::user()->employment->branch_id;
+
         $barcode = $request->input("barcode");
+
         if (!$barcode) {
-            return response()->json(
-                [
-                    "message" => "Barcode is required",
-                ],
-                400
-            );
+            return response()->json(["message" => "Barcode is required"], 400);
         }
 
         $default_item = DefaultItem::where("bar_code", $barcode)->first();
+
         if (!$default_item) {
-            return response()->json(
-                [
-                    "message" => "Item not found",
-                ],
-                404
-            );
+            return response()->json(["message" => "Item not found"], 404);
         }
 
         // if item is already in the store, return error
         $item = Item::where("store_id", $store_id)
             ->where("barcode", $barcode)
             ->first();
+
         if ($item) {
-            return response()->json(
-                [
-                    "message" => "Item already in the store",
-                ],
-                400
-            );
+            return response()->json(["message" => "Item already in the store"], 400);
         }
 
         // find a suitable category
@@ -290,49 +295,78 @@ class ItemController extends Controller
             "barcode" => $default_item->bar_code,
             "code" => $code,
             "name" => $default_item->product_name,
-            "category_id" => $category->id,
-            "image" => "https://149.28.148.73/merged-db/" . $default_item->image_url,
-        ]);
-
-        ItemProperty::create([
-            "item_id" => $item->id,
-            "branch_id" => $branch_id,
-            "quantity" => 0,
-            "sell_price" => 0,
-            "base_price" => 0,
+            "category_id" => $category->id ?? null,
+            "image" => null, // will be dealt with later
         ]);
 
         return response()->json($item);
     }
 
+    /**
+     * @OA\Get(
+     *   path="/item/{item_id}/price-history",
+     *   tags={"Item"},
+     *   summary="Get item price history",
+     *   operationId="getItemPriceHistory",
+     *   @OA\Parameter(name="item_id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *     @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/ItemPriceHistory"))
+     *   )
+     * )
+     */
     public function getPriceHistory(Request $request, $item_id)
     {
         $store_id = $request->get("store_id");
         // make sure store own item
-        $item = Item::where("id", $item_id)
-            ->where("store_id", $store_id)
-            ->first();
+        $item = Item::where(["store_id" => $store_id, "id" => $item_id])->first();
+
         if (!$item) {
-            return response()->json(
-                [
-                    "message" => "Item not found",
-                ],
-                404
-            );
+            return response()->json(["message" => "Item not found"], 404);
         }
 
         $price_history = ItemPriceHistory::where("item_id", $item_id)->get();
+
         return response()->json($price_history);
     }
 
-    // maybe only for manager ?
+    /**
+     * @OA\Put(
+     *   path="/item/{item_id}",
+     *   tags={"Item"},
+     *   summary="Update item",
+     *   operationId="updateItem",
+     *   @OA\Parameter(name="item_id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\RequestBody(
+     *     required=true,
+     *     @OA\MediaType(
+     *       mediaType="multipart/form-data",
+     *       @OA\Schema(ref="#/components/schemas/UpsertItemInput")
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *     @OA\JsonContent(ref="#/components/schemas/Item")
+     *   )
+     * )
+     */
     public function update(Request $request, $item_id)
     {
-        $store_id = Auth::guard("stores")->user()->id;
+        $store_id = $request->get("store_id");
+
         $data = $request->all();
-        $data["id"] = $item_id;
+
+        $item = Item::where("id", $item_id)
+            ->where("store_id", $store_id)
+            ->first();
+
+        if (!$item) {
+            return response()->json(["message" => "Item not found"], 404);
+        }
+
         $rules = [
-            "id" => ["required", "numeric", Rule::exists("items")->where("store_id", $store_id)],
             "code" => [
                 "nullable",
                 "string",
@@ -355,17 +389,13 @@ class ItemController extends Controller
                 "integer",
                 Rule::exists("item_categories", "id")->where("store_id", $store_id),
             ],
+            "image" => ["nullable", "image", "max:2048"],
         ];
 
         $validator = Validator::make($data, $rules);
+
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    "message" => "Validation failed",
-                    "errors" => $validator->errors(),
-                ],
-                400
-            );
+            return response()->json(["message" => $this->formatValidationError($validator->errors())], 400);
         }
 
         $item = Item::find($item_id);
@@ -373,13 +403,21 @@ class ItemController extends Controller
         $item->barcode = $data["barcode"] ?? $item->barcode;
         $item->name = $data["name"] ?? $item->name;
         $item->category_id = $data["category_id"] ?? $item->category_id;
+
+        $has_image = $request->hasFile("image");
+        if ($has_image) {
+            $image_name = $store_id . Str::uuid() . "." . $request->file("image")->getClientOriginalExtension();
+            $item->image = $request->file("image")->storedAs("images/{$store_id}/items", $image_name);
+            $item->image_key = Str::uuid();
+        }
+
         $item->save();
 
         return response()->json($item);
     }
 
     // get last purchase price of an item
-    public function getLastPurchasePrice(Request $request, $item_id)
+    public function getLastPurchasePrice($item_id)
     {
         $branch_id = Auth::user()->employment->branch_id;
 

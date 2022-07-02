@@ -21,8 +21,6 @@ class PurchaseSheet extends Model
         "note",
     ];
 
-    protected $hidden = ["updated_at", "deleted_at"];
-
     public function employee()
     {
         return $this->belongsTo(Employee::class);

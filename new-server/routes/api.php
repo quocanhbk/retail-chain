@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Middleware\Role\AdminOrPurchaser;
-use App\Http\Middleware\Role\AdminOrSale;
 use App\Http\Middleware\Role\AdminOrSaleOrPurchaser;
 use App\Http\Middleware\Role\Authenticated;
-use App\Http\Middleware\Role\HaveManageRole;
 use App\Http\Middleware\Role\HavePurchaseRole;
-use App\Http\Middleware\Role\HaveSaleRole;
 use App\Http\Middleware\Role\NotEmployee;
 use App\Http\Middleware\Role\NotStoreAdmin;
 use App\Http\Middleware\Role\OnlyEmployee;
@@ -19,12 +15,7 @@ use Illuminate\Support\Facades\Route;
 Route::get("/email/verify/{id}/{hash}", function (StoreEmailVerificationRequest $request) {
     $request->fulfill();
 
-    return response()->json(
-        [
-            "message" => "Email verified successfully",
-        ],
-        200
-    );
+    return response()->json(["message" => "Email verified successfully"], 200);
 })
     ->middleware(["signed", Authenticated::class])
     ->name("verification.verify");
@@ -47,9 +38,8 @@ Route::prefix("/store")->group(function () {
 // GET /guard - get guard info
 Route::get("/guard", [StoreController::class, "getGuard"]);
 
-Route::prefix("/branch")
-    ->middleware([OnlyStoreAdmin::class])
-    ->group(function () {
+Route::middleware([OnlyStoreAdmin::class])->group(function () {
+    Route::prefix("/branch")->group(function () {
         // POST /branch - create a new branch
         Route::post("/", [BranchController::class, "create"]);
         // GET /branch - get all branches
@@ -66,34 +56,52 @@ Route::prefix("/branch")
         Route::delete("/{branch_id}", [BranchController::class, "delete"]);
     });
 
+    Route::prefix("/role")->group(function () {
+        // POST /role - create a new role
+        Route::post("/", [RoleController::class, "create"]);
+        // GET /role - get all roles
+        Route::get("/", [RoleController::class, "getRoles"]);
+        // GET /role/{role_id} - get a role by id
+        Route::get("/{role_id}", [RoleController::class, "getRole"]);
+        // PUT /role/{role_id} - update a role by id
+        Route::put("/{role_id}", [RoleController::class, "update"]);
+        // DELETE /role/{role_id} - delete a role by id
+        Route::delete("/{role_id}", [RoleController::class, "delete"]);
+    });
+
+    Route::prefix("/permission")->group(function () {
+        // PUT /permission/{permission_id} - update a permission by id
+        Route::put("/{permission_id}", [PermissionController::class, "update"]);
+    });
+});
+
 Route::prefix("/employee")->group(function () {
-    // GET /employee/me - get current employee info
-    Route::get("/me", [EmployeeController::class, "me"])->middleware([OnlyEmployee::class]);
-    // POST /employee/login - login as employee
     Route::post("/login", [EmployeeController::class, "login"])->middleware([NotStoreAdmin::class, NotEmployee::class]);
-    // POST /employee/logout - logout as employee
+
     Route::post("/logout", [EmployeeController::class, "logout"])->middleware([OnlyEmployee::class]);
 
-    Route::middleware([Authenticated::class])->group(function () {
-        // GET /employee/{employee_id}/avatar - get an employee avatar
+    Route::middleware(["authenticated"])->group(function () {
         Route::get("/avatar/{avatar_key}", [EmployeeController::class, "getAvatar"]);
-        // PUT /employee/{employee_id}/avatar - update an employee avatar
-        Route::put("/{employee_id}/avatar", [EmployeeController::class, "updateAvatar"]);
+    });
+
+    Route::middleware([OnlyEmployee::class])->group(function () {
+        Route::get("/me", [EmployeeController::class, "me"]);
+        Route::put("/password", [EmployeeController::class, "changePassword"]);
     });
 
     Route::middleware([OnlyStoreAdmin::class])->group(function () {
         // POST /employee - create a new employee
         Route::post("/", [EmployeeController::class, "create"]);
-        // POST /employee/many - create many employees
-        Route::post("/many", [EmployeeController::class, "createMany"]);
+        // GET /employee/deleted - get deleted employees
+        Route::get("/deleted", [EmployeeController::class, "getDeleted"]);
         // PUT /employee/{employee_id} - update an employee by id
         Route::put("/{employee_id}", [EmployeeController::class, "update"]);
         // GET /employee - get all employees
-        Route::get("/", [EmployeeController::class, "getEmployees"]);
+        Route::get("/", [EmployeeController::class, "getmany"]);
         // GET /employee/branch/{branch_id} - get employees by branch id
         Route::get("/branch/{branch_id}", [EmployeeController::class, "getEmployeesByBranchId"]);
         // GET /employee/{employee_id} - get an employee by id
-        Route::get("/{employee_id}", [EmployeeController::class, "getEmployee"]);
+        Route::get("/{employee_id}", [EmployeeController::class, "getOne"]);
         // POST /employee/transfer - transfer an employee to another branch
         Route::post("/transfer", [EmployeeController::class, "transfer"]);
         // POST /employee/transfer/many - transfer many employees to another branch
@@ -102,67 +110,98 @@ Route::prefix("/employee")->group(function () {
         Route::put("/{employee_id}", [EmployeeController::class, "update"]);
         // DELETE /employee/{employee_id} - delete an employee by id
         Route::delete("/{employee_id}", [EmployeeController::class, "delete"]);
+        // POST /employee/{employee_id}/restore - restore an employee by id
+        Route::post("/{employee_id}/restore", [EmployeeController::class, "restore"]);
+        // DELETE /employee/{employee_id}/force - force delete an employee by id
+        Route::delete("/{employee_id}/force", [EmployeeController::class, "forceDelete"]);
     });
 });
 
 Route::prefix("/shift")
-    ->middleware([OnlyEmployee::class, HaveManageRole::class])
+    ->middleware("authenticated")
     ->group(function () {
-        // POST /shift - create a new shift
-        Route::post("/", [ShiftController::class, "create"]);
-        // GET /shift - get all shifts
-        Route::get("/", [ShiftController::class, "getShifts"]);
-        // GET /shift/{shift_id} - get a shift by id
-        Route::get("/{shift_id}", [ShiftController::class, "getShift"]);
-        // PUT /shift/{shift_id} - update a shift by id
-        Route::put("/{shift_id}", [ShiftController::class, "update"]);
-        // DELETE /shift/deactivate/{shift_id} - deactivate a shift by id
-        Route::delete("/{shift_id}", [ShiftController::class, "delete"]);
+        Route::post("/", [ShiftController::class, "create"])->middleware("have_permission:create-shift");
+
+        Route::put("/{shift_id}", [ShiftController::class, "update"])->middleware("have_permission:update-shift");
+
+        Route::delete("/{shift_id}", [ShiftController::class, "delete"])->middleware("have_permission:delete-shift");
+
+        Route::get("/", [ShiftController::class, "getShifts"])->middleware("have_permission:view-shift");
+
+        Route::get("/{shift_id}", [ShiftController::class, "getShift"])->middleware("have_permission:view-shift");
     });
 
 Route::prefix("/work-schedule")
-    ->middleware([OnlyEmployee::class, HaveManageRole::class])
+    ->middleware("authenticated")
     ->group(function () {
         // POST /work-schedule - create a new work schedule
-        Route::post("/", [WorkScheduleController::class, "create"]);
+        Route::post("/", [WorkScheduleController::class, "create"])->middleware("have_permission:create-work-schedule");
         // GET /work-schedule - get all work schedules
-        Route::get("/", [WorkScheduleController::class, "getWorkSchedules"]);
-        // GET /work-schedule/{date} - get all work schedules in a day
-        Route::get("/date/{date}", [WorkScheduleController::class, "getWorkSchedulesByDate"]);
+        Route::get("/", [WorkScheduleController::class, "getMany"])->middleware("have_permission:view-work-schedule");
         // PATCH /work-schedule/{work_schedule_id} - update a work schedule by id
-        Route::put("/{work_schedule_id}", [WorkScheduleController::class, "update"]);
+        Route::put("/{work_schedule_id}", [WorkScheduleController::class, "update"])->middleware(
+            "have_permission:update-work-schedule"
+        );
         // DELETE /work-schedule/{work_schedule_id} - delete a work schedule by id
-        Route::delete("/{work_schedule_id}", [WorkScheduleController::class, "delete"]);
+        Route::delete("/{work_schedule_id}", [WorkScheduleController::class, "delete"])->middleware(
+            "have_permission:delete-work-schedule"
+        );
     });
 
 Route::prefix("/supplier")
-    ->middleware([AdminOrPurchaser::class])
+    ->middleware("authenticated")
     ->group(function () {
-        // POST /supplier - create a new supplier
-        Route::post("/", [SupplierController::class, "create"]);
-        // GET /supplier - get all suppliers
-        Route::get("/", [SupplierController::class, "getSuppliers"]);
-        // GET /supplier/{supplier_id} - get a supplier by id
-        Route::get("/{supplier_id}", [SupplierController::class, "getSupplier"]);
-        // PUT /supplier/{supplier_id} - update a supplier by id
-        Route::put("/{supplier_id}", [SupplierController::class, "update"]);
-        // DELETE /supplier/{supplier_id} - delete a supplier by id
-        Route::delete("/{supplier_id}", [SupplierController::class, "delete"]);
+        Route::middleware(OnlyStoreAdmin::class)->group(function () {
+            Route::get("/deleted", [SupplierController::class, "getDeleted"]);
+
+            Route::post("/{supplier_id}/restore", [SupplierController::class, "restore"]);
+
+            Route::delete("/{supplier_id}/force", [SupplierController::class, "forceDelete"]);
+        });
+
+        Route::post("/", [SupplierController::class, "create"])->middleware("have_permission:create-supplier");
+
+        Route::get("/", [SupplierController::class, "getMany"])->middleware("have_permission:view-supplier");
+
+        Route::get("/{supplier_id}", [SupplierController::class, "getOne"])->middleware(
+            "have_permission:view-supplier"
+        );
+
+        Route::put("/{supplier_id}", [SupplierController::class, "update"])->middleware(
+            "have_permission:update-supplier"
+        );
+
+        Route::delete("/{supplier_id}", [SupplierController::class, "delete"])->middleware(
+            "have_permission:delete-supplier"
+        );
     });
 
 Route::prefix("/item-category")
-    ->middleware([AdminOrSaleOrPurchaser::class])
+    ->middleware("authenticated")
     ->group(function () {
-        // POST /item-category - create a new item category
-        Route::post("/", [ItemCategoryController::class, "create"]);
-        // POST /item-category/bulk - create multiple item categories
-        Route::post("/many", [ItemCategoryController::class, "createMany"]);
-        // GET /item-category - get all item categories
-        Route::get("/", [ItemCategoryController::class, "getItemCategories"]);
-        // PUT /item-category/{item_category_id} - update an item category by id
-        Route::put("/{item_category_id}", [ItemCategoryController::class, "update"]);
-        // DELETE /item-category/{item_category_id} - delete an item category by id
-        Route::delete("/{item_category_id}", [ItemCategoryController::class, "delete"]);
+        Route::middleware(OnlyStoreAdmin::class)->group(function () {
+            Route::get("/deleted", [ItemCategoryController::class, "getDeleted"]);
+
+            Route::post("/{item_category_id}/restore", [ItemCategoryController::class, "restore"]);
+
+            Route::delete("/{item_category_id}/force", [ItemCategoryController::class, "forceDelete"]);
+        });
+
+        Route::post("/", [ItemCategoryController::class, "create"])->middleware("have_permission:create-category");
+
+        Route::get("/", [ItemCategoryController::class, "getMany"])->middleware("have_permission:view-category");
+
+        Route::get("/{item_category_id}", [ItemCategoryController::class, "getOne"])->middleware(
+            "have_permission:view-category"
+        );
+
+        Route::put("/{item_category_id}", [ItemCategoryController::class, "update"])->middleware(
+            "have_permission:update-category"
+        );
+
+        Route::delete("/{item_category_id}", [ItemCategoryController::class, "delete"])->middleware(
+            "have_permission:delete-category"
+        );
     });
 
 Route::prefix("/item")->group(function () {
@@ -192,7 +231,7 @@ Route::prefix("/item")->group(function () {
         // GET /item/{item_id}/price_history - get price history of an item
         Route::get("/{item_id}/price_history", [ItemController::class, "getPriceHistory"]);
         // GET /item/{item_id} - get an item by id
-        Route::get("/{item_id}", [ItemController::class, "getItem"]);
+        Route::get("/{item_id}", [ItemController::class, "getOne"]);
         // GET /item/purchase-sheet/{purchase_sheet_id} - get items from a purchase sheet
         Route::get("/purchase-sheet/{purchase_sheet_id}", [ItemController::class, "getItemsFromPurchaseSheet"]);
     });
@@ -237,29 +276,31 @@ Route::prefix("/return-purchase-sheet")
     });
 
 Route::prefix("/customer")
-    ->middleware([AdminOrSale::class])
+    ->middleware(["authenticated"])
     ->group(function () {
         // POST /customer - create a new customer
-        Route::post("/", [CustomerController::class, "create"]);
+        Route::post("/", [CustomerController::class, "create"])->middleware("have_permission:create-customer");
         // GET /customer - get all customers
-        Route::get("/", [CustomerController::class, "getCustomers"]);
-        // GET /customer/{customer_id} - get a customer by id
-        Route::get("/{customer_id}", [CustomerController::class, "getCustomer"]);
-        // GET /customer/code/{code} - get a customer by code
-        Route::get("/code/{code}", [CustomerController::class, "getCustomerByCode"]);
+        Route::get("/", [CustomerController::class, "getCustomers"])->middleware("have_permission:view-customer");
+        // GET /customer/one - get a customer by id or code
+        Route::get("/one", [CustomerController::class, "getCustomer"])->middleware("have_permission:view-customer");
         // PATCH /customer/{customer_id} - update a customer by id
-        Route::put("/{customer_id}", [CustomerController::class, "update"]);
+        Route::put("/{customer_id}", [CustomerController::class, "update"])->middleware(
+            "have_permission:update-customer"
+        );
         // POST /customer/add-point/{customer_id} - add point to a customer by id
-        Route::post("/add-point/{customer_id}", [CustomerController::class, "addPoint"]);
+        Route::post("/add-point/{customer_id}", [CustomerController::class, "addPoint"])->middleware(
+            "have_permission:update-customer"
+        );
         // POST /customer/use-point/{customer_id} - use point from a customer by id
-        Route::post("/use-point/{customer_id}", [CustomerController::class, "usePoint"]);
+        Route::post("/use-point/{customer_id}", [CustomerController::class, "usePoint"])->middleware(
+            "have_permission:update-customer"
+        );
     });
 
 Route::prefix("/default-item")->group(function () {
     // GET /default-item - get all default items
     Route::get("/", [DefaultItemController::class, "getItems"]);
     // GET /default-item/barcode/{barcode} - get a default item by barcode
-    Route::get("/barcode/{barcode}", [DefaultItemController::class, "getItemByBarcode"]);
-    // GET /default-item/category/{category_id} - get default items by category id
-    Route::get("/category/{category_id}", [DefaultItemController::class, "getItemsByCategory"]);
+    Route::get("/one", [DefaultItemController::class, "getItem"]);
 });

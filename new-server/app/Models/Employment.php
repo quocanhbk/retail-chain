@@ -11,8 +11,6 @@ class Employment extends Model
 
     protected $fillable = ["employee_id", "branch_id", "from", "to"];
 
-    protected $hidden = ["deleted_at"];
-
     public function employee()
     {
         return $this->belongsTo(Employee::class);

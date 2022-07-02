@@ -11,8 +11,6 @@ class QuantityCheckingSheet extends Model
 
     protected $fillable = ["code", "employee_id", "branch_id", "note"];
 
-    protected $hidden = ["updated_at", "deleted_at"];
-
     public function employee()
     {
         return $this->belongsTo(Employee::class);

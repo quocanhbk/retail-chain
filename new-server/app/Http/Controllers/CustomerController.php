@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Models\Customer;
@@ -54,12 +53,7 @@ class CustomerController extends Controller
         $validator = Validator::make($data, $rules);
 
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    "message" => $this->formatValidationError($validator->errors()),
-                ],
-                400
-            );
+            return response()->json(["message" => $this->formatValidationError($validator->errors())], 400);
         }
 
         $customer = Customer::create([
@@ -101,10 +95,13 @@ class CustomerController extends Controller
         [$search, $from, $to, $order_by, $order_type] = $this->getQuery($request);
 
         $customers = Customer::where("store_id", $store_id)
-            ->where("name", "iLike", "%" . $search . "%")
-            ->orWhere("phone", "iLike", "%" . $search . "%")
-            ->orWhere("email", "iLike", "%" . $search . "%")
-            ->orWhere("code", "iLike", "%" . $search . "%")
+            ->where(function ($query) use ($search) {
+                $query
+                    ->where("name", "iLike", "%" . $search . "%")
+                    ->orWhere("phone", "iLike", "%" . $search . "%")
+                    ->orWhere("email", "iLike", "%" . $search . "%")
+                    ->orWhere("code", "iLike", "%" . $search . "%");
+            })
             ->orderBy($order_by, $order_type)
             ->offset($from)
             ->limit($to - $from)
@@ -115,11 +112,12 @@ class CustomerController extends Controller
 
     /**
      * @OA\Get(
-     *   path="/customer/{customer_id}",
+     *   path="/customer/one",
      *   summary="Get a customer",
      *   tags={"Customer"},
      *   operationId="getCustomer",
-     *   @OA\Parameter(name="customer_id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\Parameter(name="id", in="query", @OA\Schema(type="integer")),
+     *   @OA\Parameter(name="code", in="query", @OA\Schema(type="string")),
      *   @OA\Response(
      *     response=200,
      *     description="Successful operation",
@@ -127,55 +125,27 @@ class CustomerController extends Controller
      *   ),
      * )
      */
-    public function getCustomer(Request $request, $customer_id)
+    public function getCustomer(Request $request)
     {
-        $store_id = $request->get("store_id");
-
-        $customer = Customer::where("store_id", $store_id)
-            ->where("id", $customer_id)
-            ->first();
-
-        if (!$customer) {
-            return response()->json(
-                [
-                    "message" => "Customer not found.",
-                ],
-                404
-            );
+        $id = $request->get("id");
+        $code = $request->get("code");
+        if (!isset($id) && !isset($code)) {
+            return response()->json(["message" => "Missing id or code"], 400);
         }
 
-        return response()->json($customer);
-    }
-
-    /**
-     * @OA\Get(
-     *   path="/customer/code/{code}",
-     *   summary="Get a customer by code",
-     *   tags={"Customer"},
-     *   operationId="getCustomerByCode",
-     *   @OA\Parameter(name="code", in="path", @OA\Schema(type="string"), required=true),
-     *   @OA\Response(
-     *     response=200,
-     *     description="Successful operation",
-     *     @OA\JsonContent(ref="#/components/schemas/Customer")
-     *   ),
-     * )
-     */
-    public function getCustomerByCode(Request $request, $code)
-    {
         $store_id = $request->get("store_id");
 
         $customer = Customer::where("store_id", $store_id)
-            ->where("code", $code)
+            ->when(isset($id), function ($query) use ($id) {
+                $query->where("id", $id);
+            })
+            ->when(isset($code) && !isset($id), function ($query) use ($code) {
+                $query->where("code", $code);
+            })
             ->first();
 
         if (!$customer) {
-            return response()->json(
-                [
-                    "message" => "Customer not found.",
-                ],
-                404
-            );
+            return response()->json(["message" => "Customer not found."], 404);
         }
 
         return response()->json($customer);
@@ -213,12 +183,7 @@ class CustomerController extends Controller
             ->first();
 
         if (!$customer) {
-            return response()->json(
-                [
-                    "message" => "Customer not found.",
-                ],
-                404
-            );
+            return response()->json(["message" => "Customer not found."], 404);
         }
 
         $rules = [
@@ -245,12 +210,7 @@ class CustomerController extends Controller
         $validator = Validator::make($data, $rules);
 
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    "message" => $this->formatValidationError($validator->errors()),
-                ],
-                400
-            );
+            return response()->json(["message" => $this->formatValidationError($validator->errors())], 400);
         }
 
         $customer->name = $data["name"] ?? $customer->name;
@@ -314,12 +274,7 @@ class CustomerController extends Controller
         $validator = Validator::make($data, $rules);
 
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    "message" => $this->formatValidationError($validator->errors()),
-                ],
-                400
-            );
+            return response()->json(["message" => $this->formatValidationError($validator->errors())], 400);
         }
 
         $customer->point += $data["point"];
@@ -366,12 +321,7 @@ class CustomerController extends Controller
             ->first();
 
         if (!$customer) {
-            return response()->json(
-                [
-                    "message" => "Customer not found.",
-                ],
-                404
-            );
+            return response()->json(["message" => "Customer not found."], 404);
         }
 
         $rules = [
@@ -381,29 +331,17 @@ class CustomerController extends Controller
         $validator = Validator::make($data, $rules);
 
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    "message" => $this->formatValidationError($validator->errors()),
-                ],
-                400
-            );
+            return response()->json(["message" => $this->formatValidationError($validator->errors())], 400);
         }
 
         if ($customer->point < $data["point"]) {
-            return response()->json(
-                [
-                    "message" => "Not enough point.",
-                ],
-                400
-            );
+            return response()->json(["message" => "Not enough point."], 400);
         }
 
         $customer->point -= $data["point"];
 
         $customer->save();
 
-        return response()->json([
-            "message" => "Used point successfully.",
-        ]);
+        return response()->json(["message" => "Used point successfully."]);
     }
 }

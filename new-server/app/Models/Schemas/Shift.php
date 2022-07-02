@@ -5,7 +5,7 @@ namespace App\Models\Schemas;
 /**
  * @OA\Schema(
  *   oneOf={@OA\Schema(ref="#/components/schemas/UpsertTime")},
- *   required={"id", "name", "start_time", "end_time"}
+ *   required={"id", "branch_id", "name", "start_time", "end_time"}
  * )
  */
 class Shift
@@ -73,4 +73,21 @@ class UpsertShiftInput
  */
 class CreateShiftInput
 {
+}
+
+/**
+ * @OA\Schema(
+ *   oneOf={@OA\Schema(ref="#/components/schemas/Shift")},
+ *   required={"workSchedules"}
+ * )
+ */
+class ShiftWithWorkSchedules
+{
+    /**
+     * @OA\Property(
+     *   type="array",
+     *   @OA\Items(ref="#/components/schemas/WorkScheduleWithEmployee")
+     * )
+     */
+    public $workSchedules;
 }

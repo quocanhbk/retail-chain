@@ -18,11 +18,10 @@ class CreateItemPriceHistoriesTable extends Migration
             $table->decimal("price", 13, 0);
             $table->date("start_date");
             $table->date("end_date")->nullable();
-            $table->unsignedBigInteger("item_id");
             $table
-                ->foreign("item_id")
-                ->references("id")
-                ->on("items");
+                ->foreignId("item_id")
+                ->constrained()
+                ->onDelete("cascade");
         });
     }
 

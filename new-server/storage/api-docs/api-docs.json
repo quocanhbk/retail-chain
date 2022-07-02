@@ -132,60 +132,6 @@
                 }
             }
         },
-        "/branch/{branch_id}/image": {
-            "put": {
-                "tags": [
-                    "Branch"
-                ],
-                "summary": "Update branch image",
-                "operationId": "updateBranchImage",
-                "parameters": [
-                    {
-                        "name": "branch_id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "image": {
-                                        "type": "file"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Image updated successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "image": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/branch/{branch_id}": {
             "get": {
                 "tags": [
@@ -271,7 +217,13 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Branch"
+                                    "properties": {
+                                        "message": {
+                                            "description": "Success message",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -373,7 +325,7 @@
                 }
             }
         },
-        "/customer/{customer_id}": {
+        "/customer/one": {
             "get": {
                 "tags": [
                     "Customer"
@@ -382,11 +334,17 @@
                 "operationId": "getCustomer",
                 "parameters": [
                     {
-                        "name": "customer_id",
-                        "in": "path",
-                        "required": true,
+                        "name": "id",
+                        "in": "query",
                         "schema": {
                             "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 ],
@@ -402,7 +360,9 @@
                         }
                     }
                 }
-            },
+            }
+        },
+        "/customer/{customer_id}": {
             "put": {
                 "tags": [
                     "Customer"
@@ -445,37 +405,6 @@
                                         }
                                     },
                                     "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/customer/code/{code}": {
-            "get": {
-                "tags": [
-                    "Customer"
-                ],
-                "summary": "Get a customer by code",
-                "operationId": "getCustomerByCode",
-                "parameters": [
-                    {
-                        "name": "code",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Customer"
                                 }
                             }
                         }
@@ -647,66 +576,10 @@
                         "schema": {
                             "type": "integer"
                         }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A list with default items",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/DefaultItemWithCategory"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/default-item/barcode/{barcode}": {
-            "get": {
-                "tags": [
-                    "DefaultItem"
-                ],
-                "summary": "Get default item by barcode",
-                "operationId": "getDefaultItemByBarcode",
-                "parameters": [
-                    {
-                        "name": "barcode",
-                        "in": "path",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A default item",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/DefaultItemWithCategory"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/default-item/category/{category_id}": {
-            "get": {
-                "tags": [
-                    "DefaultItem"
-                ],
-                "summary": "Get default items by category",
-                "operationId": "getDefaultItemsByCategory",
-                "parameters": [
+                    },
                     {
                         "name": "category_id",
-                        "in": "path",
+                        "in": "query",
                         "schema": {
                             "type": "integer"
                         }
@@ -722,6 +595,43 @@
                                     "items": {
                                         "$ref": "#/components/schemas/DefaultItemWithCategory"
                                     }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/default-item/one": {
+            "get": {
+                "tags": [
+                    "DefaultItem"
+                ],
+                "summary": "Get default item by barcode",
+                "operationId": "getDefaultItemByBarcode",
+                "parameters": [
+                    {
+                        "name": "barcode",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A default item",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DefaultItemWithCategory"
                                 }
                             }
                         }
@@ -775,6 +685,13 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "name": "branch_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "responses": {
@@ -802,7 +719,7 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "$ref": "#/components/schemas/CreateEmployeeInput"
                             }
@@ -816,96 +733,6 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Employee"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/employee/many": {
-            "post": {
-                "tags": [
-                    "Employee"
-                ],
-                "summary": "Create many new employees",
-                "operationId": "createManyEmployees",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CreateManyEmployeesInput"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/employee/{employee_id}/avatar": {
-            "put": {
-                "tags": [
-                    "Employee"
-                ],
-                "summary": "Update employee avatar",
-                "operationId": "updateEmployeeAvatar",
-                "parameters": [
-                    {
-                        "name": "employee_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "avatar": {
-                                        "type": "file"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
                                 }
                             }
                         }
@@ -959,7 +786,7 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "$ref": "#/components/schemas/UpdateEmployeeInput"
                             }
@@ -972,7 +799,16 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Employee"
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully updated"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -1018,6 +854,65 @@
                 }
             }
         },
+        "/employee/password": {
+            "put": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Update employee password",
+                "operationId": "changeEmployeePassword",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "current_password",
+                                    "new_password",
+                                    "new_password_confirmation"
+                                ],
+                                "properties": {
+                                    "current_password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "new_password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "new_password_confirmation": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Password changed successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/employee/avatar/{avatar_key}": {
             "get": {
                 "tags": [
@@ -1040,40 +935,6 @@
                         "description": "Image retrieved successfully",
                         "content": {
                             "image/*": {}
-                        }
-                    }
-                }
-            }
-        },
-        "/employee/branch/{branch_id}": {
-            "get": {
-                "tags": [
-                    "Employee"
-                ],
-                "summary": "Get employees by branch",
-                "operationId": "getEmployeesByBranch",
-                "parameters": [
-                    {
-                        "name": "branch_id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Employees retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/EmployeeWithEmployment"
-                                    }
-                                }
-                            }
                         }
                     }
                 }
@@ -1199,52 +1060,13 @@
                 }
             }
         },
-        "/employee/transfer/many": {
-            "post": {
-                "tags": [
-                    "Employee"
-                ],
-                "summary": "Transfer many employees",
-                "operationId": "transferManyEmployees",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/TransferManyEmployeesInput"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Employees transferred successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/item-category": {
             "get": {
                 "tags": [
                     "ItemCategory"
                 ],
-                "summary": "Get all item categories",
-                "operationId": "getAllItemCategories",
+                "summary": "Get item categories",
+                "operationId": "getItemCategories",
                 "parameters": [
                     {
                         "name": "search",
@@ -1332,46 +1154,30 @@
                 }
             }
         },
-        "/item-category/many": {
-            "post": {
+        "/item-category/{category_id}": {
+            "get": {
                 "tags": [
                     "ItemCategory"
                 ],
-                "summary": "Create many item categories",
-                "operationId": "createManyItemCategories",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "item_categories": {
-                                        "type": "array",
-                                        "items": {
-                                            "$ref": "#/components/schemas/CreateItemCategoryInput"
-                                        }
-                                    }
-                                },
-                                "type": "object"
-                            }
+                "summary": "Get an item category",
+                "operationId": "getItemCategory",
+                "parameters": [
+                    {
+                        "name": "category_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
                         }
                     }
-                },
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/ItemCategory"
                                 }
                             }
                         }
@@ -1441,6 +1247,13 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "name": "force",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
                     }
                 ],
                 "responses": {
@@ -1465,13 +1278,678 @@
                 }
             }
         },
+        "/item-category/deleted": {
+            "get": {
+                "tags": [
+                    "ItemCategory"
+                ],
+                "summary": "Get deleted item categories",
+                "operationId": "getDeletedItemCategories",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_by",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ItemCategory"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/item-category/{item_category_id}/restore": {
+            "post": {
+                "tags": [
+                    "ItemCategory"
+                ],
+                "summary": "Restore an item category",
+                "operationId": "restoreItemCategory",
+                "parameters": [
+                    {
+                        "name": "item_category_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/item-category/{item_category_id}/force": {
+            "delete": {
+                "tags": [
+                    "ItemCategory"
+                ],
+                "summary": "Force delete an item category",
+                "operationId": "forceDeleteItemCategory",
+                "parameters": [
+                    {
+                        "name": "item_category_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/item": {
+            "get": {
+                "tags": [
+                    "Item"
+                ],
+                "summary": "Get all items",
+                "operationId": "getAllItems",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "order_by",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Item"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Item"
+                ],
+                "summary": "Create new item",
+                "operationId": "createItem",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateItemInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Item"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/item/one": {
+            "get": {
+                "tags": [
+                    "Item"
+                ],
+                "summary": "Get item by id",
+                "operationId": "getItemById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "barcode",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ItemWithCategory"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/item/selling": {
+            "get": {
+                "tags": [
+                    "Item"
+                ],
+                "summary": "Get all selling items",
+                "operationId": "getAllSellingItems",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "order_by",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ItemWithProperties"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/item/move": {
+            "post": {
+                "tags": [
+                    "Item"
+                ],
+                "summary": "Move item",
+                "description": "Move item from default to current",
+                "operationId": "moveItem",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "barcode"
+                                ],
+                                "properties": {
+                                    "barcode": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Item"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/item/{item_id}/price-history": {
+            "get": {
+                "tags": [
+                    "Item"
+                ],
+                "summary": "Get item price history",
+                "operationId": "getItemPriceHistory",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ItemPriceHistory"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/item/{item_id}": {
+            "put": {
+                "tags": [
+                    "Item"
+                ],
+                "summary": "Update item",
+                "operationId": "updateItem",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpsertItemInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Item"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/role": {
+            "get": {
+                "tags": [
+                    "Role"
+                ],
+                "summary": "Get roles",
+                "operationId": "getRoles",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_by",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Role"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Role"
+                ],
+                "summary": "Create a new role",
+                "operationId": "createRole",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateRoleInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfull operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Role"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/role/{id}": {
+            "get": {
+                "tags": [
+                    "Role"
+                ],
+                "summary": "Get role by id",
+                "operationId": "getRole",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Role"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Role"
+                ],
+                "summary": "Update role",
+                "operationId": "updateRole",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpsertRoleInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Role"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Role"
+                ],
+                "summary": "Delete role",
+                "operationId": "deleteRole",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "description": "Successful operation",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/shift": {
             "get": {
                 "tags": [
                     "Shift"
                 ],
                 "summary": "Get all shifts",
-                "operationId": "getAllShifts",
+                "operationId": "getShifts",
+                "parameters": [
+                    {
+                        "name": "branch_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -1493,6 +1971,7 @@
                     "Shift"
                 ],
                 "summary": "Create a new shift",
+                "description": "Create a shift (by admin or manager)",
                 "operationId": "createShift",
                 "requestBody": {
                     "required": true,
@@ -1612,7 +2091,16 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Shift"
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "description": "Success message",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -1746,11 +2234,16 @@
                             "application/json": {
                                 "schema": {
                                     "required": [
-                                        "message"
+                                        "guard"
                                     ],
                                     "properties": {
                                         "guard": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "enum": [
+                                                "store",
+                                                "employee",
+                                                "guest"
+                                            ]
                                         }
                                     },
                                     "type": "object"
@@ -1941,6 +2434,14 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "name": "force",
+                        "in": "query",
+                        "description": "Force delete",
+                        "schema": {
+                            "type": "boolean"
+                        }
                     }
                 ],
                 "responses": {
@@ -1949,7 +2450,163 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Supplier"
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "description": "Success message",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/supplier/deleted": {
+            "get": {
+                "tags": [
+                    "Supplier"
+                ],
+                "summary": "Get all soft deleted suppliers",
+                "operationId": "getDeletedSuppliers",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_by",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Supplier"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/supplier/{supplier_id}/restore": {
+            "post": {
+                "tags": [
+                    "Supplier"
+                ],
+                "summary": "Restore a supplier",
+                "operationId": "restoreSupplier",
+                "parameters": [
+                    {
+                        "name": "supplier_id",
+                        "in": "path",
+                        "description": "Supplier ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "description": "Success message",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/supplier/{supplier_id}/force": {
+            "delete": {
+                "tags": [
+                    "Supplier"
+                ],
+                "summary": "Force delete a supplier",
+                "operationId": "forceDeleteSupplier",
+                "parameters": [
+                    {
+                        "name": "supplier_id",
+                        "in": "path",
+                        "description": "Supplier ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "description": "Success message",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -1982,7 +2639,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/WorkSchedule"
+                                        "$ref": "#/components/schemas/WorkScheduleWithShiftAndEmployee"
                                     }
                                 }
                             }
@@ -2090,7 +2747,16 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/WorkSchedule"
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "description": "Success message",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -2105,9 +2771,7 @@
                 "required": [
                     "id",
                     "name",
-                    "address",
-                    "created_at",
-                    "updated_at"
+                    "address"
                 ],
                 "properties": {
                     "id": {
@@ -2191,16 +2855,16 @@
             "TransferredEmployeeInput": {
                 "required": [
                     "id",
-                    "roles"
+                    "role_ids"
                 ],
                 "properties": {
                     "id": {
                         "type": "integer"
                     },
-                    "roles": {
+                    "role_ids": {
                         "type": "array",
                         "items": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     }
                 },
@@ -2211,7 +2875,7 @@
                     "name",
                     "email",
                     "password",
-                    "roles"
+                    "role_ids"
                 ],
                 "properties": {
                     "name": {
@@ -2228,10 +2892,10 @@
                         "type": "string",
                         "format": "password"
                     },
-                    "roles": {
+                    "role_ids": {
                         "type": "array",
                         "items": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     },
                     "phone": {
@@ -2249,7 +2913,7 @@
             "Customer": {
                 "required": [
                     "id",
-                    "name",
+                    "code",
                     "name",
                     "phone",
                     "email"
@@ -2410,7 +3074,13 @@
                     "id",
                     "name",
                     "email",
-                    "store_id"
+                    "store_id",
+                    "avatar",
+                    "avatar_key",
+                    "phone",
+                    "birthday",
+                    "gender",
+                    "email_verified_at"
                 ],
                 "properties": {
                     "id": {
@@ -2426,22 +3096,28 @@
                         "type": "integer"
                     },
                     "avatar": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "avatar_key": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "phone": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "birthday": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "gender": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "email_verified_at": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     }
                 },
                 "type": "object",
@@ -2474,7 +3150,7 @@
                     "password",
                     "password_confirmation",
                     "branch_id",
-                    "roles"
+                    "role_ids"
                 ],
                 "properties": {
                     "name": {
@@ -2494,10 +3170,10 @@
                     "branch_id": {
                         "type": "integer"
                     },
-                    "roles": {
+                    "role_ids": {
                         "type": "array",
                         "items": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     },
                     "phone": {
@@ -2508,6 +3184,10 @@
                     },
                     "gender": {
                         "type": "string"
+                    },
+                    "avatar": {
+                        "type": "string",
+                        "format": "binary"
                     }
                 },
                 "type": "object"
@@ -2554,10 +3234,10 @@
                     "email": {
                         "type": "string"
                     },
-                    "roles": {
+                    "role_ids": {
                         "type": "array",
                         "items": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     },
                     "phone": {
@@ -2568,6 +3248,10 @@
                     },
                     "gender": {
                         "type": "string"
+                    },
+                    "avatar": {
+                        "type": "string",
+                        "format": "binary"
                     }
                 },
                 "type": "object"
@@ -2593,28 +3277,6 @@
             },
             "TransferEmployeeInput": {
                 "required": [
-                    "employee_id",
-                    "branch_id",
-                    "roles"
-                ],
-                "properties": {
-                    "employee_id": {
-                        "type": "integer"
-                    },
-                    "branch_id": {
-                        "type": "integer"
-                    },
-                    "roles": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "type": "object"
-            },
-            "TransferManyEmployeesInput": {
-                "required": [
                     "branch_id",
                     "employees"
                 ],
@@ -2624,7 +3286,24 @@
                     },
                     "employees": {
                         "type": "array",
-                        "items": {}
+                        "items": {
+                            "required": [
+                                "employee_id",
+                                "role_ids"
+                            ],
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "role_ids": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "integer"
+                                    }
+                                }
+                            },
+                            "type": "object"
+                        }
                     }
                 },
                 "type": "object"
@@ -2716,9 +3395,158 @@
                     }
                 ]
             },
+            "Item": {
+                "required": [
+                    "id",
+                    "store_id",
+                    "barcode",
+                    "code",
+                    "name",
+                    "image",
+                    "image_key",
+                    "item_category_id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "store_id": {
+                        "type": "integer"
+                    },
+                    "barcode": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "image": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "image_key": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "item_category_id": {
+                        "type": "integer",
+                        "nullable": true
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpsertTime"
+                    }
+                ]
+            },
+            "ItemWithCategory": {
+                "required": [
+                    "category"
+                ],
+                "properties": {
+                    "category": {
+                        "$ref": "#/components/schemas/ItemCategory"
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/Item"
+                    }
+                ]
+            },
+            "ItemWithProperties": {
+                "required": [
+                    "properties"
+                ],
+                "properties": {
+                    "properties": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ItemProperty"
+                        }
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/ItemWithCategory"
+                    }
+                ]
+            },
+            "CreateItemInput": {
+                "required": [
+                    "barcode",
+                    "name"
+                ],
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpsertItemInput"
+                    }
+                ]
+            },
+            "UpsertItemInput": {
+                "properties": {
+                    "category_id": {
+                        "type": "integer"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "barcode": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "image": {
+                        "type": "string",
+                        "format": "binary"
+                    }
+                },
+                "type": "object"
+            },
+            "ItemPriceHistory": {
+                "required": [
+                    "id",
+                    "item_id",
+                    "price",
+                    "start_date",
+                    "end_date"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "item_id": {
+                        "type": "integer"
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "start_date": {
+                        "type": "string"
+                    },
+                    "end_date": {
+                        "type": "string"
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpsertTime"
+                    }
+                ]
+            },
             "ItemCategory": {
                 "required": [
                     "id",
+                    "store_id",
                     "name",
                     "description"
                 ],
@@ -2766,6 +3594,63 @@
                     }
                 ]
             },
+            "ItemCategoryWithItems": {
+                "properties": {
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Item"
+                        }
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/ItemCategory"
+                    }
+                ]
+            },
+            "ItemProperty": {
+                "required": [
+                    "id",
+                    "quantity",
+                    "sell_price",
+                    "base_price",
+                    "last_purchase_price",
+                    "item_id",
+                    "branch_id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "quantity": {
+                        "type": "integer"
+                    },
+                    "sell_price": {
+                        "type": "integer"
+                    },
+                    "base_price": {
+                        "type": "integer"
+                    },
+                    "last_purchase_price": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "item_id": {
+                        "type": "integer"
+                    },
+                    "branch_id": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpsertTime"
+                    }
+                ]
+            },
             "UpsertTime": {
                 "required": [
                     "created_at",
@@ -2781,9 +3666,60 @@
                 },
                 "type": "object"
             },
+            "Role": {
+                "required": [
+                    "id",
+                    "store_id",
+                    "name",
+                    "description"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "store_id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpsertTime"
+                    }
+                ]
+            },
+            "UpsertRoleInput": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateRoleInput": {
+                "required": [
+                    "name"
+                ],
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpsertRoleInput"
+                    }
+                ]
+            },
             "Shift": {
                 "required": [
                     "id",
+                    "branch_id",
                     "name",
                     "start_time",
                     "end_time"
@@ -2839,11 +3775,31 @@
                     }
                 ]
             },
+            "ShiftWithWorkSchedules": {
+                "required": [
+                    "workSchedules"
+                ],
+                "properties": {
+                    "workSchedules": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WorkScheduleWithEmployee"
+                        }
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/Shift"
+                    }
+                ]
+            },
             "Store": {
                 "required": [
                     "id",
                     "name",
-                    "email"
+                    "email",
+                    "email_verified_at"
                 ],
                 "properties": {
                     "id": {
@@ -2856,7 +3812,8 @@
                         "type": "string"
                     },
                     "email_verified_at": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     }
                 },
                 "type": "object",
@@ -2869,8 +3826,6 @@
             "RegisterStoreInput": {
                 "required": [
                     "name",
-                    "email",
-                    "password",
                     "password_confirmation"
                 ],
                 "properties": {
@@ -2912,35 +3867,46 @@
                 "required": [
                     "id",
                     "name",
-                    "code"
+                    "code",
+                    "address",
+                    "phone",
+                    "email",
+                    "tax_number",
+                    "note",
+                    "store_id"
                 ],
                 "properties": {
                     "id": {
                         "type": "integer"
                     },
-                    "name": {
-                        "type": "string"
+                    "store_id": {
+                        "type": "integer"
                     },
-                    "address": {
+                    "name": {
                         "type": "string"
                     },
                     "code": {
                         "type": "string"
                     },
+                    "address": {
+                        "type": "string",
+                        "nullable": true
+                    },
                     "phone": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "email": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "tax_number": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "note": {
-                        "type": "string"
-                    },
-                    "creator_id": {
-                        "type": "integer"
+                        "type": "string",
+                        "nullable": true
                     }
                 },
                 "type": "object",
@@ -3062,12 +4028,39 @@
                     }
                 },
                 "type": "object"
+            },
+            "WorkScheduleWithEmployee": {
+                "required": [
+                    "employee"
+                ],
+                "properties": {
+                    "employee": {
+                        "$ref": "#/components/schemas/Employee"
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/WorkSchedule"
+                    }
+                ]
+            },
+            "WorkScheduleWithShiftAndEmployee": {
+                "required": [
+                    "shift"
+                ],
+                "properties": {
+                    "shift": {
+                        "$ref": "#/components/schemas/Shift"
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/WorkScheduleWithEmployee"
+                    }
+                ]
             }
         }
-    },
-    "tags": [
-        {
-            "name": "Branch"
-        }
-    ]
+    }
 }

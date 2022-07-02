@@ -16,21 +16,17 @@ class CreateQuantityCheckingItemsTable extends Migration
         Schema::create("quantity_checking_items", function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger("quantity_checking_sheet_id");
-            $table->unsignedBigInteger("item_id");
+            $table
+                ->foreignId("quantity_checking_sheet_id")
+                ->constrained()
+                ->onDelete("cascade");
+            $table
+                ->foreignId("item_id")
+                ->constrained()
+                ->onDelete("cascade");
             $table->unsignedInteger("expected");
             $table->unsignedInteger("actual");
             $table->unsignedInteger("total");
-            $table
-                ->foreign("quantity_checking_sheet_id")
-                ->references("id")
-                ->on("quantity_checking_sheets")
-                ->onDelete("cascade");
-            $table
-                ->foreign("item_id")
-                ->references("id")
-                ->on("items")
-                ->onDelete("cascade");
         });
     }
 

@@ -2,11 +2,12 @@
 
 namespace App\Traits;
 
+use App\Mail\EmployeeAccountCreated;
 use App\Models\Employee;
 use App\Models\Employment;
 use App\Models\EmploymentRole;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 trait EmployeeTrait
@@ -14,18 +15,24 @@ trait EmployeeTrait
     public function createEmployee($store_id, $data, $avatar = null)
     {
         $avatar_image_path = isset($avatar)
-            ? $avatar->storeAs("employees", $store_id . Str::uuid() . "." . $avatar->getClientOriginalExtension())
+            ? $avatar->storeAs(
+                "images/{$store_id}/employees",
+                $store_id . Str::uuid() . "." . $avatar->getClientOriginalExtension()
+            )
             : null;
+
+        // generate a random password with 8 characters
+        $password = Str::random(8);
 
         $employee = Employee::create([
             "store_id" => $store_id,
             "name" => $data["name"],
             "email" => $data["email"],
-            "password" => Hash::make($data["password"]),
+            "password" => Hash::make($password),
             "phone" => $data["phone"] ?? null,
             "birthday" => $data["birthday"] ?? null,
             "avatar" => $avatar_image_path,
-            "avatar_key" => Str::uuid(),
+            "avatar_key" => isset($avatar) ? Str::uuid() : null,
             "gender" => $data["gender"] ?? null,
         ]);
 
@@ -36,28 +43,27 @@ trait EmployeeTrait
         ]);
 
         // create employment roles
-        foreach ($data["roles"] as $role) {
+        foreach ($data["role_ids"] as $role) {
             EmploymentRole::create([
                 "employment_id" => $employment->id,
-                "role" => $role,
+                "role_id" => $role,
             ]);
         }
 
-        event(new Registered($employee));
+        // send email to employee only on production
+        if (env("APP_ENV") === "production") {
+            Mail::to($employee->email)->queue(new EmployeeAccountCreated($employee, $password));
+        }
 
         return $employee;
     }
 
-    public function transferEmployee($employee_id, $branch_id, $roles)
+    public function transferEmployee($employee_id, $branch_id, $role_ids)
     {
         $employee = Employee::find($employee_id);
+
         if (!$employee) {
-            return response()->json(
-                [
-                    "message" => "Employee not found.",
-                ],
-                404
-            );
+            return response()->json(["message" => "Employee not found."], 404);
         }
 
         $old_employment = $employee->employment;
@@ -71,10 +77,10 @@ trait EmployeeTrait
         ]);
 
         // update employment roles
-        foreach ($roles as $role) {
+        foreach ($role_ids as $role_id) {
             EmploymentRole::create([
                 "employment_id" => $employment->id,
-                "role" => $role,
+                "role_id" => $role_id,
             ]);
         }
     }

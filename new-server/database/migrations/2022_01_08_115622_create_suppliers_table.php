@@ -24,11 +24,10 @@ class CreateSuppliersTable extends Migration
             $table->string("email")->nullable();
             $table->string("tax_number")->nullable();
             $table->string("note")->nullable();
-            $table->unsignedBigInteger("store_id");
             $table
-                ->foreign("store_id")
-                ->references("id")
-                ->on("stores");
+                ->foreignId("store_id")
+                ->constrained()
+                ->onDelete("cascade");
         });
     }
 

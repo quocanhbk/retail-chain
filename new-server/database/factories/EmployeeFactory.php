@@ -15,11 +15,9 @@ class EmployeeFactory extends Factory
      */
     public function definition()
     {
-        $name = $this->faker->name();
-
         return [
             "store_id" => Store::factory(),
-            "name" => $name,
+            "name" => $this->faker->name(),
             "email" => $this->faker->unique()->safeEmail(),
             "password" => Hash::make("123456"),
             "avatar" => $this->faker->imageUrl(),

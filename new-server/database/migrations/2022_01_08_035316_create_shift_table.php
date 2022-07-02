@@ -16,15 +16,13 @@ class CreateShiftTable extends Migration
         Schema::create("shifts", function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger("branch_id");
+            $table
+                ->foreignId("branch_id")
+                ->constrained()
+                ->onDelete("cascade");
             $table->string("name");
             $table->time("start_time");
             $table->time("end_time");
-            $table->softDeletes();
-            $table
-                ->foreign("branch_id")
-                ->references("id")
-                ->on("branches");
         });
     }
 
