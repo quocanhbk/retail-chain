@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\DefaultItem;
 use App\Models\Item;
-use App\Models\ItemCategory;
 use App\Models\ItemPriceHistory;
 use App\Models\ItemProperty;
 use App\Models\PurchaseSheetItem;
@@ -65,7 +65,7 @@ class ItemController extends Controller
             "category_id" => [
                 "nullable",
                 "integer",
-                Rule::exists("item_categories", "id")->where("store_id", $store_id),
+                Rule::exists("categories", "id")->where("store_id", $store_id),
             ],
             "code" => ["nullable", "string", "max:255", Rule::unique("items")->where("store_id", $store_id)],
             "barcode" => ["required", "string", "max:255", Rule::unique("items")->where("store_id", $store_id)],
@@ -130,7 +130,7 @@ class ItemController extends Controller
             return response()->json(["message" => "id or barcode is required"], 400);
         }
 
-        $item = Item::with("itemCategory")
+        $item = Item::with("category")
             ->where("store_id", $store_id)
             ->when(isset($item_id), function ($query) use ($item_id) {
                 $query->where("id", $item_id);
@@ -171,13 +171,13 @@ class ItemController extends Controller
 
         [$search, $from, $to, $order_by, $order_type] = $this->getQuery($request);
 
-        $items = Item::with("itemCategory")->where("store_id", $store_id)
+        $items = Item::with("category")->where("store_id", $store_id)
             ->where(function ($query) use ($search) {
                 $query
                     ->where("code", "iLike", "%" . $search . "%")
                     ->orWhere("barcode", "iLike", "%" . $search . "%")
                     ->orWhere("name", "iLike", "%" . $search . "%")
-                    ->orWhereHas("itemCategory", function ($query) use ($search) {
+                    ->orWhereHas("category", function ($query) use ($search) {
                         $query->where("name", "iLike", "%" . $search . "%");
                     });
             })
@@ -200,6 +200,7 @@ class ItemController extends Controller
      *   @OA\Parameter(name="to", in="query", @OA\Schema(type="integer")),
      *   @OA\Parameter(name="order_by", in="query", @OA\Schema(type="string")),
      *   @OA\Parameter(name="order_type", in="query", @OA\Schema(type="string", enum={"asc", "desc"})),
+     *   @OA\Parameter(name="branch_id", in="query", @OA\Schema(type="integer")),
      *   @OA\Response(
      *     response=200,
      *     description="successful operation",
@@ -209,9 +210,17 @@ class ItemController extends Controller
      */
     public function getSellingItems(Request $request)
     {
-        $store_id = Auth::user()->store_id;
+        $store_id = $request->get("store_id");
 
-        $branch_id = Auth::user()->employment->branch_id;
+        $as = $request->get("as");
+
+        if ($as == "admin" && !($request->query("branch_id"))) {
+            return response()->json(["message" => "branch_id is required"], 400);
+        }
+
+        $branch_id = $as == "admin" ? $request->query("branch_id") : Auth::user()->employment->branch_id;
+
+        [$search, $from, $to, $order_by, $order_type] = $this->getQuery($request);
 
         [$search, $from, $to, $order_by, $order_type] = $this->getQuery($request);
 
@@ -284,7 +293,7 @@ class ItemController extends Controller
         }
 
         // find a suitable category
-        $category = ItemCategory::where("store_id", $store_id)
+        $category = Category::where("store_id", $store_id)
             ->where("name", "iLike", "%" . $default_item->category->name . "%")
             ->first();
 
@@ -387,7 +396,7 @@ class ItemController extends Controller
             "category_id" => [
                 "nullable",
                 "integer",
-                Rule::exists("item_categories", "id")->where("store_id", $store_id),
+                Rule::exists("categories", "id")->where("store_id", $store_id),
             ],
             "image" => ["nullable", "image", "max:2048"],
         ];

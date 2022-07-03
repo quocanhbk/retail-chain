@@ -42,7 +42,7 @@ class GetItemsTest extends TestCase
                     "image",
                     "image_key",
                     "store_id",
-                    "item_category"
+                    "category"
                 ],
         ]);
     }
@@ -66,7 +66,7 @@ class GetItemsTest extends TestCase
                     "image",
                     "image_key",
                     "store_id",
-                    "item_category"
+                    "category"
                 ],
         ]);
     }
@@ -90,7 +90,7 @@ class GetItemsTest extends TestCase
                     "image",
                     "image_key",
                     "store_id",
-                    "item_category"
+                    "category"
                 ],
         ]);
 
@@ -118,7 +118,7 @@ class GetItemsTest extends TestCase
                     "image",
                     "image_key",
                     "store_id",
-                    "item_category"
+                    "category"
                 ],
         ]);
 

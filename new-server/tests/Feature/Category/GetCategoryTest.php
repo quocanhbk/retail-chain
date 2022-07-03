@@ -15,7 +15,7 @@ class GetCategoryTest extends TestCase
 
     public function test_get_category_unauthenticated()
     {
-        $response = $this->get("/api/item-category/1");
+        $response = $this->get("/api/category/1");
 
         $response->assertStatus(401);
 
@@ -30,7 +30,7 @@ class GetCategoryTest extends TestCase
 
         $category = $store->categories->first();
 
-        $response = $this->actingAs($employee)->get("/api/item-category/{$category->id}");
+        $response = $this->actingAs($employee)->get("/api/category/{$category->id}");
 
         $response->assertStatus(200);
 
@@ -43,7 +43,7 @@ class GetCategoryTest extends TestCase
 
         $category = $store->categories->first();
 
-        $response = $this->actingAs($store, "stores")->get("/api/item-category/{$category->id}");
+        $response = $this->actingAs($store, "stores")->get("/api/category/{$category->id}");
 
         $response->assertStatus(200);
 
@@ -56,7 +56,7 @@ class GetCategoryTest extends TestCase
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-category");
 
-        $response = $this->actingAs($employee)->get("/api/item-category/9999");
+        $response = $this->actingAs($employee)->get("/api/category/9999");
 
         $response->assertStatus(404);
 

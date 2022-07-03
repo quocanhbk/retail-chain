@@ -15,7 +15,7 @@ class RestoreCategoryTest extends TestCase
 
     public function test_restore_category_unauthenticated()
     {
-        $response = $this->post("/api/item-category/1/restore");
+        $response = $this->post("/api/category/1/restore");
 
         $response->assertStatus(401);
 
@@ -28,7 +28,7 @@ class RestoreCategoryTest extends TestCase
 
         $employee = $store->employees->first();
 
-        $response = $this->actingAs($employee)->post("/api/item-category/1/restore");
+        $response = $this->actingAs($employee)->post("/api/category/1/restore");
 
         $response->assertStatus(401);
 
@@ -43,13 +43,13 @@ class RestoreCategoryTest extends TestCase
 
         $store->categories()->delete();
 
-        $response = $this->actingAs($store, "stores")->post("/api/item-category/{$category->id}/restore");
+        $response = $this->actingAs($store, "stores")->post("/api/category/{$category->id}/restore");
 
         $response->assertStatus(200);
 
         $response->assertJsonStructure(["message"]);
 
-        $this->assertDatabaseHas("item_categories", [
+        $this->assertDatabaseHas("categories", [
             "id" => $category->id,
             "name" => $category->name,
             "description" => $category->description,
@@ -61,7 +61,7 @@ class RestoreCategoryTest extends TestCase
     {
         $store = Store::first();
 
-        $response = $this->actingAs($store, "stores")->post("/api/item-category/9999/restore");
+        $response = $this->actingAs($store, "stores")->post("/api/category/9999/restore");
 
         $response->assertStatus(404);
 

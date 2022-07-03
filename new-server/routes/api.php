@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Middleware\Role\AdminOrSaleOrPurchaser;
 use App\Http\Middleware\Role\Authenticated;
 use App\Http\Middleware\Role\HavePurchaseRole;
 use App\Http\Middleware\Role\NotEmployee;
@@ -180,31 +179,31 @@ Route::prefix("/supplier")
         );
     });
 
-Route::prefix("/item-category")
+Route::prefix("/category")
     ->middleware("authenticated")
     ->group(function () {
         Route::middleware(OnlyStoreAdmin::class)->group(function () {
-            // GET /item-category/deleted - get deleted item categories
-            Route::get("/deleted", [ItemCategoryController::class, "getDeleted"]);
-            // POST /item-category/{item_category_id}/restore - restore an item category by id
-            Route::post("/{item_category_id}/restore", [ItemCategoryController::class, "restore"]);
-            // DELETE /item-category/{item_category_id}/force - force delete an item category by id
-            Route::delete("/{item_category_id}/force", [ItemCategoryController::class, "forceDelete"]);
+            // GET /category/deleted - get deleted item categories
+            Route::get("/deleted", [CategoryController::class, "getDeleted"]);
+            // POST /category/{category_id}/restore - restore an item category by id
+            Route::post("/{category_id}/restore", [CategoryController::class, "restore"]);
+            // DELETE /category/{category_id}/force - force delete an item category by id
+            Route::delete("/{category_id}/force", [CategoryController::class, "forceDelete"]);
         });
-        // POST /item-category - create a new item category
-        Route::post("/", [ItemCategoryController::class, "create"])->middleware("have_permission:create-category");
-        // GET /item-category - get all item categories
-        Route::get("/", [ItemCategoryController::class, "getMany"])->middleware("have_permission:view-category");
-        // GET /item-category/{item_category_id} - get an item category by id
-        Route::get("/{item_category_id}", [ItemCategoryController::class, "getOne"])->middleware(
+        // POST /category - create a new item category
+        Route::post("/", [CategoryController::class, "create"])->middleware("have_permission:create-category");
+        // GET /category - get all item categories
+        Route::get("/", [CategoryController::class, "getMany"])->middleware("have_permission:view-category");
+        // GET /category/{category_id} - get an item category by id
+        Route::get("/{category_id}", [CategoryController::class, "getOne"])->middleware(
             "have_permission:view-category"
         );
-        // PUT /item-category/{item_category_id} - update an item category by id
-        Route::put("/{item_category_id}", [ItemCategoryController::class, "update"])->middleware(
+        // PUT /category/{category_id} - update an item category by id
+        Route::put("/{category_id}", [CategoryController::class, "update"])->middleware(
             "have_permission:update-category"
         );
-        // DELETE /item-category/{item_category_id} - delete an item category by id
-        Route::delete("/{item_category_id}", [ItemCategoryController::class, "delete"])->middleware(
+        // DELETE /category/{category_id} - delete an item category by id
+        Route::delete("/{category_id}", [CategoryController::class, "delete"])->middleware(
             "have_permission:delete-category"
         );
     });

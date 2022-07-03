@@ -5,7 +5,7 @@ namespace App\Models\Schemas;
 /**
  * @OA\Schema(
  *   oneOf={@OA\Schema(ref="#/components/schemas/UpsertTime")},
- *   required={"id", "store_id", "barcode", "code", "name", "image", "image_key", "item_category_id"}
+ *   required={"id", "store_id", "barcode", "code", "name", "image", "image_key", "category_id"}
  * )
  */
 class Item
@@ -56,7 +56,7 @@ class Item
      * @OA\Property(nullable=true)
      * @var integer
      */
-    public $item_category_id;
+    public $category_id;
 }
 
 /**
@@ -69,7 +69,7 @@ class ItemWithCategory
 {
     /**
      * @OA\Property(
-     *   anyOf={@OA\Schema(ref="#/components/schemas/ItemCategory"), @OA\Schema(type="null")},
+     *   anyOf={@OA\Schema(ref="#/components/schemas/Category"), @OA\Schema(type="null")},
      * )
      * @var object
      */
@@ -159,7 +159,7 @@ class ItemPriceHistory
 
     /**
      * @OA\Property()
-     * @var float
+     * @var integer
      */
     public $price;
 

@@ -16,7 +16,7 @@ class ForceDeleteCategoryTest extends TestCase
 
     public function test_force_delete_category_unauthenticated()
     {
-        $response = $this->delete("/api/item-category/1/force");
+        $response = $this->delete("/api/category/1/force");
 
         $response->assertStatus(401);
 
@@ -29,7 +29,7 @@ class ForceDeleteCategoryTest extends TestCase
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-category");
 
-        $response = $this->actingAs($employee)->delete("/api/item-category/1/force");
+        $response = $this->actingAs($employee)->delete("/api/category/1/force");
 
         $response->assertStatus(401);
 
@@ -44,13 +44,13 @@ class ForceDeleteCategoryTest extends TestCase
 
         $store->categories()->delete();
 
-        $response = $this->actingAs($store, "stores")->delete("/api/item-category/{$category->id}/force");
+        $response = $this->actingAs($store, "stores")->delete("/api/category/{$category->id}/force");
 
         $response->assertStatus(200);
 
         $response->assertJsonStructure(["message"]);
 
-        $this->assertDatabaseMissing("item_categories", [
+        $this->assertDatabaseMissing("categories", [
             "id" => $category->id,
         ]);
     }
@@ -59,7 +59,7 @@ class ForceDeleteCategoryTest extends TestCase
     {
         $store = Store::first();
 
-        $response = $this->actingAs($store, "stores")->delete("/api/item-category/9999/force");
+        $response = $this->actingAs($store, "stores")->delete("/api/category/9999/force");
 
         $response->assertStatus(404);
 

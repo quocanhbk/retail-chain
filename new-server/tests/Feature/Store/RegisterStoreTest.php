@@ -39,7 +39,7 @@ class RegisterStoreTest extends TestCase
             "email" => $data["email"],
         ]);
 
-        $this->assertDatabaseHas("item_categories", [
+        $this->assertDatabaseHas("categories", [
             "store_id" => Store::where("email", $data["email"])->first()->id,
         ]);
 

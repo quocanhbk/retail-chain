@@ -34,7 +34,7 @@ class Store extends User implements MustVerifyEmail
 
     public function categories()
     {
-        return $this->hasMany(ItemCategory::class);
+        return $this->hasMany(Category::class);
     }
 
     public function suppliers()

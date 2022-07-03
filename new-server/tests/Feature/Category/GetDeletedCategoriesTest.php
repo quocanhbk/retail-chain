@@ -14,7 +14,7 @@ class GetDeletedCategoriesTest extends TestCase
 
     public function test_get_deleted_categories_unauthenticated()
     {
-        $response = $this->get("/api/item-category/deleted");
+        $response = $this->get("/api/category/deleted");
 
         $response->assertStatus(401);
 
@@ -27,7 +27,7 @@ class GetDeletedCategoriesTest extends TestCase
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-category");
 
-        $response = $this->actingAs($employee)->get("/api/item-category/deleted");
+        $response = $this->actingAs($employee)->get("/api/category/deleted");
 
         $response->assertStatus(401);
 
@@ -40,7 +40,7 @@ class GetDeletedCategoriesTest extends TestCase
 
         $store->categories()->delete();
 
-        $response = $this->actingAs($store, "stores")->get("/api/item-category/deleted");
+        $response = $this->actingAs($store, "stores")->get("/api/category/deleted");
 
         $response->assertStatus(200);
 
@@ -55,7 +55,7 @@ class GetDeletedCategoriesTest extends TestCase
 
         $store->categories()->delete();
 
-        $response = $this->actingAs($store, "stores")->get("/api/item-category/deleted?search={$category->name}");
+        $response = $this->actingAs($store, "stores")->get("/api/category/deleted?search={$category->name}");
 
         $response->assertStatus(200);
 
@@ -74,7 +74,7 @@ class GetDeletedCategoriesTest extends TestCase
 
         $store->categories()->delete();
 
-        $response = $this->actingAs($store, "stores")->get("/api/item-category/deleted?from=0&to=1");
+        $response = $this->actingAs($store, "stores")->get("/api/category/deleted?from=0&to=1");
 
         $response->assertStatus(200);
 

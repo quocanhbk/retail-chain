@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\ItemCategory;
+use App\Models\Category;
 use App\Models\Store;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -21,7 +21,7 @@ class ItemFactory extends Factory
             "code" => $this->faker->unique()->word(),
             "name" => $this->faker->word(),
             "image" => $this->faker->imageUrl(),
-            "item_category_id" => ItemCategory::factory(),
+            "category_id" => Category::factory(),
         ];
     }
 }

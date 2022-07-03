@@ -3,12 +3,12 @@
 namespace Database\Seeders;
 
 use App\Models\Branch;
+use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Employee;
 use App\Models\Employment;
 use App\Models\EmploymentRole;
 use App\Models\Item;
-use App\Models\ItemCategory;
 use App\Models\ItemProperty;
 use App\Models\Permission;
 use App\Models\PermissionRole;
@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
         Employee::truncate();
         Branch::truncate();
         Item::truncate();
-        ItemCategory::truncate();
+        Category::truncate();
         ItemProperty::truncate();
         Supplier::truncate();
         Customer::truncate();
@@ -110,7 +110,7 @@ class DatabaseSeeder extends Seeder
             ]);
 
         // seed item category with item
-        ItemCategory::factory()
+        Category::factory()
             ->count(5)
             ->for($store)
             ->has(

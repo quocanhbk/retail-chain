@@ -58,7 +58,7 @@ class GetItemTest extends TestCase
             "image",
             "image_key",
             "store_id",
-            "item_category"
+            "category"
         ]);
 
         $response->assertJson([
@@ -92,7 +92,7 @@ class GetItemTest extends TestCase
             "image",
             "image_key",
             "store_id",
-            "item_category"
+            "category"
         ]);
 
         $response->assertJson([
@@ -124,7 +124,7 @@ class GetItemTest extends TestCase
             "image",
             "image_key",
             "store_id",
-            "item_category"
+            "category"
         ]);
 
         $response->assertJson([

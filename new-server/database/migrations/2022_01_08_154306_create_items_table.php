@@ -27,7 +27,7 @@ class CreateItemsTable extends Migration
                 ->constrained()
                 ->onDelete("cascade");
             $table
-                ->foreignId("item_category_id")
+                ->foreignId("category_id")
                 ->nullable()
                 ->constrained()
                 ->onDelete("set null");

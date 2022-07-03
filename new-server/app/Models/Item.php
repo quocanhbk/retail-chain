@@ -11,7 +11,7 @@ class Item extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ["store_id", "barcode", "name", "image", "image_key", "item_category_id", "code"];
+    protected $fillable = ["store_id", "barcode", "name", "image", "image_key", "category_id", "code"];
 
     protected $hidden = ["deleted_at"];
 
@@ -20,9 +20,9 @@ class Item extends Model
         return $this->belongsTo(Store::class);
     }
 
-    public function itemCategory()
+    public function category()
     {
-        return $this->belongsTo(ItemCategory::class);
+        return $this->belongsTo(Category::class);
     }
 
     public function properties()

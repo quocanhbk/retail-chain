@@ -8,7 +8,7 @@ namespace App\Models\Schemas;
  *   required={"id", "store_id", "name", "description"}
  * )
  */
-class ItemCategory
+class Category
 {
     /**
      * @OA\Property()
@@ -38,7 +38,7 @@ class ItemCategory
 /**
  * @OA\Schema()
  */
-class UpsertItemCategoryInput
+class UpsertCategoryInput
 {
     /**
      * @OA\Property()
@@ -56,19 +56,19 @@ class UpsertItemCategoryInput
 /**
  * @OA\Schema(
  *   required={"name"},
- *   oneOf={@OA\Schema(ref="#/components/schemas/UpsertItemCategoryInput")},
+ *   oneOf={@OA\Schema(ref="#/components/schemas/UpsertCategoryInput")},
  * )
  */
-class CreateItemCategoryInput
+class CreateCategoryInput
 {
 }
 
 /**
  * @OA\Schema(
- *   oneOf={@OA\Schema(ref="#/components/schemas/ItemCategory")},
+ *   oneOf={@OA\Schema(ref="#/components/schemas/Category")},
  * )
  */
-class ItemCategoryWithItems
+class CategoryWithItems
 {
     /**
      * @OA\Property(
