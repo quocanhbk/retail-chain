@@ -830,6 +830,15 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "name": "force",
+                        "in": "query",
+                        "description": "Force delete",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
                     }
                 ],
                 "responses": {
@@ -1041,6 +1050,151 @@
                 "responses": {
                     "200": {
                         "description": "Employee transferred successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/deleted": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Get deleted employees",
+                "operationId": "getDeletedEmployees",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_by",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employees retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Employee"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/{employee_id}/restore": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Restore employee",
+                "operationId": "restoreEmployee",
+                "parameters": [
+                    {
+                        "name": "employee_id",
+                        "in": "path",
+                        "description": "Employee ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employee restored successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/{employee_id}/force": {
+            "delete": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Force delete employee",
+                "operationId": "forceDeleteEmployee",
+                "parameters": [
+                    {
+                        "name": "employee_id",
+                        "in": "path",
+                        "description": "Employee ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employee deleted successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -3288,7 +3442,7 @@
                         "type": "array",
                         "items": {
                             "required": [
-                                "employee_id",
+                                "id",
                                 "role_ids"
                             ],
                             "properties": {
@@ -3448,7 +3602,15 @@
                 ],
                 "properties": {
                     "category": {
-                        "$ref": "#/components/schemas/ItemCategory"
+                        "type": "object",
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/ItemCategory"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
                     }
                 },
                 "type": "object",

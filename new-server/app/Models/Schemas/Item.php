@@ -68,7 +68,9 @@ class Item
 class ItemWithCategory
 {
     /**
-     * @OA\Property(ref="#/components/schemas/ItemCategory", nullable=true)
+     * @OA\Property(
+     *   anyOf={@OA\Schema(ref="#/components/schemas/ItemCategory"), @OA\Schema(type="null")},
+     * )
      * @var object
      */
     public $category;

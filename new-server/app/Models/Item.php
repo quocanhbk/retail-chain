@@ -20,7 +20,7 @@ class Item extends Model
         return $this->belongsTo(Store::class);
     }
 
-    public function category()
+    public function itemCategory()
     {
         return $this->belongsTo(ItemCategory::class);
     }

@@ -149,7 +149,7 @@ export interface EmployeeLoginInput {
 
 export interface TransferEmployeeInput {
     branch_id: number
-    employees: { id?: number; role_ids: number[] }[]
+    employees: { id: number; role_ids: number[] }[]
 }
 
 export type Employment = UpsertTime & { id: number; employee_id: number; branch_id: number; from: string; to: string | null }
@@ -175,7 +175,7 @@ export type Item = UpsertTime & {
     item_category_id: number | null
 }
 
-export type ItemWithCategory = Item & { category: ItemCategory }
+export type ItemWithCategory = Item & { category: ItemCategory | null }
 
 export type ItemWithProperties = ItemWithCategory & { properties: ItemProperty[] }
 
@@ -750,10 +750,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @summary Delete employee
          * @request DELETE:/employee/{employee_id}
          */
-        deleteEmployee: (employeeId: number, params: RequestParams = {}) =>
+        deleteEmployee: (employeeId: number, query?: { force?: boolean }, params: RequestParams = {}) =>
             this.request<{ message: string }, any>({
                 path: `/employee/${employeeId}`,
                 method: "DELETE",
+                query: query,
                 format: "json",
                 ...params
             }),
@@ -859,6 +860,58 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                 method: "POST",
                 body: data,
                 type: ContentType.Json,
+                format: "json",
+                ...params
+            }),
+
+        /**
+         * No description
+         *
+         * @tags Employee
+         * @name GetDeletedEmployees
+         * @summary Get deleted employees
+         * @request GET:/employee/deleted
+         */
+        getDeletedEmployees: (
+            query?: { search?: string; order_by?: string; order_type?: "asc" | "desc"; from?: number; to?: number },
+            params: RequestParams = {}
+        ) =>
+            this.request<Employee[], any>({
+                path: `/employee/deleted`,
+                method: "GET",
+                query: query,
+                format: "json",
+                ...params
+            }),
+
+        /**
+         * No description
+         *
+         * @tags Employee
+         * @name RestoreEmployee
+         * @summary Restore employee
+         * @request POST:/employee/{employee_id}/restore
+         */
+        restoreEmployee: (employeeId: number, params: RequestParams = {}) =>
+            this.request<{ message: string }, any>({
+                path: `/employee/${employeeId}/restore`,
+                method: "POST",
+                format: "json",
+                ...params
+            }),
+
+        /**
+         * No description
+         *
+         * @tags Employee
+         * @name ForceDeleteEmployee
+         * @summary Force delete employee
+         * @request DELETE:/employee/{employee_id}/force
+         */
+        forceDeleteEmployee: (employeeId: number, params: RequestParams = {}) =>
+            this.request<{ message: string }, any>({
+                path: `/employee/${employeeId}/force`,
+                method: "DELETE",
                 format: "json",
                 ...params
             })

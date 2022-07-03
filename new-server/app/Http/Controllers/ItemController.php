@@ -91,7 +91,7 @@ class ItemController extends Controller
             : null;
 
         $item = Item::create([
-            "category_id" => $data["category_id"],
+            "category_id" => $data["category_id"] ?? null,
             "code" => $code,
             "barcode" => $data["barcode"],
             "name" => $data["name"],
@@ -130,7 +130,7 @@ class ItemController extends Controller
             return response()->json(["message" => "id or barcode is required"], 400);
         }
 
-        $item = Item::with("category")
+        $item = Item::with("itemCategory")
             ->where("store_id", $store_id)
             ->when(isset($item_id), function ($query) use ($item_id) {
                 $query->where("id", $item_id);
@@ -171,13 +171,13 @@ class ItemController extends Controller
 
         [$search, $from, $to, $order_by, $order_type] = $this->getQuery($request);
 
-        $items = Item::where("store_id", $store_id)
+        $items = Item::with("itemCategory")->where("store_id", $store_id)
             ->where(function ($query) use ($search) {
                 $query
                     ->where("code", "iLike", "%" . $search . "%")
                     ->orWhere("barcode", "iLike", "%" . $search . "%")
                     ->orWhere("name", "iLike", "%" . $search . "%")
-                    ->orWhereHas("category", function ($query) use ($search) {
+                    ->orWhereHas("itemCategory", function ($query) use ($search) {
                         $query->where("name", "iLike", "%" . $search . "%");
                     });
             })

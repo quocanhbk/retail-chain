@@ -63,6 +63,11 @@ class StoreObserver
         $this->createPermissionRoles($store, "update-customer", ["Sale", "Manage"]);
         $this->createPermissionRoles($store, "delete-customer", ["Sale", "Manage"]);
         $this->createPermissionRoles($store, "view-customer", ["Sale", "Manage"]);
+
+        $this->createPermissionRoles($store, "create-item", ["Purchase", "Manage"]);
+        $this->createPermissionRoles($store, "update-item", ["Purchase", "Manage"]);
+        $this->createPermissionRoles($store, "delete-item", ["Manage"]);
+        $this->createPermissionRoles($store, "view-item", ["Purchase", "Sale", "Manage"]);
     }
 
     private function createPermissionRoles(Store $store, $action_slug, $role_names)
