@@ -36,7 +36,7 @@ class PurchaseSheet extends Model
         return $this->belongsTo(Supplier::class);
     }
 
-    public function purchaseSheetItems()
+    public function items()
     {
         return $this->hasMany(PurchaseSheetItem::class);
     }

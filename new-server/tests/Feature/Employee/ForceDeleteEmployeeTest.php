@@ -11,7 +11,7 @@ class ForceDeleteEmployeeTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_force_delete_employee_unauthenticated()
+    public function testForceDeleteEmployeeUnauthenticated()
     {
         $response = $this->delete("/api/employee/1/force");
 
@@ -20,7 +20,7 @@ class ForceDeleteEmployeeTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_force_delete_employee_as_employee()
+    public function testForceDeleteEmployeeAsEmployee()
     {
         $employee = Employee::first();
 
@@ -31,9 +31,9 @@ class ForceDeleteEmployeeTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_force_delete_undeleted_employee()
+    public function testForceDeleteUndeletedEmployee()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = Employee::where("store_id", $store->id)->first();
 
@@ -52,9 +52,9 @@ class ForceDeleteEmployeeTest extends TestCase
         ]);
     }
 
-    public function test_force_delete_deleted_employee()
+    public function testForceDeleteDeletedEmployee()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = Employee::where("store_id", $store->id)->first();
 
@@ -75,9 +75,9 @@ class ForceDeleteEmployeeTest extends TestCase
         ]);
     }
 
-    public function test_force_delete_employee_not_found()
+    public function testForceDeleteEmployeeNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->delete("/api/employee/9999/force");
 

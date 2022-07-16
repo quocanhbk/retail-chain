@@ -3,17 +3,14 @@
 namespace Tests\Feature\Supplier;
 
 use App\Models\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\QueryEmployeeTrait;
 use Tests\TestCase;
 
 class GetSupplierTest extends TestCase
 {
-    use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    public function test_get_supplier_unauthenticated()
+    public function testGetSupplierUnauthenticated()
     {
         $response = $this->get("/api/supplier/1");
 
@@ -22,9 +19,9 @@ class GetSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_supplier_as_admin()
+    public function testGetSupplierAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $supplier = $store->suppliers->first();
 
@@ -38,9 +35,9 @@ class GetSupplierTest extends TestCase
         ]);
     }
 
-    public function test_get_supplier_with_invalid_permission()
+    public function testGetSupplierWithInvalidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithoutPermission($store->id, "view-supplier");
 
@@ -53,9 +50,9 @@ class GetSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_supplier_with_valid_permission()
+    public function testGetSupplierWithValidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-supplier");
 
@@ -71,9 +68,9 @@ class GetSupplierTest extends TestCase
         ]);
     }
 
-    public function test_get_supplier_not_found()
+    public function testGetSupplierNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-supplier");
 

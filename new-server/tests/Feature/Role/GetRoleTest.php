@@ -5,15 +5,11 @@ namespace Tests\Feature\Role;
 use App\Models\Employee;
 use App\Models\Role;
 use App\Models\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class GetRoleTest extends TestCase
 {
-    use RefreshDatabase;
-
-    public function test_get_role_unauthenticated()
+    public function testGetRoleUnauthenticated()
     {
         $response = $this->get("/api/role/1");
 
@@ -22,7 +18,7 @@ class GetRoleTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_role_as_employee()
+    public function testGetRoleAsEmployee()
     {
         $employee = Employee::first();
 
@@ -33,9 +29,9 @@ class GetRoleTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_role_as_admin()
+    public function testGetRoleAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $role = Role::where("store_id", $store->id)->first();
 
@@ -46,9 +42,9 @@ class GetRoleTest extends TestCase
         $response->assertJsonStructure(["id", "name", "description", "created_at", "updated_at"]);
     }
 
-    public function test_get_role_not_found()
+    public function testGetRoleNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->get("/api/role/9999");
 

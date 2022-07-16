@@ -20,4 +20,9 @@ class ItemProperty extends Model
     {
         return $this->belongsTo(Branch::class);
     }
+
+    public function last_purchase()
+    {
+        return $this->hasOne(PurchaseSheetItem::class)->oldestOfMany();
+    }
 }

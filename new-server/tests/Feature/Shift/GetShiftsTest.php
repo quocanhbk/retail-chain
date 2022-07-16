@@ -5,24 +5,20 @@ namespace Tests\Feature\Shift;
 use App\Models\Branch;
 use App\Models\Employee;
 use App\Models\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class GetShiftsTest extends TestCase
 {
-    use RefreshDatabase;
-
-    public function test_get_shifts_unauthenticated()
+    public function testGetShiftsUnauthenticated()
     {
         $response = $this->get("/api/shift");
 
         $response->assertStatus(401);
     }
 
-    public function test_get_shifts_as_employee()
+    public function testGetShiftsAsEmployee()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = Employee::where("store_id", $store->id)->first();
 
@@ -33,9 +29,9 @@ class GetShiftsTest extends TestCase
         $response->assertJsonStructure([["id", "name", "start_time", "end_time", "branch_id"]]);
     }
 
-    public function test_get_shifts_as_admin()
+    public function testGetShiftsAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $branch = $store->branches()->first();
 
@@ -48,9 +44,9 @@ class GetShiftsTest extends TestCase
         $response->assertJsonFragment(["branch_id" => $branch->id]);
     }
 
-    public function test_get_shifts_as_admin_with_invalid_branch_id()
+    public function testGetShiftsAsAdminWithInvalidBranchId()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $branch = Branch::where("store_id", "!=", $store->id)->first();
 

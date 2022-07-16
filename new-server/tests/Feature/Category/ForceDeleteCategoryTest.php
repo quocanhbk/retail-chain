@@ -4,7 +4,6 @@ namespace Tests\Feature\Category;
 
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\QueryEmployeeTrait;
 use Tests\TestCase;
 
@@ -13,8 +12,7 @@ class ForceDeleteCategoryTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-
-    public function test_force_delete_category_unauthenticated()
+    public function testForceDeleteCategoryUnauthenticated()
     {
         $response = $this->delete("/api/category/1/force");
 
@@ -23,9 +21,9 @@ class ForceDeleteCategoryTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_force_delete_category_as_employee()
+    public function testForceDeleteCategoryAsEmployee()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-category");
 
@@ -36,9 +34,9 @@ class ForceDeleteCategoryTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_force_delete_category_as_admin()
+    public function testForceDeleteCategoryAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $category = $store->categories->first();
 
@@ -55,9 +53,9 @@ class ForceDeleteCategoryTest extends TestCase
         ]);
     }
 
-    public function test_force_delete_category_not_found()
+    public function testForceDeleteCategoryNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->delete("/api/category/9999/force");
 

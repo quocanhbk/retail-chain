@@ -3,26 +3,23 @@
 namespace Tests\Feature\WorkSchedule;
 
 use App\Models\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\QueryEmployeeTrait;
 use Tests\TestCase;
 
 class GetWorkSchedulesTest extends TestCase
 {
-    use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    public function test_get_work_schedules_unauthenticated()
+    public function testGetWorkSchedulesUnauthenticated()
     {
         $response = $this->get("/api/work-schedule");
 
         $response->assertStatus(401);
     }
 
-    public function test_get_work_schedules_as_employee()
+    public function testGetWorkSchedulesAsEmployee()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-work-schedule");
 
@@ -44,9 +41,9 @@ class GetWorkSchedulesTest extends TestCase
         ]);
     }
 
-    public function test_get_work_schedules_by_date()
+    public function testGetWorkSchedulesByDate()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-work-schedule");
 

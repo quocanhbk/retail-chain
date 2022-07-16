@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Shift;
 use App\Models\WorkSchedule;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -24,10 +24,7 @@ class WorkScheduleController extends Controller
      *   @OA\Response(
      *     response=200,
      *     description="Successful operation",
-     *     @OA\JsonContent(
-     *       required={"message"},
-     *       @OA\Property(property="message", type="string")
-     *     )
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
      *   ),
      * )
      */
@@ -124,18 +121,18 @@ class WorkScheduleController extends Controller
 
         // get all work schedules by branch_id
         $work_schedules = WorkSchedule::with(["shift", "employee"])
-            ->whereHas("shift", function ($query) use ($search, $branch_id) {
-                $query->where("branch_id", $branch_id)->where("name", "iLike", "%$search%");
-            })
-            ->when($date, function ($query) use ($date) {
-                return $query->where("date", $date);
-            })
-            ->whereHas("employee", function ($query) use ($search) {
-                return $query
+            ->whereHas(
+                "shift",
+                fn($query) => $query->where("branch_id", $branch_id)->where("name", "iLike", "%$search%")
+            )
+            ->when($date, fn($query) => $query->where("date", $date))
+            ->whereHas(
+                "employee",
+                fn($query) => $query
                     ->where("name", "iLike", "%$search%")
                     ->orWhere("email", "iLike", "%$search%")
-                    ->orWhere("phone", "iLike", "%$search%");
-            })
+                    ->orWhere("phone", "iLike", "%$search%")
+            )
             ->orderBy($order_by, $order_type)
             ->offset($from)
             ->limit($to - $from)
@@ -151,7 +148,7 @@ class WorkScheduleController extends Controller
      *   summary="Update a work schedule",
      *   operationId="updateWorkSchedule",
      *   @OA\Parameter(
-     *     name="work_schedule_id",
+     *     name="id",
      *     in="path",
      *     required=true,
      *     @OA\Schema(type="integer")
@@ -167,15 +164,13 @@ class WorkScheduleController extends Controller
      *   ),
      * )
      */
-    public function update(Request $request, $work_schedule_id)
+    public function update(Request $request, $id)
     {
         $branch_id = Auth::user()->employment->branch_id;
 
         $data = $request->all();
 
-        $work_schedule = WorkSchedule::whereHas("shift", function ($query) use ($branch_id) {
-            return $query->where("branch_id", $branch_id);
-        })->find($work_schedule_id);
+        $work_schedule = WorkSchedule::whereRelation("shift", "branch_id", $branch_id)->find($id);
 
         if (!$work_schedule) {
             return response()->json(["message" => "Work schedule not found."], 404);
@@ -206,7 +201,7 @@ class WorkScheduleController extends Controller
      *   summary="Delete a work schedule",
      *   operationId="deleteWorkSchedule",
      *   @OA\Parameter(
-     *     name="work_schedule_id",
+     *     name="id",
      *     in="path",
      *     required=true,
      *     @OA\Schema(type="integer")
@@ -214,21 +209,16 @@ class WorkScheduleController extends Controller
      *   @OA\Response(
      *     response=200,
      *     description="Successful operation",
-     *     @OA\JsonContent(
-     *       required={"message"},
-     *       @OA\Property(property="message", type="string", description="Success message")
-     *     )
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
      *   )
      * )
      */
-    public function delete($work_schedule_id)
+    public function delete($id)
     {
         $branch_id = Auth::user()->employment->branch_id;
 
-        $work_schedule = WorkSchedule::whereHas("shift", function ($query) use ($branch_id) {
-            $query->where("branch_id", $branch_id);
-        })
-            ->where("id", $work_schedule_id)
+        $work_schedule = WorkSchedule::whereRelation("shift", "branch_id", $branch_id)
+            ->where("id", $id)
             ->first();
 
         if (!$work_schedule) {

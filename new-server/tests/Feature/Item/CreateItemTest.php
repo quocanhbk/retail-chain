@@ -5,7 +5,6 @@ namespace Tests\Feature\Item;
 use App\Models\Item;
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -17,13 +16,11 @@ class CreateItemTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    protected $seed = true;
-
-    public function test_create_item_unauthenticated()
+    public function testCreateItemUnauthenticated()
     {
-        $response = $this->post('/api/item', [
-            'name' => 'Test Item',
-            'barcode' => '123456789',
+        $response = $this->post("/api/item", [
+            "name" => "Test Item",
+            "barcode" => "123456789",
         ]);
 
         $response->assertStatus(401);
@@ -31,15 +28,15 @@ class CreateItemTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_item_with_invalid_permission()
+    public function testCreateItemWithInvalidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithoutPermission($store->id, "create-item");
 
         $response = $this->actingAs($employee)->post("/api/item", [
-            'name' => 'Test Item',
-            'barcode' => '123456789',
+            "name" => "Test Item",
+            "barcode" => "123456789",
         ]);
 
         $response->assertStatus(403);
@@ -47,25 +44,20 @@ class CreateItemTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_item_with_valid_permission()
+    public function testCreateItemWithValidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "create-item");
 
         $response = $this->actingAs($employee)->post("/api/item", [
-            'name' => 'Test Item',
-            'barcode' => '123456789',
+            "name" => "Test Item",
+            "barcode" => "123456789",
         ]);
 
         $response->assertStatus(200);
 
-        $response->assertJsonStructure([
-            "id",
-            "name",
-            "code",
-            "barcode",
-        ]);
+        $response->assertJsonStructure(["id", "name", "code", "barcode"]);
 
         $response->assertJson([
             "name" => "Test Item",
@@ -79,23 +71,18 @@ class CreateItemTest extends TestCase
         ]);
     }
 
-    public function test_create_item_as_admin()
+    public function testCreateItemAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->post("/api/item", [
-            'name' => 'Test Item',
-            'barcode' => '123456789',
+            "name" => "Test Item",
+            "barcode" => "123456789",
         ]);
 
         $response->assertStatus(200);
 
-        $response->assertJsonStructure([
-            "id",
-            "name",
-            "code",
-            "barcode",
-        ]);
+        $response->assertJsonStructure(["id", "name", "code", "barcode"]);
 
         $response->assertJson([
             "name" => "Test Item",
@@ -111,18 +98,18 @@ class CreateItemTest extends TestCase
         ]);
     }
 
-    public function test_create_item_with_image()
+    public function testCreateItemWithImage()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         Storage::fake("local");
 
         $image = UploadedFile::fake()->image("test_image.jpg");
 
         $response = $this->actingAs($store, "stores")->post("/api/item", [
-            'name' => 'Test Item',
-            'barcode' => '123456789',
-            'image' => $image,
+            "name" => "Test Item",
+            "barcode" => "123456789",
+            "image" => $image,
         ]);
 
         $response->assertStatus(200);
@@ -142,16 +129,16 @@ class CreateItemTest extends TestCase
         $this->assertTrue(Str::startsWith($response->json("image"), "images/{$store->id}/items/"));
     }
 
-    public function test_create_item_with_duplicate_code()
+    public function testCreateItemWithDuplicateCode()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $item = Item::where("store_id", $store->id)->first();
 
         $response = $this->actingAs($store, "stores")->post("/api/item", [
-            'name' => 'Test Item',
-            'barcode' => '123456789',
-            'code' => $item->code,
+            "name" => "Test Item",
+            "barcode" => "123456789",
+            "code" => $item->code,
         ]);
 
         $response->assertStatus(400);
@@ -159,15 +146,15 @@ class CreateItemTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_item_with_duplicate_barcode()
+    public function testCreateItemWithDuplicateBarcode()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $item = Item::where("store_id", $store->id)->first();
 
         $response = $this->actingAs($store, "stores")->post("/api/item", [
-            'name' => 'Test Item',
-            'barcode' => $item->barcode,
+            "name" => "Test Item",
+            "barcode" => $item->barcode,
         ]);
 
         $response->assertStatus(400);
@@ -175,14 +162,14 @@ class CreateItemTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_item_with_unexist_category()
+    public function testCreateItemWithUnexistCategory()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->post("/api/item", [
-            'name' => 'Test Item',
-            'barcode' => '123456789',
-            'category_id' => 99999,
+            "name" => "Test Item",
+            "barcode" => "123456789",
+            "category_id" => 99999,
         ]);
 
         $response->assertStatus(400);
@@ -190,12 +177,12 @@ class CreateItemTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_item_with_no_name()
+    public function testCreateItemWithNoName()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->post("/api/item", [
-            'barcode' => '123456789',
+            "barcode" => "123456789",
         ]);
 
         $response->assertStatus(400);

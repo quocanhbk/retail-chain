@@ -21,6 +21,7 @@ class HaveSaleRole
                 403
             );
         }
+
         return $next($request);
     }
 }

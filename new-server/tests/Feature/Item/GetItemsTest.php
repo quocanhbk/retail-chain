@@ -3,29 +3,25 @@
 namespace Tests\Feature\Item;
 
 use App\Models\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\QueryEmployeeTrait;
 use Tests\TestCase;
 
 class GetItemsTest extends TestCase
 {
-    use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    protected $seed = true;
-
-    public function test_get_items_unauthenticated()
+    public function testGetItemsUnauthenticated()
     {
-        $response = $this->get('/api/item');
+        $response = $this->get("/api/item");
 
         $response->assertStatus(401);
 
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_items_as_employee()
+    public function testGetItemsAsEmployee()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-item");
 
@@ -34,22 +30,13 @@ class GetItemsTest extends TestCase
         $response->assertStatus(200);
 
         $response->assertJsonStructure([
-                [
-                    "id",
-                    "name",
-                    "code",
-                    "barcode",
-                    "image",
-                    "image_key",
-                    "store_id",
-                    "category"
-                ],
+            ["id", "name", "code", "barcode", "image", "image_key", "store_id", "category"],
         ]);
     }
 
-    public function test_get_items_as_admin()
+    public function testGetItemsAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-item");
 
@@ -58,22 +45,13 @@ class GetItemsTest extends TestCase
         $response->assertStatus(200);
 
         $response->assertJsonStructure([
-                [
-                    "id",
-                    "name",
-                    "code",
-                    "barcode",
-                    "image",
-                    "image_key",
-                    "store_id",
-                    "category"
-                ],
+            ["id", "name", "code", "barcode", "image", "image_key", "store_id", "category"],
         ]);
     }
 
-    public function test_get_items_with_pagination()
+    public function testGetItemsWithPagination()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-item");
 
@@ -82,24 +60,15 @@ class GetItemsTest extends TestCase
         $response->assertStatus(200);
 
         $response->assertJsonStructure([
-                [
-                    "id",
-                    "name",
-                    "code",
-                    "barcode",
-                    "image",
-                    "image_key",
-                    "store_id",
-                    "category"
-                ],
+            ["id", "name", "code", "barcode", "image", "image_key", "store_id", "category"],
         ]);
 
         $response->assertJsonCount(1);
     }
 
-    public function test_get_items_with_search()
+    public function testGetItemsWithSearch()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-item");
 
@@ -110,18 +79,9 @@ class GetItemsTest extends TestCase
         $response->assertStatus(200);
 
         $response->assertJsonStructure([
-                [
-                    "id",
-                    "name",
-                    "code",
-                    "barcode",
-                    "image",
-                    "image_key",
-                    "store_id",
-                    "category"
-                ],
+            ["id", "name", "code", "barcode", "image", "image_key", "store_id", "category"],
         ]);
 
-        $response->assertJsonCount(1);
+        $response->assertJsonFragment(["name" => $item->name]);
     }
 }

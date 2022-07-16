@@ -5,15 +5,15 @@ namespace Tests\Feature\Role;
 use App\Models\Employee;
 use App\Models\Role;
 use App\Models\Store;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class DeleteRoleTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_delete_role_unauthenticated()
+    public function testDeleteRoleUnauthenticated()
     {
         $response = $this->delete("/api/role/1");
 
@@ -22,7 +22,7 @@ class DeleteRoleTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_delete_role_as_employee()
+    public function testDeleteRoleAsEmployee()
     {
         $employee = Employee::first();
 
@@ -33,14 +33,12 @@ class DeleteRoleTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_delete_active_role()
+    public function testDeleteActiveRole()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $active_role = Role::where("store_id", $store->id)
-            ->whereHas("employmentRoles.employment", function ($query) {
-                $query->where("to", null);
-            })
+            ->whereRelation("employmentRoles.employment", "to", null)
             ->first();
 
         $response = $this->actingAs($store, "stores")->delete("/api/role/{$active_role->id}");
@@ -50,12 +48,12 @@ class DeleteRoleTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_delete_inactive_role()
+    public function testDeleteInactiveRole()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $inactive_role = Role::where("store_id", $store->id)
-            ->whereDoesntHave("employmentRoles.employment", function ($query) {
+            ->whereDoesntHave("employmentRoles.employment", function (Builder $query) {
                 $query->where("to", null);
             })
             ->first();

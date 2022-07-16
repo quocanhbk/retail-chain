@@ -21,7 +21,7 @@ class PurchaseSheetItemFactory extends Factory
             "quantity" => $this->faker->randomNumber(3, false),
             "price" => $this->faker->randomNumber(5, true),
             "discount" => $this->faker->randomNumber(3, false),
-            "discount_type" => $this->faker->randomElement(["percent", "cash"]),
+            "discount_type" => $this->faker->randomElement(["percent", "amount"]),
             "total" => $this->faker->randomNumber(5, true),
         ];
     }

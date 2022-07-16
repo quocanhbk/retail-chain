@@ -2,25 +2,37 @@
 
 namespace Tests\Feature\Branch;
 
+use App\Models\Employee;
 use App\Models\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class GetBranchImageTest extends TestCase
 {
-
-    public function test_get_branch_image_unauthenticated()
+    public function testGetBranchImageUnauthenticated()
     {
         $branch = Store::first()->branches->first();
 
         $response = $this->get("/api/branch/image/{$branch->image_key}");
 
         $response->assertStatus(401);
+
+        $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_branch_image_successfully()
+    public function testGetBranchImageAsEmployee()
     {
-        $store = Store::first();
+        $employee = Employee::first();
+
+        $response = $this->actingAs($employee)->get("/api/branch/image/{$employee->employment->branch->image_key}");
+
+        $response->assertStatus(401);
+
+        $response->assertJsonStructure(["message"]);
+    }
+
+    public function testGetBranchImageAsAdmin()
+    {
+        $store = Store::find(1);
 
         $branch = $store->branches()->first();
 
@@ -31,9 +43,9 @@ class GetBranchImageTest extends TestCase
         $response->assertHeader("Content-Type", "image/*");
     }
 
-    public function test_get_branch_image_not_found()
+    public function testGetBranchImageNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->get("/api/branch/image/invalid");
 

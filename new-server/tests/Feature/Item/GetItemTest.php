@@ -2,32 +2,26 @@
 
 namespace Tests\Feature\Item;
 
-use App\Models\Item;
 use App\Models\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\QueryEmployeeTrait;
 use Tests\TestCase;
 
 class GetItemTest extends TestCase
 {
-    use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    protected $seed = true;
-
-    public function test_get_item_unauthenticated()
+    public function testGetItemUnauthenticated()
     {
-        $response = $this->get('/api/item/one?id=1');
+        $response = $this->get("/api/item/one?id=1");
 
         $response->assertStatus(401);
 
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_item_with_no_id_or_barcode()
+    public function testGetItemWithNoIdOrBarcode()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-item");
 
@@ -38,9 +32,9 @@ class GetItemTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_item_by_id_successfully()
+    public function testGetItemByIdAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-item");
 
@@ -50,16 +44,7 @@ class GetItemTest extends TestCase
 
         $response->assertStatus(200);
 
-        $response->assertJsonStructure([
-            "id",
-            "name",
-            "code",
-            "barcode",
-            "image",
-            "image_key",
-            "store_id",
-            "category"
-        ]);
+        $response->assertJsonStructure(["id", "name", "code", "barcode", "image", "image_key", "store_id", "category"]);
 
         $response->assertJson([
             "id" => $item->id,
@@ -72,9 +57,9 @@ class GetItemTest extends TestCase
         ]);
     }
 
-    public function test_get_item_by_barcode_successfully()
+    public function testGetItemByBarcodeAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-item");
 
@@ -84,16 +69,7 @@ class GetItemTest extends TestCase
 
         $response->assertStatus(200);
 
-        $response->assertJsonStructure([
-            "id",
-            "name",
-            "code",
-            "barcode",
-            "image",
-            "image_key",
-            "store_id",
-            "category"
-        ]);
+        $response->assertJsonStructure(["id", "name", "code", "barcode", "image", "image_key", "store_id", "category"]);
 
         $response->assertJson([
             "id" => $item->id,
@@ -106,9 +82,9 @@ class GetItemTest extends TestCase
         ]);
     }
 
-    public function test_get_item_as_admin_successfully()
+    public function testGetItemAsAdminSuccessfully()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $item = $store->items->first();
 
@@ -116,16 +92,7 @@ class GetItemTest extends TestCase
 
         $response->assertStatus(200);
 
-        $response->assertJsonStructure([
-            "id",
-            "name",
-            "code",
-            "barcode",
-            "image",
-            "image_key",
-            "store_id",
-            "category"
-        ]);
+        $response->assertJsonStructure(["id", "name", "code", "barcode", "image", "image_key", "store_id", "category"]);
 
         $response->assertJson([
             "id" => $item->id,
@@ -138,9 +105,9 @@ class GetItemTest extends TestCase
         ]);
     }
 
-    public function test_get_item_not_found()
+    public function testGetItemNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-item");
 

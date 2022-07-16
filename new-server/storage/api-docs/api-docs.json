@@ -387,15 +387,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -431,15 +423,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -535,15 +519,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -574,15 +550,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -754,16 +722,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "description": "Success message",
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -813,16 +772,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "description": "Success message",
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -872,16 +822,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "description": "Success message",
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -1158,16 +1099,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Successfully updated"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -1206,15 +1138,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -1264,16 +1188,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Password changed successfully"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -1352,15 +1267,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -1412,15 +1319,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -1517,15 +1416,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -1557,15 +1448,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -1710,7 +1593,7 @@
                     "Item"
                 ],
                 "summary": "Get all selling items",
-                "operationId": "getAllSellingItems",
+                "operationId": "getSelling",
                 "parameters": [
                     {
                         "name": "search",
@@ -1816,40 +1699,6 @@
                 }
             }
         },
-        "/item/{item_id}/price-history": {
-            "get": {
-                "tags": [
-                    "Item"
-                ],
-                "summary": "Get item price history",
-                "operationId": "getItemPriceHistory",
-                "parameters": [
-                    {
-                        "name": "item_id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/ItemPriceHistory"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/item/{item_id}": {
             "put": {
                 "tags": [
@@ -1884,6 +1733,582 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Item"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Item"
+                ],
+                "summary": "Delete item",
+                "operationId": "deleteItem",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "force",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/item/deleted": {
+            "get": {
+                "tags": [
+                    "Item"
+                ],
+                "summary": "Get deleted items",
+                "operationId": "getDeletedItems",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "order_by",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Item"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/item/{item_id}/restore": {
+            "post": {
+                "tags": [
+                    "Item"
+                ],
+                "summary": "Restore item",
+                "operationId": "restoreItem",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/item/{item_id}/force": {
+            "delete": {
+                "tags": [
+                    "Item"
+                ],
+                "summary": "Force delete item",
+                "operationId": "forceDeleteItem",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/permission/{permission_id}": {
+            "put": {
+                "tags": [
+                    "Permission"
+                ],
+                "summary": "Update a permission",
+                "description": "Update a permission",
+                "operationId": "updatePermission",
+                "parameters": [
+                    {
+                        "name": "permission_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "role_ids"
+                                ],
+                                "properties": {
+                                    "role_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/purchase-sheet": {
+            "get": {
+                "tags": [
+                    "PurchaseSheet"
+                ],
+                "summary": "Get all purchase sheets",
+                "operationId": "getPurchaseSheets",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_by",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PurchaseSheetWithSupplierAndEmployee"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "PurchaseSheet"
+                ],
+                "summary": "Create a new purchase sheet",
+                "operationId": "createPurchaseSheet",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreatePurchaseSheetInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfull operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PurchaseSheet"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/purchase-sheet/{purchase_sheet_id}": {
+            "get": {
+                "tags": [
+                    "PurchaseSheet"
+                ],
+                "summary": "Get purchase sheet by id",
+                "operationId": "getPurchaseSheet",
+                "parameters": [
+                    {
+                        "name": "purchase_sheet_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PurchaseSheetDetail"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "PurchaseSheet"
+                ],
+                "summary": "Delete purchase sheet",
+                "operationId": "deletePurchaseSheet",
+                "parameters": [
+                    {
+                        "name": "purchase_sheet_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/purchase-sheet/{purchase_sheet_id}/note": {
+            "put": {
+                "tags": [
+                    "PurchaseSheet"
+                ],
+                "summary": "Update purchase sheet note",
+                "operationId": "updatePurchaseSheetNote",
+                "parameters": [
+                    {
+                        "name": "purchase_sheet_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "note"
+                                ],
+                                "properties": {
+                                    "note": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/quantity-checking-sheet": {
+            "get": {
+                "tags": [
+                    "QuantityCheckingSheet"
+                ],
+                "summary": "Get quantity checking sheets",
+                "description": "Get quantity checking sheets",
+                "operationId": "getQuantityCheckingSheets",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_by",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Quantity checking sheets",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/QuantityCheckingSheetWithEmployee"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "QuantityCheckingSheet"
+                ],
+                "summary": "Create a new quantity checking sheet",
+                "operationId": "createQuantityCheckingSheet",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateQuantityCheckingSheetInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Created quantity checking sheet",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/QuantityCheckingSheet"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/quantity-checking-sheet/{id}": {
+            "get": {
+                "tags": [
+                    "QuantityCheckingSheet"
+                ],
+                "summary": "Get quantity checking sheet",
+                "description": "Get quantity checking sheet",
+                "operationId": "getQuantityCheckingSheet",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Quantity checking sheet",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/QuantityCheckingSheetDetail"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "QuantityCheckingSheet"
+                ],
+                "summary": "Delete quantity checking sheet",
+                "description": "Delete quantity checking sheet",
+                "operationId": "deleteQuantityCheckingSheet",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Quantity checking sheet deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -2076,16 +2501,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "description": "Successful operation",
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -2103,6 +2519,45 @@
                 "parameters": [
                     {
                         "name": "branch_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_by",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "to",
                         "in": "query",
                         "schema": {
                             "type": "integer"
@@ -2250,16 +2705,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "description": "Success message",
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -2342,15 +2788,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -2609,16 +3047,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "description": "Success message",
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -2715,16 +3144,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "description": "Success message",
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -2756,16 +3176,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "description": "Success message",
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -2828,15 +3239,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -2906,16 +3309,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "description": "Success message",
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -3831,6 +4225,402 @@
                     }
                 },
                 "type": "object"
+            },
+            "Message": {
+                "required": [
+                    "message"
+                ],
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "PurchaseSheet": {
+                "required": [
+                    "id",
+                    "code",
+                    "employee_id",
+                    "branch_id",
+                    "supplier_id",
+                    "discount",
+                    "discount_type",
+                    "total",
+                    "paid_amount",
+                    "note"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "employee_id": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "branch_id": {
+                        "type": "integer"
+                    },
+                    "supplier_id": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "discount": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "discount_type": {
+                        "type": "string",
+                        "enum": [
+                            "amount",
+                            "percent"
+                        ],
+                        "nullable": true
+                    },
+                    "total": {
+                        "type": "integer"
+                    },
+                    "paid_amount": {
+                        "type": "integer"
+                    },
+                    "note": {
+                        "type": "string"
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpsertTime"
+                    }
+                ]
+            },
+            "PurchaseSheetWithSupplierAndEmployee": {
+                "required": [
+                    "supplier",
+                    "employee"
+                ],
+                "properties": {
+                    "supplier": {
+                        "type": "object",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Supplier"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "employee": {
+                        "type": "object",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Employee"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/PurchaseSheet"
+                    }
+                ]
+            },
+            "PurchaseSheetDetail": {
+                "required": [
+                    "branch",
+                    "items"
+                ],
+                "properties": {
+                    "branch": {
+                        "$ref": "#/components/schemas/Branch"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PurchaseSheetItemDetail"
+                        }
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/PurchaseSheetWithSupplierAndEmployee"
+                    }
+                ]
+            },
+            "CreatePurchaseSheetInput": {
+                "required": [
+                    "items"
+                ],
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "supplier_id": {
+                        "type": "integer"
+                    },
+                    "discount": {
+                        "type": "integer"
+                    },
+                    "discount_type": {
+                        "type": "string",
+                        "enum": [
+                            "percent",
+                            "amount"
+                        ]
+                    },
+                    "paid_amount": {
+                        "type": "integer"
+                    },
+                    "note": {
+                        "type": "string"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PurchaseSheetItemInput"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "PurchaseSheetItemInput": {
+                "required": [
+                    "id",
+                    "quantity",
+                    "price"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "quantity": {
+                        "type": "integer"
+                    },
+                    "price": {
+                        "type": "integer"
+                    },
+                    "discount": {
+                        "type": "integer"
+                    },
+                    "discount_type": {
+                        "type": "string",
+                        "enum": [
+                            "percent",
+                            "amount"
+                        ]
+                    }
+                },
+                "type": "object"
+            },
+            "PurchaseSheetItem": {
+                "required": [
+                    "id",
+                    "item_id",
+                    "purchase_sheet_id",
+                    "price",
+                    "discount",
+                    "discount_type",
+                    "quantity",
+                    "total"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "item_id": {
+                        "type": "integer"
+                    },
+                    "purchase_sheet_id": {
+                        "type": "integer"
+                    },
+                    "quantity": {
+                        "type": "integer"
+                    },
+                    "price": {
+                        "type": "integer"
+                    },
+                    "discount": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "discount_type": {
+                        "type": "string",
+                        "enum": [
+                            "percent",
+                            "amount"
+                        ],
+                        "nullable": true
+                    },
+                    "total": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpsertTime"
+                    }
+                ]
+            },
+            "PurchaseSheetItemDetail": {
+                "required": [
+                    "item"
+                ],
+                "properties": {
+                    "item": {
+                        "$ref": "#/components/schemas/Item"
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/PurchaseSheetItem"
+                    }
+                ]
+            },
+            "QuantityCheckingSheet": {
+                "required": [
+                    "id",
+                    "code",
+                    "employee_id",
+                    "branch_id",
+                    "note"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "employee_id": {
+                        "type": "integer"
+                    },
+                    "branch_id": {
+                        "type": "integer"
+                    },
+                    "note": {
+                        "type": "string"
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpsertTime"
+                    }
+                ]
+            },
+            "QuantityCheckingSheetWithEmployee": {
+                "required": [
+                    "employee"
+                ],
+                "properties": {
+                    "employee": {
+                        "$ref": "#/components/schemas/Employee"
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/QuantityCheckingSheet"
+                    }
+                ]
+            },
+            "QuantityCheckingSheetDetail": {
+                "required": [
+                    "items"
+                ],
+                "properties": {
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/QuantityCheckingItem"
+                        }
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/QuantityCheckingSheetWithEmployee"
+                    }
+                ]
+            },
+            "CreateQuantityCheckingSheetInput": {
+                "required": [
+                    "items"
+                ],
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "note": {
+                        "type": "string"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "id",
+                                "actual_quantity"
+                            ],
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "actual_quantity": {
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "QuantityCheckingItem": {
+                "required": [
+                    "id",
+                    "quantity_checking_sheet_id",
+                    "item_id",
+                    "expected_quantity",
+                    "actual_quantity",
+                    "total"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "quantity_checking_sheet_id": {
+                        "type": "integer"
+                    },
+                    "item_id": {
+                        "type": "integer"
+                    },
+                    "expected_quantity": {
+                        "type": "integer"
+                    },
+                    "actual_quantity": {
+                        "type": "integer"
+                    },
+                    "total": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/UpsertTime"
+                    }
+                ]
             },
             "Role": {
                 "required": [

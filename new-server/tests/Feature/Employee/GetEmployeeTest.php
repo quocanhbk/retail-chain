@@ -4,12 +4,11 @@ namespace Tests\Feature\Employee;
 
 use App\Models\Employee;
 use App\Models\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class GetEmployeeTest extends TestCase
 {
-    public function test_get_employee_unauthenticated()
+    public function testGetEmployeeUnauthenticated()
     {
         $response = $this->get("/api/employee/1");
 
@@ -18,7 +17,7 @@ class GetEmployeeTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_employee_unauthorized()
+    public function testGetEmployeeUnauthorized()
     {
         $employee = Employee::first();
 
@@ -29,9 +28,9 @@ class GetEmployeeTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_employee_as_admin()
+    public function testGetEmployeeAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $store->employees()->first();
 
@@ -72,9 +71,9 @@ class GetEmployeeTest extends TestCase
         ]);
     }
 
-    public function test_get_employee_not_found()
+    public function testGetEmployeeNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->get("/api/employee/9999");
 

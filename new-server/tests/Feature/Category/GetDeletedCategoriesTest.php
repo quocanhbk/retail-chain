@@ -12,7 +12,7 @@ class GetDeletedCategoriesTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    public function test_get_deleted_categories_unauthenticated()
+    public function testGetDeletedCategoriesUnauthenticated()
     {
         $response = $this->get("/api/category/deleted");
 
@@ -21,9 +21,9 @@ class GetDeletedCategoriesTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_deleted_categories_with_invalid_permission()
+    public function testGetDeletedCategoriesWithInvalidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-category");
 
@@ -34,9 +34,9 @@ class GetDeletedCategoriesTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_deleted_categories_as_admin()
+    public function testGetDeletedCategoriesAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $store->categories()->delete();
 
@@ -47,9 +47,9 @@ class GetDeletedCategoriesTest extends TestCase
         $response->assertJsonStructure([["id", "name", "description", "created_at", "updated_at"]]);
     }
 
-    public function test_get_deleted_categories_with_search()
+    public function testGetDeletedCategoriesWithSearch()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $category = $store->categories->first();
 
@@ -59,18 +59,12 @@ class GetDeletedCategoriesTest extends TestCase
 
         $response->assertStatus(200);
 
-        $response->assertJsonFragment([
-            "id" => $category->id,
-            "name" => $category->name,
-            "description" => $category->description,
-        ]);
-
-        $response->assertJsonCount(1);
+        $response->assertJsonFragment(["name" => $category->name]);
     }
 
-    public function test_get_delted_categories_with_pagination()
+    public function testGetDeltedCategoriesWithPagination()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $store->categories()->delete();
 

@@ -23,7 +23,7 @@ class AdminOrEmployee
             $as = "employee";
         }
 
-        if ($as == null) {
+        if (null == $as) {
             return response()->json(["message" => "Unauthenticated."], 401);
         }
 

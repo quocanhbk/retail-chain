@@ -12,60 +12,70 @@ class Employee
 {
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $id;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $name;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $email;
 
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $store_id;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $avatar;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $avatar_key;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $phone;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $birthday;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $gender;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $email_verified_at;
@@ -81,6 +91,7 @@ class EmployeeWithEmployment
 {
     /**
      * @OA\Property(ref="#/components/schemas/EmploymentWithRoles")
+     *
      * @var object
      */
     public $employment;
@@ -95,31 +106,36 @@ class CreateEmployeeInput
 {
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $name;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $email;
 
     /**
      * @OA\Property(format="password")
+     *
      * @var string
      */
     public $password;
 
     /**
      * @OA\Property(format="password")
+     *
      * @var string
      */
     public $password_confirmation;
 
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $branch_id;
 
@@ -128,30 +144,35 @@ class CreateEmployeeInput
      *   type="array",
      *   @OA\Items(type="integer")
      * )
+     *
      * @var array
      */
     public $role_ids;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $phone;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $birthday;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $gender;
 
     /**
      * @OA\Property(format="binary")
+     *
      * @var string
      */
     public $avatar;
@@ -164,6 +185,7 @@ class EmployeeAvatar
 {
     /**
      * @OA\Property(format="binary")
+     *
      * @var string
      */
     public $avatar;
@@ -192,6 +214,7 @@ class CreateManyEmployeesInput
      *   @OA\Items(ref="#/components/schemas/CreateSingleEmployeeInput"),
      *   required={"employees"}
      * )
+     *
      * @var array
      */
     public $employees;
@@ -204,12 +227,14 @@ class UpdateEmployeeInput
 {
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $name;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $email;
@@ -219,30 +244,35 @@ class UpdateEmployeeInput
      *   type="array",
      *   @OA\Items(type="integer")
      * )
+     *
      * @var array
      */
     public $role_ids;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $phone;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $birthday;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $gender;
 
     /**
      * @OA\Property(format="binary"),
+     *
      * @var string
      */
     public $avatar;
@@ -257,19 +287,22 @@ class EmployeeLoginInput
 {
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $email;
 
     /**
      * @OA\Property(format="password")
+     *
      * @var string
      */
     public $password;
 
     /**
      * @OA\Property()
-     * @var boolean
+     *
+     * @var bool
      */
     public $remember;
 }
@@ -283,7 +316,8 @@ class TransferEmployeeInput
 {
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $branch_id;
 
@@ -296,6 +330,7 @@ class TransferEmployeeInput
      *     @OA\Property(property="role_ids", type="array", @OA\Items(type="integer"))
      *   )
      * )
+     *
      * @var array
      */
     public $employees;

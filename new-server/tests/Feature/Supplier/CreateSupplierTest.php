@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\Supplier;
 
-use App\Models\Employee;
-use App\Models\PermissionRole;
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\QueryEmployeeTrait;
@@ -14,7 +12,7 @@ class CreateSupplierTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    public function test_create_supplier_unauthenticated()
+    public function testCreateSupplierUnauthenticated()
     {
         $response = $this->post("/api/supplier", [
             "name" => "My supplier",
@@ -32,9 +30,9 @@ class CreateSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_supplier_with_invalid_permission()
+    public function testCreateSupplierWithInvalidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithoutPermission($store->id, "create-supplier");
 
@@ -52,9 +50,9 @@ class CreateSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_supplier_with_valid_permission()
+    public function testCreateSupplierWithValidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "create-supplier");
 
@@ -77,9 +75,9 @@ class CreateSupplierTest extends TestCase
         ]);
     }
 
-    public function test_create_supplier_with_email()
+    public function testCreateSupplierWithEmail()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->post("/api/supplier", [
             "name" => "My supplier",
@@ -103,9 +101,9 @@ class CreateSupplierTest extends TestCase
         ]);
     }
 
-    public function test_create_supplier_with_phone()
+    public function testCreateSupplierWithPhone()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->post("/api/supplier", [
             "name" => "My supplier",
@@ -129,9 +127,9 @@ class CreateSupplierTest extends TestCase
         ]);
     }
 
-    public function test_create_supplier_with_duplicate_email()
+    public function testCreateSupplierWithDuplicateEmail()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $supplier = $store->suppliers->first();
 
@@ -145,9 +143,9 @@ class CreateSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_supplier_with_duplicate_phone()
+    public function testCreateSupplierWithDuplicatePhone()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $supplier = $store->suppliers->first();
 
@@ -161,9 +159,9 @@ class CreateSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_supplier_with_no_phone_or_email()
+    public function testCreateSupplierWithNoPhoneOrEmail()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->post("/api/supplier", [
             "name" => "My supplier",
@@ -174,9 +172,9 @@ class CreateSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_supplier_with_duplicate_code()
+    public function testCreateSupplierWithDuplicateCode()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $supplier = $store->suppliers->first();
 
@@ -190,9 +188,9 @@ class CreateSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_supplier_with_code_provided()
+    public function testCreateSupplierWithCodeProvided()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->post("/api/supplier", [
             "name" => "My supplier",

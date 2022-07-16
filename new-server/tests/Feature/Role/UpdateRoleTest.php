@@ -6,14 +6,13 @@ use App\Models\Employee;
 use App\Models\Role;
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class UpdateRoleTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_update_role_unauthenticated()
+    public function testUpdateRoleUnauthenticated()
     {
         $response = $this->put("/api/role/1");
 
@@ -22,7 +21,7 @@ class UpdateRoleTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_role_as_employee()
+    public function testUpdateRoleAsEmployee()
     {
         $employee = Employee::first();
 
@@ -33,9 +32,9 @@ class UpdateRoleTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_role_as_admin()
+    public function testUpdateRoleAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $role = Role::where("store_id", $store->id)->first();
 
@@ -58,9 +57,9 @@ class UpdateRoleTest extends TestCase
         ]);
     }
 
-    public function test_update_role_not_found()
+    public function testUpdateRoleNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->put("/api/role/9999", [
             "name" => "Role Updated",
@@ -71,9 +70,9 @@ class UpdateRoleTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_role_with_long_name()
+    public function testUpdateRoleWithLongName()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $role = Role::where("store_id", $store->id)->first();
 

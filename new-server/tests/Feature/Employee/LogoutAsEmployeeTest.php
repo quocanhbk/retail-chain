@@ -4,13 +4,11 @@ namespace Tests\Feature\Employee;
 
 use App\Models\Employee;
 use App\Models\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class LogoutAsEmployeeTest extends TestCase
 {
-    public function test_log_out_while_already_logged_out()
+    public function testLogOutWhileAlreadyLoggedOut()
     {
         $response = $this->post("/api/employee/logout");
 
@@ -19,7 +17,7 @@ class LogoutAsEmployeeTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_log_out_successfully()
+    public function testLogOutSuccessfully()
     {
         $employee = Employee::first();
 
@@ -30,9 +28,9 @@ class LogoutAsEmployeeTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_log_out_while_logged_in_as_admin()
+    public function testLogOutWhileLoggedInAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->post("/api/employee/logout");
 

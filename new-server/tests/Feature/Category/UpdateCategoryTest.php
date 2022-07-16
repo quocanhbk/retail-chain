@@ -13,7 +13,7 @@ class UpdateCategoryTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    public function test_update_category_unauthenticated()
+    public function testUpdateCategoryUnauthenticated()
     {
         $response = $this->put("/api/category/1");
 
@@ -22,9 +22,9 @@ class UpdateCategoryTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_category_with_invalid_permission()
+    public function testUpdateCategoryWithInvalidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithoutPermission($store->id, "update-category");
 
@@ -35,9 +35,9 @@ class UpdateCategoryTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_category_with_valid_permission()
+    public function testUpdateCategoryWithValidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "update-category");
 
@@ -59,9 +59,9 @@ class UpdateCategoryTest extends TestCase
         ]);
     }
 
-    public function test_update_category_as_admin()
+    public function testUpdateCategoryAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $category = $store->categories->first();
 
@@ -81,9 +81,9 @@ class UpdateCategoryTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_category_not_found()
+    public function testUpdateCategoryNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->put("/api/category/0", [
             "name" => "Test Category Updated",
@@ -95,9 +95,9 @@ class UpdateCategoryTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_category_of_other_store()
+    public function testUpdateCategoryOfOtherStore()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $category = Category::where("store_id", "!=", $store->id)->first();
 
@@ -111,9 +111,9 @@ class UpdateCategoryTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_category_with_too_long_name()
+    public function testUpdateCategoryWithTooLongName()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $category = $store->categories->first();
 
@@ -133,9 +133,9 @@ class UpdateCategoryTest extends TestCase
         ]);
     }
 
-    public function test_update_category_with_duplicate_name()
+    public function testUpdateCategoryWithDuplicateName()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $category = $store->categories->first();
 

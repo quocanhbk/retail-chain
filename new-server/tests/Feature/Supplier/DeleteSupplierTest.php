@@ -2,10 +2,8 @@
 
 namespace Tests\Feature\Supplier;
 
-use App\Models\Employee;
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\QueryEmployeeTrait;
 use Tests\TestCase;
 
@@ -14,7 +12,7 @@ class DeleteSupplierTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    public function test_delete_supplier_unauthenticated()
+    public function testDeleteSupplierUnauthenticated()
     {
         $response = $this->delete("/api/supplier/1");
 
@@ -23,9 +21,9 @@ class DeleteSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_delete_supplier_with_invalid_permission()
+    public function testDeleteSupplierWithInvalidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithoutPermission($store->id, "delete-supplier");
 
@@ -36,9 +34,9 @@ class DeleteSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_delete_supplier_with_valid_permission()
+    public function testDeleteSupplierWithValidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "delete-supplier");
 
@@ -58,9 +56,9 @@ class DeleteSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_delete_supplier_as_admin()
+    public function testDeleteSupplierAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $supplier = $store->suppliers->first();
 
@@ -78,9 +76,9 @@ class DeleteSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_delete_supplier_not_found()
+    public function testDeleteSupplierNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "delete-supplier");
 
@@ -91,9 +89,9 @@ class DeleteSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_force_delete_supplier_as_employee()
+    public function testForceDeleteSupplierAsEmployee()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "delete-supplier");
 
@@ -106,9 +104,9 @@ class DeleteSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_force_delete_supplier_as_admin()
+    public function testForceDeleteSupplierAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $supplier = $store->suppliers->first();
 

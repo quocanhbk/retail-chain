@@ -22,7 +22,7 @@ class PurchaseSheetFactory extends Factory
             "branch_id" => Branch::factory(),
             "supplier_id" => Supplier::factory(),
             "discount" => $this->faker->randomNumber(3, false),
-            "discount_type" => $this->faker->randomElement(["percent", "cash"]),
+            "discount_type" => $this->faker->randomElement(["percent", "amount"]),
             "total" => $this->faker->randomNumber(5, true),
             "paid_amount" => $this->faker->randomNumber(5, true),
             "note" => $this->faker->sentence(),

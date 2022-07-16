@@ -4,12 +4,11 @@ namespace Tests\Feature\Employee;
 
 use App\Models\Employee;
 use App\Models\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class GetAvatarTest extends TestCase
 {
-    public function test_get_avatar_unauthenticated()
+    public function testGetAvatarUnauthenticated()
     {
         $response = $this->get("/api/employee/avatar/key");
 
@@ -18,9 +17,9 @@ class GetAvatarTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_avatar_as_admin()
+    public function testGetAvatarAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $store->employees->first();
 
@@ -31,7 +30,7 @@ class GetAvatarTest extends TestCase
         $response->assertHeader("Content-Type", "image/*");
     }
 
-    public function test_get_avatar_as_employee()
+    public function testGetAvatarAsEmployee()
     {
         $employee = Employee::first();
 
@@ -42,9 +41,9 @@ class GetAvatarTest extends TestCase
         $response->assertHeader("Content-Type", "image/*");
     }
 
-    public function test_get_avatar_not_found()
+    public function testGetAvatarNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->get("/api/employee/avatar/invalid");
 

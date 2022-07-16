@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 class GetMeEmployeeTest extends TestCase
 {
-    public function test_get_me_unauthenticated()
+    public function testGetMeUnauthenticated()
     {
         $response = $this->get("/api/employee/me");
 
@@ -17,16 +17,16 @@ class GetMeEmployeeTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_me_as_admin()
+    public function testGetMeAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->get("/api/employee/me");
 
         $response->assertStatus(401);
     }
 
-    public function test_get_me_as_employee()
+    public function testGetMeAsEmployee()
     {
         $employee = Employee::first();
 

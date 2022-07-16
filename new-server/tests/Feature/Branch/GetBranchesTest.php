@@ -2,22 +2,35 @@
 
 namespace Tests\Feature\Branch;
 
+use App\Models\Employee;
 use App\Models\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class GetBranchesTest extends TestCase
 {
-    public function test_get_branches_unauthenticated()
+    public function testGetBranchesUnauthenticated()
     {
         $response = $this->get("/api/branch");
 
         $response->assertStatus(401);
+
+        $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_branches_successfully()
+    public function testGetBranchesAsEmployee()
     {
-        $store = Store::first();
+        $employee = Employee::first();
+
+        $response = $this->actingAs($employee)->get("/api/branch");
+
+        $response->assertStatus(401);
+
+        $response->assertJsonStructure(["message"]);
+    }
+
+    public function testGetBranchesAsAdmin()
+    {
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->get("/api/branch");
 
@@ -26,9 +39,9 @@ class GetBranchesTest extends TestCase
         $response->assertJsonStructure([["id", "name", "address", "image_key", "created_at", "updated_at"]]);
     }
 
-    public function test_get_branches_with_search_successfully()
+    public function testGetBranchesWithSearch()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $branch = $store->branches()->first();
 
@@ -37,11 +50,13 @@ class GetBranchesTest extends TestCase
         $response->assertStatus(200);
 
         $response->assertJsonStructure([["id", "name", "address", "image_key", "created_at", "updated_at"]]);
+
+        $response->assertJsonFragment(["name" => $branch->name]);
     }
 
-    public function test_get_branches_with_search_empty()
+    public function testGetBranchesWithSearchEmpty()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->get("/api/branch?search=gibberish");
 

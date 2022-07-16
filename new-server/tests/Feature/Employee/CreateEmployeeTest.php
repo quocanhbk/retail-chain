@@ -15,14 +15,14 @@ class CreateEmployeeTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_create_employee_authenticated()
+    public function testCreateEmployeeAuthenticated()
     {
         $response = $this->post("/api/employee");
 
         $response->assertStatus(401);
     }
 
-    public function test_create_employee_unauthorized()
+    public function testCreateEmployeeAsEmployee()
     {
         $employee = Employee::first();
 
@@ -31,9 +31,9 @@ class CreateEmployeeTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function test_create_employee_with_invalid_input()
+    public function testCreateEmployeeWithInvalidInput()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->post("/api/employee", [
             "name" => "My Employee",
@@ -44,9 +44,9 @@ class CreateEmployeeTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_employee_successfully()
+    public function testCreateEmployeeAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $roles = $store->roles;
 
@@ -84,9 +84,9 @@ class CreateEmployeeTest extends TestCase
         ]);
     }
 
-    public function test_create_employee_with_duplicate_email()
+    public function testCreateEmployeeWithDuplicateEmail()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $roles = $store->roles;
 
@@ -102,9 +102,9 @@ class CreateEmployeeTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_employee_with_avatar()
+    public function testCreateEmployeeWithAvatar()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $roles = $store->roles;
 
@@ -127,9 +127,9 @@ class CreateEmployeeTest extends TestCase
         Storage::disk("local")->assertExists($response->json("avatar"));
     }
 
-    public function test_create_employee_with_invalid_birthday()
+    public function testCreateEmployeeWithInvalidBirthday()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $roles = $store->roles;
 

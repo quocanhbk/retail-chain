@@ -4,17 +4,13 @@ namespace Tests\Feature\Store;
 
 use App\Models\Employee;
 use App\Models\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class GetStoreInfoTest extends TestCase
 {
-    use RefreshDatabase;
-
-
-    public function test_get_store_info()
+    public function testGetStoreInfo()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->get("/api/store/me");
 
@@ -26,16 +22,16 @@ class GetStoreInfoTest extends TestCase
         ]);
     }
 
-    public function test_get_store_info_unauthenticated()
+    public function testGetStoreInfoUnauthenticated()
     {
         $response = $this->get("/api/store/me");
 
         $response->assertStatus(401);
     }
 
-    public function test_get_guard_as_admin()
+    public function testGetGuardAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->get("/api/guard");
 
@@ -46,7 +42,7 @@ class GetStoreInfoTest extends TestCase
         ]);
     }
 
-    public function test_get_guard_as_employee()
+    public function testGetGuardAsEmployee()
     {
         $employee = Employee::first();
 
@@ -59,7 +55,7 @@ class GetStoreInfoTest extends TestCase
         ]);
     }
 
-    public function test_get_guard_as_guest()
+    public function testGetGuardAsGuest()
     {
         $response = $this->get("/api/guard");
 

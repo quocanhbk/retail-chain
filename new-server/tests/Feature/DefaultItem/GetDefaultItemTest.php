@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class GetDefaultItemTest extends TestCase
 {
-    public function test_get_item_by_id_successfully()
+    public function testGetItemByIdSuccessfully()
     {
         $default_item = DefaultItem::first();
 
@@ -40,7 +40,7 @@ class GetDefaultItemTest extends TestCase
         ]);
     }
 
-    public function test_get_item_by_id_not_found()
+    public function testGetItemByIdNotFound()
     {
         $response = $this->get("/api/default-item/one?id=9999999");
 
@@ -49,7 +49,7 @@ class GetDefaultItemTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_item_by_barcode_successfully()
+    public function testGetItemByBarcodeSuccessfully()
     {
         $default_item = DefaultItem::first();
 
@@ -82,7 +82,7 @@ class GetDefaultItemTest extends TestCase
         ]);
     }
 
-    public function test_get_item_by_barcode_not_found()
+    public function testGetItemByBarcodeNotFound()
     {
         $response = $this->get("/api/default-item/one?barcode=112233445566");
 
@@ -91,7 +91,7 @@ class GetDefaultItemTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_item_with_no_id_and_barcode()
+    public function testGetItemWithNoIdAndBarcode()
     {
         $response = $this->get("/api/default-item/one");
 

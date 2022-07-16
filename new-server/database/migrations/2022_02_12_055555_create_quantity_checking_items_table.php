@@ -24,9 +24,9 @@ class CreateQuantityCheckingItemsTable extends Migration
                 ->foreignId("item_id")
                 ->constrained()
                 ->onDelete("cascade");
-            $table->unsignedInteger("expected");
-            $table->unsignedInteger("actual");
-            $table->unsignedInteger("total");
+            $table->unsignedBigInteger("expected_quantity");
+            $table->unsignedBigInteger("actual_quantity");
+            $table->bigInteger("total");
         });
     }
 

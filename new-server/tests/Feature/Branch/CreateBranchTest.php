@@ -12,7 +12,7 @@ class CreateBranchTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_create_branch_unauthenticated()
+    public function testCreateBranchUnauthenticated()
     {
         $response = $this->post("/api/branch", [
             "name" => "Branch Name",
@@ -20,11 +20,27 @@ class CreateBranchTest extends TestCase
         ]);
 
         $response->assertStatus(401);
+
+        $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_branch_successfully()
+    public function testCreateBranchAsEmployee()
     {
-        $store = Store::first();
+        $employee = Employee::first();
+
+        $response = $this->actingAs($employee)->post("/api/branch", [
+            "name" => "Branch Name",
+            "address" => "Branch Address",
+        ]);
+
+        $response->assertStatus(401);
+
+        $response->assertJsonStructure(["message"]);
+    }
+
+    public function testCreateBranchAsAdmin()
+    {
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->post("/api/branch", [
             "name" => "Branch Name",
@@ -47,9 +63,9 @@ class CreateBranchTest extends TestCase
         ]);
     }
 
-    public function test_create_branch_with_invalid_data()
+    public function testCreateBranchWithInvalidData()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->post("/api/branch", [
             "name" => "Branch Name",
@@ -60,9 +76,9 @@ class CreateBranchTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_branch_with_new_employees()
+    public function testCreateBranchWithNewEmployees()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $roles = $store->roles;
 
@@ -101,9 +117,9 @@ class CreateBranchTest extends TestCase
         ]);
     }
 
-    public function test_create_branch_with_transfered_employees()
+    public function testCreateBranchWithTransferedEmployees()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $selected_employee = Employee::first();
 

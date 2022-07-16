@@ -12,8 +12,8 @@ class HavePermission
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+     *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function handle(Request $request, Closure $next, $action)
@@ -24,9 +24,7 @@ class HavePermission
                 ->toArray();
             $allowed_roles = PermissionRole::with("permission")
                 ->where("store_id", 1)
-                ->whereHas("permission", function ($query) use ($action) {
-                    $query->where("action_slug", $action);
-                })
+                ->whereRelation("permission", "action_slug", $action)
                 ->get()
                 ->pluck("role_id")
                 ->toArray();

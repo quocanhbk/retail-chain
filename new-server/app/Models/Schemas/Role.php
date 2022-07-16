@@ -12,24 +12,28 @@ class Role
 {
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $id;
 
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $store_id;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $name;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $description;
@@ -42,12 +46,14 @@ class UpsertRoleInput
 {
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $name;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $description;

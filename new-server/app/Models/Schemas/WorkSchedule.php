@@ -12,37 +12,43 @@ class WorkSchedule
 {
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $id;
 
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $shift_id;
 
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $employee_id;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $date;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $note;
 
     /**
      * @OA\Property(nullable=true)
-     * @var boolean
+     *
+     * @var bool
      */
     public $is_absent;
 }
@@ -57,7 +63,8 @@ class CreateWorkScheduleInput
 {
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $shift_id;
 
@@ -66,12 +73,14 @@ class CreateWorkScheduleInput
      *   type="array",
      *   @OA\Items(type="integer")
      * )
+     *
      * @var array
      */
     public $employee_ids;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $date;
@@ -84,13 +93,15 @@ class UpdateWorkScheduleInput
 {
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $note;
 
     /**
      * @OA\Property()
-     * @var boolean
+     *
+     * @var bool
      */
     public $is_absent;
 }
@@ -105,6 +116,7 @@ class WorkScheduleWithEmployee
 {
     /**
      * @OA\Property(ref="#/components/schemas/Employee")
+     *
      * @var object
      */
     public $employee;
@@ -120,6 +132,7 @@ class WorkScheduleWithShiftAndEmployee
 {
     /**
      * @OA\Property(ref="#/components/schemas/Shift")
+     *
      * @var object
      */
     public $shift;

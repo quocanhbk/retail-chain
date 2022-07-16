@@ -29,4 +29,14 @@ class Branch extends Model
     {
         return $this->hasMany(Shift::class);
     }
+
+    public function purchase_sheets()
+    {
+        return $this->hasMany(PurchaseSheet::class);
+    }
+
+    public function quantity_checking_sheets()
+    {
+        return $this->hasMany(QuantityCheckingSheet::class);
+    }
 }

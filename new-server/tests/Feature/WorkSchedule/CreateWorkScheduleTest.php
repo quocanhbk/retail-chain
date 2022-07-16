@@ -3,9 +3,7 @@
 namespace Tests\Feature\WorkSchedule;
 
 use App\Models\Store;
-use App\Models\WorkSchedule;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\QueryEmployeeTrait;
 use Tests\TestCase;
 
@@ -14,7 +12,7 @@ class CreateWorkScheduleTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    public function test_create_work_schedule_unauthenticated()
+    public function testCreateWorkScheduleUnauthenticated()
     {
         $response = $this->post("/api/work-schedule", [
             "shift_id" => 1,
@@ -27,9 +25,9 @@ class CreateWorkScheduleTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_work_schedule_with_invalid_permission()
+    public function testCreateWorkScheduleWithInvalidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithoutPermission($store->id, "create-work-schedule");
 
@@ -44,9 +42,9 @@ class CreateWorkScheduleTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_work_schedule_with_valid_permission()
+    public function testCreateWorkScheduleWithValidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "create-work-schedule");
 
@@ -67,9 +65,9 @@ class CreateWorkScheduleTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_work_schedule_with_invalid_date()
+    public function testCreateWorkScheduleWithInvalidDate()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "create-work-schedule");
 
@@ -84,9 +82,9 @@ class CreateWorkScheduleTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_work_schedule_with_duplicate_employee_ids()
+    public function testCreateWorkScheduleWithDuplicateEmployeeIds()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "create-work-schedule");
 
@@ -101,9 +99,9 @@ class CreateWorkScheduleTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_work_schedule_with_duplicate_schedule()
+    public function testCreateWorkScheduleWithDuplicateSchedule()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "create-work-schedule");
 

@@ -4,16 +4,14 @@ namespace Tests\Feature\Employee;
 
 use App\Models\Employee;
 use App\Models\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class LoginAsEmployeeTest extends TestCase
 {
-    public function test_login_while_already_logged_in_as_admin()
+    public function testLoginWhileAlreadyLoggedInAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->post("/api/employee/login");
 
@@ -22,7 +20,7 @@ class LoginAsEmployeeTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_login_while_already_logged_in_as_employee()
+    public function testLoginWhileAlreadyLoggedInAsEmployee()
     {
         $employee = Employee::first();
 
@@ -33,9 +31,12 @@ class LoginAsEmployeeTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_login_successfully()
+    public function testLoginSuccessfully()
     {
+        $store = Store::find(1);
+
         $employee = Employee::factory()->create([
+            "store_id" => $store->id,
             "password" => Hash::make("password"),
         ]);
 
@@ -47,11 +48,16 @@ class LoginAsEmployeeTest extends TestCase
         $response->assertStatus(200);
 
         $response->assertJsonStructure(["id", "name", "email", "phone"]);
+
+        $response->assertCookie("bkrm_session");
     }
 
-    public function test_login_with_invalid_credentials()
+    public function testLoginWithInvalidCredentials()
     {
+        $store = Store::find(1);
+
         $employee = Employee::factory()->create([
+            "store_id" => $store->id,
             "password" => Hash::make("password"),
         ]);
 
@@ -65,7 +71,7 @@ class LoginAsEmployeeTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_login_with_invalid_email()
+    public function testLoginWithInvalidEmail()
     {
         $response = $this->post("/api/employee/login", [
             "email" => "invalid",

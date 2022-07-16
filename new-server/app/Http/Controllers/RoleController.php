@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\EmploymentRole;
 use App\Models\Role;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -77,9 +78,9 @@ class RoleController extends Controller
         [$search, $from, $to, $order_by, $order_type] = $this->getQuery($request);
 
         $roles = Role::where("store_id", $store->id)
-            ->where(function ($query) use ($search) {
-                $query->where("name", "iLike", "%$search%")->orWhere("description", "iLike", "%$search%");
-            })
+            ->where(
+                fn($query) => $query->where("name", "iLike", "%$search%")->orWhere("description", "iLike", "%$search%")
+            )
             ->orderBy($order_by, $order_type)
             ->offset($from)
             ->limit($to - $from)
@@ -174,10 +175,7 @@ class RoleController extends Controller
      *   @OA\Response(
      *     response=200,
      *     description="Successful operation",
-     *     @OA\JsonContent(
-     *       required={"message"},
-     *       @OA\Property(property="message", type="string", description="Successful operation")
-     *     )
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
      *   )
      * )
      */
@@ -192,11 +190,10 @@ class RoleController extends Controller
         }
 
         // return error when role is still in use
-        $active_employment_roles = EmploymentRole::whereHas("employment", function ($query) use ($store) {
-            $query->where("to", null)->whereHas("branch", function ($query) use ($store) {
-                $query->where("store_id", $store->id);
-            });
-        })
+        $active_employment_roles = EmploymentRole::whereHas(
+            "employment",
+            fn($query) => $query->where("to", null)->whereRelation("branch", "store_id", $store->id)
+        )
             ->where("role_id", $role->id)
             ->get();
 

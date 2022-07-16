@@ -14,24 +14,28 @@ class Store
 {
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $id;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $name;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $email;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $email_verified_at;
@@ -47,12 +51,14 @@ class RegisterStoreInput
 {
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $name;
 
     /**
      * @OA\Property(format="password")
+     *
      * @var string
      */
     public $password_confirmation;
@@ -65,19 +71,22 @@ class LoginStoreInput
 {
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $email;
 
     /**
      * @OA\Property(format="password")
+     *
      * @var string
      */
     public $password;
 
     /**
      * @OA\Property()
-     * @var boolean
+     *
+     * @var bool
      */
     public $remember;
 }

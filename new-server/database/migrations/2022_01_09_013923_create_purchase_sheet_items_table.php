@@ -26,8 +26,8 @@ class CreatePurchaseSheetItemsTable extends Migration
                 ->onDelete("cascade");
             $table->integer("quantity");
             $table->unsignedBigInteger("price");
-            $table->unsignedBigInteger("discount");
-            $table->string("discount_type");
+            $table->unsignedBigInteger("discount")->nullable();
+            $table->string("discount_type")->nullable();
             $table->unsignedBigInteger("total");
         });
     }

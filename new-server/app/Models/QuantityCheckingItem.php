@@ -9,9 +9,9 @@ class QuantityCheckingItem extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["quantity_checking_sheet_id", "item_id", "expected", "actual", "total"];
+    protected $fillable = ["quantity_checking_sheet_id", "item_id", "expected_quantity", "actual_quantity", "total"];
 
-    public function quantityCheckingSheet()
+    public function quantity_checking_sheet()
     {
         return $this->belongsTo(QuantityCheckingSheet::class);
     }

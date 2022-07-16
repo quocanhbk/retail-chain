@@ -21,7 +21,7 @@ class QuantityCheckingSheet extends Model
         return $this->belongsTo(Branch::class);
     }
 
-    public function quantityCheckingItems()
+    public function items()
     {
         return $this->hasMany(QuantityCheckingItem::class);
     }

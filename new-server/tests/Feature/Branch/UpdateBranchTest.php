@@ -15,7 +15,7 @@ class UpdateBranchTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_update_branch_unauthenticated()
+    public function testUpdateBranchUnauthenticated()
     {
         $branch = Branch::first();
 
@@ -24,11 +24,26 @@ class UpdateBranchTest extends TestCase
         ]);
 
         $response->assertStatus(401);
+
+        $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_branch_successfully()
+    public function testUpdateBranchAsEmployee()
     {
-        $store = Store::first();
+        $employee = Employee::first();
+
+        $response = $this->actingAs($employee)->put("/api/branch/{$employee->employment->branch->id}", [
+            "name" => "My Branch",
+        ]);
+
+        $response->assertStatus(401);
+
+        $response->assertJsonStructure(["message"]);
+    }
+
+    public function testUpdateBranchAsAdmin()
+    {
+        $store = Store::find(1);
 
         $branch = $store->branches()->first();
 
@@ -51,9 +66,9 @@ class UpdateBranchTest extends TestCase
         ]);
     }
 
-    public function test_update_branch_image_successfully()
+    public function testUpdateBranchImageSuccessfully()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $branch = $store->branches()->first();
 
@@ -67,16 +82,22 @@ class UpdateBranchTest extends TestCase
 
         $response->assertStatus(200);
 
-        $branch = Branch::find($branch->id);
+        Storage::disk("local")->assertMissing($branch->image);
+
+        $branch->refresh();
+
+        Storage::disk("local")->assertExists($branch->image);
 
         $this->assertTrue(Str::startsWith($branch->image, "images/{$store->id}/branches/"));
 
-        Storage::disk("local")->assertExists($branch->image);
+        $this->assertDatabaseHas("branches", [
+            "image" => $branch->image,
+        ]);
     }
 
-    public function test_update_branch_not_found()
+    public function testUpdateBranchNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->put("/api/branch/999", [
             "name" => "Branch Name Updated",

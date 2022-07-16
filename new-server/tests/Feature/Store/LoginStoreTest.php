@@ -2,14 +2,11 @@
 
 namespace Tests\Feature\Store;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class LoginStoreTest extends TestCase
 {
-    use RefreshDatabase;
-
-    public function test_login_with_valid_input()
+    public function testLoginWithValidInput()
     {
         $data = [
             "email" => "hexagon@gmail.com",
@@ -21,7 +18,7 @@ class LoginStoreTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_login_with_wrong_credentials()
+    public function testLoginWithWrongCredentials()
     {
         $data = [
             "email" => "hexagon@gmail.com",
@@ -33,7 +30,7 @@ class LoginStoreTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function test_login_failed_with_invalid_input()
+    public function testLoginFailedWithInvalidInput()
     {
         $data = [
             "email" => "email",

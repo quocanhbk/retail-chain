@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Branch;
 use App\Models\Employment;
 use App\Traits\EmployeeTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -138,6 +139,7 @@ class BranchController extends Controller
         if (!Storage::exists($file_path)) {
             return response()->json(["message" => "Branch image not found."], 404);
         }
+
         return response()->file(storage_path("app" . DIRECTORY_SEPARATOR . $file_path), [
             "Content-Type" => "image/*",
         ]);
@@ -172,9 +174,11 @@ class BranchController extends Controller
 
         // search branch by name, address
         $branches = Branch::where("store_id", $store_id)
-            ->where(function ($query) use ($search) {
-                $query->where("name", "iLike", "%" . $search . "%")->orWhere("address", "iLike", "%" . $search . "%");
-            })
+            ->where(
+                fn($query) => $query
+                    ->where("name", "iLike", "%" . $search . "%")
+                    ->orWhere("address", "iLike", "%" . $search . "%")
+            )
             ->orderBy($order_by, $order_type)
             ->skip($from)
             ->take($to - $from)
@@ -185,12 +189,12 @@ class BranchController extends Controller
 
     /**
      * @OA\Get(
-     *   path="/branch/{branch_id}",
+     *   path="/branch/{id}",
      *   operationId="getBranch",
      *   tags={"Branch"},
      *   summary="Get branch",
      *   @OA\Parameter(
-     *     name="branch_id",
+     *     name="id",
      *     in="path",
      *     required=true,
      *     @OA\Schema(type="integer")
@@ -202,17 +206,15 @@ class BranchController extends Controller
      *   ),
      * )
      */
-    public function getBranch($branch_id)
+    public function getBranch($id)
     {
         $store_id = Auth::guard("stores")->user()->id;
 
         $branch = Branch::with([
-            "employments" => function ($query) {
-                $query->where("to", null)->with("employee");
-            },
+            "employments" => fn($query) => $query->where("to", null)->with("employee"),
         ])
             ->where("store_id", $store_id)
-            ->where("id", $branch_id)
+            ->where("id", $id)
             ->first();
 
         if (!$branch) {
@@ -224,11 +226,11 @@ class BranchController extends Controller
 
     /**
      * @OA\Put(
-     *   path="/branch/{branch_id}",
+     *   path="/branch/{id}",
      *   operationId="updateBranch",
      *   tags={"Branch"},
      *   summary="Update branch",
-     *   @OA\Parameter(name="branch_id", in="path", required=true),
+     *   @OA\Parameter(name="id", in="path", required=true),
      *   @OA\RequestBody(
      *     required=true,
      *     @OA\MediaType(
@@ -243,12 +245,12 @@ class BranchController extends Controller
      *   )
      * )
      */
-    public function update(Request $request, $branch_id)
+    public function update(Request $request, $id)
     {
         $store_id = Auth::guard("stores")->user()->id;
 
         $branch = Branch::where("store_id", $store_id)
-            ->where("id", $branch_id)
+            ->where("id", $id)
             ->first();
 
         if (!$branch) {
@@ -274,7 +276,7 @@ class BranchController extends Controller
         if ($has_image) {
             // delete old image if new image is uploaded
             $old_image = $branch->image;
-            if ($old_image != "images/default/branch.png") {
+            if ("images/default/branch.png" != $old_image) {
                 Storage::delete($old_image);
             }
 
@@ -288,10 +290,12 @@ class BranchController extends Controller
                 );
 
             $branch->image = $path;
-            $branch->image_key = $path;
+
+            $branch->image_key = Str::uuid();
         }
 
         $branch->name = $data["name"] ?? $branch->name;
+
         $branch->address = $data["address"] ?? $branch->address;
 
         $branch->save();
@@ -301,11 +305,11 @@ class BranchController extends Controller
 
     /**
      * @OA\Delete(
-     *   path="/branch/{branch_id}",
+     *   path="/branch/{id}",
      *   operationId="deleteBranch",
      *   tags={"Branch"},
      *   summary="Delete branch",
-     *   @OA\Parameter(name="branch_id", in="path", required=true),
+     *   @OA\Parameter(name="id", in="path", required=true),
      *   @OA\Response(
      *     response=200,
      *     description="Branch deleted successfully",
@@ -315,17 +319,17 @@ class BranchController extends Controller
      *   )
      * )
      */
-    public function delete($branch_id)
+    public function delete($id)
     {
         $store_id = Auth::guard("stores")->user()->id;
         // make sure store owns branch
-        $branch = Branch::where(["store_id" => $store_id, "id" => $branch_id])->first();
+        $branch = Branch::where(["store_id" => $store_id, "id" => $id])->first();
 
         if (!$branch) {
             return response()->json(["message" => "Branch not found."], 404);
         }
 
-        $employments = Employment::where("branch_id", $branch_id)
+        $employments = Employment::where("branch_id", $id)
             ->where("to", null)
             ->get();
 

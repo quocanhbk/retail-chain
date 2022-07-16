@@ -8,6 +8,7 @@ use App\Models\PurchaseSheet;
 use App\Models\PurchaseSheetItem;
 use App\Models\ReturnPurchaseSheet;
 use App\Models\ReturnPurchaseSheetItem;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -79,9 +80,10 @@ class ReturnPurchaseSheetController extends Controller
             // get all return purchase sheet items of that item
             $return_purchase_sheet_items = ReturnPurchaseSheetItem::with("returnPurchaseSheet")
                 ->where("item_id", $item["item_id"])
-                ->whereHas("returnPurchaseSheet", function ($query) use ($data) {
-                    $query->where("purchase_sheet_id", $data["purchase_sheet_id"]);
-                })
+                ->whereHas(
+                    "returnPurchaseSheet",
+                    fn($query) => $query->where("purchase_sheet_id", $data["purchase_sheet_id"])
+                )
                 ->get();
 
             // sum all quantity of return purchase sheet items of that item
@@ -115,9 +117,9 @@ class ReturnPurchaseSheetController extends Controller
             $item["return_price_type"] = $item["return_price_type"] ?? "percent";
             // calculate return price, if return price is not set, it will be 100 percent, or purchase price
             $item["return_price"] =
-                $item["return_price"] ?? ($item["return_price_type"] == "percent" ? 100 : $item["price"]);
+                $item["return_price"] ?? ("percent" == $item["return_price_type"] ? 100 : $item["price"]);
             $final_price =
-                $item["return_price_type"] == "percent"
+                "percent" == $item["return_price_type"]
                     ? $item["price"] * (1 - $item["return_price"] / 100)
                     : $item["price"] - $item["return_price"];
             $item["total"] = $item["quantity"] * $final_price;
@@ -132,7 +134,7 @@ class ReturnPurchaseSheetController extends Controller
         // calculate discount
         $data["discount_type"] = $data["discount_type"] ?? "percent";
         $data["discount"] = $data["discount"] ?? 0;
-        $total_discount = $data["discount_type"] == "percent" ? ($data["discount"] / 100) * $total : $data["discount"];
+        $total_discount = "percent" == $data["discount_type"] ? ($data["discount"] / 100) * $total : $data["discount"];
         $total -= $total_discount;
 
         // if return purchase sheet code is not set, generate one
@@ -145,7 +147,7 @@ class ReturnPurchaseSheetController extends Controller
                     ->where("branch_id", $branch_id)
                     ->exists()
             ) {
-                $return_purchase_sheet_count++;
+                ++$return_purchase_sheet_count;
                 $code = "RPS" . str_pad($return_purchase_sheet_count, 6, "0", STR_PAD_LEFT);
             }
             $data["code"] = $code;
@@ -210,9 +212,7 @@ class ReturnPurchaseSheetController extends Controller
         // search by employee, branch, supplier, code, note
         $return_purchase_sheets = ReturnPurchaseSheet::with("supplier")
             ->where("branch_id", $branch_id)
-            ->orWhereHas("supplier", function ($query) use ($search) {
-                $query->where("name", "iLike", "%" . $search . "%");
-            })
+            ->orWhereHas("supplier", fn($query) => $query->where("name", "iLike", "%" . $search . "%"))
             ->orWhere("code", "iLike", "%" . $search . "%")
             ->orWhere("note", "iLike", "%" . $search . "%")
             ->orderBy($order_by, $order_type)
@@ -247,6 +247,7 @@ class ReturnPurchaseSheetController extends Controller
             "return_purchase_sheet_id",
             $return_purchase_sheet->id
         )->get();
+
         return response()->json($return_purchase_sheet);
     }
 
@@ -345,7 +346,7 @@ class ReturnPurchaseSheetController extends Controller
         $items = $data["items"];
         foreach ($items as &$item) {
             $final_price =
-                $item["return_price_type"] == "percent"
+                "percent" == $item["return_price_type"]
                     ? ($item["return_price"] / 100) * $item["price"]
                     : $item["return_price"];
             $item["total"] = $item["quantity"] * $final_price;
@@ -358,7 +359,7 @@ class ReturnPurchaseSheetController extends Controller
         }
 
         // calculate discount
-        $discount = $data["discount_type"] == "percent" ? ($data["discount"] / 100) * $total : $data["discount"];
+        $discount = "percent" == $data["discount_type"] ? ($data["discount"] / 100) * $total : $data["discount"];
         $total -= $discount;
 
         // update return purchase sheet

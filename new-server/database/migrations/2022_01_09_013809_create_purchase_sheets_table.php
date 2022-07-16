@@ -31,11 +31,17 @@ class CreatePurchaseSheetsTable extends Migration
                 ->nullable()
                 ->constrained()
                 ->onDelete("set null");
-            $table->unsignedBigInteger("discount");
-            $table->unsignedBigInteger("paid_amount");
-            $table->string("discount_type");
+            $table->unsignedBigInteger("discount")->nullable();
+            $table->string("discount_type")->nullable();
+            $table
+                ->unsignedBigInteger("paid_amount")
+                ->nullable()
+                ->default(0);
             $table->unsignedBigInteger("total");
-            $table->string("note")->nullable();
+            $table
+                ->string("note")
+                ->nullable()
+                ->default("");
         });
     }
 

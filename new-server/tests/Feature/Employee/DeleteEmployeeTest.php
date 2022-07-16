@@ -5,14 +5,13 @@ namespace Tests\Feature\Employee;
 use App\Models\Employee;
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class DeleteEmployeeTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_delete_employee_unauthenticated()
+    public function testDeleteEmployeeUnauthenticated()
     {
         $response = $this->delete("/api/employee/1");
 
@@ -21,7 +20,7 @@ class DeleteEmployeeTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_delete_employee_as_employee()
+    public function testDeleteEmployeeAsEmployee()
     {
         $employee = Employee::first();
 
@@ -32,9 +31,9 @@ class DeleteEmployeeTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_delete_employee_as_admin()
+    public function testDeleteEmployeeAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = Employee::where("store_id", $store->id)->first();
 
@@ -54,9 +53,9 @@ class DeleteEmployeeTest extends TestCase
         ]);
     }
 
-    public function test_delete_employee_with_force()
+    public function testDeleteEmployeeWithForce()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = Employee::where("store_id", $store->id)->first();
 
@@ -76,9 +75,9 @@ class DeleteEmployeeTest extends TestCase
         ]);
     }
 
-    public function test_delete_employee_not_found()
+    public function testDeleteEmployeeNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->delete("/api/employee/9999");
 

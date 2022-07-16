@@ -10,7 +10,7 @@ class RegisterStoreTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_register_with_invalid_input()
+    public function testRegisterWithInvalidInput()
     {
         $input = [
             "name" => "Store Name",
@@ -21,7 +21,7 @@ class RegisterStoreTest extends TestCase
         $response->assertStatus(400);
     }
 
-    public function test_register_with_valid_input()
+    public function testRegisterWithValidInput()
     {
         $data = [
             "name" => "Store Name",
@@ -49,7 +49,7 @@ class RegisterStoreTest extends TestCase
         ]);
     }
 
-    public function test_register_with_existed_email()
+    public function testRegisterWithExistedEmail()
     {
         $existed_store = Store::first();
 

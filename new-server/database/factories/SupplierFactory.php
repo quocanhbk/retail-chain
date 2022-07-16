@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Store;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SupplierFactory extends Factory
@@ -15,7 +14,6 @@ class SupplierFactory extends Factory
     public function definition()
     {
         return [
-            "store_id" => Store::factory(),
             "name" => $this->faker->name(),
             "address" => $this->faker->address(),
             "code" => $this->faker->word(),

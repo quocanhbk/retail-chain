@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\ItemProperty;
 use App\Models\RefundSheet;
@@ -56,7 +55,7 @@ class RefundController extends Controller
                     ->where("branch_id", $branch_id)
                     ->exists()
             ) {
-                $refund_sheets_count++;
+                ++$refund_sheets_count;
                 $code = "REF" . str_pad($refund_sheets_count + 1, 6, "0", STR_PAD_LEFT);
             }
 

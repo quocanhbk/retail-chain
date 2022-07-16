@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Customer;
 
-use App\Models\Employee;
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\QueryEmployeeTrait;
@@ -13,7 +12,7 @@ class UsePointTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    public function test_use_point_to_customer_unauthenticated()
+    public function testUsePointToCustomerUnauthenticated()
     {
         $response = $this->post("/api/customer/use-point/1", [
             "point" => 10,
@@ -24,9 +23,9 @@ class UsePointTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_use_point_to_customer_by_admin()
+    public function testUsePointToCustomerByAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $customer = $store->customers->first();
 
@@ -44,9 +43,9 @@ class UsePointTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_use_point_to_customer_with_invalid_permission()
+    public function testUsePointToCustomerWithInvalidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithoutPermission($store->id, "update-customer");
 
@@ -61,9 +60,9 @@ class UsePointTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_use_point_to_customer_with_valid_permission()
+    public function testUsePointToCustomerWithValidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "update-customer");
 
@@ -83,9 +82,9 @@ class UsePointTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_use_point_to_customer_not_found()
+    public function testUsePointToCustomerNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "update-customer");
 
@@ -98,9 +97,9 @@ class UsePointTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_use_point_not_enough_point()
+    public function testUsePointNotEnoughPoint()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $customer = $store->customers->first();
 

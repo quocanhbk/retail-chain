@@ -12,30 +12,35 @@ class Shift
 {
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $id;
 
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $branch_id;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $name;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $start_time;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $end_time;
@@ -48,18 +53,21 @@ class UpsertShiftInput
 {
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $name;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $start_time;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $end_time;

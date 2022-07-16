@@ -2,11 +2,9 @@
 
 namespace Tests\Feature\Shift;
 
-use App\Models\Employee;
 use App\Models\Shift;
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\QueryEmployeeTrait;
 use Tests\TestCase;
 
@@ -15,7 +13,7 @@ class DeleteShiftTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    public function test_delete_shift_unauthenticated()
+    public function testDeleteShiftUnauthenticated()
     {
         $shift = Shift::first();
 
@@ -30,7 +28,7 @@ class DeleteShiftTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_delete_shift_with_invalid_permission()
+    public function testDeleteShiftWithInvalidPermission()
     {
         $employee = $this->getEmployeeWithoutPermission(Store::first()->id, "delete-shift");
 
@@ -47,7 +45,7 @@ class DeleteShiftTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_delete_shift_with_valid_permission()
+    public function testDeleteShiftWithValidPermission()
     {
         $employee = $this->getEmployeeWithPermission(Store::first()->id, "delete-shift");
 
@@ -64,9 +62,9 @@ class DeleteShiftTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_delete_shift_as_admin()
+    public function testDeleteShiftAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $shift = $store->branches->first()->shifts->first();
 
@@ -81,7 +79,7 @@ class DeleteShiftTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_delete_shift_not_found()
+    public function testDeleteShiftNotFound()
     {
         $employee = $this->getEmployeeWithPermission(Store::first()->id, "delete-shift");
 

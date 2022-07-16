@@ -15,7 +15,7 @@ class Authenticated
         }
 
         if (Auth::guard("employees")->check()) {
-            if (Auth::user()->employment->to != null) {
+            if (null != Auth::user()->employment->to) {
                 return response()->json(["message" => "Your employment is terminated."], 401);
             }
             $request->attributes->add([

@@ -12,30 +12,35 @@ class Customer
 {
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $id;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $code;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $name;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $phone;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $email;
@@ -58,18 +63,21 @@ class UpsertCustomerInput
 {
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $name;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $phone;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $email;

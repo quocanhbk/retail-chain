@@ -21,7 +21,10 @@ class Controller extends BaseController
      *   url="http://localhost:8000/api",
      * )
      */
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    use AuthorizesRequests;
+
+    use DispatchesJobs;
+    use ValidatesRequests;
 
     public function formatValidationError(MessageBag $errors)
     {

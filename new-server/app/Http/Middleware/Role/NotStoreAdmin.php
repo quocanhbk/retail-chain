@@ -13,6 +13,7 @@ class NotStoreAdmin
         if (Auth::guard("stores")->check()) {
             return response()->json(["message" => "You are already logged in."], 400);
         }
+
         return $next($request);
     }
 }

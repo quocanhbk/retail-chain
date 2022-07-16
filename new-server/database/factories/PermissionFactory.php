@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Store;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PermissionFactory extends Factory
@@ -15,7 +14,6 @@ class PermissionFactory extends Factory
     public function definition()
     {
         return [
-            "store_id" => Store::factory(),
             "action" => $this->faker->word,
             "action_slug" => $this->faker->slug,
         ];

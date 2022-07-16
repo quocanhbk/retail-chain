@@ -5,14 +5,13 @@ namespace Tests\Feature\Employee;
 use App\Models\Employee;
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class GetDeletedEmployeesTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_get_deleted_employees_unauthenticated()
+    public function testGetDeletedEmployeesUnauthenticated()
     {
         $response = $this->get("/api/employee/deleted");
 
@@ -21,7 +20,7 @@ class GetDeletedEmployeesTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_deleted_employees_as_employee()
+    public function testGetDeletedEmployeesAsEmployee()
     {
         $employee = Employee::first();
 
@@ -32,9 +31,9 @@ class GetDeletedEmployeesTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_deleted_employees_as_admin()
+    public function testGetDeletedEmployeesAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $store->employees()->delete();
 
@@ -45,9 +44,9 @@ class GetDeletedEmployeesTest extends TestCase
         $response->assertJsonStructure([["id", "name", "email"]]);
     }
 
-    public function test_get_deleted_employees_with_pagination()
+    public function testGetDeletedEmployeesWithPagination()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $store->employees()->delete();
 
@@ -60,9 +59,9 @@ class GetDeletedEmployeesTest extends TestCase
         $response->assertJsonCount(1);
     }
 
-    public function test_get_deleted_employees_with_search()
+    public function testGetDeletedEmployeesWithSearch()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $store->employees->first();
 
@@ -74,6 +73,6 @@ class GetDeletedEmployeesTest extends TestCase
 
         $response->assertJsonStructure([["id", "name", "email"]]);
 
-        $response->assertJsonCount(1);
+        $response->assertJsonFragment(["name" => $employee->name]);
     }
 }

@@ -11,11 +11,33 @@ use Illuminate\Validation\Rule;
 
 class PermissionController extends Controller
 {
-    public function update(Request $request, $permission_id)
+    /**
+     * @OA\Put(
+     *   path="/permission/{id}",
+     *   tags={"Permission"},
+     *   summary="Update a permission",
+     *   description="Update a permission",
+     *   operationId="updatePermission",
+     *   @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *   @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(
+     *       required={"role_ids"},
+     *       @OA\Property(property="role_ids", type="array", @OA\Items(type="integer")),
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
+     *   )
+     * )
+     */
+    public function update(Request $request, $id)
     {
         $store = Auth::user();
 
-        $permission = Permission::find($permission_id);
+        $permission = Permission::find($id);
 
         if (!$permission) {
             return response()->json(["message" => "Permission not found"], 404);

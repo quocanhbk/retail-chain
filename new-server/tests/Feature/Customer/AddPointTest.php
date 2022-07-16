@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Customer;
 
-use App\Models\Employee;
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\QueryEmployeeTrait;
@@ -13,7 +12,7 @@ class AddPointTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    public function test_add_point_to_customer_unauthenticated()
+    public function testAddPointToCustomerUnauthenticated()
     {
         $customer = Store::first()->customers->first();
 
@@ -24,9 +23,9 @@ class AddPointTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function test_add_point_to_customer_by_admin()
+    public function testAddPointToCustomerByAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $customer = $store->customers->first();
 
@@ -44,9 +43,9 @@ class AddPointTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_add_point_to_customer_with_invalid_permission()
+    public function testAddPointToCustomerWithInvalidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithoutPermission($store->id, "update-customer");
 
@@ -59,9 +58,9 @@ class AddPointTest extends TestCase
         $response->assertStatus(403);
     }
 
-    public function test_add_point_to_customer_with_valid_permission()
+    public function testAddPointToCustomerWithValidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "update-customer");
 
@@ -81,9 +80,9 @@ class AddPointTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_add_point_to_customer_not_found()
+    public function testAddPointToCustomerNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "update-customer");
 

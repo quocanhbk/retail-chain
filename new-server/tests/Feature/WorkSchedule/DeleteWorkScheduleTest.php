@@ -4,7 +4,6 @@ namespace Tests\Feature\WorkSchedule;
 
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\QueryEmployeeTrait;
 use Tests\TestCase;
 
@@ -13,16 +12,16 @@ class DeleteWorkScheduleTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    public function test_delete_work_schedule_unauthenticated()
+    public function testDeleteWorkScheduleUnauthenticated()
     {
         $response = $this->delete("/api/work-schedule/1");
 
         $response->assertStatus(401);
     }
 
-    public function test_delete_work_schedule_with_invalid_permission()
+    public function testDeleteWorkScheduleWithInvalidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $work_schedule = $store->branches
             ->first()
@@ -38,9 +37,9 @@ class DeleteWorkScheduleTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_delete_work_schedule_with_valid_permission()
+    public function testDeleteWorkScheduleWithValidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $work_schedule = $store->branches
             ->first()
@@ -62,9 +61,9 @@ class DeleteWorkScheduleTest extends TestCase
         ]);
     }
 
-    public function test_delete_work_schedule_not_found()
+    public function testDeleteWorkScheduleNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "delete-work-schedule");
 

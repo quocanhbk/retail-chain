@@ -4,7 +4,6 @@ namespace Tests\Feature\Category;
 
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\QueryEmployeeTrait;
 use Tests\TestCase;
 
@@ -13,7 +12,7 @@ class RestoreCategoryTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    public function test_restore_category_unauthenticated()
+    public function testRestoreCategoryUnauthenticated()
     {
         $response = $this->post("/api/category/1/restore");
 
@@ -22,9 +21,9 @@ class RestoreCategoryTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_restore_category_as_employee()
+    public function testRestoreCategoryAsEmployee()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $store->employees->first();
 
@@ -35,9 +34,9 @@ class RestoreCategoryTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_restore_category_as_admin()
+    public function testRestoreCategoryAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $category = $store->categories->first();
 
@@ -57,9 +56,9 @@ class RestoreCategoryTest extends TestCase
         ]);
     }
 
-    public function test_restore_category_not_found()
+    public function testRestoreCategoryNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->post("/api/category/9999/restore");
 

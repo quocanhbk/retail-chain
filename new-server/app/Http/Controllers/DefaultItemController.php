@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DefaultItem;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class DefaultItemController extends Controller
@@ -36,11 +37,9 @@ class DefaultItemController extends Controller
         $category_id = $request->query("category_id") ?? null;
 
         $items = DefaultItem::with("category")
-            ->when($category_id, function ($query) use ($category_id) {
-                return $query->where("category_id", $category_id);
-            })
-            ->where(function ($query) use ($search) {
-                $query
+            ->when($category_id, fn($query) => $query->where("category_id", $category_id))
+            ->where(
+                fn($query) => $query
                     ->where("product_name", "iLike", "%" . $search . "%")
                     ->orWhere("bar_code", "iLike", "%" . $search . "%")
                     ->orWhere("qr_code", "iLike", "%" . $search . "%")
@@ -49,10 +48,8 @@ class DefaultItemController extends Controller
                     ->orWhere("unit", "iLike", "%" . $search . "%")
                     ->orWhere("description", "iLike", "%" . $search . "%")
                     ->orWhere("source_url", "iLike", "%" . $search . "%")
-                    ->orWhereHas("category", function ($query) use ($search) {
-                        $query->where("name", "iLike", "%" . $search . "%");
-                    });
-            })
+                    ->orWhereRelation("category", "name", "iLike", "%" . $search . "%")
+            )
             ->skip($from)
             ->take($to - $from)
             ->get();
@@ -85,12 +82,8 @@ class DefaultItemController extends Controller
         }
 
         $item = DefaultItem::with("category")
-            ->when(isset($id), function ($query) use ($id) {
-                $query->where("id", $id);
-            })
-            ->when(isset($barcode) && !isset($id), function ($query) use ($barcode) {
-                $query->where("bar_code", $barcode);
-            })
+            ->when(isset($id), fn($query) => $query->where("id", $id))
+            ->when(isset($barcode) && !isset($id), fn($query) => $query->where("bar_code", $barcode))
             ->first();
 
         if (!$item) {

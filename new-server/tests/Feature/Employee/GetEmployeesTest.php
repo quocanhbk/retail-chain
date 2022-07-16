@@ -4,12 +4,11 @@ namespace Tests\Feature\Employee;
 
 use App\Models\Employee;
 use App\Models\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class GetEmployeesTest extends TestCase
 {
-    public function test_get_employees_unauthenticated()
+    public function testGetEmployeesUnauthenticated()
     {
         $response = $this->get("/api/employee");
 
@@ -18,7 +17,7 @@ class GetEmployeesTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_employees_unauthorized()
+    public function testGetEmployeesUnauthorized()
     {
         $employee = Employee::first();
 
@@ -29,37 +28,20 @@ class GetEmployeesTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_employees_by_admin()
+    public function testGetEmployeesByAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->get("/api/employee");
 
         $response->assertStatus(200);
 
-        $response->assertJsonStructure([
-            [
-                "id",
-                "name",
-                "email",
-                "phone",
-                "gender",
-                "birthday",
-                "employment" => [
-                    "branch_id",
-                    "roles" => [
-                        [
-                            "role" => ["name"],
-                        ],
-                    ],
-                ],
-            ],
-        ]);
+        $response->assertJsonStructure([["id", "name", "email", "phone", "gender", "birthday", "employment"]]);
     }
 
-    public function test_get_employees_by_branch()
+    public function testGetEmployeesByBranch()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $branch = $store->branches->first();
 
@@ -70,9 +52,9 @@ class GetEmployeesTest extends TestCase
         $response->assertJsonFragment(["branch_id" => $branch->id]);
     }
 
-    public function test_get_employees_with_pagination()
+    public function testGetEmployeesWithPagination()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->get("/api/employee?from=0&to=1");
 
@@ -81,9 +63,9 @@ class GetEmployeesTest extends TestCase
         $response->assertJsonCount(1);
     }
 
-    public function test_get_employees_with_search()
+    public function testGetEmployeesWithSearch()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $store->employees->first();
 
@@ -92,7 +74,5 @@ class GetEmployeesTest extends TestCase
         $response->assertStatus(200);
 
         $response->assertJsonFragment(["name" => $employee->name]);
-
-        $response->assertJsonCount(1);
     }
 }

@@ -12,18 +12,21 @@ class Branch
 {
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $id;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $name;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $address;
@@ -42,6 +45,7 @@ class BranchDetail
      *  type="array",
      *  @OA\Items(ref="#/components/schemas/EmploymentDetail")
      * )
+     *
      * @var array
      */
     public $employments;
@@ -56,12 +60,14 @@ class CreateBranchInput
 {
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $name;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $address;
@@ -71,6 +77,7 @@ class CreateBranchInput
      *      type="array",
      *      @OA\Items(ref="#/components/schemas/TransferredEmployeeInput")
      * )
+     *
      * @var array
      */
     public $transfered_employees;
@@ -80,6 +87,7 @@ class CreateBranchInput
      *      type="array",
      *      @OA\Items(ref="#/components/schemas/NewEmployeeInput")
      * )
+     *
      * @var array
      */
     public $new_employees;
@@ -92,18 +100,21 @@ class UpdateBranchInput
 {
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $name;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $address;
 
     /**
      * @OA\Property(format="binary")
+     *
      * @var string
      */
     public $image;
@@ -118,7 +129,8 @@ class TransferredEmployeeInput
 {
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $id;
 
@@ -127,6 +139,7 @@ class TransferredEmployeeInput
      *   type="array",
      *   @OA\Items(type="integer")
      * )
+     *
      * @var array
      */
     public $role_ids;
@@ -141,24 +154,28 @@ class NewEmployeeInput
 {
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $name;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $email;
 
     /**
      * @OA\Property(format="password")
+     *
      * @var string
      */
     public $password;
 
     /**
      * @OA\Property(format="password")
+     *
      * @var string
      */
     public $password_confirmation;
@@ -168,24 +185,28 @@ class NewEmployeeInput
      *   type="array",
      *   @OA\Items(type="integer")
      * )
+     *
      * @var string[]
      */
     public $role_ids;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $phone;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $birthday;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $gender;

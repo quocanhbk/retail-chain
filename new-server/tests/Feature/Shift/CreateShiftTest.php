@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Shift;
 
-use App\Models\Employee;
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\QueryEmployeeTrait;
@@ -13,7 +12,7 @@ class CreateShiftTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    public function test_create_shift_unauthenticated()
+    public function testCreateShiftUnauthenticated()
     {
         $response = $this->post("/api/shift", [
             "name" => "Shift Name",
@@ -24,9 +23,9 @@ class CreateShiftTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function test_create_shift_with_invalid_permission()
+    public function testCreateShiftWithInvalidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithoutPermission($store->id, "create-shift");
 
@@ -41,9 +40,9 @@ class CreateShiftTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_shift_with_valid_permission()
+    public function testCreateShiftWithValidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "create-shift");
 
@@ -68,9 +67,9 @@ class CreateShiftTest extends TestCase
         ]);
     }
 
-    public function test_create_shift_as_admin()
+    public function testCreateShiftAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $branch = $store->branches()->first();
 
@@ -91,9 +90,9 @@ class CreateShiftTest extends TestCase
         ]);
     }
 
-    public function test_create_shift_with_invalid_input()
+    public function testCreateShiftWithInvalidInput()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "create-shift");
 

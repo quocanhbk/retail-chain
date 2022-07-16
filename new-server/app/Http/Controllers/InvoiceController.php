@@ -66,7 +66,7 @@ class InvoiceController extends Controller
                     ->where("branch_id", $branch_id)
                     ->exists()
             ) {
-                $invoice_count++;
+                ++$invoice_count;
                 $code = "INV" . str_pad($invoice_count + 1, 6, "0", STR_PAD_LEFT);
             }
 

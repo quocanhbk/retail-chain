@@ -5,11 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\DefaultItem;
 use App\Models\Item;
-use App\Models\ItemPriceHistory;
-use App\Models\ItemProperty;
-use App\Models\PurchaseSheetItem;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -29,9 +28,10 @@ class ItemController extends Controller
                 ->where("store_id", $store_id)
                 ->exists()
         ) {
-            $count++;
+            ++$count;
             $code = "SP" . str_pad($count, 6, "0", STR_PAD_LEFT);
         }
+
         return $code;
     }
 
@@ -62,11 +62,7 @@ class ItemController extends Controller
         $data = $request->all();
 
         $rules = [
-            "category_id" => [
-                "nullable",
-                "integer",
-                Rule::exists("categories", "id")->where("store_id", $store_id),
-            ],
+            "category_id" => ["nullable", "integer", Rule::exists("categories", "id")->where("store_id", $store_id)],
             "code" => ["nullable", "string", "max:255", Rule::unique("items")->where("store_id", $store_id)],
             "barcode" => ["required", "string", "max:255", Rule::unique("items")->where("store_id", $store_id)],
             "name" => ["required", "string", "max:255"],
@@ -122,22 +118,18 @@ class ItemController extends Controller
     {
         $store_id = $request->get("store_id");
 
-        $item_id = $request->query("id");
+        $id = $request->query("id");
 
         $barcode = $request->query("barcode");
 
-        if (!$item_id && !$barcode) {
+        if (!$id && !$barcode) {
             return response()->json(["message" => "id or barcode is required"], 400);
         }
 
         $item = Item::with("category")
             ->where("store_id", $store_id)
-            ->when(isset($item_id), function ($query) use ($item_id) {
-                $query->where("id", $item_id);
-            })
-            ->when(isset($barcode) && !isset($item_id), function ($query) use ($barcode) {
-                $query->where("barcode", $barcode);
-            })
+            ->when(isset($id), fn($query) => $query->where("id", $id))
+            ->when(isset($barcode) && !isset($id), fn($query) => $query->where("barcode", $barcode))
             ->first();
 
         if (!$item) {
@@ -171,16 +163,15 @@ class ItemController extends Controller
 
         [$search, $from, $to, $order_by, $order_type] = $this->getQuery($request);
 
-        $items = Item::with("category")->where("store_id", $store_id)
-            ->where(function ($query) use ($search) {
-                $query
+        $items = Item::with("category")
+            ->where("store_id", $store_id)
+            ->where(
+                fn($query) => $query
                     ->where("code", "iLike", "%" . $search . "%")
                     ->orWhere("barcode", "iLike", "%" . $search . "%")
                     ->orWhere("name", "iLike", "%" . $search . "%")
-                    ->orWhereHas("category", function ($query) use ($search) {
-                        $query->where("name", "iLike", "%" . $search . "%");
-                    });
-            })
+                    ->orWhereRelation("category", "name", "iLike", "%" . $search . "%")
+            )
             ->orderBy($order_by, $order_type)
             ->skip($from)
             ->take($to - $from)
@@ -194,7 +185,7 @@ class ItemController extends Controller
      *   path="/item/selling",
      *   tags={"Item"},
      *   summary="Get all selling items",
-     *   operationId="getAllSellingItems",
+     *   operationId="getSelling",
      *   @OA\Parameter(name="search", in="query", @OA\Schema(type="string")),
      *   @OA\Parameter(name="from", in="query", @OA\Schema(type="integer")),
      *   @OA\Parameter(name="to", in="query", @OA\Schema(type="integer")),
@@ -208,36 +199,30 @@ class ItemController extends Controller
      *   )
      * )
      */
-    public function getSellingItems(Request $request)
+    public function getSelling(Request $request)
     {
         $store_id = $request->get("store_id");
 
         $as = $request->get("as");
 
-        if ($as == "admin" && !($request->query("branch_id"))) {
+        if ("admin" == $as && !$request->query("branch_id")) {
             return response()->json(["message" => "branch_id is required"], 400);
         }
 
-        $branch_id = $as == "admin" ? $request->query("branch_id") : Auth::user()->employment->branch_id;
-
-        [$search, $from, $to, $order_by, $order_type] = $this->getQuery($request);
+        $branch_id = "admin" == $as ? $request->query("branch_id") : Auth::user()->employment->branch_id;
 
         [$search, $from, $to, $order_by, $order_type] = $this->getQuery($request);
 
         $items = Item::with("category", "properties")
             ->where("store_id", $store_id)
-            ->whereHas("properties", function ($query) use ($branch_id) {
-                $query->where("branch_id", $branch_id);
-            })
-            ->where(function ($query) use ($search) {
-                $query
+            ->whereRelation("properties", "branch_id", $branch_id)
+            ->where(
+                fn($query) => $query
                     ->where("code", "iLike", "%" . $search . "%")
                     ->orWhere("barcode", "iLike", "%" . $search . "%")
                     ->orWhere("name", "iLike", "%" . $search . "%")
-                    ->orWhereHas("category", function ($query) use ($search) {
-                        $query->where("name", "iLike", "%" . $search . "%");
-                    });
-            })
+                    ->orWhereRelation("category", "name", "iLike", "%" . $search . "%")
+            )
             ->orderBy($order_by, $order_type)
             ->skip($from)
             ->take($to - $from)
@@ -269,7 +254,7 @@ class ItemController extends Controller
      */
     public function moveItem(Request $request)
     {
-        $store_id = Auth::user()->store_id;
+        $store_id = $request->get("store_id");
 
         $barcode = $request->input("barcode");
 
@@ -312,41 +297,12 @@ class ItemController extends Controller
     }
 
     /**
-     * @OA\Get(
-     *   path="/item/{item_id}/price-history",
-     *   tags={"Item"},
-     *   summary="Get item price history",
-     *   operationId="getItemPriceHistory",
-     *   @OA\Parameter(name="item_id", in="path", @OA\Schema(type="integer"), required=true),
-     *   @OA\Response(
-     *     response=200,
-     *     description="successful operation",
-     *     @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/ItemPriceHistory"))
-     *   )
-     * )
-     */
-    public function getPriceHistory(Request $request, $item_id)
-    {
-        $store_id = $request->get("store_id");
-        // make sure store own item
-        $item = Item::where(["store_id" => $store_id, "id" => $item_id])->first();
-
-        if (!$item) {
-            return response()->json(["message" => "Item not found"], 404);
-        }
-
-        $price_history = ItemPriceHistory::where("item_id", $item_id)->get();
-
-        return response()->json($price_history);
-    }
-
-    /**
      * @OA\Put(
-     *   path="/item/{item_id}",
+     *   path="/item/{id}",
      *   tags={"Item"},
      *   summary="Update item",
      *   operationId="updateItem",
-     *   @OA\Parameter(name="item_id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\Parameter(name="id", in="path", @OA\Schema(type="integer"), required=true),
      *   @OA\RequestBody(
      *     required=true,
      *     @OA\MediaType(
@@ -361,13 +317,13 @@ class ItemController extends Controller
      *   )
      * )
      */
-    public function update(Request $request, $item_id)
+    public function update(Request $request, $id)
     {
         $store_id = $request->get("store_id");
 
         $data = $request->all();
 
-        $item = Item::where("id", $item_id)
+        $item = Item::where("id", $id)
             ->where("store_id", $store_id)
             ->first();
 
@@ -382,7 +338,7 @@ class ItemController extends Controller
                 "max:255",
                 Rule::unique("items")
                     ->where("store_id", $store_id)
-                    ->ignore($item_id),
+                    ->ignore($id),
             ],
             "barcode" => [
                 "nullable",
@@ -390,14 +346,10 @@ class ItemController extends Controller
                 "max:255",
                 Rule::unique("items")
                     ->where("store_id", $store_id)
-                    ->ignore($item_id),
+                    ->ignore($id),
             ],
             "name" => ["nullable", "string", "max:255"],
-            "category_id" => [
-                "nullable",
-                "integer",
-                Rule::exists("categories", "id")->where("store_id", $store_id),
-            ],
+            "category_id" => ["nullable", "integer", Rule::exists("categories", "id")->where("store_id", $store_id)],
             "image" => ["nullable", "image", "max:2048"],
         ];
 
@@ -407,7 +359,7 @@ class ItemController extends Controller
             return response()->json(["message" => $this->formatValidationError($validator->errors())], 400);
         }
 
-        $item = Item::find($item_id);
+        $item = Item::find($id);
         $item->code = $data["code"] ?? $item->code;
         $item->barcode = $data["barcode"] ?? $item->barcode;
         $item->name = $data["name"] ?? $item->name;
@@ -415,8 +367,11 @@ class ItemController extends Controller
 
         $has_image = $request->hasFile("image");
         if ($has_image) {
+            if ($item->image) {
+                Storage::delete($item->image);
+            }
             $image_name = $store_id . Str::uuid() . "." . $request->file("image")->getClientOriginalExtension();
-            $item->image = $request->file("image")->storedAs("images/{$store_id}/items", $image_name);
+            $item->image = $request->file("image")->storeAs("images/{$store_id}/items", $image_name);
             $item->image_key = Str::uuid();
         }
 
@@ -425,51 +380,148 @@ class ItemController extends Controller
         return response()->json($item);
     }
 
-    // get last purchase price of an item
-    public function getLastPurchasePrice($item_id)
+    /**
+     * @OA\Delete(
+     *   path="/item/{id}",
+     *   tags={"Item"},
+     *   summary="Delete item",
+     *   operationId="deleteItem",
+     *   @OA\Parameter(name="id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\Parameter(name="force", in="query", @OA\Schema(type="boolean")),
+     *   @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
+     *   )
+     * )
+     */
+    public function delete(Request $request, $id)
     {
-        $branch_id = Auth::user()->employment->branch_id;
+        $store_id = $request->get("store_id");
 
-        // get last purchase sheet item of an item
-        $purchase_sheet_item = PurchaseSheetItem::where("item_id", $item_id)
-            ->whereHas("purchaseSheet", function ($query) use ($branch_id) {
-                $query->where("branch_id", $branch_id);
-            })
-            ->orderBy("id", "desc")
+        $as = $request->get("as");
+
+        $force = $request->query("force") ?? false;
+
+        $item = Item::where("id", $id)
+            ->where("store_id", $store_id)
             ->first();
 
-        if (!$purchase_sheet_item) {
-            return response()->json(0);
+        if (!$item) {
+            return response()->json(["message" => "Item not found"], 404);
         }
 
-        return response()->json($purchase_sheet_item->price);
+        if ("employee" == $as && $force) {
+            return response()->json(["message" => "Forced delete is not allowed"], 403);
+        }
+
+        $item->when($force, fn($query) => $query->forceDelete(), fn($query) => $query->delete());
+
+        return response()->json(["message" => "Item deleted"]);
     }
 
-    // get items from a purchase sheet
-    public function getItemsFromPurchaseSheet(Request $request, $purchase_sheet_id)
+    /**
+     * @OA\Get(
+     *   path="/item/deleted",
+     *   tags={"Item"},
+     *   summary="Get deleted items",
+     *   operationId="getDeletedItems",
+     *   @OA\Parameter(name="search", in="query", @OA\Schema(type="string")),
+     *   @OA\Parameter(name="from", in="query", @OA\Schema(type="integer")),
+     *   @OA\Parameter(name="to", in="query", @OA\Schema(type="integer")),
+     *   @OA\Parameter(name="order_by", in="query", @OA\Schema(type="string")),
+     *   @OA\Parameter(name="order_type", in="query", @OA\Schema(type="string", enum={"asc", "desc"})),
+     *   @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *     @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Item"))
+     *   )
+     * )
+     */
+    public function getDeleted(Request $request)
     {
-        $branch_id = Auth::user()->employment->branch_id;
+        $store_id = $request->get("store_id");
 
-        $search = $request->query("search") ?? "";
+        [$search, $from, $to, $order_by, $order_type] = $this->getQuery($request);
 
-        $purchase_sheet_items = PurchaseSheetItem::with("item")
-            ->where("purchase_sheet_id", $purchase_sheet_id)
-            ->where("branch_id", $branch_id)
-            ->whereHas("item", function ($query) use ($search) {
-                $query->where("name", "iLike", "%" . $search . "%");
-            })
-            ->orWhereHas("item", function ($query) use ($search) {
-                $query->where("barcode", "iLike", "%" . $search . "%");
-            })
+        $items = Item::onlyTrashed()
+            ->with("category")
+            ->where("store_id", $store_id)
+            ->where(
+                fn($query) => $query
+                    ->where("code", "iLike", "%" . $search . "%")
+                    ->orWhere("barcode", "iLike", "%" . $search . "%")
+                    ->orWhere("name", "iLike", "%" . $search . "%")
+                    ->orWhereRelation("category", "name", "iLike", "%" . $search . "%")
+            )
+            ->orderBy($order_by, $order_type)
+            ->skip($from)
+            ->take($to - $from)
             ->get();
 
-        foreach ($purchase_sheet_items as &$purchase_sheet_item) {
-            $property = ItemProperty::where("item_id", $purchase_sheet_id->item_id)
-                ->where("branch_id", $branch_id)
-                ->first();
-            $purchase_sheet_item["property"] = $property;
+        return response()->json($items);
+    }
+
+    /**
+     * @OA\Post(
+     *   path="/item/{id}/restore",
+     *   tags={"Item"},
+     *   summary="Restore item",
+     *   operationId="restoreItem",
+     *   @OA\Parameter(name="id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
+     *   )
+     * )
+     */
+    public function restore(Request $request, $id)
+    {
+        $store_id = $request->get("store_id");
+
+        $item = Item::onlyTrashed()
+            ->where("id", $id)
+            ->where("store_id", $store_id)
+            ->first();
+
+        if (!$item) {
+            return response()->json(["message" => "Item not found"], 404);
         }
 
-        return response()->json($purchase_sheet_items);
+        $item->restore();
+
+        return response()->json(["message" => "Item restored"]);
+    }
+
+    /**
+     * @OA\Delete(
+     *   path="/item/{id}/force",
+     *   tags={"Item"},
+     *   summary="Force delete item",
+     *   operationId="forceDeleteItem",
+     *   @OA\Parameter(name="id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
+     *   )
+     * )
+     */
+    public function forceDelete(Request $request, $id)
+    {
+        $store_id = $request->get("store_id");
+
+        $item = Item::withTrashed()
+            ->where(["store_id" => $store_id, "id" => $id])
+            ->first();
+
+        if (!$item) {
+            return response()->json(["message" => "Item not found"], 404);
+        }
+
+        $item->forceDelete();
+
+        return response()->json(["message" => "Item deleted"]);
     }
 }

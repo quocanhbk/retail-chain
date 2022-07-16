@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
-use App\Models\Customer;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class CustomerController extends Controller
 {
@@ -95,13 +96,13 @@ class CustomerController extends Controller
         [$search, $from, $to, $order_by, $order_type] = $this->getQuery($request);
 
         $customers = Customer::where("store_id", $store_id)
-            ->where(function ($query) use ($search) {
-                $query
+            ->where(
+                fn($query) => $query
                     ->where("name", "iLike", "%" . $search . "%")
                     ->orWhere("phone", "iLike", "%" . $search . "%")
                     ->orWhere("email", "iLike", "%" . $search . "%")
-                    ->orWhere("code", "iLike", "%" . $search . "%");
-            })
+                    ->orWhere("code", "iLike", "%" . $search . "%")
+            )
             ->orderBy($order_by, $order_type)
             ->offset($from)
             ->limit($to - $from)
@@ -136,12 +137,8 @@ class CustomerController extends Controller
         $store_id = $request->get("store_id");
 
         $customer = Customer::where("store_id", $store_id)
-            ->when(isset($id), function ($query) use ($id) {
-                $query->where("id", $id);
-            })
-            ->when(isset($code) && !isset($id), function ($query) use ($code) {
-                $query->where("code", $code);
-            })
+            ->when(isset($id), fn($query) => $query->where("id", $id))
+            ->when(isset($code) && !isset($id), fn($query) => $query->where("code", $code))
             ->first();
 
         if (!$customer) {
@@ -153,11 +150,11 @@ class CustomerController extends Controller
 
     /**
      * @OA\Put(
-     *   path="/customer/{customer_id}",
+     *   path="/customer/{id}",
      *   summary="Update a customer",
      *   tags={"Customer"},
      *   operationId="updateCustomer",
-     *   @OA\Parameter(name="customer_id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\Parameter(name="id", in="path", @OA\Schema(type="integer"), required=true),
      *   @OA\RequestBody(
      *     required=true,
      *     @OA\JsonContent(ref="#/components/schemas/UpsertCustomerInput")
@@ -165,21 +162,18 @@ class CustomerController extends Controller
      *   @OA\Response(
      *     response=200,
      *     description="Successful operation",
-     *     @OA\JsonContent(
-     *       required={"message"},
-     *       @OA\Property(property="message", type="string", description="Success message"),
-     *     )
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
      *   ),
      * )
      */
-    public function update(Request $request, $customer_id)
+    public function update(Request $request, $id)
     {
         $store_id = $request->get("store_id");
 
         $data = $request->all();
 
         $customer = Customer::where("store_id", $store_id)
-            ->where("id", $customer_id)
+            ->where("id", $id)
             ->first();
 
         if (!$customer) {
@@ -194,7 +188,7 @@ class CustomerController extends Controller
                 "max:255",
                 Rule::unique("customers")
                     ->where("store_id", $store_id)
-                    ->ignore($customer_id),
+                    ->ignore($id),
             ],
             "email" => [
                 "nullable",
@@ -203,7 +197,7 @@ class CustomerController extends Controller
                 "max:255",
                 Rule::unique("customers")
                     ->where("store_id", $store_id)
-                    ->ignore($customer_id),
+                    ->ignore($id),
             ],
         ];
 
@@ -226,11 +220,11 @@ class CustomerController extends Controller
 
     /**
      * @OA\Post(
-     *   path="/customer/add-point/{customer_id}",
+     *   path="/customer/add-point/{id}",
      *   summary="Create a customer",
      *   tags={"Customer"},
      *   operationId="addCustomerPoint",
-     *   @OA\Parameter(name="customer_id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\Parameter(name="id", in="path", @OA\Schema(type="integer"), required=true),
      *   @OA\RequestBody(
      *     required=true,
      *     @OA\JsonContent(
@@ -241,21 +235,18 @@ class CustomerController extends Controller
      *   @OA\Response(
      *     response=200,
      *     description="Successful operation",
-     *     @OA\JsonContent(
-     *       required={"message"},
-     *       @OA\Property(property="message", type="string", description="Success message"),
-     *     )
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
      *   )
      * )
      */
-    public function addPoint(Request $request, $customer_id)
+    public function addPoint(Request $request, $id)
     {
         $store_id = $request->get("store_id");
 
         $data = $request->all();
 
         $customer = Customer::where("store_id", $store_id)
-            ->where("id", $customer_id)
+            ->where("id", $id)
             ->first();
 
         if (!$customer) {
@@ -288,11 +279,11 @@ class CustomerController extends Controller
 
     /**
      * @OA\Post(
-     *   path="/customer/use-point/{customer_id}",
+     *   path="/customer/use-point/{id}",
      *   summary="Use point",
      *   tags={"Customer"},
      *   operationId="useCustomerPoint",
-     *   @OA\Parameter(name="customer_id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\Parameter(name="id", in="path", @OA\Schema(type="integer"), required=true),
      *   @OA\RequestBody(
      *     required=true,
      *     @OA\JsonContent(
@@ -303,21 +294,18 @@ class CustomerController extends Controller
      *   @OA\Response(
      *     response=200,
      *     description="Successful operation",
-     *     @OA\JsonContent(
-     *       required={"message"},
-     *       @OA\Property(property="message", type="string", description="Success message"),
-     *     )
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
      *   )
      * )
      */
-    public function usePoint(Request $request, $customer_id)
+    public function usePoint(Request $request, $id)
     {
         $store_id = $request->get("store_id");
 
         $data = $request->all();
 
         $customer = Customer::where("store_id", $store_id)
-            ->where("id", $customer_id)
+            ->where("id", $id)
             ->first();
 
         if (!$customer) {

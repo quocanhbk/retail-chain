@@ -5,14 +5,13 @@ namespace Tests\Feature\Employee;
 use App\Models\Employee;
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class RestoreEmployeeTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_restore_employee_unauthenticated()
+    public function testRestoreEmployeeUnauthenticated()
     {
         $response = $this->post("/api/employee/1/restore");
 
@@ -21,7 +20,7 @@ class RestoreEmployeeTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_restore_employee_as_employee()
+    public function testRestoreEmployeeAsEmployee()
     {
         $employee = Employee::first();
 
@@ -32,9 +31,9 @@ class RestoreEmployeeTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_restore_employee_as_admin()
+    public function testRestoreEmployeeAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = Employee::where("store_id", $store->id)->first();
 
@@ -59,9 +58,9 @@ class RestoreEmployeeTest extends TestCase
         $this->assertNotNull($employee->fresh()->employment);
     }
 
-    public function test_restore_employee_not_found()
+    public function testRestoreEmployeeNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->post("/api/employee/9999/restore");
 
@@ -70,9 +69,9 @@ class RestoreEmployeeTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_restore_undeleted_employee()
+    public function testRestoreUndeletedEmployee()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $store->employees->first();
 

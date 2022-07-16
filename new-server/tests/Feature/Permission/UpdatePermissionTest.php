@@ -6,14 +6,13 @@ use App\Models\Employee;
 use App\Models\Permission;
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class UpdatePermissionTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_update_permission_unauthenticated()
+    public function testUpdatePermissionUnauthenticated()
     {
         $response = $this->put("/api/permission/1");
 
@@ -22,7 +21,7 @@ class UpdatePermissionTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_permission_as_employee()
+    public function testUpdatePermissionAsEmployee()
     {
         $employee = Employee::first();
 
@@ -33,9 +32,9 @@ class UpdatePermissionTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_permission_not_found()
+    public function testUpdatePermissionNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->put("/api/permission/9999");
 
@@ -44,9 +43,9 @@ class UpdatePermissionTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_permission_invalid_input()
+    public function testUpdatePermissionInvalidInput()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->put("/api/permission/1");
 
@@ -55,9 +54,9 @@ class UpdatePermissionTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_permisssion_input_not_found()
+    public function testUpdatePermisssionInputNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->put("/api/permission/1", [
             "role_ids" => [9999],
@@ -68,9 +67,9 @@ class UpdatePermissionTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_permission_as_admin()
+    public function testUpdatePermissionAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $permission = Permission::first();
 

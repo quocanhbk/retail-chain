@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Store;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 
@@ -16,7 +15,6 @@ class EmployeeFactory extends Factory
     public function definition()
     {
         return [
-            "store_id" => Store::factory(),
             "name" => $this->faker->name(),
             "email" => $this->faker->unique()->safeEmail(),
             "password" => Hash::make("123456"),

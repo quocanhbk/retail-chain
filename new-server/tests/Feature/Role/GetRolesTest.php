@@ -5,15 +5,11 @@ namespace Tests\Feature\Role;
 use App\Models\Employee;
 use App\Models\Role;
 use App\Models\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class GetRolesTest extends TestCase
 {
-    use RefreshDatabase;
-
-    public function test_get_roles_unauthenticated()
+    public function testGetRolesUnauthenticated()
     {
         $response = $this->get("/api/role");
 
@@ -22,7 +18,7 @@ class GetRolesTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_roles_as_employee()
+    public function testGetRolesAsEmployee()
     {
         $employee = Employee::first();
 
@@ -33,9 +29,9 @@ class GetRolesTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_roles_as_admin()
+    public function testGetRolesAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->get("/api/role");
 
@@ -44,9 +40,9 @@ class GetRolesTest extends TestCase
         $response->assertJsonStructure([["id", "name", "description", "created_at", "updated_at"]]);
     }
 
-    public function test_get_roles_with_search()
+    public function testGetRolesWithSearch()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $role = Role::where("store_id", $store->id)->first();
 
@@ -57,17 +53,13 @@ class GetRolesTest extends TestCase
         $response->assertJsonStructure([["id", "name", "description", "created_at", "updated_at"]]);
 
         $response->assertJsonFragment([
-            "id" => $role->id,
             "name" => $role->name,
-            "description" => $role->description,
         ]);
-
-        $response->assertJsonCount(1);
     }
 
-    public function test_get_roles_with_pagination()
+    public function testGetRolesWithPagination()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->get("/api/role?from=0&to=1");
 

@@ -2,27 +2,67 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Employee;
 use App\Models\ItemProperty;
 use App\Models\PurchaseSheet;
 use App\Models\PurchaseSheetItem;
+use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class PurchaseSheetController extends Controller
 {
-    // Purchaser create purchase sheet, along with:
-    // * Item that is sold before in the store (has data in `items` table)
-    // * Item that is never sold before in the store (get from `default_items.barcode_data`)
-    // * Item that is never sold before in the store (create manually)
+    private function generateCode(Store $store)
+    {
+        // calculate purchase sheet code using perchase sheet count
+        $count = PurchaseSheet::whereRelation("branch", "store_id", $store->id)->count();
+
+        $code = "PS" . str_pad($count + 1, 6, "0", STR_PAD_LEFT);
+
+        // ensure code is unique
+        while (
+            PurchaseSheet::where("code", $code)
+                ->whereRelation("branch", "store_id", $store->id)
+                ->count() > 0
+        ) {
+            ++$count;
+            $code = "PS" . str_pad($count, 6, "0", STR_PAD_LEFT);
+        }
+
+        return $code;
+    }
+
+    /**
+     * @OA\Post(
+     *   path="/purchase-sheet",
+     *   tags={"PurchaseSheet"},
+     *   summary="Create a new purchase sheet",
+     *   operationId="createPurchaseSheet",
+     *   @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(ref="#/components/schemas/CreatePurchaseSheetInput")
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Successfull operation",
+     *     @OA\JsonContent(ref="#/components/schemas/PurchaseSheet")
+     *   )
+     * )
+     */
     public function create(Request $request)
     {
-        $store_id = Auth::user()->store_id;
-        $employee_id = Auth::user()->id;
-        $branch_id = Employee::find($employee_id)->employment->branch_id;
+        $employee = Auth::user();
+
+        $employee_id = $employee->id;
+
+        $store_id = $employee->store_id;
+
+        $branch_id = $employee->employment->branch_id;
+
         $data = $request->all();
+
         $rules = [
             "code" => [
                 "nullable",
@@ -30,136 +70,137 @@ class PurchaseSheetController extends Controller
                 "max:255",
                 Rule::unique("purchase_sheets")->where("branch_id", $branch_id),
             ],
-            // Purchase sheet may have unknown supplier
-            "supplier_id" => ["required", "integer", Rule::exists("suppliers", "id")->where("store_id", $store_id)],
-            "discount" => ["nullable", "numeric"],
-            "discount_type" => ["nullable", "string", "max:255"],
-            "paid_amount" => ["required", "numeric"],
+            "supplier_id" => ["nullable", "integer", Rule::exists("suppliers", "id")->where("store_id", $store_id)],
+            "discount" => ["required_with:discount_type", "integer", "min:0"],
+            "discount_type" => ["required_with:discount", "string", Rule::in(["percent", "amount"])],
+            "paid_amount" => ["nullable", "integer", "min:0"],
             "note" => ["nullable", "string", "max:255"],
-
             "items" => ["required", "array", "min:1"],
-            "items.*.item_id" => ["required", "integer", Rule::exists("items", "id")->where("store_id", $store_id)],
-            "items.*.quantity" => ["required", "numeric", "min:1"],
-            "items.*.price" => ["required", "numeric", "min:0"],
-            "items.*.discount" => ["nullable", "numeric"],
-            "items.*.discount_type" => ["nullable", "in:cash,percent"],
+            "items.*.id" => ["required", "integer", Rule::exists("items", "id")->where("store_id", $store_id)],
+            "items.*.quantity" => ["required", "integer", "min:1"],
+            "items.*.price" => ["required", "integer", "min:0"],
+            "items.*.discount" => ["required_with:items.*.discount_type", "integer"],
+            "items.*.discount_type" => ["required_with:items.*.discount", Rule::in(["percent", "amount"])],
         ];
 
-        $validator = Validator::make($data, $rules, [
-            "code.unique" => "Mã phiếu này đã được sử dụng",
-            "supplier_id.exists" => "Nhà cung cấp không tồn tại",
-            "supplier_id.required" => "Nhà cung cấp không được để trống",
-        ]);
+        $validator = Validator::make($data, $rules);
+
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    "message" => "Thông tin không hợp lệ",
-                    "error" => $this->formatValidationError($validator->errors()),
-                ],
-                400
-            );
+            return response()->json(["message" => $this->formatValidationError($validator->errors())], 400);
         }
 
         // calculate total for each item
         $items = $data["items"];
+
         foreach ($items as &$item) {
-            $final_price = $item["price"];
             $discount = $item["discount"] ?? 0;
-            $discount_type = $item["discount_type"] ?? "percent";
-            if ($discount_type == "percent") {
-                $final_price = $final_price * (1 - $discount / 100);
-            } else {
-                $final_price = $final_price - $discount;
-            }
+
+            $discount_type = $item["discount_type"] ?? "amount";
+
+            $final_price = max(
+                $discount_type == "amount" ? $item["price"] - $discount : $item["price"] * (1 - $discount / 100),
+                0
+            );
+
             $item["total"] = $item["quantity"] * $final_price;
         }
 
         // calculate total of purchase sheet
-        $total = 0;
-        foreach ($items as $item) {
-            $total += $item["total"];
-        }
-        if (isset($data["discount"])) {
-            if ($data["discount_type"] == "percent") {
-                $total = $total - ($total * $data["discount"]) / 100;
-            } else {
-                $total = $total - $data["discount"];
-            }
-        }
+        $original_total = array_reduce($items, fn($carry, $item) => $carry + $item["total"], 0);
+
+        $total_discount = isset($data["discount"])
+            ? ($data["discount_type"] == "amount"
+                ? $data["discount"]
+                : $original_total * ($data["discount"] / 100))
+            : 0;
+
+        $discounted_total = $original_total - $total_discount;
 
         // if perchase sheet code is not set, generate one
         if (!isset($data["code"])) {
-            // calculate purchase sheet code using perchase sheet count
-            $purchase_sheet_count = PurchaseSheet::where("branch_id", $branch_id)->count();
-            $code = "PS" . str_pad($purchase_sheet_count + 1, 6, "0", STR_PAD_LEFT);
-            // ensure code is unique
-            while (
-                PurchaseSheet::where("code", $code)
-                    ->where("branch_id", $branch_id)
-                    ->count() > 0
-            ) {
-                $purchase_sheet_count++;
-                $code = "PS" . str_pad($purchase_sheet_count, 6, "0", STR_PAD_LEFT);
-            }
-            $data["code"] = $code;
+            $data["code"] = $this->generateCode($employee->store);
         }
 
         // create purchase sheet
         $purchase_sheet = PurchaseSheet::create([
-            "code" => $code,
+            "code" => $data["code"],
             "employee_id" => $employee_id,
             "branch_id" => $branch_id,
-            "supplier_id" => $data["supplier_id"],
-            "discount" => $data["discount"] ?? 0,
-            "discount_type" => $data["discount_type"] ?? "cash",
-            "total" => $total,
-            "paid_amount" => $data["paid_amount"],
+            "supplier_id" => $data["supplier_id"] ?? null,
+            "discount" => $data["discount"] ?? null,
+            "discount_type" => $data["discount_type"] ?? null,
+            "total" => round($discounted_total),
+            "paid_amount" => $data["paid_amount"] ?? 0,
             "note" => $data["note"] ?? "",
         ]);
 
         // create purchase sheet items data
-        $itemsData = [];
-        foreach ($items as $item) {
-            $itemsData[] = [
+        foreach ($items as &$item) {
+            PurchaseSheetItem::create([
                 "purchase_sheet_id" => $purchase_sheet->id,
-                "item_id" => $item["item_id"],
+                "item_id" => $item["id"],
                 "quantity" => $item["quantity"],
                 "price" => $item["price"],
-                "discount" => $item["discount"] ?? 0,
-                "discount_type" => $item["discount_type"] ?? "cash",
+                "discount" => $item["discount"] ?? null,
+                "discount_type" => $item["discount_type"] ?? null,
                 "total" => $item["total"],
-            ];
+            ]);
 
             // update item base price and quantity
-            $item_property = ItemProperty::where("item_id", $item["item_id"])
-                ->where("branch_id", $branch_id)
-                ->first();
+            $item_property = ItemProperty::where(["item_id" => $item["id"], "branch_id" => $branch_id])->first();
+
+            // split discount from purchase sheet to item
+            $split_discount = ($total_discount / $original_total) * $item["total"];
+
+            $base_price = round(($item["total"] - $split_discount) / $item["quantity"]);
+
             if (!$item_property) {
                 $item_property = ItemProperty::create([
-                    "item_id" => $item["item_id"],
+                    "item_id" => $item["id"],
                     "branch_id" => $branch_id,
-                    "base_price" => $item["price"],
+                    "base_price" => $base_price,
                     "last_purchase_price" => $item["price"],
                     "quantity" => $item["quantity"],
                 ]);
             } else {
-                $new_base_price =
-                    ($item_property->base_price * $item_property->quantity + $item["total"]) /
-                    ($item_property->quantity + $item["quantity"]);
+                $new_base_price = round(
+                    ($item_property->base_price * $item_property->quantity + $base_price * $item["quantity"]) /
+                        ($item_property->quantity + $item["quantity"])
+                );
+
                 $item_property->update([
                     "base_price" => $new_base_price,
                     "quantity" => $item_property->quantity + $item["quantity"],
+                    "last_purchase_price" => $item["price"],
                 ]);
             }
         }
-        PurchaseSheetItem::insert($itemsData);
 
-        return response()->json([
-            "message" => "Purchase sheet created successfully",
-        ]);
+        return response()->json($purchase_sheet);
     }
 
-    public function getPurchaseSheets(Request $request)
+    /**
+     * @OA\Get(
+     *   path="/purchase-sheet",
+     *   tags={"PurchaseSheet"},
+     *   summary="Get all purchase sheets",
+     *   operationId="getPurchaseSheets",
+     *   @OA\Parameter(name="search", in="query", @OA\Schema(type="string")),
+     *   @OA\Parameter(name="order_by", in="query", @OA\Schema(type="string")),
+     *   @OA\Parameter(name="order_type", in="query", @OA\Schema(type="string", enum={"asc", "desc"})),
+     *   @OA\Parameter(name="from", in="query", @OA\Schema(type="integer")),
+     *   @OA\Parameter(name="to", in="query", @OA\Schema(type="integer")),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @OA\JsonContent(
+     *       type="array",
+     *       @OA\Items(ref="#/components/schemas/PurchaseSheetWithSupplierAndEmployee")
+     *     )
+     *   )
+     * )
+     */
+    public function getMany(Request $request)
     {
         $branch_id = Auth::user()->employment->branch_id;
 
@@ -167,13 +208,15 @@ class PurchaseSheetController extends Controller
 
         $purchase_sheets = PurchaseSheet::with(["supplier", "employee"])
             ->where("branch_id", $branch_id)
-            ->where("code", "iLike", "%" . $search . "%")
-            ->orWhereHas("supplier", function ($query) use ($search) {
-                $query->where("name", "iLike", "%" . $search . "%");
-            })
-            ->orWherehas("employee", function ($query) use ($search) {
-                $query->where("name", "iLike", "%" . $search . "%");
-            })
+            ->where(
+                fn($query) => $query
+                    ->where("code", "iLike", "%" . $search . "%")
+                    ->orWhere("note", "iLike", "%" . $search . "%")
+                    ->orWhereRelation("supplier", "name", "iLike", "%" . $search . "%")
+                    ->orWhereRelation("employee", "name", "iLike", "%" . $search . "%")
+                    ->orWhereRelation("employee", "phone", "iLike", "%" . $search . "%")
+                    ->orWhereRelation("employee", "email", "iLike", "%" . $search . "%")
+            )
             ->orderBy($order_by, $order_type)
             ->offset($from)
             ->limit($to - $from)
@@ -182,211 +225,140 @@ class PurchaseSheetController extends Controller
         return response()->json($purchase_sheets);
     }
 
-    public function getPurchaseSheet(Request $request, $id)
+    /**
+     * @OA\Get(
+     *   path="/purchase-sheet/{id}",
+     *   tags={"PurchaseSheet"},
+     *   summary="Get purchase sheet by id",
+     *   operationId="getPurchaseSheet",
+     *   @OA\Parameter(name="id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @OA\JsonContent(ref="#/components/schemas/PurchaseSheetDetail")
+     *   )
+     * )
+     */
+    public function getOne($id)
     {
         $branch_id = Auth::user()->employment->branch_id;
-        $purchase_sheet = PurchaseSheet::with(["purchaseSheetItems.item", "employee", "branch", "supplier"])
+
+        $purchase_sheet = PurchaseSheet::with(["items.item", "employee", "branch", "supplier"])
             ->where("branch_id", $branch_id)
             ->find($id);
-        return response()->json($purchase_sheet);
-    }
 
-    public function update(Request $request, $id)
-    {
-        $store_id = Auth::user()->store_id;
-        $branch_id = Auth::user()->employment->branch_id;
-        $data = $request->all();
-        $data["id"] = $id;
-        $rules = [
-            "id" => [
-                "required",
-                "integer",
-                Rule::exists("purchase_sheets", "id")
-                    ->where("branch_id", $branch_id)
-                    ->where("employee_id", Auth::user()->id),
-            ],
-            "discount" => ["nullable", "numeric"],
-            "discount_type" => ["nullable", "in:cash,percent", "max:255"],
-            "paid_amount" => ["required", "numeric"],
-            "note" => ["nullable", "string", "max:255"],
-
-            "items" => ["required", "array", "min:1"],
-            "items.*.item_id" => ["required", "integer", Rule::exists("items", "id")->where("store_id", $store_id)],
-            "items.*.quantity" => ["required", "numeric", "min:1"],
-            "items.*.price" => ["required", "numeric", "min:0"],
-            "items.*.discount" => ["nullable", "numeric"],
-            "items.*.discount_type" => ["nullable", "in:cash,percent"],
-        ];
-
-        $validator = Validator::make($data, $rules);
-        if ($validator->fails()) {
-            return response()->json(["error" => $validator->errors()], 400);
+        if (!$purchase_sheet) {
+            return response()->json(["message" => "Purchase sheet not found"], 404);
         }
-
-        $purchase_sheet = PurchaseSheet::find($id);
-
-        $total = 0;
-        // calculate total of each item
-        $items = $data["items"];
-        foreach ($items as &$item) {
-            $final_price = $item["price"];
-            if (isset($item["discount"])) {
-                if ($item["discount_type"] == "percent") {
-                    $final_price = $final_price - ($final_price * $item["discount"]) / 100;
-                } else {
-                    $final_price = $final_price - $item["discount"];
-                }
-            }
-            $item["total"] = $item["quantity"] * $final_price;
-        }
-
-        // calculate total of purchase sheet
-        foreach ($items as $item) {
-            $total += $item["total"];
-        }
-
-        $discount = $data["discount"] ?? $purchase_sheet->discount;
-        $discount_type = $data["discount_type"] ?? $purchase_sheet->discount_type;
-        if (isset($discount)) {
-            if ($discount_type == "percent") {
-                $total = $total - ($total * $discount) / 100;
-            } else {
-                $total = $total - $discount;
-            }
-        }
-
-        // update purchase sheet
-        $purchase_sheet->update([
-            "discount" => $data["discount"] ?? $purchase_sheet->discount,
-            "discount_type" => $data["discount_type"] ?? $purchase_sheet->discount_type,
-            "paid_amount" => $data["paid_amount"] ?? $purchase_sheet->paid_amount,
-            "total" => $total,
-            "note" => $data["note"] ?? $purchase_sheet->note,
-        ]);
-
-        // check if this is the lastest purchase sheet
-        $is_latest =
-            PurchaseSheet::where("branch_id", $branch_id)
-                ->where("id", ">", $id)
-                ->count() == 0;
-
-        // update purchase sheet items
-        $itemsData = [];
-        foreach ($items as $item) {
-            $itemsData[] = [
-                "purchase_sheet_id" => $purchase_sheet->id,
-                "item_id" => $item["item_id"],
-                "quantity" => $item["quantity"],
-                "price" => $item["price"],
-                "discount" => $item["discount"] ?? 0,
-                "discount_type" => $item["discount_type"] ?? "cash",
-                "total" => $item["total"],
-            ];
-
-            $item_property = ItemProperty::where("item_id", $item["item_id"])
-                ->where("branch_id", $branch_id)
-                ->first();
-            // find previous purchase sheet item
-            $purchase_sheet_item = PurchaseSheetItem::where("purchase_sheet_id", $purchase_sheet->id)
-                ->where("item_id", $item["item_id"])
-                ->first();
-            // if found, calculate base price without that item
-            if ($purchase_sheet_item) {
-                $previous_base_price =
-                    ($item_property->base_price * $item_property->quantity - $purchase_sheet_item->total) /
-                    ($item_property->quantity - $purchase_sheet_item->quantity);
-                $previous_quantity = $item_property->quantity - $purchase_sheet_item->quantity;
-                $item_property->update([
-                    "base_price" => $previous_base_price,
-                    "last_purchase_price" => $is_latest ? $item["price"] : $item_property->last_purchase_price,
-                    "quantity" => $previous_quantity,
-                ]);
-            }
-            // calculate new base price and quantity
-            $new_base_price =
-                ($item_property->base_price * $item_property->quantity + $item["total"]) /
-                ($item_property->quantity + $item["quantity"]);
-            $item_property->update([
-                "base_price" => $new_base_price,
-                "last_purchase_price" => $is_latest ? $item["price"] : $item_property->last_purchase_price,
-                "quantity" => $item_property->quantity + $item["quantity"],
-            ]);
-        }
-
-        // delete old purchase sheet items
-        $purchase_sheet->purchaseSheetItems()->delete();
-
-        // update purchase sheet items data to database
-        $items = PurchaseSheetItem::insert($itemsData);
-
-        $purchase_sheet["items"] = $items;
 
         return response()->json($purchase_sheet);
     }
 
+    /**
+     * @OA\Put(
+     *   path="/purchase-sheet/{id}/note",
+     *   tags={"PurchaseSheet"},
+     *   summary="Update purchase sheet note",
+     *   operationId="updatePurchaseSheetNote",
+     *   @OA\Parameter(name="id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(required={"note"}, @OA\Property(property="note", type="string"))
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
+     *   )
+     * )
+     */
     public function updateNote(Request $request, $id)
     {
         $branch_id = Auth::user()->employment->branch_id;
+
         $data = $request->all();
-        $data["id"] = $id;
+
+        $purchase_sheet = PurchaseSheet::where("branch_id", $branch_id)->find($id);
+
+        if (!$purchase_sheet) {
+            return response()->json(["message" => "Purchase sheet not found"], 404);
+        }
+
         $rules = [
-            "id" => [
-                "required",
-                "integer",
-                Rule::exists("purchase_sheets", "id")
-                    ->where("branch_id", $branch_id)
-                    ->where("employee_id", Auth::user()->id),
-            ],
             "note" => ["required", "string", "max:255"],
         ];
 
         $validator = Validator::make($data, $rules);
+
         if ($validator->fails()) {
-            return response()->json(["error" => $validator->errors()], 400);
+            return response()->json(["message" => $this->formatValidationError($validator->errors())], 400);
         }
 
-        $purchase_sheet = PurchaseSheet::find($id);
         $purchase_sheet->update([
-            "note" => $data["note"] ?? $purchase_sheet->note,
+            "note" => $data["note"],
         ]);
 
-        return response()->json($purchase_sheet);
+        return response()->json(["message" => "Purchase sheet note updated"]);
     }
 
-    public function delete(Request $request, $id)
+    /**
+     * @OA\Delete(
+     *   path="/purchase-sheet/{id}",
+     *   tags={"PurchaseSheet"},
+     *   summary="Delete purchase sheet",
+     *   operationId="deletePurchaseSheet",
+     *   @OA\Parameter(name="id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
+     *   )
+     * )
+     */
+    public function delete($id)
     {
         $branch_id = Auth::user()->employment->branch_id;
 
-        $purchase_sheet = PurchaseSheet::where("branch_id", $branch_id)
-            ->where("employee_id", Auth::user()->id)
-            ->find($id);
+        $purchase_sheet = PurchaseSheet::where("branch_id", $branch_id)->find($id);
+
         if (!$purchase_sheet) {
-            return response()->json(["error" => "Purchase sheet not found"], 404);
+            return response()->json(["message" => "Purchase sheet not found"], 404);
         }
 
+        $purchase_sheet_discount =
+            $purchase_sheet->discount_type == "amount"
+                ? $purchase_sheet->discount
+                : ($purchase_sheet->discount_type == "percent"
+                    ? $purchase_sheet->total * (100 / $purchase_sheet->discount - 1)
+                    : 0);
+
+        $original_total = $purchase_sheet->total + $purchase_sheet_discount;
+
         // recalculate base price and quantity for each purchase sheet item
-        foreach ($purchase_sheet->purchaseSheetItems as $purchase_sheet_item) {
-            $item_property = ItemProperty::where("item_id", $purchase_sheet_item->item_id)
-                ->where("branch_id", $branch_id)
-                ->first();
-            $previous_quantity = $item_property->quantity - $purchase_sheet_item->quantity;
+        foreach ($purchase_sheet->items as $purchase_sheet_item) {
+            $item_property = ItemProperty::where([
+                "branch_id" => $branch_id,
+                "item_id" => $purchase_sheet_item->item_id,
+            ])->first();
+
+            $previous_quantity = max($item_property->quantity - $purchase_sheet_item->quantity, 0);
+
+            $split_discount = ($purchase_sheet_discount * $purchase_sheet_item->total) / $original_total;
+
+            $discounted_total = $purchase_sheet_item->total - $split_discount;
+
             $previous_base_price =
-                ($item_property->base_price * $item_property->quantity - $purchase_sheet_item->total) /
-                $previous_quantity;
+                ($item_property->base_price * $item_property->quantity - $discounted_total) / $previous_quantity;
+
             $item_property->update([
-                "base_price" => $previous_base_price,
+                "base_price" => round($previous_base_price),
                 "quantity" => $previous_quantity,
             ]);
         }
 
-        // delete all purchase sheet items
-        PurchaseSheetItem::where("purchase_sheet_id", $id)->delete();
-
         // delete purchase sheet
         $purchase_sheet->delete();
 
-        return response()->json([
-            "success" => "Purchase sheet deleted",
-        ]);
+        return response()->json(["message" => "Purchase sheet deleted"]);
     }
 }

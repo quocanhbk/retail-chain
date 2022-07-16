@@ -12,7 +12,7 @@ class DeleteBranchTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_delete_branch_unauthenticated()
+    public function testDeleteBranchUnauthenticated()
     {
         $branch = Store::first()->branches->first();
 
@@ -21,16 +21,16 @@ class DeleteBranchTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function test_delete_branch_not_found()
+    public function testDeleteBranchNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->delete("/api/branch/999");
 
         $response->assertStatus(404);
     }
 
-    public function test_delete_branch_unauthorized()
+    public function testDeleteBranchUnauthorized()
     {
         $employee = Employee::first();
 
@@ -39,15 +39,13 @@ class DeleteBranchTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function test_delete_branch_with_active_employments()
+    public function testDeleteBranchWithActiveEmployments()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $branch = $store
             ->branches()
-            ->whereHas("employments", function ($query) {
-                $query->where("to", null);
-            })
+            ->whereRelation("employments", "to", null)
             ->first();
 
         $response = $this->actingAs($store, "stores")->delete("/api/branch/" . $branch->id);
@@ -55,9 +53,9 @@ class DeleteBranchTest extends TestCase
         $response->assertStatus(400);
     }
 
-    public function test_delete_branch_with_inactive_employments()
+    public function testDeleteBranchWithInactiveEmployments()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $branch = $store->branches->first();
 

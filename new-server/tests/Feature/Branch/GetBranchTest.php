@@ -4,12 +4,11 @@ namespace Tests\Feature\Branch;
 
 use App\Models\Employee;
 use App\Models\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class GetBranchTest extends TestCase
 {
-    public function test_get_branch_unauthenticated()
+    public function testGetBranchUnauthenticated()
     {
         $branch = Store::first()->branches->first();
 
@@ -18,20 +17,20 @@ class GetBranchTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function test_get_branch_unauthorized()
+    public function testGetBranchAsEmployee()
     {
         $employee = Employee::first();
 
-        $response = $this->actingAs($employee)->get("/api/branch/1");
+        $response = $this->actingAs($employee)->get("/api/branch/{$employee->employment->branch->id}");
 
         $response->assertStatus(401);
     }
 
-    public function test_get_branch_successfully()
+    public function testGetBranchAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
-        $branch = $store->branches()->first();
+        $branch = $store->branches->first();
 
         $response = $this->actingAs($store, "stores")->get("/api/branch/" . $branch->id);
 
@@ -45,9 +44,9 @@ class GetBranchTest extends TestCase
         ]);
     }
 
-    public function test_get_branch_not_found()
+    public function testGetBranchNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->get("/api/branch/999");
 

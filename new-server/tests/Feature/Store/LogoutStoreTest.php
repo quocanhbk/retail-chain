@@ -3,16 +3,13 @@
 namespace Tests\Feature\Store;
 
 use App\Models\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class LogoutStoreTest extends TestCase
 {
-    use RefreshDatabase;
-
-    public function test_logout_as_store()
+    public function testLogoutAsStore()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->post("/api/store/logout");
 
@@ -21,7 +18,7 @@ class LogoutStoreTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_logout_as_guest()
+    public function testLogoutAsGuest()
     {
         $response = $this->post("/api/store/logout");
 

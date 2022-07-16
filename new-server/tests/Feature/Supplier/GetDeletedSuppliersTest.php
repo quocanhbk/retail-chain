@@ -5,7 +5,6 @@ namespace Tests\Feature\Supplier;
 use App\Models\Store;
 use App\Models\Supplier;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\QueryEmployeeTrait;
 use Tests\TestCase;
 
@@ -14,7 +13,7 @@ class GetDeletedSuppliersTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    public function test_get_deleted_suppliers_unauthenticated()
+    public function testGetDeletedSuppliersUnauthenticated()
     {
         $response = $this->get("/api/supplier/deleted");
 
@@ -23,9 +22,9 @@ class GetDeletedSuppliersTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_deleted_suppliers_as_employee()
+    public function testGetDeletedSuppliersAsEmployee()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-supplier");
 
@@ -36,9 +35,9 @@ class GetDeletedSuppliersTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_deleted_suppliers_as_admin()
+    public function testGetDeletedSuppliersAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $store->suppliers()->delete();
 
@@ -51,9 +50,9 @@ class GetDeletedSuppliersTest extends TestCase
         ]);
     }
 
-    public function test_get_deleted_suppliers_with_search()
+    public function testGetDeletedSuppliersWithSearch()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $store->suppliers()->delete();
 
@@ -63,12 +62,12 @@ class GetDeletedSuppliersTest extends TestCase
 
         $response->assertStatus(200);
 
-        $response->assertJsonCount(1);
+        $response->assertJsonFragment(["name" => $supplier->name]);
     }
 
-    public function test_get_deleted_suppliers_with_pagination()
+    public function testGetDeletedSuppliersWithPagination()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $store->suppliers()->delete();
 

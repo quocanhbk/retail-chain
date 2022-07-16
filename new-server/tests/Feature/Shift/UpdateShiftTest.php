@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\Shift;
 
-use App\Models\Employee;
-use App\Models\Shift;
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\QueryEmployeeTrait;
@@ -14,8 +12,7 @@ class UpdateShiftTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-
-    public function test_update_shift_unauthenticated()
+    public function testUpdateShiftUnauthenticated()
     {
         $response = $this->put("/api/shift/1");
 
@@ -24,9 +21,9 @@ class UpdateShiftTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_shift_with_invalid_permission()
+    public function testUpdateShiftWithInvalidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithoutPermission($store->id, "update-shift");
 
@@ -39,9 +36,9 @@ class UpdateShiftTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_shift_with_valid_permission()
+    public function testUpdateShiftWithValidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "update-shift");
 
@@ -70,9 +67,9 @@ class UpdateShiftTest extends TestCase
         ]);
     }
 
-    public function test_update_shift_as_admin()
+    public function testUpdateShiftAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $shift = $store->branches->first()->shifts->first();
 
@@ -97,9 +94,9 @@ class UpdateShiftTest extends TestCase
         ]);
     }
 
-    public function test_update_shift_not_found()
+    public function testUpdateShiftNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "update-shift");
 

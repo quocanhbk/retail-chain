@@ -12,9 +12,9 @@ class CreateCustomerTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    public function test_create_customer_unauthenticated()
+    public function testCreateCustomerUnauthenticated()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->post("/api/customer");
 
@@ -23,9 +23,9 @@ class CreateCustomerTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_customer_by_admin()
+    public function testCreateCustomerByAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->post("/api/customer", [
             "name" => "Test Customer",
@@ -47,9 +47,9 @@ class CreateCustomerTest extends TestCase
         $response->assertJsonStructure(["id", "code", "name", "email", "created_at", "updated_at"]);
     }
 
-    public function test_create_customer_with_invalid_permission()
+    public function testCreateCustomerWithInvalidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithoutPermission($store->id, "create-customer");
 
@@ -63,9 +63,9 @@ class CreateCustomerTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_customer_with_valid_permission()
+    public function testCreateCustomerWithValidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "create-customer");
 
@@ -87,9 +87,9 @@ class CreateCustomerTest extends TestCase
         ]);
     }
 
-    public function test_create_customer_invalid_input()
+    public function testCreateCustomerInvalidInput()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "create-customer");
 
@@ -102,9 +102,9 @@ class CreateCustomerTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_customer_duplicate_email()
+    public function testCreateCustomerDuplicateEmail()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "create-customer");
 

@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Category;
 
-use App\Models\Employee;
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\QueryEmployeeTrait;
@@ -13,7 +12,7 @@ class CreateCategoryTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    public function test_create_category_unauthenticated()
+    public function testCreateCategoryUnauthenticated()
     {
         $response = $this->post("/api/category", [
             "name" => "Test Category",
@@ -25,9 +24,9 @@ class CreateCategoryTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_category_with_invalid_permission()
+    public function testCreateCategoryWithInvalidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithoutPermission($store->id, "create-category");
 
@@ -41,9 +40,9 @@ class CreateCategoryTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_category_with_valid_permission()
+    public function testCreateCategoryWithValidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "create-category");
 
@@ -69,9 +68,9 @@ class CreateCategoryTest extends TestCase
         ]);
     }
 
-    public function test_create_category_by_admin()
+    public function testCreateCategoryByAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->post("/api/category", [
             "name" => "Test Category",
@@ -95,9 +94,9 @@ class CreateCategoryTest extends TestCase
         $response->assertJsonStructure(["id", "store_id", "name", "description", "created_at", "updated_at"]);
     }
 
-    public function test_create_category_duplicate_name()
+    public function testCreateCategoryDuplicateName()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $category = $store->categories->first();
 
@@ -111,9 +110,9 @@ class CreateCategoryTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_category_with_no_description()
+    public function testCreateCategoryWithNoDescription()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->post("/api/category", [
             "name" => "Test Category",

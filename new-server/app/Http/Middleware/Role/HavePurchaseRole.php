@@ -21,6 +21,7 @@ class HavePurchaseRole
                 403
             );
         }
+
         return $next($request);
     }
 }

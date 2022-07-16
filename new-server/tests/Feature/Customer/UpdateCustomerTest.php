@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Customer;
 
-use App\Models\Employee;
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\QueryEmployeeTrait;
@@ -13,7 +12,7 @@ class UpdateCustomerTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    public function test_update_customer_unauthenticated()
+    public function testUpdateCustomerUnauthenticated()
     {
         $response = $this->put("/api/customer/1", [
             "name" => "Test Customer Updated",
@@ -24,9 +23,9 @@ class UpdateCustomerTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_customer_by_admin()
+    public function testUpdateCustomerByAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $customer = $store->customers->first();
 
@@ -44,9 +43,9 @@ class UpdateCustomerTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_customer_with_invalid_permission()
+    public function testUpdateCustomerWithInvalidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithoutPermission($store->id, "update-customer");
 
@@ -61,9 +60,9 @@ class UpdateCustomerTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_customer_with_valid_permission()
+    public function testUpdateCustomerWithValidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "update-customer");
 
@@ -83,9 +82,9 @@ class UpdateCustomerTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_customer_not_found()
+    public function testUpdateCustomerNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "update-customer");
 

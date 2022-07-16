@@ -6,6 +6,7 @@ use App\Models\Employee;
 use App\Models\Employment;
 use App\Models\EmploymentRole;
 use App\Traits\EmployeeTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -75,12 +76,12 @@ class EmployeeController extends Controller
 
     /**
      * @OA\Put(
-     *   path="/employee/{employee_id}",
+     *   path="/employee/{id}",
      *   tags={"Employee"},
      *   summary="Update employee",
      *   operationId="updateEmployee",
      *   @OA\Parameter(
-     *     name="employee_id",
+     *     name="id",
      *     in="path",
      *     required=true,
      *   ),
@@ -94,20 +95,17 @@ class EmployeeController extends Controller
      *   @OA\Response(
      *     response=200,
      *     description="Successful operation",
-     *     @OA\JsonContent(
-     *       required={"message"},
-     *       @OA\Property(property="message", type="string", example="Successfully updated"),
-     *     )
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
      *   )
      * )
      */
-    public function update(Request $request, $employee_id)
+    public function update(Request $request, $id)
     {
         $store_id = Auth::guard("stores")->user()->id;
 
         $data = $request->all();
 
-        $employee = Employee::where("store_id", $store_id)->find($employee_id);
+        $employee = Employee::where("store_id", $store_id)->find($id);
 
         if (!$employee) {
             return response()->json(["message" => "Employee not found"], 404);
@@ -122,7 +120,7 @@ class EmployeeController extends Controller
                 "max:255",
                 Rule::unique("employees")
                     ->where("store_id", $store_id)
-                    ->ignore($employee_id),
+                    ->ignore($id),
             ],
             "role_ids" => ["nullable", "array", "min:1"],
             "role_ids.*" => ["nullable", "integer", Rule::exists("roles", "id")->where("store_id", $store_id)],
@@ -138,7 +136,7 @@ class EmployeeController extends Controller
             return response()->json(["message" => $this->formatValidationError($validator->errors())], 400);
         }
 
-        $employee = Employee::find($employee_id);
+        $employee = Employee::find($id);
         $employee->name = $data["name"] ?? $employee->name;
         $employee->email = $data["email"] ?? $employee->email;
         $employee->phone = $data["phone"] ?? $employee->phone;
@@ -149,7 +147,7 @@ class EmployeeController extends Controller
         // if there is avatar, update and delete old avatar
         if ($has_avatar) {
             $old_avatar = $employee->avatar;
-            if ($old_avatar != null) {
+            if (null != $old_avatar) {
                 Storage::delete($old_avatar);
             }
             $employee->avatar_key = Str::uuid();
@@ -172,7 +170,7 @@ class EmployeeController extends Controller
 
             $new_employment = Employment::create([
                 "branch_id" => $old_employment->branch_id,
-                "employee_id" => $old_employment->employee_id,
+                "employee_id" => $old_employment->id,
                 "from" => date("Y/m/d"),
             ]);
 
@@ -207,10 +205,7 @@ class EmployeeController extends Controller
      *   @OA\Response(
      *     response=200,
      *     description="Successful operation",
-     *     @OA\JsonContent(
-     *       required={"message"},
-     *       @OA\Property(property="message", type="string", example="Password changed successfully")
-     *     )
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
      *   ),
      * )
      */
@@ -309,15 +304,16 @@ class EmployeeController extends Controller
 
         $employees = Employee::with("employment.roles.role")
             ->where("store_id", $store_id)
-            ->when($request->query("branch_id"), function ($query) use ($request) {
-                $query->whereRelation("employment", "branch_id", $request->query("branch_id"));
-            })
-            ->where(function ($query) use ($search) {
-                $query
+            ->when(
+                $request->query("branch_id"),
+                fn($query) => $query->whereRelation("employment", "branch_id", $request->query("branch_id"))
+            )
+            ->where(
+                fn($query) => $query
                     ->where("name", "iLike", "%" . $search . "%")
                     ->orWhere("email", "iLike", "%" . $search . "%")
-                    ->orWhere("phone", "iLike", "%" . $search . "%");
-            })
+                    ->orWhere("phone", "iLike", "%" . $search . "%")
+            )
             ->orderBy($order_by, $order_type)
             ->skip($from)
             ->take($to - $from)
@@ -328,11 +324,11 @@ class EmployeeController extends Controller
 
     /**
      * @OA\Get(
-     *   path="/employee/{employee_id}",
+     *   path="/employee/{id}",
      *   tags={"Employee"},
      *   summary="Get employee",
      *   operationId="getEmployee",
-     *   @OA\Parameter(name="employee_id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\Parameter(name="id", in="path", @OA\Schema(type="integer"), required=true),
      *   @OA\Response(
      *     response=200,
      *     description="Employee retrieved successfully",
@@ -340,14 +336,14 @@ class EmployeeController extends Controller
      *   )
      * )
      */
-    public function getOne($employee_id)
+    public function getOne($id)
     {
         $store_id = Auth::guard("stores")->user()->id;
 
         // get employee
         $employee = Employee::with("employment.roles.role")
             ->where("store_id", $store_id)
-            ->where("id", $employee_id)
+            ->where("id", $id)
             ->first();
 
         if (!$employee) {
@@ -419,10 +415,7 @@ class EmployeeController extends Controller
      *   @OA\Response(
      *     response=200,
      *     description="Employee logged out successfully",
-     *     @OA\JsonContent(
-     *       required={"message"},
-     *       @OA\Property(property="message", type="string")
-     *     )
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
      *   )
      * )
      */
@@ -474,10 +467,7 @@ class EmployeeController extends Controller
      *   @OA\Response(
      *     response=200,
      *     description="Employee transferred successfully",
-     *     @OA\JsonContent(
-     *       required={"message"},
-     *       @OA\Property(property="message", type="string")
-     *     )
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
      *   )
      * )
      */
@@ -512,30 +502,27 @@ class EmployeeController extends Controller
 
     /**
      * @OA\Delete(
-     *   path="/employee/{employee_id}",
+     *   path="/employee/{id}",
      *   tags={"Employee"},
      *   summary="Delete employee",
      *   operationId="deleteEmployee",
-     *   @OA\Parameter(name="employee_id", in="path", description="Employee ID", required=true, @OA\Schema(type="integer")),
+     *   @OA\Parameter(name="id", in="path", description="Employee ID", required=true, @OA\Schema(type="integer")),
      *   @OA\Parameter(name="force", in="query", description="Force delete", required=false, @OA\Schema(type="boolean")),
      *   @OA\Response(
      *     response=200,
      *     description="Employee deleted successfully",
-     *     @OA\JsonContent(
-     *       required={"message"},
-     *       @OA\Property(property="message", type="string")
-     *     )
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
      *   )
      * )
      */
-    public function delete(Request $request, $employee_id)
+    public function delete(Request $request, $id)
     {
         $store_id = Auth::guard("stores")->user()->id;
 
         $force = $request->query("force") ? true : false;
 
         // get employee
-        $employee = Employee::where("store_id", $store_id)->find($employee_id);
+        $employee = Employee::where("store_id", $store_id)->find($id);
 
         if (!$employee) {
             return response()->json(["message" => "Employee not found."], 404);
@@ -583,12 +570,12 @@ class EmployeeController extends Controller
 
         $employees = Employee::onlyTrashed()
             ->where("store_id", $store_id)
-            ->where(function ($query) use ($search) {
-                $query
+            ->where(
+                fn($query) => $query
                     ->where("name", "iLike", "%" . $search . "%")
                     ->orWhere("email", "iLike", "%" . $search . "%")
-                    ->orWhere("phone", "iLike", "%" . $search . "%");
-            })
+                    ->orWhere("phone", "iLike", "%" . $search . "%")
+            )
             ->orderBy($order_by, $order_type)
             ->skip($from)
             ->take($to - $from)
@@ -599,29 +586,26 @@ class EmployeeController extends Controller
 
     /**
      * @OA\Post(
-     *   path="/employee/{employee_id}/restore",
+     *   path="/employee/{id}/restore",
      *   tags={"Employee"},
      *   summary="Restore employee",
      *   operationId="restoreEmployee",
-     *   @OA\Parameter(name="employee_id", in="path", description="Employee ID", required=true, @OA\Schema(type="integer")),
+     *   @OA\Parameter(name="id", in="path", description="Employee ID", required=true, @OA\Schema(type="integer")),
      *   @OA\Response(
      *     response=200,
      *     description="Employee restored successfully",
-     *     @OA\JsonContent(
-     *       required={"message"},
-     *       @OA\Property(property="message", type="string")
-     *     )
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
      *   )
      * )
      */
-    public function restore($employee_id)
+    public function restore($id)
     {
         $store_id = Auth::guard("stores")->user()->id;
 
         // get employee
         $employee = Employee::onlyTrashed()
             ->where("store_id", $store_id)
-            ->find($employee_id);
+            ->find($id);
 
         if (!$employee) {
             return response()->json(["message" => "Employee not found."], 404);
@@ -642,29 +626,26 @@ class EmployeeController extends Controller
 
     /**
      * @OA\Delete(
-     *   path="/employee/{employee_id}/force",
+     *   path="/employee/{id}/force",
      *   tags={"Employee"},
      *   summary="Force delete employee",
      *   operationId="forceDeleteEmployee",
-     *   @OA\Parameter(name="employee_id", in="path", description="Employee ID", required=true, @OA\Schema(type="integer")),
+     *   @OA\Parameter(name="id", in="path", description="Employee ID", required=true, @OA\Schema(type="integer")),
      *   @OA\Response(
      *     response=200,
      *     description="Employee deleted successfully",
-     *     @OA\JsonContent(
-     *       required={"message"},
-     *       @OA\Property(property="message", type="string")
-     *     )
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
      *   )
      * )
      */
-    public function forceDelete($employee_id)
+    public function forceDelete($id)
     {
         $store_id = Auth::guard("stores")->user()->id;
 
         // get employee
         $employee = Employee::withTrashed()
             ->where("store_id", $store_id)
-            ->find($employee_id);
+            ->find($id);
 
         if (!$employee) {
             return response()->json(["message" => "Employee not found."], 404);

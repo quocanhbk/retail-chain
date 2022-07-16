@@ -2,9 +2,7 @@
 
 namespace Tests\Feature\Customer;
 
-use App\Models\Employee;
 use App\Models\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\QueryEmployeeTrait;
 use Tests\TestCase;
 
@@ -12,7 +10,7 @@ class GetCustomerTest extends TestCase
 {
     use QueryEmployeeTrait;
 
-    public function test_get_customer_unauthenticated()
+    public function testGetCustomerUnauthenticated()
     {
         $response = $this->get("/api/customer/one?id=1");
 
@@ -21,9 +19,9 @@ class GetCustomerTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_customer_with_invalid_permission()
+    public function testGetCustomerWithInvalidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithoutPermission($store->id, "view-customer");
 
@@ -34,9 +32,9 @@ class GetCustomerTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_customer_with_valid_permission()
+    public function testGetCustomerWithValidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-customer");
 
@@ -49,9 +47,9 @@ class GetCustomerTest extends TestCase
         $response->assertJsonStructure(["id", "code", "name", "email", "created_at", "updated_at"]);
     }
 
-    public function test_get_customer_no_input()
+    public function testGetCustomerNoInput()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-customer");
 
@@ -62,9 +60,9 @@ class GetCustomerTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_customer_by_admin()
+    public function testGetCustomerByAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $customer = $store->customers->first();
 
@@ -82,9 +80,9 @@ class GetCustomerTest extends TestCase
         $response->assertJsonStructure(["id", "code", "name", "email", "created_at", "updated_at"]);
     }
 
-    public function test_get_customer_not_found()
+    public function testGetCustomerNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-customer");
 
@@ -95,9 +93,9 @@ class GetCustomerTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_customer_by_code_by_admin()
+    public function testGetCustomerByCodeByAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $customer = $store->customers->first();
 
@@ -115,9 +113,9 @@ class GetCustomerTest extends TestCase
         $response->assertJsonStructure(["id", "code", "name", "email", "created_at", "updated_at"]);
     }
 
-    public function test_get_customer_by_code_by_employee()
+    public function testGetCustomerByCodeByEmployee()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-customer");
 
@@ -137,9 +135,9 @@ class GetCustomerTest extends TestCase
         $response->assertJsonStructure(["id", "code", "name", "email", "created_at", "updated_at"]);
     }
 
-    public function test_get_customer_by_code_not_found()
+    public function testGetCustomerByCodeNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-customer");
 

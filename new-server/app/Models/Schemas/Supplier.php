@@ -14,54 +14,63 @@ class Supplier
 {
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $id;
 
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $store_id;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $name;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $code;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $address;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $phone;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $email;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $tax_number;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $note;
@@ -84,42 +93,49 @@ class UpdateSupplierInput
 {
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $name;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $address;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $code;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $phone;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $email;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $tax_number;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $note;

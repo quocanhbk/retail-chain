@@ -16,16 +16,16 @@ class UpdateEmployeeTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    public function test_update_employee_authenticated()
+    public function testUpdateEmployeeAuthenticated()
     {
         $response = $this->put("/api/employee/1");
 
         $response->assertStatus(401);
     }
 
-    public function test_update_employee_by_admin()
+    public function testUpdateEmployeeByAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $store->employees->first();
 
@@ -43,7 +43,7 @@ class UpdateEmployeeTest extends TestCase
         ]);
     }
 
-    public function test_update_employee_unauthorized()
+    public function testUpdateEmployeeUnauthorized()
     {
         $employee = Employee::first();
 
@@ -54,9 +54,9 @@ class UpdateEmployeeTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_employee_roles()
+    public function testUpdateEmployeeRoles()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $roles = $store->roles;
 
@@ -94,9 +94,9 @@ class UpdateEmployeeTest extends TestCase
         ]);
     }
 
-    public function test_update_employee_avatar()
+    public function testUpdateEmployeeAvatar()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $store->employees->first();
 
@@ -112,18 +112,18 @@ class UpdateEmployeeTest extends TestCase
 
         $response->assertJsonStructure(["message"]);
 
-        $employee = Store::first()
-            ->employees->where("id", $employee->id)
-            ->first();
+        Storage::disk("local")->assertMissing($employee->avatar);
+
+        $employee->refresh();
 
         $this->assertTrue(Str::startsWith($employee->avatar, "images/{$store->id}/employees/"));
 
         Storage::disk("local")->assertExists($employee->avatar);
     }
 
-    public function test_udpate_employee_not_found()
+    public function testUdpateEmployeeNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->put("/api/employee/9999");
 

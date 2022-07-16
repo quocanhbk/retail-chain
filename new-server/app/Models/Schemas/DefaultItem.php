@@ -11,91 +11,106 @@ class DefaultItem
 {
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $id;
 
     /**
      * @OA\Proeprty()
-     * @var integer
+     *
+     * @var int
      */
     public $category_id;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $product_name;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $bar_code;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $qr_code;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $image_url;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $brand;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $made_in;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $unit;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $mfg_date;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $exp_date;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $description;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $source_url;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $date;
 
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $is_duplicate;
 }
@@ -109,6 +124,7 @@ class DefaultItemWithCategory
 {
     /**
      * @OA\Property(ref="#/components/schemas/DefaultCategory")
+     *
      * @var object
      */
     public $category;
@@ -123,12 +139,14 @@ class DefaultCategory
 {
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $id;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $name;

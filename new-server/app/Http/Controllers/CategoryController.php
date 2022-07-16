@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -80,9 +81,11 @@ class CategoryController extends Controller
         [$search, $from, $to, $order_by, $order_type] = $this->getQuery($request);
 
         $categories = Category::where("store_id", $store_id)
-            ->where(function ($query) use ($search) {
-                $query->where("name", "iLike", "%{$search}%")->orWhere("description", "iLike", "%{$search}%");
-            })
+            ->where(
+                fn($query) => $query
+                    ->where("name", "iLike", "%{$search}%")
+                    ->orWhere("description", "iLike", "%{$search}%")
+            )
             ->orderBy($order_by, $order_type)
             ->offset($from)
             ->limit($to - $from)
@@ -93,11 +96,11 @@ class CategoryController extends Controller
 
     /**
      * @OA\Get(
-     *   path="/category/{category_id}",
+     *   path="/category/{id}",
      *   tags={"Category"},
      *   summary="Get an item category",
      *   operationId="getCategory",
-     *   @OA\Parameter(name="category_id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\Parameter(name="id", in="path", @OA\Schema(type="integer"), required=true),
      *   @OA\Response(
      *     response=200,
      *     description="Successful operation",
@@ -105,13 +108,13 @@ class CategoryController extends Controller
      *   )
      * )
      */
-    public function getOne(Request $request, $category_id)
+    public function getOne(Request $request, $id)
     {
         $store_id = $request->get("store_id");
 
         $category = Category::with("items")
             ->where("store_id", $store_id)
-            ->where("id", $category_id)
+            ->where("id", $id)
             ->first();
 
         if (!$category) {
@@ -123,11 +126,11 @@ class CategoryController extends Controller
 
     /**
      * @OA\Put(
-     *   path="/category/{category_id}",
+     *   path="/category/{id}",
      *   tags={"Category"},
      *   summary="Update an item category",
      *   operationId="updateCategory",
-     *   @OA\Parameter(name="category_id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\Parameter(name="id", in="path", @OA\Schema(type="integer"), required=true),
      *   @OA\RequestBody(
      *     required=true,
      *     @OA\JsonContent(ref="#/components/schemas/UpsertCategoryInput")
@@ -135,21 +138,18 @@ class CategoryController extends Controller
      *   @OA\Response(
      *     response=200,
      *     description="Successful operation",
-     *     @OA\JsonContent(
-     *       required={"message"},
-     *       @OA\Property(property="message", type="string")
-     *     )
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
      *   )
      * )
      */
-    public function update(Request $request, $category_id)
+    public function update(Request $request, $id)
     {
         $store_id = $request->get("store_id");
 
         $data = $request->all();
 
         $category = Category::where("store_id", $store_id)
-            ->where("id", $category_id)
+            ->where("id", $id)
             ->first();
 
         if (!$category) {
@@ -163,7 +163,7 @@ class CategoryController extends Controller
                 "max:32",
                 Rule::unique("categories")
                     ->where("store_id", $store_id)
-                    ->ignore($category_id),
+                    ->ignore($id),
             ],
             "description" => ["nullable", "string", "max:255"],
         ];
@@ -186,23 +186,20 @@ class CategoryController extends Controller
 
     /**
      * @OA\Delete(
-     *   path="/category/{category_id}",
+     *   path="/category/{id}",
      *   tags={"Category"},
      *   summary="Delete an item category",
      *   operationId="deleteCategory",
-     *   @OA\Parameter(name="category_id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\Parameter(name="id", in="path", @OA\Schema(type="integer"), required=true),
      *   @OA\Parameter(name="force", in="query", @OA\Schema(type="boolean")),
      *   @OA\Response(
      *     response=200,
      *     description="Successful operation",
-     *     @OA\JsonContent(
-     *       required={"message"},
-     *       @OA\Property(property="message", type="string")
-     *     )
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
      *   )
      * )
      */
-    public function delete(Request $request, $category_id)
+    public function delete(Request $request, $id)
     {
         $store_id = $request->get("store_id");
 
@@ -211,24 +208,18 @@ class CategoryController extends Controller
         $force = $request->query("force") ?? false;
 
         $category = Category::where("store_id", $store_id)
-            ->where("id", $category_id)
+            ->where("id", $id)
             ->first();
 
         if (!$category) {
             return response()->json(["message" => "Item category not found."], 404);
         }
 
-        if ($as == "employee" && $force) {
+        if ("employee" == $as && $force) {
             return response()->json(["message" => "You are not allowed to force delete this item category."], 403);
         }
 
-        $category
-            ->when($force, function ($query) {
-                $query->forceDelete();
-            })
-            ->when(!$force, function ($query) {
-                $query->delete();
-            });
+        $category->when($force, fn($query) => $query->forceDelete(), fn($query) => $query->delete());
 
         return response()->json([
             "message" => "Deleted item category successfully.",
@@ -264,9 +255,11 @@ class CategoryController extends Controller
 
         $categories = Category::onlyTrashed()
             ->where("store_id", $store_id)
-            ->where(function ($query) use ($search) {
-                $query->where("name", "iLike", "%{$search}%")->orWhere("description", "iLike", "%{$search}%");
-            })
+            ->where(
+                fn($query) => $query
+                    ->where("name", "iLike", "%{$search}%")
+                    ->orWhere("description", "iLike", "%{$search}%")
+            )
             ->orderBy($order_by, $order_type)
             ->offset($from)
             ->limit($to - $from)
@@ -277,28 +270,25 @@ class CategoryController extends Controller
 
     /**
      * @OA\Post(
-     *   path="/category/{category_id}/restore",
+     *   path="/category/{id}/restore",
      *   tags={"Category"},
      *   summary="Restore an item category",
      *   operationId="restoreCategory",
-     *   @OA\Parameter(name="category_id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\Parameter(name="id", in="path", @OA\Schema(type="integer"), required=true),
      *   @OA\Response(
      *     response=200,
      *     description="Successful operation",
-     *     @OA\JsonContent(
-     *       required={"message"},
-     *       @OA\Property(property="message", type="string")
-     *     )
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
      *   )
      * )
      */
-    public function restore(Request $request, $category_id)
+    public function restore(Request $request, $id)
     {
         $store_id = $request->get("store_id");
 
         $category = Category::onlyTrashed()
             ->where("store_id", $store_id)
-            ->where("id", $category_id)
+            ->where("id", $id)
             ->first();
 
         if (!$category) {
@@ -314,28 +304,25 @@ class CategoryController extends Controller
 
     /**
      * @OA\Delete(
-     *   path="/category/{category_id}/force",
+     *   path="/category/{id}/force",
      *   tags={"Category"},
      *   summary="Force delete an item category",
      *   operationId="forceDeleteCategory",
-     *   @OA\Parameter(name="category_id", in="path", @OA\Schema(type="integer"), required=true),
+     *   @OA\Parameter(name="id", in="path", @OA\Schema(type="integer"), required=true),
      *   @OA\Response(
      *     response=200,
      *     description="Successful operation",
-     *     @OA\JsonContent(
-     *       required={"message"},
-     *       @OA\Property(property="message", type="string")
-     *     )
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
      *   )
      * )
      */
-    public function forceDelete(Request $request, $category_id)
+    public function forceDelete(Request $request, $id)
     {
         $store_id = $request->get("store_id");
 
         $category = Category::withTrashed()
             ->where("store_id", $store_id)
-            ->where("id", $category_id)
+            ->where("id", $id)
             ->first();
 
         if (!$category) {

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Store;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -117,10 +116,7 @@ class StoreController extends Controller
      *   @OA\Response(
      *     response=200,
      *     description="Successful operation",
-     *     @OA\JsonContent(
-     *       required={"message"},
-     *       @OA\Property(property="message", type="string")
-     *     )
+     *     @OA\JsonContent(ref="#/components/schemas/Message")
      *   ),
      * )
      */
@@ -129,6 +125,7 @@ class StoreController extends Controller
         Auth::guard("stores")->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return response()->json([
             "message" => "Logged out.",
         ]);
@@ -176,6 +173,7 @@ class StoreController extends Controller
         if (Auth::guard("employees")->check()) {
             return response()->json(["guard" => "employee"]);
         }
+
         return response()->json(["guard" => "guest"]);
     }
 }

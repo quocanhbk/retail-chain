@@ -12,49 +12,57 @@ class Item
 {
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $id;
 
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $store_id;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $barcode;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $code;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $name;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $image;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $image_key;
 
     /**
      * @OA\Property(nullable=true)
-     * @var integer
+     *
+     * @var int
      */
     public $category_id;
 }
@@ -71,6 +79,7 @@ class ItemWithCategory
      * @OA\Property(
      *   anyOf={@OA\Schema(ref="#/components/schemas/Category"), @OA\Schema(type="null")},
      * )
+     *
      * @var object
      */
     public $category;
@@ -86,6 +95,7 @@ class ItemWithProperties
 {
     /**
      * @OA\Property(type="array", @OA\Items(ref="#/components/schemas/ItemProperty"))
+     *
      * @var array
      */
     public $properties;
@@ -108,30 +118,35 @@ class UpsertItemInput
 {
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $category_id;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $code;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $barcode;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $name;
 
     /**
      * @OA\Property(format="binary")
+     *
      * @var string
      */
     public $image;
@@ -147,30 +162,35 @@ class ItemPriceHistory
 {
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $id;
 
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $item_id;
 
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $price;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $start_date;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $end_date;

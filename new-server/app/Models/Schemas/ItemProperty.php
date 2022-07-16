@@ -12,43 +12,50 @@ class ItemProperty
 {
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $id;
 
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $quantity;
 
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $sell_price;
 
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $base_price;
 
     /**
      * @OA\Property(nullable=true)
-     * @var integer
+     *
+     * @var int
      */
     public $last_purchase_price;
 
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $item_id;
 
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $branch_id;
 }

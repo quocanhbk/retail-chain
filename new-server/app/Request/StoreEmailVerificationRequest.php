@@ -34,9 +34,7 @@ class StoreEmailVerificationRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-                //
-            ];
+        return [];
     }
 
     /**
@@ -57,7 +55,8 @@ class StoreEmailVerificationRequest extends FormRequest
     /**
      * Configure the validator instance.
      *
-     * @param  \Illuminate\Validation\Validator  $validator
+     * @param \Illuminate\Validation\Validator $validator
+     *
      * @return void
      */
     public function withValidator($validator)

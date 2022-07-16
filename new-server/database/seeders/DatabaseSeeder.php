@@ -12,6 +12,10 @@ use App\Models\Item;
 use App\Models\ItemProperty;
 use App\Models\Permission;
 use App\Models\PermissionRole;
+use App\Models\PurchaseSheet;
+use App\Models\PurchaseSheetItem;
+use App\Models\QuantityCheckingItem;
+use App\Models\QuantityCheckingSheet;
 use App\Models\Role;
 use App\Models\Shift;
 use App\Models\Store;
@@ -29,57 +33,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        Store::truncate();
-        Employee::truncate();
-        Branch::truncate();
-        Item::truncate();
-        Category::truncate();
-        ItemProperty::truncate();
-        Supplier::truncate();
-        Customer::truncate();
-        WorkSchedule::truncate();
-        Shift::truncate();
-        Employment::truncate();
-        EmploymentRole::truncate();
-        Permission::truncate();
-        PermissionRole::truncate();
-        Role::truncate();
+        $this->truncate();
 
-        Permission::create(["action" => "Create Supplier", "action_slug" => "create-supplier"]);
-        Permission::create(["action" => "View Supplier", "action_slug" => "view-supplier"]);
-        Permission::create(["action" => "Update Supplier", "action_slug" => "update-supplier"]);
-        Permission::create(["action" => "Delete Supplier", "action_slug" => "delete-supplier"]);
-
-        Permission::create(["action" => "Create Category", "action_slug" => "create-category"]);
-        Permission::create(["action" => "View Category", "action_slug" => "view-category"]);
-        Permission::create(["action" => "Update Category", "action_slug" => "update-category"]);
-        Permission::create(["action" => "Delete Category", "action_slug" => "delete-category"]);
-
-        Permission::create(["action" => "Create Shift", "action_slug" => "create-shift"]);
-        Permission::create(["action" => "View Shift", "action_slug" => "view-shift"]);
-        Permission::create(["action" => "Update Shift", "action_slug" => "update-shift"]);
-        Permission::create(["action" => "Delete Shift", "action_slug" => "delete-shift"]);
-
-        Permission::create(["action" => "Create Work Schedule", "action_slug" => "create-work-schedule"]);
-        Permission::create(["action" => "View Work Schedule", "action_slug" => "view-work-schedule"]);
-        Permission::create(["action" => "Update Work Schedule", "action_slug" => "update-work-schedule"]);
-        Permission::create(["action" => "Delete Work Schedule", "action_slug" => "delete-work-schedule"]);
-
-        Permission::create(["action" => "Create Item", "action_slug" => "create-item"]);
-        Permission::create(["action" => "View Item", "action_slug" => "view-item"]);
-        Permission::create(["action" => "Update Item", "action_slug" => "update-item"]);
-        Permission::create(["action" => "Delete Item", "action_slug" => "delete-item"]);
-
-        Permission::create(["action" => "Create Customer", "action_slug" => "create-customer"]);
-        Permission::create(["action" => "View Customer", "action_slug" => "view-customer"]);
-        Permission::create(["action" => "Update Customer", "action_slug" => "update-customer"]);
-        Permission::create(["action" => "Delete Customer", "action_slug" => "delete-customer"]);
+        $this->call(PermissionSeeder::class);
 
         $store = Store::factory()->create([
             "name" => "My Store",
             "email" => "hexagon@gmail.com",
             "password" => Hash::make("hexagon"),
         ]);
+
+        [$branch, $abandoned_branch] = $this->seedBranch($store);
 
         // unused role
         Role::factory()->create([
@@ -88,106 +52,57 @@ class DatabaseSeeder extends Seeder
             "description" => "This role is for test purpose.",
         ]);
 
-        $other_store = Store::factory()
-            ->hasBranches(2)
-            ->create([
-                "name" => "Other Store",
-                "email" => "other@gmail.com",
-                "password" => Hash::make("other"),
-            ]);
+        $other_store = Store::factory()->create([
+            "name" => "Other Store",
+            "email" => "other@gmail.com",
+            "password" => Hash::make("other"),
+        ]);
 
-        $branch = Branch::factory()
-            ->for($store)
-            ->create([
-                "image" => "test/branch.jpeg",
-            ]);
+        $this->seedBranch($other_store);
 
-        $abandoned_branch = Branch::factory()
-            ->for($store)
-            ->create([
-                "image" => "test/branch.jpeg",
-                "name" => "Abandoned Branch",
-            ]);
-
-        // seed item category with item
-        Category::factory()
-            ->count(5)
-            ->for($store)
-            ->has(
-                Item::factory()
-                    ->hasProperties(1, [
-                        "branch_id" => $branch->id,
-                    ])
-                    ->count(5)
-                    ->state(["store_id" => $store->id])
-            )
-            ->create();
+        $this->seedItemAndCategory($store, $branch);
+        $this->seedItemAndCategory($store, $abandoned_branch);
 
         $this->seedEmployeeAndShiftAndWorkSchedule($store, $branch);
-
         $this->seedEmployeeAndShiftAndWorkSchedule($store, $abandoned_branch);
 
         $this->seedCustomers($store);
-
         $this->seedCustomers($other_store);
 
         $this->seedSuppliers($store);
-
         $this->seedSuppliers($other_store);
+
+        $this->seedPurchaseSheet($branch);
+        $this->seedPurchaseSheet($abandoned_branch);
+
+        $this->seedQuantityCheckingSheet($branch);
+        $this->seedQuantityCheckingSheet($abandoned_branch);
+    }
+
+    private function seedEmployee(Store $store, Branch $branch, string $role)
+    {
+        return Employee::factory()
+            ->for($store)
+            ->has(
+                Employment::factory()
+                    ->count(1)
+                    ->for($branch)
+                    ->hasRoles(1, [
+                        "role_id" => Role::where("store_id", $store->id)
+                            ->where("name", $role)
+                            ->first()->id,
+                    ])
+            )
+            ->create([
+                "avatar" => "test/avatar.jpeg",
+            ]);
     }
 
     private function seedEmployeeAndShiftAndWorkSchedule(Store $store, Branch $branch)
     {
-        // seed purchase staff
-        $staff_1 = Employee::factory()
-            ->for($store)
-            ->has(
-                Employment::factory()
-                    ->count(1)
-                    ->for($branch)
-                    ->hasRoles(1, [
-                        "role_id" => Role::where("store_id", $store->id)
-                            ->where("name", "Purchase")
-                            ->first()->id,
-                    ])
-            )
-            ->create([
-                "avatar" => "test/avatar.jpeg",
-            ]);
-
-        // seed sales staff
-        $staff_2 = Employee::factory()
-            ->for($store)
-            ->has(
-                Employment::factory()
-                    ->count(1)
-                    ->for($branch)
-                    ->hasRoles(1, [
-                        "role_id" => Role::where("store_id", $store->id)
-                            ->where("name", "Sale")
-                            ->first()->id,
-                    ])
-            )
-            ->create([
-                "avatar" => "test/avatar.jpeg",
-            ]);
-
-        // seed manager staff
-        $staff_3 = Employee::factory()
-            ->for($store)
-            ->has(
-                Employment::factory()
-                    ->count(1)
-                    ->for($branch)
-                    ->hasRoles(1, [
-                        "role_id" => Role::where("store_id", $store->id)
-                            ->where("name", "Manage")
-                            ->first()->id,
-                    ])
-            )
-            ->create([
-                "avatar" => "test/avatar.jpeg",
-            ]);
+        $staff_1 = $this->seedEmployee($store, $branch, "Purchase");
+        $staff_2 = $this->seedEmployee($store, $branch, "Sale");
+        $staff_3 = $this->seedEmployee($store, $branch, "Manage");
 
         Shift::factory()
             ->for($branch)
@@ -199,6 +114,53 @@ class DatabaseSeeder extends Seeder
             ->hasWorkSchedules(1, ["date" => date("Y-m-d", strtotime("+1 day")), "employee_id" => $staff_3->id])
             ->hasWorkSchedules(1, ["date" => date("Y-m-d", strtotime("-1 day")), "employee_id" => $staff_3->id])
             ->create();
+    }
+
+    private function seedPurchaseSheet(Branch $branch)
+    {
+        $employee = Employee::whereRelation("employment", "branch_id", $branch->id)->first();
+
+        PurchaseSheet::factory()
+            ->count(5)
+            ->has(
+                PurchaseSheetItem::factory()
+                    ->count(5)
+                    ->state([
+                        "item_id" => fn() => Item::where("store_id", $employee->store_id)
+                            ->inRandomOrder()
+                            ->first()->id,
+                    ]),
+                "items"
+            )
+            ->create([
+                "branch_id" => $branch->id,
+                "employee_id" => $employee->id,
+                "supplier_id" => Supplier::where("store_id", $employee->store_id)
+                    ->inRandomOrder()
+                    ->first()->id,
+            ]);
+    }
+
+    private function seedQuantityCheckingSheet(Branch $branch)
+    {
+        $employee = Employee::whereRelation("employment", "branch_id", $branch->id)->first();
+
+        QuantityCheckingSheet::factory()
+            ->count(5)
+            ->has(
+                QuantityCheckingItem::factory()
+                    ->count(5)
+                    ->state([
+                        "item_id" => fn() => Item::where("store_id", $employee->store_id)
+                            ->inRandomOrder()
+                            ->first()->id,
+                    ]),
+                "items"
+            )
+            ->create([
+                "branch_id" => $branch->id,
+                "employee_id" => $employee->id
+            ]);
     }
 
     private function seedCustomers(Store $store)
@@ -219,5 +181,59 @@ class DatabaseSeeder extends Seeder
             ->create();
 
         return $suppliers;
+    }
+
+    private function seedItemAndCategory(Store $store, Branch $branch)
+    {
+        return Category::factory()
+            ->count(5)
+            ->for($store)
+            ->has(
+                Item::factory()
+                    ->hasProperties(1, [
+                        "branch_id" => $branch->id,
+                    ])
+                    ->count(5)
+                    ->state(["store_id" => $store->id])
+            )
+            ->create();
+    }
+
+    private function seedBranch(Store $store)
+    {
+        $branch1 = Branch::factory()
+            ->for($store)
+            ->create([
+                "image" => "test/branch.jpeg",
+            ]);
+
+        $branch2 = Branch::factory()
+            ->for($store)
+            ->create([
+                "image" => "test/branch.jpeg",
+            ]);
+
+        return [$branch1, $branch2];
+    }
+
+    private function truncate()
+    {
+        Store::truncate();
+        Employee::truncate();
+        Branch::truncate();
+        Item::truncate();
+        Category::truncate();
+        ItemProperty::truncate();
+        Supplier::truncate();
+        Customer::truncate();
+        WorkSchedule::truncate();
+        Shift::truncate();
+        Employment::truncate();
+        EmploymentRole::truncate();
+        Permission::truncate();
+        PermissionRole::truncate();
+        Role::truncate();
+        PurchaseSheet::truncate();
+        PurchaseSheetItem::truncate();
     }
 }

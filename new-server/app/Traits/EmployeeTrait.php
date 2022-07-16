@@ -51,7 +51,7 @@ trait EmployeeTrait
         }
 
         // send email to employee only on production
-        if (env("APP_ENV") === "production") {
+        if ("production" === env("APP_ENV")) {
             Mail::to($employee->email)->queue(new EmployeeAccountCreated($employee, $password));
         }
 

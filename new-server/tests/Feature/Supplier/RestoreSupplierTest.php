@@ -2,11 +2,9 @@
 
 namespace Tests\Feature\Supplier;
 
-use App\Models\Employee;
 use App\Models\Store;
 use App\Models\Supplier;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\QueryEmployeeTrait;
 use Tests\TestCase;
 
@@ -15,9 +13,9 @@ class RestoreSupplierTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    public function test_restore_supplier_unauthenticated()
+    public function testRestoreSupplierUnauthenticated()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $store->suppliers()->delete();
 
@@ -32,9 +30,9 @@ class RestoreSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_restore_supplier_as_employee()
+    public function testRestoreSupplierAsEmployee()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $store->employees->first();
 
@@ -51,9 +49,9 @@ class RestoreSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_restore_supplier_as_admin()
+    public function testRestoreSupplierAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $store->suppliers()->delete();
 
@@ -73,9 +71,9 @@ class RestoreSupplierTest extends TestCase
         ]);
     }
 
-    public function test_restore_supplier_not_found()
+    public function testRestoreSupplierNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $store->suppliers()->delete();
 

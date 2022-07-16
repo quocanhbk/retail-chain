@@ -3,16 +3,14 @@
 namespace Tests\Feature\Supplier;
 
 use App\Models\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\QueryEmployeeTrait;
 use Tests\TestCase;
 
 class GetSuppliersTest extends TestCase
 {
     use QueryEmployeeTrait;
-    use RefreshDatabase;
 
-    public function test_get_supplier_unauthenticated()
+    public function testGetSupplierUnauthenticated()
     {
         $response = $this->get("/api/supplier/1");
 
@@ -21,9 +19,9 @@ class GetSuppliersTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_supplier_invalid_permission()
+    public function testGetSupplierInvalidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithoutPermission($store->id, "view-supplier");
 
@@ -32,9 +30,9 @@ class GetSuppliersTest extends TestCase
         $response->assertStatus(403);
     }
 
-    public function test_get_supplier_with_valid_permission()
+    public function testGetSupplierWithValidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-supplier");
 
@@ -47,9 +45,9 @@ class GetSuppliersTest extends TestCase
         ]);
     }
 
-    public function test_get_suppliers_as_admin()
+    public function testGetSuppliersAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->get("/api/supplier");
 
@@ -60,9 +58,9 @@ class GetSuppliersTest extends TestCase
         ]);
     }
 
-    public function test_get_suppliers_with_search()
+    public function testGetSuppliersWithSearch()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $supplier = $store->suppliers->first();
 
@@ -70,17 +68,17 @@ class GetSuppliersTest extends TestCase
 
         $response->assertStatus(200);
 
-        $response->assertJsonCount(1);
+        $response->assertJsonFragment(["name" => $supplier->name]);
     }
 
-    public function test_get_suppliers_with_pagination()
+    public function testGetSuppliersWithPagination()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
-        $response = $this->actingAs($store, "stores")->get("/api/supplier?from=0&to=2");
+        $response = $this->actingAs($store, "stores")->get("/api/supplier?from=0&to=1");
 
         $response->assertStatus(200);
 
-        $response->assertJsonCount(2);
+        $response->assertJsonCount(1);
     }
 }

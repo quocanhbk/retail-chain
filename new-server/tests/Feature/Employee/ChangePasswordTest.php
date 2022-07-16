@@ -3,6 +3,7 @@
 namespace Tests\Feature\Employee;
 
 use App\Models\Employee;
+use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
@@ -11,7 +12,7 @@ class ChangePasswordTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_change_password_authenticated()
+    public function testChangePasswordAuthenticated()
     {
         $response = $this->put("/api/employee/password");
 
@@ -20,9 +21,12 @@ class ChangePasswordTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_change_password_successfully()
+    public function testChangePasswordSuccessfully()
     {
+        $store = Store::find(1);
+
         $employee = (object) Employee::factory()->create([
+            "store_id" => $store->id,
             "password" => Hash::make("password"),
         ]);
 
@@ -39,9 +43,12 @@ class ChangePasswordTest extends TestCase
         $this->assertTrue(Hash::check("new-password", $employee->fresh()->password));
     }
 
-    public function test_change_password_invalid_input()
+    public function testChangePasswordInvalidInput()
     {
+        $store = Store::find(1);
+
         $employee = (object) Employee::factory()->create([
+            "store_id" => $store->id,
             "password" => Hash::make("password"),
         ]);
 
@@ -58,9 +65,12 @@ class ChangePasswordTest extends TestCase
         $this->assertFalse(Hash::check("new-password", $employee->fresh()->password));
     }
 
-    public function test_change_password_no_password_confirmation()
+    public function testChangePasswordNoPasswordConfirmation()
     {
+        $store = Store::find(1);
+
         $employee = (object) Employee::factory()->create([
+            "store_id" => $store->id,
             "password" => Hash::make("password"),
         ]);
 

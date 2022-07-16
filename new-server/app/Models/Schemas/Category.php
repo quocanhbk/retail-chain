@@ -12,24 +12,28 @@ class Category
 {
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $id;
 
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $store_id;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $name;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $description;
@@ -42,12 +46,14 @@ class UpsertCategoryInput
 {
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $name;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $description;
@@ -75,6 +81,7 @@ class CategoryWithItems
      *   type="array",
      *   @OA\Items(ref="#/components/schemas/Item")
      * )
+     *
      * @var object
      */
     public $items;

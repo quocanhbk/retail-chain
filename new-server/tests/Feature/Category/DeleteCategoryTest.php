@@ -12,8 +12,7 @@ class DeleteCategoryTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-
-    public function test_delete_category_unauthenticated()
+    public function testDeleteCategoryUnauthenticated()
     {
         $response = $this->delete("/api/category/1");
 
@@ -22,9 +21,9 @@ class DeleteCategoryTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_delete_category_with_invalid_permission()
+    public function testDeleteCategoryWithInvalidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithoutPermission($store->id, "delete-category");
 
@@ -35,9 +34,9 @@ class DeleteCategoryTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_delete_category_with_valid_permission()
+    public function testDeleteCategoryWithValidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "delete-category");
 
@@ -54,9 +53,9 @@ class DeleteCategoryTest extends TestCase
         ]);
     }
 
-    public function test_delete_category_as_admin()
+    public function testDeleteCategoryAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $category = $store->categories->first();
 
@@ -71,9 +70,9 @@ class DeleteCategoryTest extends TestCase
         ]);
     }
 
-    public function test_delete_category_not_found()
+    public function testDeleteCategoryNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->delete("/api/category/0");
 
@@ -82,9 +81,9 @@ class DeleteCategoryTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_force_delete_category_with_invalid_permission()
+    public function testForceDeleteCategoryWithInvalidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "delete-category");
 
@@ -97,9 +96,9 @@ class DeleteCategoryTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_force_delete_category_as_admin()
+    public function testForceDeleteCategoryAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $category = $store->categories->first();
 

@@ -21,6 +21,7 @@ class HaveManageRole
                 403
             );
         }
+
         return $next($request);
     }
 }

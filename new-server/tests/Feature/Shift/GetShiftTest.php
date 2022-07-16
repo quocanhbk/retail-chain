@@ -4,18 +4,14 @@ namespace Tests\Feature\Shift;
 
 use App\Models\Employee;
 use App\Models\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\QueryEmployeeTrait;
 use Tests\TestCase;
 
 class GetShiftTest extends TestCase
 {
-    use RefreshDatabase;
-
     use QueryEmployeeTrait;
 
-
-    public function test_get_shift_unauthenticated()
+    public function testGetShiftUnauthenticated()
     {
         $response = $this->get("/api/shift/1");
 
@@ -24,9 +20,9 @@ class GetShiftTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_shift_as_employee()
+    public function testGetShiftAsEmployee()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-shift");
 
@@ -46,9 +42,9 @@ class GetShiftTest extends TestCase
         $response->assertJsonStructure(["id", "branch_id", "name", "start_time", "end_time", "work_schedules"]);
     }
 
-    public function test_get_shift_as_admin()
+    public function testGetShiftAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $shift = $store->branches->first()->shifts->first();
 
@@ -66,7 +62,7 @@ class GetShiftTest extends TestCase
         $response->assertJsonStructure(["id", "branch_id", "name", "start_time", "end_time", "work_schedules"]);
     }
 
-    public function test_get_shift_not_found()
+    public function testGetShiftNotFound()
     {
         $response = $this->actingAs(Employee::first())->get("/api/shift/9999");
 

@@ -3,8 +3,6 @@
 namespace Tests\Feature\Category;
 
 use App\Models\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\QueryEmployeeTrait;
 use Tests\TestCase;
 
@@ -12,8 +10,7 @@ class GetCategoryTest extends TestCase
 {
     use QueryEmployeeTrait;
 
-
-    public function test_get_category_unauthenticated()
+    public function testGetCategoryUnauthenticated()
     {
         $response = $this->get("/api/category/1");
 
@@ -22,9 +19,9 @@ class GetCategoryTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_category_as_employee()
+    public function testGetCategoryAsEmployee()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-category");
 
@@ -37,9 +34,9 @@ class GetCategoryTest extends TestCase
         $response->assertJsonStructure(["id", "name", "description", "created_at", "updated_at", "items"]);
     }
 
-    public function test_get_category_as_admin()
+    public function testGetCategoryAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $category = $store->categories->first();
 
@@ -50,9 +47,9 @@ class GetCategoryTest extends TestCase
         $response->assertJsonStructure(["id", "name", "description", "created_at", "updated_at", "items"]);
     }
 
-    public function test_get_category_not_found()
+    public function testGetCategoryNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-category");
 

@@ -29,4 +29,9 @@ class Item extends Model
     {
         return $this->hasMany(ItemProperty::class);
     }
+
+    public function priceHistories()
+    {
+        return $this->hasMany(ItemPriceHistory::class);
+    }
 }

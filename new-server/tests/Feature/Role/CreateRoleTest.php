@@ -5,14 +5,13 @@ namespace Tests\Feature\Role;
 use App\Models\Employee;
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class CreateRoleTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_create_role_unauthenticated()
+    public function testCreateRoleUnauthenticated()
     {
         $response = $this->post("/api/role", [
             "name" => "Test Role",
@@ -24,7 +23,7 @@ class CreateRoleTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_role_as_employee()
+    public function testCreateRoleAsEmployee()
     {
         $employee = Employee::first();
 
@@ -38,9 +37,9 @@ class CreateRoleTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_role_as_admin()
+    public function testCreateRoleAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->post("/api/role", [
             "name" => "Test Role",
@@ -58,9 +57,9 @@ class CreateRoleTest extends TestCase
         ]);
     }
 
-    public function test_create_role_with_name_too_long()
+    public function testCreateRoleWithNameTooLong()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->post("/api/role", [
             "name" => "This name is kinda too long, isn't it? Yep, it is very very very long !!!",
@@ -71,9 +70,9 @@ class CreateRoleTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_create_role_without_description()
+    public function testCreateRoleWithoutDescription()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->post("/api/role", [
             "name" => "Test Role",

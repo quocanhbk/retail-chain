@@ -11,7 +11,7 @@ class PurchaseSheetItem extends Model
 
     protected $fillable = ["purchase_sheet_id", "item_id", "quantity", "price", "discount", "discount_type", "total"];
 
-    public function purchaseSheet()
+    public function purchase_sheet()
     {
         return $this->belongsTo(PurchaseSheet::class);
     }

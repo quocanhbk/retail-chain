@@ -4,7 +4,6 @@ namespace Tests\Feature\WorkSchedule;
 
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\QueryEmployeeTrait;
 use Tests\TestCase;
 
@@ -13,7 +12,7 @@ class UpdateWorkScheduleTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    public function test_update_work_schedule_unauthenticated()
+    public function testUpdateWorkScheduleUnauthenticated()
     {
         $response = $this->put("/api/work-schedule/1", [
             "note" => "Something",
@@ -24,9 +23,9 @@ class UpdateWorkScheduleTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_work_schedule_with_invalid_permission()
+    public function testUpdateWorkScheduleWithInvalidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $work_schedule = $store->branches
             ->first()
@@ -44,9 +43,9 @@ class UpdateWorkScheduleTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_work_schedule_with_valid_permission()
+    public function testUpdateWorkScheduleWithValidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $work_schedule = $store->branches
             ->first()
@@ -69,9 +68,9 @@ class UpdateWorkScheduleTest extends TestCase
         ]);
     }
 
-    public function test_update_work_schedule_not_found()
+    public function testUpdateWorkScheduleNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "update-work-schedule");
 

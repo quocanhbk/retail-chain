@@ -4,7 +4,6 @@ namespace Tests\Feature\Supplier;
 
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\QueryEmployeeTrait;
 use Tests\TestCase;
 
@@ -13,7 +12,7 @@ class UpdateSupplierTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    public function test_update_supplier_unauthenticated()
+    public function testUpdateSupplierUnauthenticated()
     {
         $response = $this->put("/api/supplier/1");
 
@@ -22,9 +21,9 @@ class UpdateSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_supplier_as_admin()
+    public function testUpdateSupplierAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $supplier = $store->suppliers->first();
 
@@ -45,9 +44,9 @@ class UpdateSupplierTest extends TestCase
         ]);
     }
 
-    public function test_update_supplier_with_invalid_permission()
+    public function testUpdateSupplierWithInvalidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithoutPermission($store->id, "update-supplier");
 
@@ -62,9 +61,9 @@ class UpdateSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_supplier_with_valid_permission()
+    public function testUpdateSupplierWithValidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "update-supplier");
 
@@ -87,9 +86,9 @@ class UpdateSupplierTest extends TestCase
         ]);
     }
 
-    public function test_update_supplier_not_found()
+    public function testUpdateSupplierNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "update-supplier");
 
@@ -102,9 +101,9 @@ class UpdateSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_supplier_with_duplicate_code()
+    public function testUpdateSupplierWithDuplicateCode()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "update-supplier");
 
@@ -121,9 +120,9 @@ class UpdateSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_supplier_with_duplicate_phone()
+    public function testUpdateSupplierWithDuplicatePhone()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "update-supplier");
 
@@ -140,9 +139,9 @@ class UpdateSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_update_supplier_with_duplicate_email()
+    public function testUpdateSupplierWithDuplicateEmail()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "update-supplier");
 

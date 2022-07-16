@@ -29,7 +29,5 @@ class AuthServiceProvider extends ServiceProvider
             return config("app.frontend_url") .
                 "/password-reset/$token?email={$notifiable->getEmailForPasswordReset()}";
         });
-
-        //
     }
 }

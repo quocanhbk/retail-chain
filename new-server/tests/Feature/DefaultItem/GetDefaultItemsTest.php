@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 class GetDefaultItemsTest extends TestCase
 {
-    public function test_get_default_items_successfully()
+    public function testGetDefaultItemsSuccessfully()
     {
         $response = $this->get("/api/default-item");
 
@@ -36,7 +36,7 @@ class GetDefaultItemsTest extends TestCase
         ]);
     }
 
-    public function test_get_default_items_with_search_successfully()
+    public function testGetDefaultItemsWithSearch()
     {
         $default_item = DefaultItem::first();
 
@@ -44,10 +44,12 @@ class GetDefaultItemsTest extends TestCase
 
         $response->assertStatus(200);
 
-        $response->assertJsonCount(1);
+        $response->assertJsonFragment([
+            "product_name" => $default_item->product_name,
+        ]);
     }
 
-    public function test_get_default_items_with_pagination_successfully()
+    public function testGetDefaultItemsWithPagination()
     {
         $response = $this->get("/api/default-item?from=0&to=10");
 
@@ -56,7 +58,7 @@ class GetDefaultItemsTest extends TestCase
         $response->assertJsonCount(10);
     }
 
-    public function test_get_default_items_with_gibberish_search_successfully()
+    public function testGetDefaultItemsWithGibberishSearch()
     {
         $response = $this->get("/api/default-item?search=gibberish");
 
@@ -65,7 +67,7 @@ class GetDefaultItemsTest extends TestCase
         $response->assertJsonCount(0);
     }
 
-    public function test_get_default_items_with_category_id_successfully()
+    public function testGetDefaultItemsWithCategoryId()
     {
         $default_category = DefaultCategory::first();
 

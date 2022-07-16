@@ -10,7 +10,7 @@ class GetCustomersTest extends TestCase
 {
     use QueryEmployeeTrait;
 
-    public function test_get_customers_unauthenticated()
+    public function testGetCustomersUnauthenticated()
     {
         $response = $this->get("/api/customer");
 
@@ -19,9 +19,9 @@ class GetCustomersTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_customers_by_admin()
+    public function testGetCustomersByAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->get("/api/customer");
 
@@ -30,9 +30,9 @@ class GetCustomersTest extends TestCase
         $response->assertJsonStructure([["id", "code", "name", "email", "created_at", "updated_at"]]);
     }
 
-    public function test_get_customers_with_invalid_permission()
+    public function testGetCustomersWithInvalidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithoutPermission($store->id, "view-customer");
 
@@ -43,9 +43,9 @@ class GetCustomersTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_customers_with_valid_permission()
+    public function testGetCustomersWithValidPermission()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "view-customer");
 
@@ -56,9 +56,9 @@ class GetCustomersTest extends TestCase
         $response->assertJsonStructure([["id", "code", "name", "email", "created_at", "updated_at"]]);
     }
 
-    public function test_get_customers_with_search()
+    public function testGetCustomersWithSearch()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $customer = $store->customers()->first();
 
@@ -66,12 +66,12 @@ class GetCustomersTest extends TestCase
 
         $response->assertStatus(200);
 
-        $response->assertJsonCount(1);
+        $response->assertJsonFragment(["name" => $customer->name]);
     }
 
-    public function test_get_customers_with_pagination()
+    public function testGetCustomersWithPagination()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->get("/api/customer?from=0&to=2");
 

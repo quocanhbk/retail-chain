@@ -12,30 +12,35 @@ class Employment
 {
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $id;
 
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $employee_id;
 
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $branch_id;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $from;
 
     /**
      * @OA\Property(nullable=true)
+     *
      * @var string
      */
     public $to;
@@ -51,6 +56,7 @@ class EmploymentWithRoles
 {
     /**
      * @OA\Property(type="array", @OA\Items(ref="#/components/schemas/EmploymentRole"))
+     *
      * @var array
      */
     public $roles;
@@ -65,18 +71,21 @@ class EmploymentRole
 {
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $id;
 
     /**
      * @OA\Property()
-     * @var integer
+     *
+     * @var int
      */
     public $employment_id;
 
     /**
      * @OA\Property()
+     *
      * @var string
      */
     public $role;
@@ -92,6 +101,7 @@ class EmploymentDetail
 {
     /**
      * @OA\Property(ref="#/components/schemas/Employee")
+     *
      * @var object
      */
     public $employee;

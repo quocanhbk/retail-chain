@@ -11,7 +11,7 @@ class TransferEmployeeTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_transfer_employee_unauthenticated()
+    public function testTransferEmployeeUnauthenticated()
     {
         $response = $this->post("/api/employee/transfer");
 
@@ -20,7 +20,7 @@ class TransferEmployeeTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_transfer_employee_as_employee()
+    public function testTransferEmployeeAsEmployee()
     {
         $employee = Employee::first();
 
@@ -29,9 +29,9 @@ class TransferEmployeeTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function test_transfer_employee_as_admin()
+    public function testTransferEmployeeAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $store->employees->first();
 

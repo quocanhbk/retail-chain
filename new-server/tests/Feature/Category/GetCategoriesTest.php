@@ -4,7 +4,6 @@ namespace Tests\Feature\Category;
 
 use App\Models\Employee;
 use App\Models\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\QueryEmployeeTrait;
 use Tests\TestCase;
 
@@ -12,7 +11,7 @@ class GetCategoriesTest extends TestCase
 {
     use QueryEmployeeTrait;
 
-    public function test_get_categories_unauthenticated()
+    public function testGetCategoriesUnauthenticated()
     {
         $response = $this->get("/api/category");
 
@@ -21,9 +20,9 @@ class GetCategoriesTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_get_categories_by_admin()
+    public function testGetCategoriesByAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->get("/api/category");
 
@@ -32,7 +31,7 @@ class GetCategoriesTest extends TestCase
         $response->assertJsonStructure([["id", "store_id", "name", "description", "created_at", "updated_at"]]);
     }
 
-    public function test_get_categories_by_employee()
+    public function testGetCategoriesByEmployee()
     {
         $employee = Employee::first();
 
@@ -43,9 +42,9 @@ class GetCategoriesTest extends TestCase
         $response->assertJsonStructure([["id", "store_id", "name", "description", "created_at", "updated_at"]]);
     }
 
-    public function test_get_categories_with_search()
+    public function testGetCategoriesWithSearch()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $category = $store->categories->first();
 
@@ -55,16 +54,12 @@ class GetCategoriesTest extends TestCase
 
         $response->assertJsonStructure([["id", "store_id", "name", "description", "created_at", "updated_at"]]);
 
-        $response->assertJsonFragment([
-            "name" => $category->name,
-        ]);
-
-        $response->assertJsonCount(1);
+        $response->assertJsonFragment(["name" => $category->name]);
     }
 
-    public function test_get_categories_with_pagination()
+    public function testGetCategoriesWithPagination()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->get("/api/category?from=0&to=3");
 

@@ -5,7 +5,6 @@ namespace Tests\Feature\Supplier;
 use App\Models\Store;
 use App\Models\Supplier;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\QueryEmployeeTrait;
 use Tests\TestCase;
 
@@ -14,7 +13,7 @@ class ForceDeleteSupplierTest extends TestCase
     use RefreshDatabase;
     use QueryEmployeeTrait;
 
-    public function test_force_delete_supplier_unauthenticated()
+    public function testForceDeleteSupplierUnauthenticated()
     {
         $response = $this->delete("/api/supplier/1/force");
 
@@ -23,9 +22,9 @@ class ForceDeleteSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_force_delete_supplier_as_employee()
+    public function testForceDeleteSupplierAsEmployee()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $employee = $this->getEmployeeWithPermission($store->id, "delete-supplier");
 
@@ -36,9 +35,9 @@ class ForceDeleteSupplierTest extends TestCase
         $response->assertJsonStructure(["message"]);
     }
 
-    public function test_force_delete_supplier_as_admin()
+    public function testForceDeleteSupplierAsAdmin()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $store->suppliers()->delete();
 
@@ -55,9 +54,9 @@ class ForceDeleteSupplierTest extends TestCase
         $this->assertDatabaseMissing("suppliers", ["id" => $supplier->id]);
     }
 
-    public function test_force_delete_supplier_not_found()
+    public function testForceDeleteSupplierNotFound()
     {
-        $store = Store::first();
+        $store = Store::find(1);
 
         $response = $this->actingAs($store, "stores")->delete("/api/supplier/9999/force");
 
