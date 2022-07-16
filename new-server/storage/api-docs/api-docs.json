@@ -132,7 +132,7 @@
                 }
             }
         },
-        "/branch/{branch_id}": {
+        "/branch/{id}": {
             "get": {
                 "tags": [
                     "Branch"
@@ -141,7 +141,7 @@
                 "operationId": "getBranch",
                 "parameters": [
                     {
-                        "name": "branch_id",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -170,7 +170,7 @@
                 "operationId": "updateBranch",
                 "parameters": [
                     {
-                        "name": "branch_id",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -206,7 +206,7 @@
                 "operationId": "deleteBranch",
                 "parameters": [
                     {
-                        "name": "branch_id",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -325,7 +325,7 @@
                 }
             }
         },
-        "/category/{category_id}": {
+        "/category/{id}": {
             "get": {
                 "tags": [
                     "Category"
@@ -334,7 +334,7 @@
                 "operationId": "getCategory",
                 "parameters": [
                     {
-                        "name": "category_id",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -363,7 +363,7 @@
                 "operationId": "updateCategory",
                 "parameters": [
                     {
-                        "name": "category_id",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -402,7 +402,7 @@
                 "operationId": "deleteCategory",
                 "parameters": [
                     {
-                        "name": "category_id",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -496,7 +496,7 @@
                 }
             }
         },
-        "/category/{category_id}/restore": {
+        "/category/{id}/restore": {
             "post": {
                 "tags": [
                     "Category"
@@ -505,7 +505,7 @@
                 "operationId": "restoreCategory",
                 "parameters": [
                     {
-                        "name": "category_id",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -527,7 +527,7 @@
                 }
             }
         },
-        "/category/{category_id}/force": {
+        "/category/{id}/force": {
             "delete": {
                 "tags": [
                     "Category"
@@ -536,7 +536,7 @@
                 "operationId": "forceDeleteCategory",
                 "parameters": [
                     {
-                        "name": "category_id",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -689,7 +689,7 @@
                 }
             }
         },
-        "/customer/{customer_id}": {
+        "/customer/{id}": {
             "put": {
                 "tags": [
                     "Customer"
@@ -698,7 +698,7 @@
                 "operationId": "updateCustomer",
                 "parameters": [
                     {
-                        "name": "customer_id",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -730,7 +730,7 @@
                 }
             }
         },
-        "/customer/add-point/{customer_id}": {
+        "/customer/add-point/{id}": {
             "post": {
                 "tags": [
                     "Customer"
@@ -739,7 +739,7 @@
                 "operationId": "addCustomerPoint",
                 "parameters": [
                     {
-                        "name": "customer_id",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -780,7 +780,7 @@
                 }
             }
         },
-        "/customer/use-point/{customer_id}": {
+        "/customer/use-point/{id}": {
             "post": {
                 "tags": [
                     "Customer"
@@ -789,7 +789,7 @@
                 "operationId": "useCustomerPoint",
                 "parameters": [
                     {
-                        "name": "customer_id",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -1040,7 +1040,7 @@
                 }
             }
         },
-        "/employee/{employee_id}": {
+        "/employee/{id}": {
             "get": {
                 "tags": [
                     "Employee"
@@ -1049,7 +1049,7 @@
                 "operationId": "getEmployee",
                 "parameters": [
                     {
-                        "name": "employee_id",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -1078,7 +1078,7 @@
                 "operationId": "updateEmployee",
                 "parameters": [
                     {
-                        "name": "employee_id",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -1114,7 +1114,7 @@
                 "operationId": "deleteEmployee",
                 "parameters": [
                     {
-                        "name": "employee_id",
+                        "name": "id",
                         "in": "path",
                         "description": "Employee ID",
                         "required": true,
@@ -1288,7 +1288,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/EmployeeWithEmployment"
+                                    "$ref": "#/components/schemas/EmployeeWithEmploymentAndPermissions"
                                 }
                             }
                         }
@@ -1392,7 +1392,7 @@
                 }
             }
         },
-        "/employee/{employee_id}/restore": {
+        "/employee/{id}/restore": {
             "post": {
                 "tags": [
                     "Employee"
@@ -1401,7 +1401,7 @@
                 "operationId": "restoreEmployee",
                 "parameters": [
                     {
-                        "name": "employee_id",
+                        "name": "id",
                         "in": "path",
                         "description": "Employee ID",
                         "required": true,
@@ -1424,7 +1424,7 @@
                 }
             }
         },
-        "/employee/{employee_id}/force": {
+        "/employee/{id}/force": {
             "delete": {
                 "tags": [
                     "Employee"
@@ -1433,7 +1433,7 @@
                 "operationId": "forceDeleteEmployee",
                 "parameters": [
                     {
-                        "name": "employee_id",
+                        "name": "id",
                         "in": "path",
                         "description": "Employee ID",
                         "required": true,
@@ -1699,7 +1699,7 @@
                 }
             }
         },
-        "/item/{item_id}": {
+        "/item/{id}": {
             "put": {
                 "tags": [
                     "Item"
@@ -1708,7 +1708,7 @@
                 "operationId": "updateItem",
                 "parameters": [
                     {
-                        "name": "item_id",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -1747,7 +1747,7 @@
                 "operationId": "deleteItem",
                 "parameters": [
                     {
-                        "name": "item_id",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -1841,7 +1841,7 @@
                 }
             }
         },
-        "/item/{item_id}/restore": {
+        "/item/{id}/restore": {
             "post": {
                 "tags": [
                     "Item"
@@ -1850,7 +1850,7 @@
                 "operationId": "restoreItem",
                 "parameters": [
                     {
-                        "name": "item_id",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -1872,7 +1872,7 @@
                 }
             }
         },
-        "/item/{item_id}/force": {
+        "/item/{id}/force": {
             "delete": {
                 "tags": [
                     "Item"
@@ -1881,7 +1881,7 @@
                 "operationId": "forceDeleteItem",
                 "parameters": [
                     {
-                        "name": "item_id",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -1903,7 +1903,7 @@
                 }
             }
         },
-        "/permission/{permission_id}": {
+        "/permission/{id}": {
             "put": {
                 "tags": [
                     "Permission"
@@ -1913,7 +1913,7 @@
                 "operationId": "updatePermission",
                 "parameters": [
                     {
-                        "name": "permission_id",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -2050,7 +2050,7 @@
                 }
             }
         },
-        "/purchase-sheet/{purchase_sheet_id}": {
+        "/purchase-sheet/{id}": {
             "get": {
                 "tags": [
                     "PurchaseSheet"
@@ -2059,7 +2059,7 @@
                 "operationId": "getPurchaseSheet",
                 "parameters": [
                     {
-                        "name": "purchase_sheet_id",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -2088,7 +2088,7 @@
                 "operationId": "deletePurchaseSheet",
                 "parameters": [
                     {
-                        "name": "purchase_sheet_id",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -2110,7 +2110,7 @@
                 }
             }
         },
-        "/purchase-sheet/{purchase_sheet_id}/note": {
+        "/purchase-sheet/{id}/note": {
             "put": {
                 "tags": [
                     "PurchaseSheet"
@@ -2119,7 +2119,7 @@
                 "operationId": "updatePurchaseSheetNote",
                 "parameters": [
                     {
-                        "name": "purchase_sheet_id",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -2305,6 +2305,55 @@
                 "responses": {
                     "200": {
                         "description": "Quantity checking sheet deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/quantity-checking-sheet/{id}/note": {
+            "put": {
+                "tags": [
+                    "QuantityCheckingSheet"
+                ],
+                "summary": "Update quantity checking sheet note",
+                "operationId": "updateQuantityCheckingSheetNote",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "note"
+                                ],
+                                "properties": {
+                                    "note": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2611,7 +2660,7 @@
                 }
             }
         },
-        "/shift/{shift_id}": {
+        "/shift/{id}": {
             "get": {
                 "tags": [
                     "Shift"
@@ -2620,7 +2669,7 @@
                 "operationId": "getShift",
                 "parameters": [
                     {
-                        "name": "shift_id",
+                        "name": "id",
                         "in": "path",
                         "description": "Shift ID",
                         "required": true,
@@ -2650,7 +2699,7 @@
                 "operationId": "updateShift",
                 "parameters": [
                     {
-                        "name": "shift_id",
+                        "name": "id",
                         "in": "path",
                         "description": "Shift ID",
                         "required": true,
@@ -2690,7 +2739,7 @@
                 "operationId": "deleteShift",
                 "parameters": [
                     {
-                        "name": "shift_id",
+                        "name": "id",
                         "in": "path",
                         "description": "Shift ID",
                         "required": true,
@@ -2945,7 +2994,7 @@
                 }
             }
         },
-        "/supplier/{supplier_id}": {
+        "/supplier/{id}": {
             "get": {
                 "tags": [
                     "Supplier"
@@ -2954,7 +3003,7 @@
                 "operationId": "getSupplier",
                 "parameters": [
                     {
-                        "name": "supplier_id",
+                        "name": "id",
                         "in": "path",
                         "description": "Supplier ID",
                         "required": true,
@@ -2984,7 +3033,7 @@
                 "operationId": "updateSupplier",
                 "parameters": [
                     {
-                        "name": "supplier_id",
+                        "name": "id",
                         "in": "path",
                         "description": "Supplier ID",
                         "required": true,
@@ -3024,7 +3073,7 @@
                 "operationId": "deleteSupplier",
                 "parameters": [
                     {
-                        "name": "supplier_id",
+                        "name": "id",
                         "in": "path",
                         "description": "Supplier ID",
                         "required": true,
@@ -3120,7 +3169,7 @@
                 }
             }
         },
-        "/supplier/{supplier_id}/restore": {
+        "/supplier/{id}/restore": {
             "post": {
                 "tags": [
                     "Supplier"
@@ -3129,7 +3178,7 @@
                 "operationId": "restoreSupplier",
                 "parameters": [
                     {
-                        "name": "supplier_id",
+                        "name": "id",
                         "in": "path",
                         "description": "Supplier ID",
                         "required": true,
@@ -3152,7 +3201,7 @@
                 }
             }
         },
-        "/supplier/{supplier_id}/force": {
+        "/supplier/{id}/force": {
             "delete": {
                 "tags": [
                     "Supplier"
@@ -3161,7 +3210,7 @@
                 "operationId": "forceDeleteSupplier",
                 "parameters": [
                     {
-                        "name": "supplier_id",
+                        "name": "id",
                         "in": "path",
                         "description": "Supplier ID",
                         "required": true,
@@ -3256,7 +3305,7 @@
                 "operationId": "updateWorkSchedule",
                 "parameters": [
                     {
-                        "name": "work_schedule_id",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -3295,7 +3344,7 @@
                 "operationId": "deleteWorkSchedule",
                 "parameters": [
                     {
-                        "name": "work_schedule_id",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -3760,6 +3809,25 @@
                 "oneOf": [
                     {
                         "$ref": "#/components/schemas/Employee"
+                    }
+                ]
+            },
+            "EmployeeWithEmploymentAndPermissions": {
+                "required": [
+                    "permissions"
+                ],
+                "properties": {
+                    "permissions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Permission"
+                        }
+                    }
+                },
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/EmployeeWithEmployment"
                     }
                 ]
             },
@@ -4232,6 +4300,25 @@
                 ],
                 "properties": {
                     "message": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Permission": {
+                "required": [
+                    "id",
+                    "action_slug",
+                    "action"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "action_slug": {
+                        "type": "string"
+                    },
+                    "action": {
                         "type": "string"
                     }
                 },

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use App\Models\Employment;
 use App\Models\EmploymentRole;
+use App\Models\Permission;
+use App\Models\PermissionRole;
 use App\Traits\EmployeeTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -216,7 +218,7 @@ class EmployeeController extends Controller
         $data = $request->all();
 
         $rules = [
-            "current_password" => ["required", "string"],
+            "current_password" => ["required", "string", "current_password"],
             "new_password" => ["required", "string", "min:6", "confirmed"],
         ];
 
@@ -226,13 +228,7 @@ class EmployeeController extends Controller
             return response()->json(["message" => $this->formatValidationError($validator->errors())], 400);
         }
 
-        if (!Hash::check($data["current_password"], $user->password)) {
-            return response()->json(["message" => "Current password is incorrect."], 400);
-        }
-
-        $employee = Employee::find($user->id);
-        $employee->password = Hash::make($data["new_password"]);
-        $employee->save();
+        $user->update(["password" => Hash::make($data["new_password"])]);
 
         return response()->json(["message" => "Password changed successfully."]);
     }
@@ -441,7 +437,7 @@ class EmployeeController extends Controller
      *   @OA\Response(
      *     response=200,
      *     description="Employee retrieved successfully",
-     *     @OA\JsonContent(ref="#/components/schemas/EmployeeWithEmployment")
+     *     @OA\JsonContent(ref="#/components/schemas/EmployeeWithEmploymentAndPermissions")
      *   )
      * )
      */
@@ -451,7 +447,12 @@ class EmployeeController extends Controller
 
         $employee = Employee::with("employment.roles.role")->find($id);
 
-        return response()->json($employee);
+        $permissions = Permission::whereIn(
+            "id",
+            PermissionRole::whereIn("role_id", $employee->employment->roles->pluck("id"))->pluck("permission_id")
+        )->get();
+
+        return response()->json([...$employee->toArray(), "permissions" => $permissions]);
     }
 
     /**

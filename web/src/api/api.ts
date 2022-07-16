@@ -108,6 +108,8 @@ export type Employee = UpsertTime & {
 
 export type EmployeeWithEmployment = Employee & { employment: EmploymentWithRoles }
 
+export type EmployeeWithEmploymentAndPermissions = EmployeeWithEmployment & { permissions: Permission[] }
+
 export interface CreateEmployeeInput {
     name: string
     email: string
@@ -221,6 +223,12 @@ export interface UpsertTime {
 
 export interface Message {
     message: string
+}
+
+export interface Permission {
+    id: number
+    action_slug: string
+    action: string
 }
 
 export type PurchaseSheet = UpsertTime & {
@@ -550,11 +558,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Branch
          * @name GetBranch
          * @summary Get branch
-         * @request GET:/branch/{branch_id}
+         * @request GET:/branch/{id}
          */
-        getBranch: (branchId: number, params: RequestParams = {}) =>
+        getBranch: (id: number, params: RequestParams = {}) =>
             this.request<BranchDetail, any>({
-                path: `/branch/${branchId}`,
+                path: `/branch/${id}`,
                 method: "GET",
                 format: "json",
                 ...params
@@ -566,11 +574,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Branch
          * @name UpdateBranch
          * @summary Update branch
-         * @request PUT:/branch/{branch_id}
+         * @request PUT:/branch/{id}
          */
-        updateBranch: (branchId: any, data: UpdateBranchInput, params: RequestParams = {}) =>
+        updateBranch: (id: any, data: UpdateBranchInput, params: RequestParams = {}) =>
             this.request<Branch, any>({
-                path: `/branch/${branchId}`,
+                path: `/branch/${id}`,
                 method: "PUT",
                 body: data,
                 type: ContentType.FormData,
@@ -584,11 +592,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Branch
          * @name DeleteBranch
          * @summary Delete branch
-         * @request DELETE:/branch/{branch_id}
+         * @request DELETE:/branch/{id}
          */
-        deleteBranch: (branchId: any, params: RequestParams = {}) =>
+        deleteBranch: (id: any, params: RequestParams = {}) =>
             this.request<{ message?: string }, any>({
-                path: `/branch/${branchId}`,
+                path: `/branch/${id}`,
                 method: "DELETE",
                 format: "json",
                 ...params
@@ -639,11 +647,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Category
          * @name GetCategory
          * @summary Get an item category
-         * @request GET:/category/{category_id}
+         * @request GET:/category/{id}
          */
-        getCategory: (categoryId: number, params: RequestParams = {}) =>
+        getCategory: (id: number, params: RequestParams = {}) =>
             this.request<Category, any>({
-                path: `/category/${categoryId}`,
+                path: `/category/${id}`,
                 method: "GET",
                 format: "json",
                 ...params
@@ -655,11 +663,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Category
          * @name UpdateCategory
          * @summary Update an item category
-         * @request PUT:/category/{category_id}
+         * @request PUT:/category/{id}
          */
-        updateCategory: (categoryId: number, data: UpsertCategoryInput, params: RequestParams = {}) =>
+        updateCategory: (id: number, data: UpsertCategoryInput, params: RequestParams = {}) =>
             this.request<Message, any>({
-                path: `/category/${categoryId}`,
+                path: `/category/${id}`,
                 method: "PUT",
                 body: data,
                 type: ContentType.Json,
@@ -673,11 +681,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Category
          * @name DeleteCategory
          * @summary Delete an item category
-         * @request DELETE:/category/{category_id}
+         * @request DELETE:/category/{id}
          */
-        deleteCategory: (categoryId: number, query?: { force?: boolean }, params: RequestParams = {}) =>
+        deleteCategory: (id: number, query?: { force?: boolean }, params: RequestParams = {}) =>
             this.request<Message, any>({
-                path: `/category/${categoryId}`,
+                path: `/category/${id}`,
                 method: "DELETE",
                 query: query,
                 format: "json",
@@ -710,11 +718,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Category
          * @name RestoreCategory
          * @summary Restore an item category
-         * @request POST:/category/{category_id}/restore
+         * @request POST:/category/{id}/restore
          */
-        restoreCategory: (categoryId: number, params: RequestParams = {}) =>
+        restoreCategory: (id: number, params: RequestParams = {}) =>
             this.request<Message, any>({
-                path: `/category/${categoryId}/restore`,
+                path: `/category/${id}/restore`,
                 method: "POST",
                 format: "json",
                 ...params
@@ -726,11 +734,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Category
          * @name ForceDeleteCategory
          * @summary Force delete an item category
-         * @request DELETE:/category/{category_id}/force
+         * @request DELETE:/category/{id}/force
          */
-        forceDeleteCategory: (categoryId: number, params: RequestParams = {}) =>
+        forceDeleteCategory: (id: number, params: RequestParams = {}) =>
             this.request<Message, any>({
-                path: `/category/${categoryId}/force`,
+                path: `/category/${id}/force`,
                 method: "DELETE",
                 format: "json",
                 ...params
@@ -798,11 +806,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Customer
          * @name UpdateCustomer
          * @summary Update a customer
-         * @request PUT:/customer/{customer_id}
+         * @request PUT:/customer/{id}
          */
-        updateCustomer: (customerId: number, data: UpsertCustomerInput, params: RequestParams = {}) =>
+        updateCustomer: (id: number, data: UpsertCustomerInput, params: RequestParams = {}) =>
             this.request<Message, any>({
-                path: `/customer/${customerId}`,
+                path: `/customer/${id}`,
                 method: "PUT",
                 body: data,
                 type: ContentType.Json,
@@ -816,11 +824,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Customer
          * @name AddCustomerPoint
          * @summary Create a customer
-         * @request POST:/customer/add-point/{customer_id}
+         * @request POST:/customer/add-point/{id}
          */
-        addCustomerPoint: (customerId: number, data: { point: number }, params: RequestParams = {}) =>
+        addCustomerPoint: (id: number, data: { point: number }, params: RequestParams = {}) =>
             this.request<Message, any>({
-                path: `/customer/add-point/${customerId}`,
+                path: `/customer/add-point/${id}`,
                 method: "POST",
                 body: data,
                 type: ContentType.Json,
@@ -834,11 +842,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Customer
          * @name UseCustomerPoint
          * @summary Use point
-         * @request POST:/customer/use-point/{customer_id}
+         * @request POST:/customer/use-point/{id}
          */
-        useCustomerPoint: (customerId: number, data: { point: number }, params: RequestParams = {}) =>
+        useCustomerPoint: (id: number, data: { point: number }, params: RequestParams = {}) =>
             this.request<Message, any>({
-                path: `/customer/use-point/${customerId}`,
+                path: `/customer/use-point/${id}`,
                 method: "POST",
                 body: data,
                 type: ContentType.Json,
@@ -929,11 +937,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Employee
          * @name GetEmployee
          * @summary Get employee
-         * @request GET:/employee/{employee_id}
+         * @request GET:/employee/{id}
          */
-        getEmployee: (employeeId: number, params: RequestParams = {}) =>
+        getEmployee: (id: number, params: RequestParams = {}) =>
             this.request<EmployeeWithEmployment, any>({
-                path: `/employee/${employeeId}`,
+                path: `/employee/${id}`,
                 method: "GET",
                 format: "json",
                 ...params
@@ -945,11 +953,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Employee
          * @name UpdateEmployee
          * @summary Update employee
-         * @request PUT:/employee/{employee_id}
+         * @request PUT:/employee/{id}
          */
-        updateEmployee: (employeeId: any, data: UpdateEmployeeInput, params: RequestParams = {}) =>
+        updateEmployee: (id: any, data: UpdateEmployeeInput, params: RequestParams = {}) =>
             this.request<Message, any>({
-                path: `/employee/${employeeId}`,
+                path: `/employee/${id}`,
                 method: "PUT",
                 body: data,
                 type: ContentType.FormData,
@@ -963,11 +971,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Employee
          * @name DeleteEmployee
          * @summary Delete employee
-         * @request DELETE:/employee/{employee_id}
+         * @request DELETE:/employee/{id}
          */
-        deleteEmployee: (employeeId: number, query?: { force?: boolean }, params: RequestParams = {}) =>
+        deleteEmployee: (id: number, query?: { force?: boolean }, params: RequestParams = {}) =>
             this.request<Message, any>({
-                path: `/employee/${employeeId}`,
+                path: `/employee/${id}`,
                 method: "DELETE",
                 query: query,
                 format: "json",
@@ -1054,7 +1062,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/employee/me
          */
         getCurrentEmployee: (params: RequestParams = {}) =>
-            this.request<EmployeeWithEmployment, any>({
+            this.request<EmployeeWithEmploymentAndPermissions, any>({
                 path: `/employee/me`,
                 method: "GET",
                 format: "json",
@@ -1105,11 +1113,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Employee
          * @name RestoreEmployee
          * @summary Restore employee
-         * @request POST:/employee/{employee_id}/restore
+         * @request POST:/employee/{id}/restore
          */
-        restoreEmployee: (employeeId: number, params: RequestParams = {}) =>
+        restoreEmployee: (id: number, params: RequestParams = {}) =>
             this.request<Message, any>({
-                path: `/employee/${employeeId}/restore`,
+                path: `/employee/${id}/restore`,
                 method: "POST",
                 format: "json",
                 ...params
@@ -1121,11 +1129,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Employee
          * @name ForceDeleteEmployee
          * @summary Force delete employee
-         * @request DELETE:/employee/{employee_id}/force
+         * @request DELETE:/employee/{id}/force
          */
-        forceDeleteEmployee: (employeeId: number, params: RequestParams = {}) =>
+        forceDeleteEmployee: (id: number, params: RequestParams = {}) =>
             this.request<Message, any>({
-                path: `/employee/${employeeId}/force`,
+                path: `/employee/${id}/force`,
                 method: "DELETE",
                 format: "json",
                 ...params
@@ -1231,11 +1239,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Item
          * @name UpdateItem
          * @summary Update item
-         * @request PUT:/item/{item_id}
+         * @request PUT:/item/{id}
          */
-        updateItem: (itemId: number, data: UpsertItemInput, params: RequestParams = {}) =>
+        updateItem: (id: number, data: UpsertItemInput, params: RequestParams = {}) =>
             this.request<Item, any>({
-                path: `/item/${itemId}`,
+                path: `/item/${id}`,
                 method: "PUT",
                 body: data,
                 type: ContentType.FormData,
@@ -1249,11 +1257,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Item
          * @name DeleteItem
          * @summary Delete item
-         * @request DELETE:/item/{item_id}
+         * @request DELETE:/item/{id}
          */
-        deleteItem: (itemId: number, query?: { force?: boolean }, params: RequestParams = {}) =>
+        deleteItem: (id: number, query?: { force?: boolean }, params: RequestParams = {}) =>
             this.request<Message, any>({
-                path: `/item/${itemId}`,
+                path: `/item/${id}`,
                 method: "DELETE",
                 query: query,
                 format: "json",
@@ -1286,11 +1294,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Item
          * @name RestoreItem
          * @summary Restore item
-         * @request POST:/item/{item_id}/restore
+         * @request POST:/item/{id}/restore
          */
-        restoreItem: (itemId: number, params: RequestParams = {}) =>
+        restoreItem: (id: number, params: RequestParams = {}) =>
             this.request<Message, any>({
-                path: `/item/${itemId}/restore`,
+                path: `/item/${id}/restore`,
                 method: "POST",
                 format: "json",
                 ...params
@@ -1302,11 +1310,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Item
          * @name ForceDeleteItem
          * @summary Force delete item
-         * @request DELETE:/item/{item_id}/force
+         * @request DELETE:/item/{id}/force
          */
-        forceDeleteItem: (itemId: number, params: RequestParams = {}) =>
+        forceDeleteItem: (id: number, params: RequestParams = {}) =>
             this.request<Message, any>({
-                path: `/item/${itemId}/force`,
+                path: `/item/${id}/force`,
                 method: "DELETE",
                 format: "json",
                 ...params
@@ -1319,11 +1327,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Permission
          * @name UpdatePermission
          * @summary Update a permission
-         * @request PUT:/permission/{permission_id}
+         * @request PUT:/permission/{id}
          */
-        updatePermission: (permissionId: number, data: { role_ids: number[] }, params: RequestParams = {}) =>
+        updatePermission: (id: number, data: { role_ids: number[] }, params: RequestParams = {}) =>
             this.request<Message, any>({
-                path: `/permission/${permissionId}`,
+                path: `/permission/${id}`,
                 method: "PUT",
                 body: data,
                 type: ContentType.Json,
@@ -1376,11 +1384,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags PurchaseSheet
          * @name GetPurchaseSheet
          * @summary Get purchase sheet by id
-         * @request GET:/purchase-sheet/{purchase_sheet_id}
+         * @request GET:/purchase-sheet/{id}
          */
-        getPurchaseSheet: (purchaseSheetId: number, params: RequestParams = {}) =>
+        getPurchaseSheet: (id: number, params: RequestParams = {}) =>
             this.request<PurchaseSheetDetail, any>({
-                path: `/purchase-sheet/${purchaseSheetId}`,
+                path: `/purchase-sheet/${id}`,
                 method: "GET",
                 format: "json",
                 ...params
@@ -1392,11 +1400,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags PurchaseSheet
          * @name DeletePurchaseSheet
          * @summary Delete purchase sheet
-         * @request DELETE:/purchase-sheet/{purchase_sheet_id}
+         * @request DELETE:/purchase-sheet/{id}
          */
-        deletePurchaseSheet: (purchaseSheetId: number, params: RequestParams = {}) =>
+        deletePurchaseSheet: (id: number, params: RequestParams = {}) =>
             this.request<Message, any>({
-                path: `/purchase-sheet/${purchaseSheetId}`,
+                path: `/purchase-sheet/${id}`,
                 method: "DELETE",
                 format: "json",
                 ...params
@@ -1408,11 +1416,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags PurchaseSheet
          * @name UpdatePurchaseSheetNote
          * @summary Update purchase sheet note
-         * @request PUT:/purchase-sheet/{purchase_sheet_id}/note
+         * @request PUT:/purchase-sheet/{id}/note
          */
-        updatePurchaseSheetNote: (purchaseSheetId: number, data: { note: string }, params: RequestParams = {}) =>
+        updatePurchaseSheetNote: (id: number, data: { note: string }, params: RequestParams = {}) =>
             this.request<Message, any>({
-                path: `/purchase-sheet/${purchaseSheetId}/note`,
+                path: `/purchase-sheet/${id}/note`,
                 method: "PUT",
                 body: data,
                 type: ContentType.Json,
@@ -1487,6 +1495,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             this.request<Message, any>({
                 path: `/quantity-checking-sheet/${id}`,
                 method: "DELETE",
+                format: "json",
+                ...params
+            }),
+
+        /**
+         * No description
+         *
+         * @tags QuantityCheckingSheet
+         * @name UpdateQuantityCheckingSheetNote
+         * @summary Update quantity checking sheet note
+         * @request PUT:/quantity-checking-sheet/{id}/note
+         */
+        updateQuantityCheckingSheetNote: (id: number, data: { note: string }, params: RequestParams = {}) =>
+            this.request<Message, any>({
+                path: `/quantity-checking-sheet/${id}/note`,
+                method: "PUT",
+                body: data,
+                type: ContentType.Json,
                 format: "json",
                 ...params
             })
@@ -1625,11 +1651,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Shift
          * @name GetShift
          * @summary Get a shift
-         * @request GET:/shift/{shift_id}
+         * @request GET:/shift/{id}
          */
-        getShift: (shiftId: number, params: RequestParams = {}) =>
+        getShift: (id: number, params: RequestParams = {}) =>
             this.request<Shift, any>({
-                path: `/shift/${shiftId}`,
+                path: `/shift/${id}`,
                 method: "GET",
                 format: "json",
                 ...params
@@ -1641,11 +1667,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Shift
          * @name UpdateShift
          * @summary Update a shift
-         * @request PUT:/shift/{shift_id}
+         * @request PUT:/shift/{id}
          */
-        updateShift: (shiftId: number, data: UpsertShiftInput, params: RequestParams = {}) =>
+        updateShift: (id: number, data: UpsertShiftInput, params: RequestParams = {}) =>
             this.request<Shift, any>({
-                path: `/shift/${shiftId}`,
+                path: `/shift/${id}`,
                 method: "PUT",
                 body: data,
                 type: ContentType.Json,
@@ -1659,11 +1685,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Shift
          * @name DeleteShift
          * @summary Delete a shift
-         * @request DELETE:/shift/{shift_id}
+         * @request DELETE:/shift/{id}
          */
-        deleteShift: (shiftId: number, params: RequestParams = {}) =>
+        deleteShift: (id: number, params: RequestParams = {}) =>
             this.request<Message, any>({
-                path: `/shift/${shiftId}`,
+                path: `/shift/${id}`,
                 method: "DELETE",
                 format: "json",
                 ...params
@@ -1800,11 +1826,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Supplier
          * @name GetSupplier
          * @summary Get a supplier
-         * @request GET:/supplier/{supplier_id}
+         * @request GET:/supplier/{id}
          */
-        getSupplier: (supplierId: number, params: RequestParams = {}) =>
+        getSupplier: (id: number, params: RequestParams = {}) =>
             this.request<Supplier, any>({
-                path: `/supplier/${supplierId}`,
+                path: `/supplier/${id}`,
                 method: "GET",
                 format: "json",
                 ...params
@@ -1816,11 +1842,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Supplier
          * @name UpdateSupplier
          * @summary Update a supplier
-         * @request PUT:/supplier/{supplier_id}
+         * @request PUT:/supplier/{id}
          */
-        updateSupplier: (supplierId: number, data: UpdateSupplierInput, params: RequestParams = {}) =>
+        updateSupplier: (id: number, data: UpdateSupplierInput, params: RequestParams = {}) =>
             this.request<Supplier, any>({
-                path: `/supplier/${supplierId}`,
+                path: `/supplier/${id}`,
                 method: "PUT",
                 body: data,
                 type: ContentType.Json,
@@ -1834,11 +1860,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Supplier
          * @name DeleteSupplier
          * @summary Delete a supplier
-         * @request DELETE:/supplier/{supplier_id}
+         * @request DELETE:/supplier/{id}
          */
-        deleteSupplier: (supplierId: number, query?: { force?: boolean }, params: RequestParams = {}) =>
+        deleteSupplier: (id: number, query?: { force?: boolean }, params: RequestParams = {}) =>
             this.request<Message, any>({
-                path: `/supplier/${supplierId}`,
+                path: `/supplier/${id}`,
                 method: "DELETE",
                 query: query,
                 format: "json",
@@ -1871,11 +1897,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Supplier
          * @name RestoreSupplier
          * @summary Restore a supplier
-         * @request POST:/supplier/{supplier_id}/restore
+         * @request POST:/supplier/{id}/restore
          */
-        restoreSupplier: (supplierId: number, params: RequestParams = {}) =>
+        restoreSupplier: (id: number, params: RequestParams = {}) =>
             this.request<Message, any>({
-                path: `/supplier/${supplierId}/restore`,
+                path: `/supplier/${id}/restore`,
                 method: "POST",
                 format: "json",
                 ...params
@@ -1887,11 +1913,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @tags Supplier
          * @name ForceDeleteSupplier
          * @summary Force delete a supplier
-         * @request DELETE:/supplier/{supplier_id}/force
+         * @request DELETE:/supplier/{id}/force
          */
-        forceDeleteSupplier: (supplierId: number, params: RequestParams = {}) =>
+        forceDeleteSupplier: (id: number, params: RequestParams = {}) =>
             this.request<Message, any>({
-                path: `/supplier/${supplierId}/force`,
+                path: `/supplier/${id}/force`,
                 method: "DELETE",
                 format: "json",
                 ...params
@@ -1941,7 +1967,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @summary Update a work schedule
          * @request PUT:/work-schedule/{id}
          */
-        updateWorkSchedule: (workScheduleId: number, id: string, data: UpdateWorkScheduleInput, params: RequestParams = {}) =>
+        updateWorkSchedule: (id: number, data: UpdateWorkScheduleInput, params: RequestParams = {}) =>
             this.request<WorkSchedule, any>({
                 path: `/work-schedule/${id}`,
                 method: "PUT",
@@ -1959,7 +1985,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @summary Delete a work schedule
          * @request DELETE:/work-schedule/{id}
          */
-        deleteWorkSchedule: (workScheduleId: number, id: string, params: RequestParams = {}) =>
+        deleteWorkSchedule: (id: number, params: RequestParams = {}) =>
             this.request<Message, any>({
                 path: `/work-schedule/${id}`,
                 method: "DELETE",

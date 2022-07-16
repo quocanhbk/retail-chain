@@ -99,6 +99,25 @@ class EmployeeWithEmployment
 
 /**
  * @OA\Schema(
+ *   oneOf={@OA\Schema(ref="#/components/schemas/EmployeeWithEmployment")},
+ *   required={"permissions"}
+ * )
+ */
+class EmployeeWithEmploymentAndPermissions
+{
+    /**
+     * @OA\Property(
+     *   type="array",
+     *   @OA\Items(ref="#/components/schemas/Permission")
+     * )
+     *
+     * @var array
+     */
+    public $permissions;
+}
+
+/**
+ * @OA\Schema(
  *   required={"name", "email", "password", "password_confirmation", "branch_id", "role_ids"}
  * )
  */

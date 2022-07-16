@@ -164,17 +164,11 @@ Route::prefix("/supplier")
         // GET /supplier - get all suppliers
         Route::get("/", [SupplierController::class, "getMany"])->middleware("have_permission:view-supplier");
         // GET /supplier/{id} - get a supplier by id
-        Route::get("/{id}", [SupplierController::class, "getOne"])->middleware(
-            "have_permission:view-supplier"
-        );
+        Route::get("/{id}", [SupplierController::class, "getOne"])->middleware("have_permission:view-supplier");
         // PUT /supplier/{id} - update a supplier by id
-        Route::put("/{id}", [SupplierController::class, "update"])->middleware(
-            "have_permission:update-supplier"
-        );
+        Route::put("/{id}", [SupplierController::class, "update"])->middleware("have_permission:update-supplier");
         // DELETE /supplier/{id} - delete a supplier by id
-        Route::delete("/{id}", [SupplierController::class, "delete"])->middleware(
-            "have_permission:delete-supplier"
-        );
+        Route::delete("/{id}", [SupplierController::class, "delete"])->middleware("have_permission:delete-supplier");
     });
 
 Route::prefix("/category")
@@ -193,17 +187,11 @@ Route::prefix("/category")
         // GET /category - get all item categories
         Route::get("/", [CategoryController::class, "getMany"])->middleware("have_permission:view-category");
         // GET /category/{id} - get an item category by id
-        Route::get("/{id}", [CategoryController::class, "getOne"])->middleware(
-            "have_permission:view-category"
-        );
+        Route::get("/{id}", [CategoryController::class, "getOne"])->middleware("have_permission:view-category");
         // PUT /category/{id} - update an item category by id
-        Route::put("/{id}", [CategoryController::class, "update"])->middleware(
-            "have_permission:update-category"
-        );
+        Route::put("/{id}", [CategoryController::class, "update"])->middleware("have_permission:update-category");
         // DELETE /category/{id} - delete an item category by id
-        Route::delete("/{id}", [CategoryController::class, "delete"])->middleware(
-            "have_permission:delete-category"
-        );
+        Route::delete("/{id}", [CategoryController::class, "delete"])->middleware("have_permission:delete-category");
     });
 
 Route::prefix("/item")
@@ -256,7 +244,8 @@ Route::prefix("/purchase-sheet")
         );
     });
 
-Route::prefix("/quantity-checking-sheet")->middleware(OnlyEmployee::class)
+Route::prefix("/quantity-checking-sheet")
+    ->middleware(OnlyEmployee::class)
     ->group(function () {
         // POST /quantity-checking-sheet - create a new quantity checking sheet
         Route::post("/", [QuantityCheckingSheetController::class, "create"])->middleware(
@@ -309,9 +298,7 @@ Route::prefix("/customer")
         // GET /customer/one - get a customer by id or code
         Route::get("/one", [CustomerController::class, "getCustomer"])->middleware("have_permission:view-customer");
         // PATCH /customer/{id} - update a customer by id
-        Route::put("/{id}", [CustomerController::class, "update"])->middleware(
-            "have_permission:update-customer"
-        );
+        Route::put("/{id}", [CustomerController::class, "update"])->middleware("have_permission:update-customer");
         // POST /customer/add-point/{id} - add point to a customer by id
         Route::post("/add-point/{id}", [CustomerController::class, "addPoint"])->middleware(
             "have_permission:update-customer"

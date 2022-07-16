@@ -40,10 +40,12 @@ class CreateQuantityCheckingSheetTest extends TestCase
         $item_property = ItemProperty::where("branch_id", $employee->employment->branch_id)->first();
 
         $response = $this->actingAs($employee)->post("/api/quantity-checking-sheet", [
-            "items" => [[
-                "id" =>  $item_property->item_id,
-                "actual_quantity" => $item_property->quantity + 10,
-            ]],
+            "items" => [
+                [
+                    "id" => $item_property->item_id,
+                    "actual_quantity" => $item_property->quantity + 10,
+                ],
+            ],
             "note" => "test",
         ]);
 
@@ -98,13 +100,17 @@ class CreateQuantityCheckingSheetTest extends TestCase
     {
         $employee = $this->getEmployeeWithPermission(1, "create-quantity-checking-sheet");
 
-        $item_property = ItemProperty::where("branch_id", $employee->employment->branch_id)->where("quantity", ">", 10)->first();
+        $item_property = ItemProperty::where("branch_id", $employee->employment->branch_id)
+            ->where("quantity", ">", 10)
+            ->first();
 
         $response = $this->actingAs($employee)->post("/api/quantity-checking-sheet", [
-            "items" => [[
-                "id" =>  $item_property->item_id,
-                "actual_quantity" => $item_property->quantity - 10,
-            ]],
+            "items" => [
+                [
+                    "id" => $item_property->item_id,
+                    "actual_quantity" => $item_property->quantity - 10,
+                ],
+            ],
         ]);
 
         $response->assertStatus(200);
@@ -114,7 +120,7 @@ class CreateQuantityCheckingSheetTest extends TestCase
             "item_id" => $item_property->item_id,
             "expected_quantity" => $item_property->quantity,
             "actual_quantity" => max($item_property->quantity - 10, 0),
-            "total" => $item_property->base_price * (-10),
+            "total" => $item_property->base_price * -10,
         ]);
     }
 
@@ -124,10 +130,12 @@ class CreateQuantityCheckingSheetTest extends TestCase
 
         $response = $this->actingAs($employee)->post("/api/quantity-checking-sheet", [
             "code" => "QSS9999",
-            "items" => [[
-                "id" =>  1,
-                "actual_quantity" => 10,
-            ]],
+            "items" => [
+                [
+                    "id" => 1,
+                    "actual_quantity" => 10,
+                ],
+            ],
             "note" => "test",
         ]);
 
@@ -149,10 +157,12 @@ class CreateQuantityCheckingSheetTest extends TestCase
 
         $response = $this->actingAs($employee)->post("/api/quantity-checking-sheet", [
             "code" => $quantity_checking_sheet->code,
-            "items" => [[
-                "id" =>  1,
-                "actual_quantity" => 10,
-            ]],
+            "items" => [
+                [
+                    "id" => 1,
+                    "actual_quantity" => 10,
+                ],
+            ],
         ]);
 
         $response->assertStatus(400);

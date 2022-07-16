@@ -59,7 +59,12 @@ class QuantityCheckingSheetController extends Controller
         $data = $request->all();
 
         $rules = [
-            "code" => ["nullable", "string", "max:255", Rule::unique("quantity_checking_sheets")->where("branch_id", $branch_id)],
+            "code" => [
+                "nullable",
+                "string",
+                "max:255",
+                Rule::unique("quantity_checking_sheets")->where("branch_id", $branch_id),
+            ],
             "note" => ["nullable", "string", "max:255"],
             "items" => ["required", "array", "min:1"],
             "items.*.id" => [

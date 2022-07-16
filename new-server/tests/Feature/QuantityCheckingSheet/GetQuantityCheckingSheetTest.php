@@ -36,18 +36,8 @@ class GetQuantityCheckingSheetTest extends TestCase
             "code",
             "branch_id",
             "note",
-            "employee" => [
-                "name",
-            ],
-            "items" => [[
-                "id",
-                "actual_quantity",
-                "expected_quantity",
-                "total",
-                "item" => [
-                    "name",
-                ],
-            ]]
+            "employee" => ["name"],
+            "items" => [["id", "actual_quantity", "expected_quantity", "total", "item" => ["name"]]],
         ]);
     }
 

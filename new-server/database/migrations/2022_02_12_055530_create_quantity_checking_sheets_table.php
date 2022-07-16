@@ -26,7 +26,10 @@ class CreateQuantityCheckingSheetsTable extends Migration
                 ->foreignId("branch_id")
                 ->constrained()
                 ->onDelete("cascade");
-            $table->string("note")->nullable()->default("");
+            $table
+                ->string("note")
+                ->nullable()
+                ->default("");
         });
     }
 

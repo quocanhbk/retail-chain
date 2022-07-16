@@ -159,7 +159,7 @@ class DatabaseSeeder extends Seeder
             )
             ->create([
                 "branch_id" => $branch->id,
-                "employee_id" => $employee->id
+                "employee_id" => $employee->id,
             ]);
     }
 

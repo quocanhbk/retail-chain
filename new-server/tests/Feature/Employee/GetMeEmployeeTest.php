@@ -24,6 +24,8 @@ class GetMeEmployeeTest extends TestCase
         $response = $this->actingAs($store, "stores")->get("/api/employee/me");
 
         $response->assertStatus(401);
+
+        $response->assertJsonStructure(["message"]);
     }
 
     public function testGetMeAsEmployee()
@@ -34,20 +36,16 @@ class GetMeEmployeeTest extends TestCase
 
         $response->assertStatus(200);
 
+        $response->dump();
+
         $response->assertJsonStructure([
             "id",
             "name",
             "email",
             "avatar_key",
             "store_id",
-            "employment" => [
-                "branch_id",
-                "roles" => [
-                    [
-                        "role" => ["name"],
-                    ],
-                ],
-            ],
+            "employment" => ["branch_id", "roles" => [["role" => ["name"]]]],
+            "permissions" => [["action_slug", "action"]],
         ]);
     }
 }

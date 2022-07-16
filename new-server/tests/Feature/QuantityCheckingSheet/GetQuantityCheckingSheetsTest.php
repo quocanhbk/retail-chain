@@ -27,15 +27,7 @@ class GetQuantityCheckingSheetsTest extends TestCase
 
         $response->assertStatus(200);
 
-        $response->assertJsonStructure([[
-            "id",
-            "code",
-            "branch_id",
-            "note",
-            "employee" => [
-                "name",
-            ]
-        ]]);
+        $response->assertJsonStructure([["id", "code", "branch_id", "note", "employee" => ["name"]]]);
     }
 
     public function testGetSheetWithPagination()
@@ -46,15 +38,7 @@ class GetQuantityCheckingSheetsTest extends TestCase
 
         $response->assertStatus(200);
 
-        $response->assertJsonStructure([[
-            "id",
-            "code",
-            "branch_id",
-            "note",
-            "employee" => [
-                "name",
-            ]
-        ]]);
+        $response->assertJsonStructure([["id", "code", "branch_id", "note", "employee" => ["name"]]]);
 
         $response->assertJsonCount(1);
     }
@@ -65,19 +49,13 @@ class GetQuantityCheckingSheetsTest extends TestCase
 
         $quantity_checking_sheet = QuantityCheckingSheet::where("branch_id", $employee->employment->branch_id)->first();
 
-        $response = $this->actingAs($employee)->get("/api/quantity-checking-sheet?search={$quantity_checking_sheet->code}");
+        $response = $this->actingAs($employee)->get(
+            "/api/quantity-checking-sheet?search={$quantity_checking_sheet->code}"
+        );
 
         $response->assertStatus(200);
 
-        $response->assertJsonStructure([[
-            "id",
-            "code",
-            "branch_id",
-            "note",
-            "employee" => [
-                "name",
-            ]
-        ]]);
+        $response->assertJsonStructure([["id", "code", "branch_id", "note", "employee" => ["name"]]]);
 
         $response->assertJsonCount(1);
 

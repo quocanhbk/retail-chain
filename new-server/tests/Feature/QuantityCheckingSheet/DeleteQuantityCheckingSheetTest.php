@@ -41,10 +41,12 @@ class DeleteQuantityCheckingSheetTest extends TestCase
         $item_property = ItemProperty::where("branch_id", $employee->employment->branch_id)->first();
 
         $response = $this->actingAs($creator)->post("/api/quantity-checking-sheet", [
-            "items" => [[
-                "id" =>  $item_property->item_id,
-                "actual_quantity" => $item_property->quantity + 10,
-            ]],
+            "items" => [
+                [
+                    "id" => $item_property->item_id,
+                    "actual_quantity" => $item_property->quantity + 10,
+                ],
+            ],
         ]);
 
         $res = $this->actingAs($employee)->delete("/api/quantity-checking-sheet/{$response->json("id")}");
